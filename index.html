@@ -21,7 +21,7 @@
 <body>
 <div class="app">
 <section id="home" class="screen active">
- <div class="top"><div class="hamb" onclick="show('settings')">☰</div><div><h1>CNC <span class="white">TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC · v1.9</div></div></div>
+ <div class="top"><div class="hamb" onclick="show('settings')">☰</div><div><h1>CNC <span class="white">TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC · v2.0</div></div></div>
  <div class="card"><h2>RICERCA INTELLIGENTE</h2><input id="smartQ" class="search" placeholder="Scrivi: M8, G1, G 1, G 1/2, H7 50, 50 H7..." onkeydown="if(event.key==='Enter')smartSearch()"><button class="btn" onclick="smartSearch()">CERCA SUBITO</button><div id="smartRes"></div></div>
  <div class="grid">
   <div class="tile primary" onclick="show('three')"><div class="icon">◎</div>CENTRO FORO / PERNO<br>(3 PUNTI)</div>
@@ -86,12 +86,14 @@
 <section id="threads" class="screen">
  <div class="header"><div class="back" onclick="show('home')">‹</div><div class="title">TABELLE FILETTATURE<small>PUNTA E ALBERO</small></div><div class="help" onclick="alert('Seleziona la famiglia. Cerca M8, 1/2, G1/4, NPT ecc. Foro = punta per maschiare interno. Albero = diametro esterno del filetto/perno.')">?</div></div>
  <div class="card"><h2>TIPO FILETTO</h2>
-  <input id="threadSearch" class="search" placeholder="Cerca: M8, M12x1.5, G1/2, 1/4 NPT" oninput="renderThreads()">
+  <input id="threadSearch" class="search" placeholder="Cerca: M8, M42, M12x1.5, G1, 1/4 NPT, 1/2 UNC" oninput="renderThreads()">
   <div class="tabbar">
    <button id="tabMet" class="on" onclick="setThreadTab('met')">METRICO GROSSO</button>
    <button id="tabFine" onclick="setThreadTab('fine')">METRICO FINE</button>
    <button id="tabGas" onclick="setThreadTab('gas')">GAS / BSP</button>
    <button id="tabNpt" onclick="setThreadTab('npt')">NPT</button>
+   <button id="tabUnc" onclick="setThreadTab('unc')">UNC</button>
+   <button id="tabUnf" onclick="setThreadTab('unf')">UNF</button>
   </div>
   <div id="threadInfo" class="hint"></div>
   <div class="tableWrap"><table class="threadTable"><thead><tr><th>Filetto</th><th>Passo / TPI</th><th>Ø punta foro</th><th>Ø albero / esterno</th></tr></thead><tbody id="threadBody"></tbody></table></div>
@@ -102,7 +104,7 @@
 <section id="turnthread" class="screen">
  <div class="header"><div class="back" onclick="show('home')">‹</div><div class="title">FILETTO TORNIO<small>DIAMETRO INIZIO E CRESTA</small></div><div class="help" onclick="alert('Seleziona il filetto. L’app calcola il passo in mm, il diametro esterno di partenza, la profondità radiale della cresta e l’X di fondo teorico. Per tornitura CNC usa soprattutto: X partenza e profondità radiale.')">?</div></div>
  <div class="card"><h2>CALCOLO RAPIDO</h2>
-  <div class="row"><div class="label">Famiglia</div><select id="ttFamily" onchange="fillTurnThreadList()"><option value="gas">GAS / BSP 55°</option><option value="met">METRICO 60°</option><option value="fine">METRICO FINE 60°</option><option value="npt">NPT 60°</option></select></div>
+  <div class="row"><div class="label">Famiglia</div><select id="ttFamily" onchange="fillTurnThreadList()"><option value="gas">GAS / BSP 55°</option><option value="met">METRICO 60°</option><option value="fine">METRICO FINE 60°</option><option value="npt">NPT 60°</option><option value="unc">UNC 60°</option><option value="unf">UNF 60°</option></select></div>
   <div class="row"><div class="label">Filetto</div><select id="ttSize"></select></div>
   <button class="btn" onclick="calcTurnThread()">CALCOLA</button>
   <div id="ttRes"></div>
@@ -111,7 +113,7 @@
  <div class="card"><h2>INSERIMENTO MANUALE</h2>
   <div class="row"><div class="label">Ø esterno X</div><input id="ttDman" class="inp" value="33.249" inputmode="decimal"></div>
   <div class="row"><div class="label">Passo mm</div><input id="ttPman" class="inp" value="2.309" inputmode="decimal"></div>
-  <div class="row"><div class="label">Profilo</div><select id="ttProfile"><option value="bsp">BSP/GAS 55°</option><option value="iso">ISO 60°</option><option value="npt">NPT 60°</option></select></div>
+  <div class="row"><div class="label">Profilo</div><select id="ttProfile"><option value="bsp">BSP/GAS 55°</option><option value="iso">ISO 60°</option><option value="npt">NPT 60°</option><option value="unc">UNC 60°</option><option value="unf">UNF 60°</option></select></div>
   <button class="btn" onclick="calcTurnThreadManual()">CALCOLA MANUALE</button>
   <div id="ttManRes"></div>
  </div>
@@ -386,7 +388,7 @@ function smartSearch(){
  let clean=compact.replace(/^gas/,'g').replace(/gas$/,'').replace(/^g([0-9])/,'g$1').replace(/^([0-9]+(?:\/[0-9]+)?)gas$/,'g$1');
  function normName(x){return String(x).toLowerCase().replace(',', '.').replace(/\s+/g,'').replace(/"/g,'').replace(/pollice|pollici/g,'').replace(/gas/g,'g')}
  let hits=[];
- for(const fam of ['met','fine','gas','npt']){
+ for(const fam of ['met','fine','gas','npt','unc','unf']){
    for(const r of THREADS[fam]){
      const n=normName(r[0]);
      const nameNoG=n.replace(/^g/,'');
@@ -401,7 +403,7 @@ function smartSearch(){
    const hit=hits[0];
    show('threads'); setThreadTab(hit.fam); threadSearch.value=hit.r[0]; renderThreads(); smartRes.innerHTML=''; return
  }
- smartRes.innerHTML='<div class="hint">Non trovato. Prova: M8, M10x1, G1, G 1, G 1/2, 1 GAS, 1 G, H7 50, 50 H7, chiave 30, C1 Ø50.</div>'
+ smartRes.innerHTML='<div class="hint">Non trovato. Prova: M8, M42, M10x1, G1, 1 GAS, 1/2 NPT, 1/2 UNC, H7 50, chiave 30, C1 Ø50.</div>'
 }
 function saveLast(){if(!last){alert('Prima calcola un risultato.');return} let h=JSON.parse(localStorage.getItem('history')||'[]'); h.unshift(last); h=h.slice(0,20); localStorage.setItem('history',JSON.stringify(h)); alert('Risultato salvato nel telefono.')}
 function showHistory(){show('settings'); let h=JSON.parse(localStorage.getItem('history')||'[]'); history.innerHTML=h.length?'<h2>SALVATAGGI</h2>'+h.map((r,i)=>`<div class="historyItem"><b>${i+1}. ${r.tool}</b><br>${r.date}<br>${Object.keys(r).filter(k=>!['tool','date'].includes(k)).slice(0,4).map(k=>k+': '+(typeof r[k]==='number'?fmt(r[k]):r[k])).join(' | ')}</div>`).join(''):'<div class="note">Nessun salvataggio.</div>'}
@@ -410,19 +412,157 @@ function shareRes(){if(!last)return; const t=`CNC Toolbox\n${last.tool}\n`+Objec
 let threadTab='met';
 const THREADS={
  met:[
- ['M3','0.50','2.5','3.0'],['M4','0.70','3.3','4.0'],['M5','0.80','4.2','5.0'],['M6','1.00','5.0','6.0'],['M8','1.25','6.8','8.0'],['M10','1.50','8.5','10.0'],['M12','1.75','10.2','12.0'],['M14','2.00','12.0','14.0'],['M16','2.00','14.0','16.0'],['M18','2.50','15.5','18.0'],['M20','2.50','17.5','20.0'],['M22','2.50','19.5','22.0'],['M24','3.00','21.0','24.0'],['M27','3.00','24.0','27.0'],['M30','3.50','26.5','30.0'],['M33','3.50','29.5','33.0'],['M36','4.00','32.0','36.0']
+ ["M1", "0.25", "0.75", "1"],
+ ["M1.2", "0.25", "0.95", "1.2"],
+ ["M1.4", "0.3", "1.1", "1.4"],
+ ["M1.6", "0.35", "1.25", "1.6"],
+ ["M2", "0.4", "1.6", "2"],
+ ["M2.5", "0.45", "2.05", "2.5"],
+ ["M3", "0.5", "2.5", "3"],
+ ["M3.5", "0.6", "2.9", "3.5"],
+ ["M4", "0.7", "3.3", "4"],
+ ["M5", "0.8", "4.2", "5"],
+ ["M6", "1", "5", "6"],
+ ["M7", "1", "6", "7"],
+ ["M8", "1.25", "6.75", "8"],
+ ["M10", "1.5", "8.5", "10"],
+ ["M12", "1.75", "10.25", "12"],
+ ["M14", "2", "12", "14"],
+ ["M16", "2", "14", "16"],
+ ["M18", "2.5", "15.5", "18"],
+ ["M20", "2.5", "17.5", "20"],
+ ["M22", "2.5", "19.5", "22"],
+ ["M24", "3", "21", "24"],
+ ["M27", "3", "24", "27"],
+ ["M30", "3.5", "26.5", "30"],
+ ["M33", "3.5", "29.5", "33"],
+ ["M36", "4", "32", "36"],
+ ["M39", "4", "35", "39"],
+ ["M42", "4.5", "37.5", "42"],
+ ["M45", "4.5", "40.5", "45"],
+ ["M48", "5", "43", "48"],
+ ["M52", "5", "47", "52"],
+ ["M56", "5.5", "50.5", "56"],
+ ["M60", "5.5", "54.5", "60"]
  ],
  fine:[
- ['M6x0.75','0.75','5.25','6.0'],['M8x1','1.00','7.0','8.0'],['M10x1','1.00','9.0','10.0'],['M10x1.25','1.25','8.8','10.0'],['M12x1','1.00','11.0','12.0'],['M12x1.25','1.25','10.8','12.0'],['M12x1.5','1.50','10.5','12.0'],['M14x1.5','1.50','12.5','14.0'],['M16x1','1.00','15.0','16.0'],['M16x1.5','1.50','14.5','16.0'],['M18x1.5','1.50','16.5','18.0'],['M20x1.5','1.50','18.5','20.0'],['M20x2','2.00','18.0','20.0'],['M22x1.5','1.50','20.5','22.0'],['M24x2','2.00','22.0','24.0'],['M27x2','2.00','25.0','27.0'],['M30x2','2.00','28.0','30.0']
+ ["M3x0.35", "0.35", "2.65", "3"],
+ ["M4x0.5", "0.5", "3.5", "4"],
+ ["M5x0.5", "0.5", "4.5", "5"],
+ ["M6x0.75", "0.75", "5.25", "6"],
+ ["M8x1", "1", "7", "8"],
+ ["M10x1", "1", "9", "10"],
+ ["M10x1.25", "1.25", "8.75", "10"],
+ ["M12x1", "1", "11", "12"],
+ ["M12x1.25", "1.25", "10.75", "12"],
+ ["M12x1.5", "1.5", "10.5", "12"],
+ ["M14x1.5", "1.5", "12.5", "14"],
+ ["M16x1", "1", "15", "16"],
+ ["M16x1.5", "1.5", "14.5", "16"],
+ ["M18x1.5", "1.5", "16.5", "18"],
+ ["M20x1.5", "1.5", "18.5", "20"],
+ ["M20x2", "2", "18", "20"],
+ ["M22x1.5", "1.5", "20.5", "22"],
+ ["M22x2", "2", "20", "22"],
+ ["M24x1.5", "1.5", "22.5", "24"],
+ ["M24x2", "2", "22", "24"],
+ ["M27x2", "2", "25", "27"],
+ ["M30x1.5", "1.5", "28.5", "30"],
+ ["M30x2", "2", "28", "30"],
+ ["M30x3", "3", "27", "30"],
+ ["M33x2", "2", "31", "33"],
+ ["M33x3", "3", "30", "33"],
+ ["M36x2", "2", "34", "36"],
+ ["M36x3", "3", "33", "36"],
+ ["M39x3", "3", "36", "39"],
+ ["M42x3", "3", "39", "42"],
+ ["M45x3", "3", "42", "45"],
+ ["M48x3", "3", "45", "48"],
+ ["M52x4", "4", "48", "52"],
+ ["M56x4", "4", "52", "56"],
+ ["M60x4", "4", "56", "60"]
  ],
  gas:[
- ['G 1/8','28 TPI','8.8','9.728'],['G 1/4','19 TPI','11.8','13.157'],['G 3/8','19 TPI','15.25','16.662'],['G 1/2','14 TPI','19.0','20.955'],['G 3/4','14 TPI','24.5','26.441'],['G 1','11 TPI','30.75','33.249'],['G 1 1/4','11 TPI','39.5','41.910'],['G 1 1/2','11 TPI','45.0','47.803'],['G 2','11 TPI','56.5','59.614']
+ ["G 1/16", "28 TPI", "6.82", "7.723"],
+ ["G 1/8", "28 TPI", "8.82", "9.728"],
+ ["G 1/4", "19 TPI", "11.82", "13.157"],
+ ["G 3/8", "19 TPI", "15.33", "16.662"],
+ ["G 1/2", "14 TPI", "19.14", "20.955"],
+ ["G 5/8", "14 TPI", "21.1", "22.911"],
+ ["G 3/4", "14 TPI", "24.63", "26.441"],
+ ["G 7/8", "14 TPI", "28.39", "30.201"],
+ ["G 1", "11 TPI", "30.94", "33.249"],
+ ["G 1 1/8", "11 TPI", "35.59", "37.897"],
+ ["G 1 1/4", "11 TPI", "39.6", "41.91"],
+ ["G 1 1/2", "11 TPI", "45.49", "47.803"],
+ ["G 1 3/4", "11 TPI", "51.44", "53.746"],
+ ["G 2", "11 TPI", "57.3", "59.614"],
+ ["G 2 1/4", "11 TPI", "63.4", "65.71"],
+ ["G 2 1/2", "11 TPI", "72.87", "75.184"],
+ ["G 3", "11 TPI", "85.57", "87.884"],
+ ["G 3 1/2", "11 TPI", "98.02", "100.33"],
+ ["G 4", "11 TPI", "110.72", "113.03"]
  ],
  npt:[
- ['1/16 NPT','27 TPI','6.15','7.895'],['1/8 NPT','27 TPI','8.43','10.287'],['1/4 NPT','18 TPI','11.10','13.716'],['3/8 NPT','18 TPI','14.68','17.145'],['1/2 NPT','14 TPI','17.86','21.336'],['3/4 NPT','14 TPI','23.42','26.670'],['1 NPT','11.5 TPI','29.36','33.401'],['1 1/4 NPT','11.5 TPI','38.10','42.164'],['1 1/2 NPT','11.5 TPI','44.45','48.260'],['2 NPT','11.5 TPI','56.36','60.325']
+ ["1/16 NPT", "27 TPI", "6.95", "7.895"],
+ ["1/8 NPT", "27 TPI", "9.35", "10.287"],
+ ["1/4 NPT", "18 TPI", "12.3", "13.716"],
+ ["3/8 NPT", "18 TPI", "15.73", "17.145"],
+ ["1/2 NPT", "14 TPI", "19.52", "21.336"],
+ ["3/4 NPT", "14 TPI", "24.86", "26.67"],
+ ["1 NPT", "11.5 TPI", "31.19", "33.401"],
+ ["1 1/4 NPT", "11.5 TPI", "39.96", "42.164"],
+ ["1 1/2 NPT", "11.5 TPI", "46.05", "48.26"],
+ ["2 NPT", "11.5 TPI", "58.12", "60.325"],
+ ["2 1/2 NPT", "8 TPI", "69.85", "73.025"],
+ ["3 NPT", "8 TPI", "85.73", "88.9"],
+ ["3 1/2 NPT", "8 TPI", "98.42", "101.6"],
+ ["4 NPT", "8 TPI", "111.12", "114.3"]
+ ],
+ unc:[
+ ["#4 UNC", "40 TPI", "2.21", "2.845"],
+ ["#5 UNC", "40 TPI", "2.54", "3.175"],
+ ["#6 UNC", "32 TPI", "2.71", "3.505"],
+ ["#8 UNC", "32 TPI", "3.37", "4.166"],
+ ["#10 UNC", "24 TPI", "3.77", "4.826"],
+ ["1/4 UNC", "20 TPI", "5.08", "6.35"],
+ ["5/16 UNC", "18 TPI", "6.53", "7.938"],
+ ["3/8 UNC", "16 TPI", "7.94", "9.525"],
+ ["7/16 UNC", "14 TPI", "9.3", "11.113"],
+ ["1/2 UNC", "13 TPI", "10.75", "12.7"],
+ ["9/16 UNC", "12 TPI", "12.17", "14.288"],
+ ["5/8 UNC", "11 TPI", "13.57", "15.875"],
+ ["3/4 UNC", "10 TPI", "16.51", "19.05"],
+ ["7/8 UNC", "9 TPI", "19.4", "22.225"],
+ ["1 UNC", "8 TPI", "22.22", "25.4"],
+ ["1 1/8 UNC", "7 TPI", "24.95", "28.575"],
+ ["1 1/4 UNC", "7 TPI", "28.12", "31.75"],
+ ["1 1/2 UNC", "6 TPI", "33.87", "38.1"],
+ ["1 3/4 UNC", "5 TPI", "39.37", "44.45"],
+ ["2 UNC", "4.5 TPI", "45.16", "50.8"]
+ ],
+ unf:[
+ ["#4 UNF", "48 TPI", "2.32", "2.845"],
+ ["#5 UNF", "44 TPI", "2.6", "3.175"],
+ ["#6 UNF", "40 TPI", "2.87", "3.505"],
+ ["#8 UNF", "36 TPI", "3.46", "4.166"],
+ ["#10 UNF", "32 TPI", "4.03", "4.826"],
+ ["1/4 UNF", "28 TPI", "5.44", "6.35"],
+ ["5/16 UNF", "24 TPI", "6.88", "7.938"],
+ ["3/8 UNF", "24 TPI", "8.47", "9.525"],
+ ["7/16 UNF", "20 TPI", "9.84", "11.113"],
+ ["1/2 UNF", "20 TPI", "11.43", "12.7"],
+ ["9/16 UNF", "18 TPI", "12.88", "14.288"],
+ ["5/8 UNF", "18 TPI", "14.46", "15.875"],
+ ["3/4 UNF", "16 TPI", "17.46", "19.05"],
+ ["7/8 UNF", "14 TPI", "20.41", "22.225"],
+ ["1 UNF", "12 TPI", "23.28", "25.4"],
+ ["1 1/8 UNF", "12 TPI", "26.46", "28.575"],
+ ["1 1/4 UNF", "12 TPI", "29.63", "31.75"],
+ ["1 1/2 UNF", "12 TPI", "35.98", "38.1"]
  ]
 };
-function setThreadTab(t){threadTab=t;['Met','Fine','Gas','Npt'].forEach(x=>document.getElementById('tab'+x).classList.remove('on')); const map={met:'Met',fine:'Fine',gas:'Gas',npt:'Npt'};document.getElementById('tab'+map[t]).classList.add('on');renderThreads()}
+function setThreadTab(t){threadTab=t;['Met','Fine','Gas','Npt','Unc','Unf'].forEach(x=>{let e=document.getElementById('tab'+x); if(e)e.classList.remove('on')}); const map={met:'Met',fine:'Fine',gas:'Gas',npt:'Npt',unc:'Unc',unf:'Unf'};let e=document.getElementById('tab'+map[t]); if(e)e.classList.add('on');renderThreads()}
 function renderThreads(){
  const raw=(document.getElementById('threadSearch')?.value||'').toLowerCase().replace(',','.').trim();
  const baseQ=raw.replace(/\s+/g,'').replace(/"/g,'').replace(/pollice|pollici/g,'').replace(/gas/g,'g');
@@ -437,7 +577,7 @@ function renderThreads(){
    if(threadTab==='gas' && q===name.replace(/^g/,''))return true;
    return false;
  });
- const names={met:'Passo grosso ISO metrico',fine:'Passo fine ISO metrico',gas:'Gas/BSP cilindrico G',npt:'NPT conico americano'};
+ const names={met:'Passo grosso ISO metrico fino a M60',fine:'Passo fine ISO metrico fino a M60',gas:'Gas/BSP cilindrico G completo',npt:'NPT conico americano',unc:'UNC pollici',unf:'UNF pollici'};
  if(threadInfo)threadInfo.innerHTML='<span class="pill">'+names[threadTab]+'</span> &nbsp; Foro = punta per maschio interno. Albero = diametro esterno prima/del filetto.';
  if(threadBody)threadBody.innerHTML=rows.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]} mm</td><td>${r[3]} mm</td></tr>`).join('') || '<tr><td colspan="4">Nessun risultato</td></tr>'
 }
