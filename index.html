@@ -20,13 +20,13 @@
 <body>
 <div class="app">
 <section id="home" class="screen active">
- <div class="top"><div class="hamb" onclick="show('settings')">☰</div><div><h1>CNC <span class="white">TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC · v1.6</div></div></div>
+ <div class="top"><div class="hamb" onclick="show('settings')">☰</div><div><h1>CNC <span class="white">TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC · v1.6.1</div></div></div>
  <div class="card"><h2>RICERCA INTELLIGENTE</h2><input id="smartQ" class="search" placeholder="Scrivi: M8, G1, G 1, G 1/2, H7 50, 50 H7..." onkeydown="if(event.key==='Enter')smartSearch()"><button class="btn" onclick="smartSearch()">CERCA SUBITO</button><div id="smartRes"></div></div>
  <div class="grid">
   <div class="tile primary" onclick="show('three')"><div class="icon">◎</div>CENTRO FORO / PERNO<br>(3 PUNTI)</div>
   <div class="tile" onclick="show('two')"><div class="icon">⟍</div>CENTRO CON<br>2 PUNTI</div>
   <div class="tile" onclick="show('angle')"><div class="icon">∠</div>CALCOLO<br>ANGOLO</div>
-  <div class="tile primary" onclick="show('chamfer')"><div class="icon">∠</div>SMUSSI ISO<br>15° / 30° / 45°</div>
+  <div class="tile primary" onclick="show('chamfer')"><div class="icon">∠</div>SMUSSI ISO<br>ANGOLI LIBERI</div>
   <div class="tile" onclick="show('conv')"><div class="icon">↻</div>CONVERSIONI<br>MM ↔ POLLICI</div>
   <div class="tile" onclick="show('inter')"><div class="icon">↔</div>INTERASSE<br>TRA FORI</div>
   <div class="tile primary" onclick="show('threads')"><div class="icon">⚙</div>TABELLE<br>FILETTATURE</div>
@@ -144,19 +144,19 @@
 
 
 <section id="chamfer" class="screen">
- <div class="header"><div class="back" onclick="show('home')">‹</div><div class="title">SMUSSI ISO<small>15° / 30° / 45° CON RAGGIO UTENSILE</small></div><div class="help" onclick="alert('Calcola punto iniziale e finale dello smusso con qualsiasi angolo. Inserisci diametro/spigolo, quota assiale C, angolo, verso Z e raggio utensile. Per C1 a 45° su Ø50 verso Z-: X48 Z0 → X50 Z-1.')">?</div></div>
+ <div class="header"><div class="back" onclick="show('home')">‹</div><div class="title">SMUSSI ISO<small>DEFAULT + ANGOLO MANUALE CON RAGGIO UTENSILE</small></div><div class="help" onclick="alert('Calcola punto iniziale e finale dello smusso con qualsiasi angolo. Inserisci diametro/spigolo, quota assiale C, angolo, verso Z e raggio utensile. Per C1 a 45° su Ø50 verso Z-: X48 Z0 → X50 Z-1.')">?</div></div>
  <div class="card"><h2>DATI SMUSSO</h2>
   <div class="row"><div class="label">Ø / Quota spigolo</div><input id="chD" class="inp" value="50" inputmode="decimal"></div>
   <div class="row"><div class="label">Quota Z smusso C</div><input id="chC" class="inp" value="1" inputmode="decimal"></div>
-  <div class="row"><div class="label">Angolo</div><select id="chA"><option value="45">45°</option><option value="30">30°</option><option value="15">15°</option><option value="60">60°</option><option value="custom">Altro</option></select></div>
-  <div class="row" id="chArow" style="display:none"><div class="label">Angolo manuale</div><input id="chAcustom" class="inp" value="45" inputmode="decimal"></div>
+  <div class="row"><div class="label">Angolo</div><select id="chA" onchange="toggleChamferAngle()"><option value="45">45°</option><option value="30">30°</option><option value="15">15°</option><option value="60">60°</option><option value="custom">Altro...</option></select></div>
+  <div class="row" id="chArow" style="display:none"><div class="label">Angolo manuale</div><input id="chAcustom" class="inp" value="17.5" inputmode="decimal" placeholder="Es. 17.5"></div>
   <div class="row"><div class="label">Z spigolo</div><input id="chZ" class="inp" value="0" inputmode="decimal"></div>
   <div class="row"><div class="label">Raggio utensile</div><input id="chR" class="inp" value="0.8" inputmode="decimal"></div>
   <div class="row"><div class="label">Lavorazione</div><select id="chWork"><option value="external">ESTERNO / ALBERO</option><option value="internal">INTERNO / FORO</option></select></div>
   <div class="row"><div class="label">Verso Z</div><select id="chSide"><option value="left">Smusso verso Z negativo</option><option value="right">Smusso verso Z positivo</option></select></div>
   <button class="btn" onclick="calcChamfer()">CALCOLA SMUSSO</button>
   <div id="chRes"></div>
-  <div class="hint">C = quota assiale in Z dello smusso. A 45° C1: cambia 1 mm in Z e 2 mm in X diametrale. A 30° C1: cambio X diametrale = 2 × tan(30°) = 1,155 mm. Con raggio utensile inserito l’app dà anche punti compensati pratici.</div>
+  <div class="hint">Scegli 15° / 30° / 45° / 60° oppure <b>Altro...</b> e scrivi il grado manuale, esempio 17.5°. C = quota assiale in Z dello smusso. Con raggio utensile inserito l’app dà anche punti compensati pratici.</div>
  </div>
  <div class="card"><h2>LETTURA RAPIDA</h2>
   <div class="hint"><b>Esempio 45°:</b> Ø50 C1 esterno verso Z negativo: X48 Z0 → X50 Z-1.<br><b>Esempio 30°:</b> Ø50 C1 esterno verso Z negativo: X48,845 Z0 → X50 Z-1. In tornio lavora dal diametro più basso verso il diametro finito.</div>
@@ -383,6 +383,12 @@ const KEYWAYS=[
 function renderKeys(){const q=(document.getElementById('keySearch')?.value||'').toLowerCase().replace(',','.').trim(); const rows=KEYWAYS.filter(r=>r.join(' ').toLowerCase().includes(q)); if(keyBody)keyBody.innerHTML=rows.map(r=>`<tr><td>&gt;${r[0]} a ${r[1]}</td><td><b>${r[2]}</b></td><td>${r[3]} mm</td><td>${r[4]} mm</td><td>${r[5]}</td></tr>`).join('')||'<tr><td colspan="5">Nessun risultato</td></tr>'}
 function calcKey(){let D=val('keyD'); if(invalid([D])||D<=0){keyRes.innerHTML='<div class="err">Diametro non valido.</div>';return} let r=KEYWAYS.find(x=>D>x[0]&&D<=x[1]); if(!r){keyRes.innerHTML='<div class="err">Diametro fuori tabella.</div>';return} keyRes.innerHTML=box('LINGUETTA',r[2],'b × h')+box('CAVA ALBERO t1',r[3],'mm')+box('CAVA MOZZO t2',r[4],'mm')+`<div class="hint">Campo Ø: &gt;${r[0]} fino a ${r[1]} mm. Larghezza cava normalmente uguale a b.</div>`}
 
+
+function toggleChamferAngle(){
+ const sel=document.getElementById('chA')?.value;
+ const row=document.getElementById('chArow');
+ if(row) row.style.display = sel==='custom' ? 'flex' : 'none';
+}
 
 function calcChamfer(){
  let D=val('chD'), C=val('chC'), Z=val('chZ'), R=val('chR');
