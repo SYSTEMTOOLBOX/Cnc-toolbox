@@ -20,7 +20,7 @@
 <body>
 <div class="app">
 <section id="home" class="screen active">
- <div class="top"><div class="hamb" onclick="show('settings')">☰</div><div><h1>CNC <span class="white">TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC · v1.6.1</div></div></div>
+ <div class="top"><div class="hamb" onclick="show('settings')">☰</div><div><h1>CNC <span class="white">TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC · v1.6.2</div></div></div>
  <div class="card"><h2>RICERCA INTELLIGENTE</h2><input id="smartQ" class="search" placeholder="Scrivi: M8, G1, G 1, G 1/2, H7 50, 50 H7..." onkeydown="if(event.key==='Enter')smartSearch()"><button class="btn" onclick="smartSearch()">CERCA SUBITO</button><div id="smartRes"></div></div>
  <div class="grid">
   <div class="tile primary" onclick="show('three')"><div class="icon">◎</div>CENTRO FORO / PERNO<br>(3 PUNTI)</div>
@@ -144,13 +144,13 @@
 
 
 <section id="chamfer" class="screen">
- <div class="header"><div class="back" onclick="show('home')">‹</div><div class="title">SMUSSI ISO<small>DEFAULT + ANGOLO MANUALE CON RAGGIO UTENSILE</small></div><div class="help" onclick="alert('Calcola punto iniziale e finale dello smusso con qualsiasi angolo. Inserisci diametro/spigolo, quota assiale C, angolo, verso Z e raggio utensile. Per C1 a 45° su Ø50 verso Z-: X48 Z0 → X50 Z-1.')">?</div></div>
+ <div class="header"><div class="back" onclick="show('home')">‹</div><div class="title">SMUSSI ISO<small>DEFAULT + ANGOLO MANUALE CON RAGGIO UTENSILE</small></div><div class="help" onclick="alert('Calcola punto iniziale e finale dello smusso con qualsiasi angolo. Inserisci Ø pezzo, quota assiale C, angolo, Z inizio smusso, verso Z e raggio utensile. Per C1 a 45° su Ø50 verso Z- con Z inizio 0: X48 Z0 → X50 Z-1.')">?</div></div>
  <div class="card"><h2>DATI SMUSSO</h2>
-  <div class="row"><div class="label">Ø / Quota spigolo</div><input id="chD" class="inp" value="50" inputmode="decimal"></div>
+  <div class="row"><div class="label">Ø pezzo</div><input id="chD" class="inp" value="50" inputmode="decimal"></div>
   <div class="row"><div class="label">Quota Z smusso C</div><input id="chC" class="inp" value="1" inputmode="decimal"></div>
   <div class="row"><div class="label">Angolo</div><select id="chA" onchange="toggleChamferAngle()"><option value="45">45°</option><option value="30">30°</option><option value="15">15°</option><option value="60">60°</option><option value="custom">Altro...</option></select></div>
   <div class="row" id="chArow" style="display:none"><div class="label">Angolo manuale</div><input id="chAcustom" class="inp" value="17.5" inputmode="decimal" placeholder="Es. 17.5"></div>
-  <div class="row"><div class="label">Z spigolo</div><input id="chZ" class="inp" value="0" inputmode="decimal"></div>
+  <div class="row"><div class="label">Z inizio smusso</div><input id="chZ" class="inp" value="0" inputmode="decimal"></div>
   <div class="row"><div class="label">Raggio utensile</div><input id="chR" class="inp" value="0.8" inputmode="decimal"></div>
   <div class="row"><div class="label">Lavorazione</div><select id="chWork"><option value="external">ESTERNO / ALBERO</option><option value="internal">INTERNO / FORO</option></select></div>
   <div class="row"><div class="label">Verso Z</div><select id="chSide"><option value="left">Smusso verso Z negativo</option><option value="right">Smusso verso Z positivo</option></select></div>
