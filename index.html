@@ -20,7 +20,7 @@
 <body>
 <div class="app">
 <section id="home" class="screen active">
- <div class="top"><div class="hamb" onclick="show('settings')">☰</div><div><h1>CNC <span class="white">TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC · v1.4</div></div></div>
+ <div class="top"><div class="hamb" onclick="show('settings')">☰</div><div><h1>CNC <span class="white">TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC · v1.5.1</div></div></div>
  <div class="card"><h2>RICERCA INTELLIGENTE</h2><input id="smartQ" class="search" placeholder="Scrivi: M8, G1, G 1, G 1/2, H7 50, 50 H7..." onkeydown="if(event.key==='Enter')smartSearch()"><button class="btn" onclick="smartSearch()">CERCA SUBITO</button><div id="smartRes"></div></div>
  <div class="grid">
   <div class="tile primary" onclick="show('three')"><div class="icon">◎</div>CENTRO FORO / PERNO<br>(3 PUNTI)</div>
@@ -248,6 +248,31 @@ function smartSearch(){
  let compact=s.replace(/\s+/g,'').replace(/"/g,'').replace(/pollice|pollici/g,'');
  if(!s){smartRes.innerHTML='<div class="err">Scrivi cosa cerchi.</div>';return}
 
+ // GAS: priorità assoluta. Evita che "1 gas" o "1 G" finisca su M10.
+ function gasKeyFromQuery(raw, cmp){
+   // Normalizza: maiuscole/minuscole, spazi, virgolette e parola GAS.
+   // Deve capire: 1G, 1g, 1 gas, 1gas, G1, G 1, GAS1, gas 1, 1" gas.
+   let a=raw.toLowerCase().replace(',', '.').replace(/"/g,'').replace(/pollice|pollici/g,'').trim();
+   let c=cmp.toLowerCase().replace(/"/g,'').replace(/pollice|pollici/g,'').replace(/gas/g,'g').replace(/\s+/g,'');
+   let dim=null;
+   let m;
+   if(m=a.match(/^g\s*([0-9]+(?:\s+[0-9]+\/[0-9]+|\/[0-9]+)?)/)) dim=m[1];
+   else if(m=a.match(/^gas\s*([0-9]+(?:\s+[0-9]+\/[0-9]+|\/[0-9]+)?)/)) dim=m[1];
+   else if(m=a.match(/^([0-9]+(?:\s+[0-9]+\/[0-9]+|\/[0-9]+)?)\s*(?:gas|g)$/)) dim=m[1];
+   else if(m=c.match(/^g([0-9]+(?:\/[0-9]+)?)$/)) dim=m[1];
+   else if(m=c.match(/^([0-9]+(?:\/[0-9]+)?)(?:g)$/)) dim=m[1];
+   else if(m=c.match(/^([0-9]+(?:\/[0-9]+)?)gas$/)) dim=m[1];
+   if(!dim) return null;
+   dim=dim.replace(/\s+/g,' ').trim();
+   return 'g'+dim.replace(/\s+/g,'');
+ }
+ const gasKey=gasKeyFromQuery(s,compact);
+ if(gasKey){
+   const hit=THREADS.gas.find(r=>String(r[0]).toLowerCase().replace(/\s+/g,'').replace(/"/g,'')===gasKey);
+   if(hit){show('threads'); setThreadTab('gas'); threadSearch.value=hit[0]; renderThreads(); smartRes.innerHTML=''; return}
+   smartRes.innerHTML='<div class="hint">GAS non trovato. Prova: G 1, G 1/2, 1 GAS, 1 G.</div>'; return
+ }
+
  // ESAGONO / CHIAVE
  let m=s.match(/(?:chiave|esagono)\s*([0-9.]+)/);
  if(m){show('hexagon'); hexS.value=m[1]; calcHexFromS(); return}
@@ -264,7 +289,7 @@ function smartSearch(){
    show('tolerances'); tolKind.value=isHole?'hole':'shaft'; fillTolLetters(); tolLetter.value=letter; tolGrade.value=grade; tolD.value=dia; calcTol(); return
  }
 
- // FILETTATURE: M8, M10x1, G1, G 1, G 1", 1 GAS, 1" GAS, 1/2 NPT
+ // FILETTATURE metriche / NPT. GAS è già gestito sopra con priorità.
  let clean=compact.replace(/^gas/,'g').replace(/gas$/,'').replace(/^g([0-9])/,'g$1').replace(/^([0-9]+(?:\/[0-9]+)?)gas$/,'g$1');
  function normName(x){return String(x).toLowerCase().replace(',', '.').replace(/\s+/g,'').replace(/"/g,'').replace(/pollice|pollici/g,'').replace(/gas/g,'g')}
  let hits=[];
@@ -273,7 +298,8 @@ function smartSearch(){
      const n=normName(r[0]);
      const nameNoG=n.replace(/^g/,'');
      let ok = n===clean || n===compact || (fam==='gas' && ('g'+compact)===n) || (fam==='gas' && clean===nameNoG) || (fam==='npt' && compact.replace('npt','')===n.replace('npt',''));
-     if(!ok && compact.length>1) ok = n.includes(clean) || clean.includes(n);
+     // niente match generico su ricerche troppo corte tipo "1": evita M10.
+     if(!ok && compact.length>2) ok = n.includes(clean) || clean.includes(n);
      if(ok) hits.push({fam,r,score:(n===clean||n===compact)?0:1});
    }
  }
@@ -282,7 +308,7 @@ function smartSearch(){
    const hit=hits[0];
    show('threads'); setThreadTab(hit.fam); threadSearch.value=hit.r[0]; renderThreads(); smartRes.innerHTML=''; return
  }
- smartRes.innerHTML='<div class="hint">Non trovato. Prova: M8, M10x1, G1, G 1, G 1/2, 1 GAS, H7 50, 50 H7, chiave 30, C1 Ø50.</div>'
+ smartRes.innerHTML='<div class="hint">Non trovato. Prova: M8, M10x1, G1, G 1, G 1/2, 1 GAS, 1 G, H7 50, 50 H7, chiave 30, C1 Ø50.</div>'
 }
 function saveLast(){if(!last){alert('Prima calcola un risultato.');return} let h=JSON.parse(localStorage.getItem('history')||'[]'); h.unshift(last); h=h.slice(0,20); localStorage.setItem('history',JSON.stringify(h)); alert('Risultato salvato nel telefono.')}
 function showHistory(){show('settings'); let h=JSON.parse(localStorage.getItem('history')||'[]'); history.innerHTML=h.length?'<h2>SALVATAGGI</h2>'+h.map((r,i)=>`<div class="historyItem"><b>${i+1}. ${r.tool}</b><br>${r.date}<br>${Object.keys(r).filter(k=>!['tool','date'].includes(k)).slice(0,4).map(k=>k+': '+(typeof r[k]==='number'?fmt(r[k]):r[k])).join(' | ')}</div>`).join(''):'<div class="note">Nessun salvataggio.</div>'}
@@ -306,8 +332,10 @@ const THREADS={
 function setThreadTab(t){threadTab=t;['Met','Fine','Gas','Npt'].forEach(x=>document.getElementById('tab'+x).classList.remove('on')); const map={met:'Met',fine:'Fine',gas:'Gas',npt:'Npt'};document.getElementById('tab'+map[t]).classList.add('on');renderThreads()}
 function renderThreads(){
  const raw=(document.getElementById('threadSearch')?.value||'').toLowerCase().replace(',','.').trim();
- const q=raw.replace(/\s+/g,'').replace(/"/g,'').replace(/gas/g,'g');
- const norm=x=>String(x).toLowerCase().replace(',','.').replace(/\s+/g,'').replace(/"/g,'').replace(/gas/g,'g');
+ const baseQ=raw.replace(/\s+/g,'').replace(/"/g,'').replace(/pollice|pollici/g,'').replace(/gas/g,'g');
+ const gasQ=baseQ.replace(/^([0-9]+(?:\/[0-9]+)?)g$/,'g$1');
+ const q=(threadTab==='gas')?gasQ:baseQ;
+ const norm=x=>String(x).toLowerCase().replace(',','.').replace(/\s+/g,'').replace(/"/g,'').replace(/pollice|pollici/g,'').replace(/gas/g,'g');
  const rows=THREADS[threadTab].filter(r=>{
    if(!q)return true;
    const joined=norm(r.join(' ')); const name=norm(r[0]);
