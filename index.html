@@ -21,7 +21,7 @@
 <body>
 <div class="app">
 <section id="home" class="screen active">
- <div class="top"><div class="hamb" onclick="show('settings')">☰</div><div><h1>CNC <span class="white">TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC · v1.8</div></div></div>
+ <div class="top"><div class="hamb" onclick="show('settings')">☰</div><div><h1>CNC <span class="white">TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC · v1.9</div></div></div>
  <div class="card"><h2>RICERCA INTELLIGENTE</h2><input id="smartQ" class="search" placeholder="Scrivi: M8, G1, G 1, G 1/2, H7 50, 50 H7..." onkeydown="if(event.key==='Enter')smartSearch()"><button class="btn" onclick="smartSearch()">CERCA SUBITO</button><div id="smartRes"></div></div>
  <div class="grid">
   <div class="tile primary" onclick="show('three')"><div class="icon">◎</div>CENTRO FORO / PERNO<br>(3 PUNTI)</div>
@@ -38,7 +38,8 @@
   <div class="tile" onclick="show('params')"><div class="icon">⚡</div>PARAMETRI<br>CNC</div>
   <div class="tile primary" onclick="show('calculator')"><div class="icon">🧮</div>CALCOLATRICE<br>OFFICINA</div>
   <div class="tile" onclick="show('ruler')"><div class="icon">📏</div>RIGHELLO<br>CALIBRO RAPIDO</div>
-  <div class="tile primary" onclick="show('cameraTools')"><div class="icon">📷</div>GONIOMETRO<br>FOTOCAMERA / TORCIA</div>
+  <div class="tile primary" onclick="show('cameraTools')"><div class="icon">📷</div>GONIOMETRO<br>FOTOCAMERA</div>
+  <div class="tile" onclick="show('torchTool')"><div class="icon">💡</div>TORCIA<br>RAPIDA</div>
  </div>
  <div class="info">ⓘ STRUMENTI VELOCI E PRECISI<br>PER IL TUO LAVORO CNC</div>
 </section>
@@ -251,18 +252,18 @@
   <div class="rulerBox"><div id="rulerLine" class="rulerLine"></div><div class="rulerText" id="rulerText">0 — 10 — 20 — 30 — 40 — 50 mm circa</div></div>
  </div>
  <div class="card"><h2>CALIBRO RAPIDO A CURSORI</h2>
-  <div class="row"><div class="label">Cursore A</div><input id="calA" class="inp" value="10" inputmode="decimal" oninput="calSliderA.value=this.value;calcCaliper()"></div>
-  <div class="row"><div class="label">Cursore B</div><input id="calB" class="inp" value="50" inputmode="decimal" oninput="calSliderB.value=this.value;calcCaliper()"></div>
-  <div class="sliderRow"><input id="calSliderA" class="range" type="range" min="0" max="100" value="10" oninput="calA.value=this.value;calcCaliper()"><input id="calSliderB" class="range" type="range" min="0" max="100" value="50" oninput="calB.value=this.value;calcCaliper()"></div>
+  <div class="row"><div class="label">Cursore A (%)</div><input id="calA" class="inp" value="10" inputmode="decimal" oninput="calSliderA.value=this.value;calcCaliper()"></div>
+  <div class="row"><div class="label">Cursore B (%)</div><input id="calB" class="inp" value="50" inputmode="decimal" oninput="calSliderB.value=this.value;calcCaliper()"></div>
+  <div class="sliderRow" id="calTrack"><input id="calSliderA" class="range" type="range" min="0" max="100" value="10" step="0.1" oninput="calA.value=this.value;calcCaliper()"><input id="calSliderB" class="range" type="range" min="0" max="100" value="50" step="0.1" oninput="calB.value=this.value;calcCaliper()"></div>
   <button class="btn" onclick="calcCaliper()">CALCOLA DISTANZA</button>
   <div id="calRes"></div>
-  <div class="hint">Inserisci o trascina due posizioni in mm indicativi sullo schermo. Utile per capire al volo se un pezzo è circa 20, 30 o 50 mm.</div>
+  <div class="hint">I cursori ora sono posizioni sullo schermo: la distanza viene convertita in mm usando la calibrazione del righello. È una stima veloce, non sostituisce il calibro.</div>
  </div>
 </section>
 
 
 <section id="cameraTools" class="screen">
- <div class="header"><div class="back" onclick="stopCamera();show('home')">‹</div><div class="title">GONIOMETRO CAMERA<small>CON TORCIA</small></div><div class="help" onclick="alert('Strumento indicativo: attiva la fotocamera, appoggia/guarda il pezzo e ruota la linea gialla. La torcia funziona solo sui telefoni/browser che la permettono.')">?</div></div>
+ <div class="header"><div class="back" onclick="stopCamera();show('home')">‹</div><div class="title">GONIOMETRO CAMERA<small>FOTOCAMERA</small></div><div class="help" onclick="alert('Strumento indicativo: attiva la fotocamera, guarda il pezzo e ruota la linea gialla. Misura più o meno, non da collaudo.')">?</div></div>
  <div class="card"><h2>FOTOCAMERA + GONIOMETRO</h2>
   <div class="cameraBox">
    <video id="camVideo" autoplay playsinline muted></video>
@@ -272,10 +273,19 @@
   </div>
   <div class="row"><div class="label">Angolo</div><input id="camAngle" class="inp" value="0" inputmode="decimal" oninput="setCamAngle(this.value)"></div>
   <input id="angleSlider" class="range" type="range" min="-90" max="90" value="0" step="0.5" oninput="camAngle.value=this.value;setCamAngle(this.value)">
-  <div class="actions"><button class="btn2" onclick="startCamera()">📷 AVVIA CAMERA</button><button class="btn2" onclick="toggleTorch()" id="torchBtn">💡 TORCIA</button></div>
-  <div class="actions"><button class="btn2" onclick="setCamAngle(0);camAngle.value=0;angleSlider.value=0">0°</button><button class="btn2" onclick="setCamAngle(45);camAngle.value=45;angleSlider.value=45">45°</button></div>
+  <div class="actions"><button class="btn2" onclick="startCamera()">📷 AVVIA CAMERA</button><button class="btn2" onclick="setCamAngle(0);camAngle.value=0;angleSlider.value=0">0°</button></div>
+  <div class="actions"><button class="btn2" onclick="setCamAngle(30);camAngle.value=30;angleSlider.value=30">30°</button><button class="btn2" onclick="setCamAngle(45);camAngle.value=45;angleSlider.value=45">45°</button></div>
   <button class="btn" onclick="stopCamera()">SPEGNI CAMERA</button>
   <div id="camMsg" class="hint">Premi “Avvia camera” e consenti l’uso della fotocamera. Misura indicativa, non da collaudo.</div>
+ </div>
+</section>
+
+<section id="torchTool" class="screen">
+ <div class="header"><div class="back" onclick="stopTorch();show('home')">‹</div><div class="title">TORCIA<small>RAPIDA</small></div><div class="help" onclick="alert('Accende il flash della fotocamera se il telefono e Chrome lo permettono. La prima volta chiede il permesso della fotocamera.')">?</div></div>
+ <div class="card"><h2>LUCE OFFICINA</h2>
+  <button class="btn" id="torchOnlyBtn" onclick="toggleStandaloneTorch()">💡 ACCENDI TORCIA</button>
+  <button class="btn2" style="width:100%;margin-top:10px" onclick="stopTorch()">SPEGNI TORCIA</button>
+  <div id="torchMsg" class="hint">Utile quando devi guardare dentro macchina, cave, fori o pezzi. Funziona solo se il browser supporta il flash.</div>
  </div>
 </section>
 
@@ -369,7 +379,8 @@ function smartSearch(){
  // CALCOLATRICE / RIGHELLO
  if(s.includes('calcol')||s==='calc'){show('calculator');smartRes.innerHTML='';return}
  if(s.includes('righello')||s.includes('calibro')){show('ruler');smartRes.innerHTML='';return}
- if(s.includes('camera')||s.includes('fotocamera')||s.includes('goniometro')||s.includes('torcia')){show('cameraTools');smartRes.innerHTML='';return}
+ if(s.includes('torcia')||s.includes('luce')){show('torchTool');smartRes.innerHTML='';return}
+ if(s.includes('camera')||s.includes('fotocamera')||s.includes('goniometro')){show('cameraTools');smartRes.innerHTML='';return}
 
  // FILETTATURE metriche / NPT. GAS è già gestito sopra con priorità.
  let clean=compact.replace(/^gas/,'g').replace(/gas$/,'').replace(/^g([0-9])/,'g$1').replace(/^([0-9]+(?:\/[0-9]+)?)gas$/,'g$1');
@@ -551,10 +562,22 @@ function quickMmIn(){let m=val('quickMm'); if(invalid([m])){quickRes.innerHTML='
 function quickInMm(){let i=val('quickMm'); if(invalid([i])){quickRes.innerHTML='<div class="err">Numero non valido.</div>';return} quickRes.innerHTML=box('MILLIMETRI',fmt(i*25.4,3),'mm');}
 function saveRulerCal(){let mm=val('screenMm'); if(invalid([mm])||mm<=10){alert('Valore calibrazione non valido.');return} localStorage.setItem('screenMm',String(mm)); updateRuler(); alert('Calibrazione salvata.');}
 function updateRuler(){let mm=parseFloat(localStorage.getItem('screenMm')||document.getElementById('screenMm')?.value||'70'); let w=document.querySelector('.app')?.clientWidth||360; let px=w/mm; document.documentElement.style.setProperty('--mmPx',px+'px'); if(screenMm)screenMm.value=fmt(mm,1); if(rulerText)rulerText.textContent='Scala indicativa: 1 mm ≈ '+fmt(px,2)+' px sul tuo telefono';}
-function calcCaliper(){let a=val('calA'),b=val('calB'); if(invalid([a,b])){calRes.innerHTML='<div class="err">Numeri non validi.</div>';return} if(calSliderA)calSliderA.value=Math.max(0,Math.min(100,a)); if(calSliderB)calSliderB.value=Math.max(0,Math.min(100,b)); calRes.innerHTML=box('DISTANZA INDICATIVA',fmt(Math.abs(b-a),2),'mm');}
+function calcCaliper(){
+ let a=val('calA'),b=val('calB');
+ if(invalid([a,b])){calRes.innerHTML='<div class="err">Numeri non validi.</div>';return}
+ a=Math.max(0,Math.min(100,a)); b=Math.max(0,Math.min(100,b));
+ if(calSliderA)calSliderA.value=a; if(calSliderB)calSliderB.value=b;
+ if(calA)calA.value=fmt(a,1).replace('.0',''); if(calB)calB.value=fmt(b,1).replace('.0','');
+ let screenMm=parseFloat(localStorage.getItem('screenMm')||document.getElementById('screenMm')?.value||'70');
+ let appW=document.querySelector('.app')?.clientWidth||window.innerWidth||360;
+ let trackW=document.getElementById('calTrack')?.clientWidth||appW;
+ let distPx=Math.abs(b-a)/100*trackW;
+ let distMm=distPx*(screenMm/appW);
+ calRes.innerHTML=box('DISTANZA INDICATIVA',fmt(distMm,2),'mm')+box('DISTANZA SCHERMO',fmt(distPx,0),'px');
+}
 
 
-let camStream=null, torchEnabled=false;
+let camStream=null, torchStream=null, torchEnabled=false;
 function setCamAngle(a){a=parseFloat(String(a).replace(',','.'))||0; let line=document.getElementById('angleLine'); let read=document.getElementById('angleRead'); if(line)line.style.transform='rotate('+a+'deg)'; if(read)read.textContent=fmt(a,1).replace('.0','')+'°';}
 async function startCamera(){
  const msg=document.getElementById('camMsg');
@@ -567,26 +590,34 @@ async function startCamera(){
 }
 function stopCamera(clear=true){
  if(camStream){camStream.getTracks().forEach(t=>t.stop()); camStream=null;}
- torchEnabled=false; let b=document.getElementById('torchBtn'); if(b)b.classList.remove('torchOn');
  if(clear&&document.getElementById('camVideo')) camVideo.srcObject=null;
 }
-async function toggleTorch(){
- const msg=document.getElementById('camMsg');
- if(!camStream){await startCamera();}
- const track=camStream && camStream.getVideoTracks()[0];
- if(!track){return}
+async function toggleStandaloneTorch(){
+ const msg=document.getElementById('torchMsg');
+ const btn=document.getElementById('torchOnlyBtn');
  try{
+  if(!torchStream){torchStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});}
+  const track=torchStream.getVideoTracks()[0];
   torchEnabled=!torchEnabled;
   await track.applyConstraints({advanced:[{torch:torchEnabled}]});
-  let b=document.getElementById('torchBtn'); if(b)b.classList.toggle('torchOn',torchEnabled);
+  if(btn){btn.classList.toggle('torchOn',torchEnabled);btn.textContent=torchEnabled?'💡 TORCIA ACCESA':'💡 ACCENDI TORCIA'}
   if(msg)msg.innerHTML=torchEnabled?'<span class="ok">Torcia accesa.</span>':'Torcia spenta.';
  }catch(e){
-  torchEnabled=false; if(msg)msg.innerHTML='<div class="err">Torcia non supportata da questo browser/telefono.</div>';
+  torchEnabled=false;
+  if(msg)msg.innerHTML='<div class="err">Torcia non supportata da questo telefono/browser oppure permesso camera negato.</div>';
  }
+}
+function stopTorch(){
+ if(torchStream){torchStream.getTracks().forEach(t=>t.stop()); torchStream=null;}
+ torchEnabled=false;
+ const btn=document.getElementById('torchOnlyBtn');
+ if(btn){btn.classList.remove('torchOn');btn.textContent='💡 ACCENDI TORCIA'}
+ const msg=document.getElementById('torchMsg'); if(msg)msg.innerHTML='Torcia spenta.';
 }
 
 function help3(){alert('Tocca il foro/perno in 3 punti. Inserisci le coordinate X/Y lette dalla macchina. L’app calcola centro e diametro compensando la sfera del tastatore.')} 
 window.addEventListener('load',()=>{let pr=localStorage.getItem('probe'); if(pr){probe.value=pr;probe2.value=pr} let m=localStorage.getItem('cnc_mode'); if(m)setMode(m); renderThreads(); fillTurnThreadList(); fillTolLetters(); renderKeys(); updateMem(); updateRuler(); calcCaliper();});
+window.addEventListener('resize',()=>{updateRuler();calcCaliper();});
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;installBtn.style.display='block'});installBtn.onclick=async()=>{if(deferredPrompt){deferredPrompt.prompt();deferredPrompt=null;installBtn.style.display='none'}};
 </script>
 
