@@ -20,8 +20,8 @@
 <body>
 <div class="app">
 <section id="home" class="screen active">
- <div class="top"><div class="hamb" onclick="show('settings')">☰</div><div><h1>CNC <span class="white">TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC · v1.3 VERA</div></div></div>
- <div class="card"><h2>RICERCA INTELLIGENTE</h2><input id="smartQ" class="search" placeholder="Scrivi: M8, G 1/2, H7 30, chiave 30, C1 Ø50..." onkeydown="if(event.key==='Enter')smartSearch()"><button class="btn" onclick="smartSearch()">CERCA SUBITO</button><div id="smartRes"></div></div>
+ <div class="top"><div class="hamb" onclick="show('settings')">☰</div><div><h1>CNC <span class="white">TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC · v1.4</div></div></div>
+ <div class="card"><h2>RICERCA INTELLIGENTE</h2><input id="smartQ" class="search" placeholder="Scrivi: M8, G1, G 1, G 1/2, H7 50, 50 H7..." onkeydown="if(event.key==='Enter')smartSearch()"><button class="btn" onclick="smartSearch()">CERCA SUBITO</button><div id="smartRes"></div></div>
  <div class="grid">
   <div class="tile primary" onclick="show('three')"><div class="icon">◎</div>CENTRO FORO / PERNO<br>(3 PUNTI)</div>
   <div class="tile" onclick="show('two')"><div class="icon">⟍</div>CENTRO CON<br>2 PUNTI</div>
@@ -242,15 +242,48 @@ function rpmFrom(D,Vc){return (Vc*1000)/(Math.PI*D)}
 function calcDrill(){let D=val('drD'),Vc=val('drVc'),f=val('drFrev'); if(invalid([D,Vc,f])||D<=0){drRes.innerHTML='<div class="err">Controlla Ø, Vc e avanzamento.</div>';return} let rpm=rpmFrom(D,Vc),F=rpm*f; last={tool:'Punta',D,Vc,f,rpm,F,date:new Date().toLocaleString('it-IT')}; drRes.innerHTML=box('GIRI MANDRINO',fmt(rpm,0),'rpm')+box('AVANZAMENTO F',fmt(F,0),'mm/min')+box('AVANZ. GIRO',fmt(f,3),'mm/giro')}
 function calcMill(){let D=val('millD'),Vc=val('millVc'),Z=val('millZ'),fz=val('millFz'); if(invalid([D,Vc,Z,fz])||D<=0||Z<=0){millRes.innerHTML='<div class="err">Controlla Ø, Vc, denti e fz.</div>';return} let rpm=rpmFrom(D,Vc),F=rpm*Z*fz; last={tool:'Fresa',D,Vc,Z,fz,rpm,F,date:new Date().toLocaleString('it-IT')}; millRes.innerHTML=box('GIRI MANDRINO',fmt(rpm,0),'rpm')+box('AVANZAMENTO F',fmt(F,0),'mm/min')+box('fz',fmt(fz,3),'mm/dente')}
 function calcTurning(){let D=val('turnD'),Vc=val('turnVc'),f=val('turnFrev'); if(invalid([D,Vc,f])||D<=0){turnRes.innerHTML='<div class="err">Controlla Ø, Vc e avanzamento.</div>';return} let rpm=rpmFrom(D,Vc),F=rpm*f; last={tool:'Tornitura',D,Vc,f,rpm,F,date:new Date().toLocaleString('it-IT')}; turnRes.innerHTML=box('GIRI MANDRINO',fmt(rpm,0),'rpm')+box('AVANZAMENTO F',fmt(F,0),'mm/min')+box('AVANZ. GIRO',fmt(f,3),'mm/giro')}
-function smartSearch(){let q=(document.getElementById('smartQ').value||'').trim(); let s=q.toLowerCase().replace(',', '.'); if(!s){smartRes.innerHTML='<div class="err">Scrivi cosa cerchi.</div>';return}
- let m=s.match(/chiave\s*([0-9.]+)/)||s.match(/esagono\s*([0-9.]+)/); if(m){show('hexagon'); hexS.value=m[1]; calcHexFromS(); return}
- m=s.match(/h7\s*([0-9.]+)/i); if(m){show('tolerances'); tolKind.value='hole'; fillTolLetters(); tolLetter.value='H'; tolGrade.value='7'; tolD.value=m[1]; calcTol(); return}
- m=s.match(/c\s*([0-9.]+).*?(?:ø|d|diametro)?\s*([0-9.]+)/i); if(m){show('chamfer'); chC.value=m[1]; chD.value=m[2]; calcChamfer(); return}
- let all=[...THREADS.met,...THREADS.fine,...THREADS.gas,...THREADS.npt]; let hit=all.find(r=>r[0].toLowerCase().replace(/\s+/g,'')===s.replace(/\s+/g,''))||all.find(r=>s.includes(r[0].toLowerCase().replace(/\s+/g,''))||r[0].toLowerCase().includes(s));
- if(hit){show('threads'); threadSearch.value=hit[0]; renderThreads(); smartRes.innerHTML=''; return}
- smartRes.innerHTML='<div class="hint">Non trovato. Prova: M8, M10x1, G 1/2, H7 30, chiave 30, C1 Ø50.</div>'
-}
+function smartSearch(){
+ let q=(document.getElementById('smartQ').value||'').trim();
+ let s=q.toLowerCase().replace(',', '.').replace(/ø/g,'').replace(/⌀/g,'').replace(/diametro/g,'').trim();
+ let compact=s.replace(/\s+/g,'').replace(/"/g,'').replace(/pollice|pollici/g,'');
+ if(!s){smartRes.innerHTML='<div class="err">Scrivi cosa cerchi.</div>';return}
 
+ // ESAGONO / CHIAVE
+ let m=s.match(/(?:chiave|esagono)\s*([0-9.]+)/);
+ if(m){show('hexagon'); hexS.value=m[1]; calcHexFromS(); return}
+
+ // SMUSSO C
+ m=s.match(/c\s*([0-9.]+).*?([0-9.]+)/);
+ if(m && s.includes('c')){show('chamfer'); chC.value=m[1]; calcChamfer(); return}
+
+ // TOLLERANZE: H7 50 oppure 50 H7
+ m=s.match(/(?:([a-zA-Z]{1,2})([0-9]{1,2})\s*([0-9.]+)|([0-9.]+)\s*([a-zA-Z]{1,2})([0-9]{1,2}))/);
+ if(m){
+   let letter=(m[1]||m[5]||'').trim(); let grade=(m[2]||m[6]||'').trim(); let dia=(m[3]||m[4]||'').trim();
+   let isHole=letter===letter.toUpperCase();
+   show('tolerances'); tolKind.value=isHole?'hole':'shaft'; fillTolLetters(); tolLetter.value=letter; tolGrade.value=grade; tolD.value=dia; calcTol(); return
+ }
+
+ // FILETTATURE: M8, M10x1, G1, G 1, G 1", 1 GAS, 1" GAS, 1/2 NPT
+ let clean=compact.replace(/^gas/,'g').replace(/gas$/,'').replace(/^g([0-9])/,'g$1').replace(/^([0-9]+(?:\/[0-9]+)?)gas$/,'g$1');
+ function normName(x){return String(x).toLowerCase().replace(',', '.').replace(/\s+/g,'').replace(/"/g,'').replace(/pollice|pollici/g,'').replace(/gas/g,'g')}
+ let hits=[];
+ for(const fam of ['met','fine','gas','npt']){
+   for(const r of THREADS[fam]){
+     const n=normName(r[0]);
+     const nameNoG=n.replace(/^g/,'');
+     let ok = n===clean || n===compact || (fam==='gas' && ('g'+compact)===n) || (fam==='gas' && clean===nameNoG) || (fam==='npt' && compact.replace('npt','')===n.replace('npt',''));
+     if(!ok && compact.length>1) ok = n.includes(clean) || clean.includes(n);
+     if(ok) hits.push({fam,r,score:(n===clean||n===compact)?0:1});
+   }
+ }
+ if(hits.length){
+   hits.sort((a,b)=>a.score-b.score || a.r[0].length-b.r[0].length);
+   const hit=hits[0];
+   show('threads'); setThreadTab(hit.fam); threadSearch.value=hit.r[0]; renderThreads(); smartRes.innerHTML=''; return
+ }
+ smartRes.innerHTML='<div class="hint">Non trovato. Prova: M8, M10x1, G1, G 1, G 1/2, 1 GAS, H7 50, 50 H7, chiave 30, C1 Ø50.</div>'
+}
 function saveLast(){if(!last){alert('Prima calcola un risultato.');return} let h=JSON.parse(localStorage.getItem('history')||'[]'); h.unshift(last); h=h.slice(0,20); localStorage.setItem('history',JSON.stringify(h)); alert('Risultato salvato nel telefono.')}
 function showHistory(){show('settings'); let h=JSON.parse(localStorage.getItem('history')||'[]'); history.innerHTML=h.length?'<h2>SALVATAGGI</h2>'+h.map((r,i)=>`<div class="historyItem"><b>${i+1}. ${r.tool}</b><br>${r.date}<br>${Object.keys(r).filter(k=>!['tool','date'].includes(k)).slice(0,4).map(k=>k+': '+(typeof r[k]==='number'?fmt(r[k]):r[k])).join(' | ')}</div>`).join(''):'<div class="note">Nessun salvataggio.</div>'}
 function shareRes(){if(!last)return; const t=`CNC Toolbox\n${last.tool}\n`+Object.keys(last).filter(k=>!['tool','date'].includes(k)).map(k=>`${k}: ${typeof last[k]==='number'?fmt(last[k]):last[k]}`).join('\n'); if(navigator.share)navigator.share({text:t}); else alert(t)}
@@ -271,7 +304,23 @@ const THREADS={
  ]
 };
 function setThreadTab(t){threadTab=t;['Met','Fine','Gas','Npt'].forEach(x=>document.getElementById('tab'+x).classList.remove('on')); const map={met:'Met',fine:'Fine',gas:'Gas',npt:'Npt'};document.getElementById('tab'+map[t]).classList.add('on');renderThreads()}
-function renderThreads(){const q=(document.getElementById('threadSearch')?.value||'').toLowerCase().replace(',','.').trim(); const rows=THREADS[threadTab].filter(r=>(r.join(' ').toLowerCase()).includes(q)); const names={met:'Passo grosso ISO metrico',fine:'Passo fine ISO metrico',gas:'Gas/BSP cilindrico G',npt:'NPT conico americano'}; if(threadInfo)threadInfo.innerHTML='<span class="pill">'+names[threadTab]+'</span> &nbsp; Foro = punta per maschio interno. Albero = diametro esterno prima/del filetto.'; if(threadBody)threadBody.innerHTML=rows.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]} mm</td><td>${r[3]} mm</td></tr>`).join('') || '<tr><td colspan="4">Nessun risultato</td></tr>'}
+function renderThreads(){
+ const raw=(document.getElementById('threadSearch')?.value||'').toLowerCase().replace(',','.').trim();
+ const q=raw.replace(/\s+/g,'').replace(/"/g,'').replace(/gas/g,'g');
+ const norm=x=>String(x).toLowerCase().replace(',','.').replace(/\s+/g,'').replace(/"/g,'').replace(/gas/g,'g');
+ const rows=THREADS[threadTab].filter(r=>{
+   if(!q)return true;
+   const joined=norm(r.join(' ')); const name=norm(r[0]);
+   if(joined.includes(q))return true;
+   if(threadTab==='gas' && ('g'+q)===name)return true;
+   if(threadTab==='gas' && q===name.replace(/^g/,''))return true;
+   return false;
+ });
+ const names={met:'Passo grosso ISO metrico',fine:'Passo fine ISO metrico',gas:'Gas/BSP cilindrico G',npt:'NPT conico americano'};
+ if(threadInfo)threadInfo.innerHTML='<span class="pill">'+names[threadTab]+'</span> &nbsp; Foro = punta per maschio interno. Albero = diametro esterno prima/del filetto.';
+ if(threadBody)threadBody.innerHTML=rows.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]} mm</td><td>${r[3]} mm</td></tr>`).join('') || '<tr><td colspan="4">Nessun risultato</td></tr>'
+}
+
 
 const THREAD_PROFILE={iso:{name:'ISO 60° metrico',factor:0.61343,angle:'60°'},bsp:{name:'Whitworth GAS/BSP 55°',factor:0.64033,angle:'55°'},npt:{name:'NPT 60° conico',factor:0.80000,angle:'60°'}};
 function parsePitchMM(p){p=String(p).replace(',','.');let m=p.match(/([0-9.]+)\s*TPI/i); if(m)return 25.4/parseFloat(m[1]); return parseFloat(p)}
