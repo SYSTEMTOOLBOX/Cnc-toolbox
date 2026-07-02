@@ -1,4 +1,4 @@
-// CNC Toolbox v1.7
+// CNC Toolbox v1.8
 const CACHE_NAME = 'cnc-toolbox-v1-7';
 const FILES = ['./','./index.html','./manifest.webmanifest','./service-worker.js','./icon-192.png','./icon-512.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(FILES))); self.skipWaiting(); });
