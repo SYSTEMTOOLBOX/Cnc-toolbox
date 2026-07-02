@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="theme-color" content="#050505" />
+<title>CNC Toolbox</title>
+<style>
+:root{--yellow:#ffc400;--black:#050505;--panel:#111;--line:#333;--white:#fff;--gray:#aaa;--red:#ff5252;--green:#6cff6c}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent} body{margin:0;background:var(--black);color:white;font-family:Arial,Helvetica,sans-serif;min-height:100vh;} .app{max-width:520px;margin:auto;padding:18px 14px 28px;} .top{display:flex;align-items:center;gap:12px;margin:12px 0 20px}.hamb{font-size:34px;color:var(--yellow)} h1{font-size:35px;margin:0;color:var(--yellow);letter-spacing:1px}.white{color:white}.sub{color:var(--yellow);font-weight:700;margin-top:2px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.tile{min-height:150px;border:2px solid #555;border-radius:13px;background:linear-gradient(145deg,#181818,#080808);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-weight:900;font-size:17px;padding:12px;color:white}.tile.primary{background:linear-gradient(145deg,#ffd21f,#e6a900);color:#050505;border-color:#ffd21f}.icon{font-size:46px;margin-bottom:14px}.info{border:2px solid var(--yellow);border-radius:10px;margin-top:28px;padding:18px;text-align:center;color:var(--yellow);font-weight:800}.screen{display:none}.screen.active{display:block}.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.back,.help{font-size:34px;color:var(--yellow);font-weight:bold;min-width:44px;text-align:center}.title{text-align:center;flex:1;font-weight:900;color:var(--yellow);font-size:23px}.title small{display:block;color:white;font-size:17px;margin-top:4px}.card{background:linear-gradient(145deg,#151515,#080808);border:1.5px solid #3b3b3b;border-radius:12px;padding:16px;margin:12px 0}.card h2{font-size:18px;color:var(--yellow);margin:0 0 16px;border-bottom:1px solid #333;padding-bottom:10px}.row{display:grid;grid-template-columns:1fr 160px;align-items:center;gap:10px;margin:12px 0}.label{font-size:20px;font-weight:800;color:#ddd}.inp,select{width:100%;height:58px;border-radius:9px;border:2px solid #ddd;background:#fff;color:#000;font-size:24px;font-weight:800;text-align:right;padding:0 12px}select{text-align:center;font-size:18px}.seg{display:grid;grid-template-columns:1fr 1fr;gap:6px}.seg button{height:54px;border-radius:8px;border:2px solid #444;background:#111;color:white;font-size:16px;font-weight:900}.seg button.on{background:var(--yellow);color:#050505;border-color:var(--yellow)}.line{height:1px;background:#333;margin:14px 0}.btn{width:100%;height:70px;border:0;border-radius:10px;background:linear-gradient(#ffd21f,#e5aa00);color:#050505;font-size:28px;font-weight:900;margin-top:12px}.btn2{height:54px;border:2px solid var(--yellow);border-radius:8px;background:#080808;color:var(--yellow);font-size:17px;font-weight:900}.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.resultBox{border:1.5px solid #444;border-radius:10px;padding:15px;margin:10px 0;display:flex;justify-content:space-between;align-items:center}.resLabel{font-size:18px;font-weight:900;color:#eee}.resVal{font-size:34px;color:var(--yellow);font-weight:900;text-align:right}.err{color:var(--red);font-weight:800;margin-top:10px;font-size:17px}.ok{color:var(--green)}.note{color:#aaa;font-size:14px;line-height:1.35;margin-top:12px}.install{position:fixed;bottom:10px;left:10px;right:10px;max-width:500px;margin:auto;display:none}.mini{font-size:14px;color:#aaa}.full{grid-template-columns:1fr}.wide{grid-template-columns:1fr 1fr}.smallBtn{font-size:15px}.historyItem{border:1px solid #333;border-radius:9px;padding:10px;margin:8px 0;color:#ddd}.hidden{display:none}
+.tabbar{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}.tabbar button{height:48px;border:2px solid #444;border-radius:8px;background:#111;color:white;font-weight:900;font-size:14px}.tabbar button.on{background:var(--yellow);color:#050505;border-color:var(--yellow)}.search{width:100%;height:56px;border-radius:9px;border:2px solid var(--yellow);background:#fff;color:#000;font-size:22px;font-weight:800;padding:0 12px;margin:8px 0 12px}.tableWrap{overflow:auto;border:1px solid #333;border-radius:10px}.threadTable{width:100%;border-collapse:collapse;font-size:14px;min-width:500px}.threadTable th{position:sticky;top:0;background:#202020;color:var(--yellow);padding:10px;border-bottom:1px solid #555;text-align:left}.threadTable td{padding:10px;border-bottom:1px solid #2b2b2b;color:#eee}.threadTable tr:nth-child(even){background:#101010}.pill{display:inline-block;border:1px solid var(--yellow);color:var(--yellow);border-radius:999px;padding:4px 8px;font-weight:900}.hint{color:#bbb;font-size:13px;line-height:1.35;margin-top:10px}
+</style>
+
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#000000">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="application-name" content="CNC Toolbox">
+</head>
+<body>
+<div class="app">
+<section id="home" class="screen active">
+ <div class="top"><div class="hamb" onclick="show('settings')">☰</div><div><h1>CNC <span class="white">TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div></div></div>
+ <div class="grid">
+  <div class="tile primary" onclick="show('three')"><div class="icon">◎</div>CENTRO FORO / PERNO<br>(3 PUNTI)</div>
+  <div class="tile" onclick="show('two')"><div class="icon">⟍</div>CENTRO CON<br>2 PUNTI</div>
+  <div class="tile" onclick="show('angle')"><div class="icon">∠</div>CALCOLO<br>ANGOLO</div>
+  <div class="tile primary" onclick="show('chamfer')"><div class="icon">45°</div>SMUSSI ISO<br>RAGGIO UTENSILE</div>
+  <div class="tile" onclick="show('conv')"><div class="icon">↻</div>CONVERSIONI<br>MM ↔ POLLICI</div>
+  <div class="tile" onclick="show('inter')"><div class="icon">↔</div>INTERASSE<br>TRA FORI</div>
+  <div class="tile primary" onclick="show('threads')"><div class="icon">⚙</div>TABELLE<br>FILETTATURE</div>
+  <div class="tile primary" onclick="show('turnthread')"><div class="icon">🔩</div>FILETTO TORNIO<br>CRESTA / X</div>
+  <div class="tile primary" onclick="show('tolerances')"><div class="icon">H7</div>TOLLERANZE<br>FORI / ALBERI</div>
+  <div class="tile" onclick="show('keys')"><div class="icon">▰</div>LINGUETTE<br>E CAVE</div>
+  <div class="tile" onclick="show('tools')"><div class="icon">⬡</div>ALTRI<br>STRUMENTI</div>
+ </div>
+ <div class="info">ⓘ STRUMENTI VELOCI E PRECISI<br>PER IL TUO LAVORO CNC</div>
+</section>
+
+<section id="three" class="screen">
+ <div class="header"><div class="back" onclick="show('home')">‹</div><div class="title">CENTRO FORO / PERNO<small>3 PUNTI</small></div><div class="help" onclick="help3()">?</div></div>
+ <div class="card"><h2>1. SETUP TASTATORE</h2>
+  <div class="row"><div class="label">Ø SFERA (mm)</div><input id="probe" class="inp" value="10.000" inputmode="decimal"></div>
+  <div class="label" style="margin:20px 0 8px">LAVORAZIONE</div><div class="seg"><button id="foro" class="on" onclick="setMode('foro')">FORO (INTERNO)</button><button id="perno" onclick="setMode('perno')">PERNO (ESTERNO)</button></div>
+ </div>
+ <div class="card"><h2>2. COORDINATE BATTUTE</h2>
+  <div class="row"><div class="label">P1 X</div><input id="x1" class="inp" value="0" inputmode="decimal"></div>
+  <div class="row"><div class="label">P1 Y</div><input id="y1" class="inp" value="0" inputmode="decimal"></div><div class="line"></div>
+  <div class="row"><div class="label">P2 X</div><input id="x2" class="inp" value="101.440" inputmode="decimal"></div>
+  <div class="row"><div class="label">P2 Y</div><input id="y2" class="inp" value="0" inputmode="decimal"></div><div class="line"></div>
+  <div class="row"><div class="label">P3 X</div><input id="x3" class="inp" value="101.440" inputmode="decimal"></div>
+  <div class="row"><div class="label">P3 Y</div><input id="y3" class="inp" value="101.440" inputmode="decimal"></div>
+  <button class="btn" onclick="calc3()">▦ CALCOLA</button><div class="actions"><button class="btn2" onclick="clearIds(['x1','y1','x2','y2','x3','y3'])">↻ NUOVA MISURA</button><button class="btn2" onclick="saveLast()">▣ SALVA</button></div><div id="msg" class="err"></div>
+ </div>
+</section>
+
+<section id="two" class="screen">
+ <div class="header"><div class="back" onclick="show('home')">‹</div><div class="title">CENTRO CON 2 PUNTI<small>BATTUTE OPPOSTE</small></div><div class="help" onclick="alert('Tocca due lati opposti del foro o perno. Inserisci le due coordinate. Il centro è la metà. Il diametro viene compensato con la sfera.')">?</div></div>
+ <div class="card"><h2>SETUP</h2><div class="row"><div class="label">Ø SFERA</div><input id="probe2" class="inp" value="10.000" inputmode="decimal"></div><div class="seg"><button id="foro2" class="on" onclick="setMode2('foro')">FORO</button><button id="perno2" onclick="setMode2('perno')">PERNO</button></div></div>
+ <div class="card"><h2>QUOTE OPPOSTE</h2><div class="row"><div class="label">Quota 1</div><input id="q21" class="inp" value="0" inputmode="decimal"></div><div class="row"><div class="label">Quota 2</div><input id="q22" class="inp" value="100" inputmode="decimal"></div><button class="btn" onclick="calc2()">CALCOLA</button><div id="res2"></div></div>
+</section>
+
+<section id="angle" class="screen">
+ <div class="header"><div class="back" onclick="show('home')">‹</div><div class="title">CALCOLO ANGOLO<small>DA 2 PUNTI</small></div><div class="help" onclick="alert('Inserisci due punti lungo il bordo del pezzo. Risultato: angolo rispetto asse X e correzione per metterlo dritto.')">?</div></div>
+ <div class="card"><h2>PUNTI SUL BORDO</h2><div class="row"><div class="label">P1 X</div><input id="ax1" class="inp" value="0" inputmode="decimal"></div><div class="row"><div class="label">P1 Y</div><input id="ay1" class="inp" value="0" inputmode="decimal"></div><div class="line"></div><div class="row"><div class="label">P2 X</div><input id="ax2" class="inp" value="100" inputmode="decimal"></div><div class="row"><div class="label">P2 Y</div><input id="ay2" class="inp" value="1" inputmode="decimal"></div><button class="btn" onclick="calcAngle()">CALCOLA</button><div id="resa"></div></div>
+</section>
+
+<section id="conv" class="screen">
+ <div class="header"><div class="back" onclick="show('home')">‹</div><div class="title">CONVERSIONI<small>MM ↔ POLLICI</small></div><div class="help" onclick="alert('Scrivi in mm oppure in pollici. Premi il pulsante relativo.')">?</div></div>
+ <div class="card"><h2>CONVERTITORE</h2><div class="row"><div class="label">Millimetri</div><input id="mm" class="inp" value="25.4" inputmode="decimal"></div><button class="btn" onclick="mmToIn()">MM → POLLICI</button><div class="row"><div class="label">Pollici</div><input id="inch" class="inp" value="1" inputmode="decimal"></div><button class="btn" onclick="inToMm()">POLLICI → MM</button><div id="resc"></div></div>
+</section>
+
+<section id="inter" class="screen">
+ <div class="header"><div class="back" onclick="show('home')">‹</div><div class="title">INTERASSE<small>TRA 2 FORI/CENTRI</small></div><div class="help" onclick="alert('Inserisci i due centri. Calcola distanza, differenza X e differenza Y.')">?</div></div>
+ <div class="card"><h2>CENTRI</h2><div class="row"><div class="label">C1 X</div><input id="ix1" class="inp" value="0" inputmode="decimal"></div><div class="row"><div class="label">C1 Y</div><input id="iy1" class="inp" value="0" inputmode="decimal"></div><div class="line"></div><div class="row"><div class="label">C2 X</div><input id="ix2" class="inp" value="100" inputmode="decimal"></div><div class="row"><div class="label">C2 Y</div><input id="iy2" class="inp" value="50" inputmode="decimal"></div><button class="btn" onclick="calcInter()">CALCOLA</button><div id="resi"></div></div>
+</section>
+
+
+<section id="threads" class="screen">
+ <div class="header"><div class="back" onclick="show('home')">‹</div><div class="title">TABELLE FILETTATURE<small>PUNTA E ALBERO</small></div><div class="help" onclick="alert('Seleziona la famiglia. Cerca M8, 1/2, G1/4, NPT ecc. Foro = punta per maschiare interno. Albero = diametro esterno del filetto/perno.')">?</div></div>
+ <div class="card"><h2>TIPO FILETTO</h2>
+  <input id="threadSearch" class="search" placeholder="Cerca: M8, M12x1.5, G1/2, 1/4 NPT" oninput="renderThreads()">
+  <div class="tabbar">
+   <button id="tabMet" class="on" onclick="setThreadTab('met')">METRICO GROSSO</button>
+   <button id="tabFine" onclick="setThreadTab('fine')">METRICO FINE</button>
+   <button id="tabGas" onclick="setThreadTab('gas')">GAS / BSP</button>
+   <button id="tabNpt" onclick="setThreadTab('npt')">NPT</button>
+  </div>
+  <div id="threadInfo" class="hint"></div>
+  <div class="tableWrap"><table class="threadTable"><thead><tr><th>Filetto</th><th>Passo / TPI</th><th>Ø punta foro</th><th>Ø albero / esterno</th></tr></thead><tbody id="threadBody"></tbody></table></div>
+  <div class="hint">Nota officina: valori indicativi pratici. Per lavori critici controlla sempre la tabella aziendale, tolleranza richiesta e tipo materiale.</div>
+ </div>
+</section>
+
+<section id="turnthread" class="screen">
+ <div class="header"><div class="back" onclick="show('home')">‹</div><div class="title">FILETTO TORNIO<small>DIAMETRO INIZIO E CRESTA</small></div><div class="help" onclick="alert('Seleziona il filetto. L’app calcola il passo in mm, il diametro esterno di partenza, la profondità radiale della cresta e l’X di fondo teorico. Per tornitura CNC usa soprattutto: X partenza e profondità radiale.')">?</div></div>
+ <div class="card"><h2>CALCOLO RAPIDO</h2>
+  <div class="row"><div class="label">Famiglia</div><select id="ttFamily" onchange="fillTurnThreadList()"><option value="gas">GAS / BSP 55°</option><option value="met">METRICO 60°</option><option value="fine">METRICO FINE 60°</option><option value="npt">NPT 60°</option></select></div>
+  <div class="row"><div class="label">Filetto</div><select id="ttSize"></select></div>
+  <button class="btn" onclick="calcTurnThread()">CALCOLA</button>
+  <div id="ttRes"></div>
+  <div class="hint">Esempio pratico GAS 1": X partenza = Ø esterno nominale. Profondità cresta = quanto scendi in radiale. X fondo teorico è mostrato solo come controllo.</div>
+ </div>
+ <div class="card"><h2>INSERIMENTO MANUALE</h2>
+  <div class="row"><div class="label">Ø esterno X</div><input id="ttDman" class="inp" value="33.249" inputmode="decimal"></div>
+  <div class="row"><div class="label">Passo mm</div><input id="ttPman" class="inp" value="2.309" inputmode="decimal"></div>
+  <div class="row"><div class="label">Profilo</div><select id="ttProfile"><option value="bsp">BSP/GAS 55°</option><option value="iso">ISO 60°</option><option value="npt">NPT 60°</option></select></div>
+  <button class="btn" onclick="calcTurnThreadManual()">CALCOLA MANUALE</button>
+  <div id="ttManRes"></div>
+ </div>
+</section>
+
+<section id="tolerances" class="screen">
+ <div class="header"><div class="back" onclick="show('home')">‹</div><div class="title">TOLLERANZE ISO<small>FORI E ALBERI</small></div><div class="help" onclick="alert('Inserisci diametro nominale e scegli foro o albero. L’app calcola scostamento superiore/inferiore e limiti min/max. Per ora include gli accoppiamenti più usati in officina.')">?</div></div>
+ <div class="card"><h2>CALCOLO RAPIDO</h2>
+  <div class="row"><div class="label">Ø Nominale</div><input id="tolD" class="inp" value="20" inputmode="decimal"></div>
+  <div class="row"><div class="label">Tipo</div><select id="tolKind" onchange="fillTolLetters()"><option value="hole">FORO</option><option value="shaft">ALBERO</option></select></div>
+  <div class="row"><div class="label">Lettera</div><select id="tolLetter"></select></div>
+  <div class="row"><div class="label">Qualità IT</div><select id="tolGrade"><option>5</option><option>6</option><option selected>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option></select></div>
+  <button class="btn" onclick="calcTol()">CALCOLA</button><div id="tolRes"></div>
+  <div class="hint">Esempi: foro H7, foro J7/K7, albero h6/g6/f7/js6/k6/m6. Valori in µm e limiti in mm.</div>
+ </div>
+ <div class="card"><h2>ACCOPPIAMENTI USATI</h2>
+  <div class="tableWrap"><table class="threadTable"><thead><tr><th>Accoppiamento</th><th>Uso pratico</th></tr></thead><tbody>
+   <tr><td><b>H7/h6</b></td><td>Scorrevole preciso / centraggio leggero</td></tr><tr><td><b>H7/g6</b></td><td>Gioco piccolo, montaggio facile</td></tr><tr><td><b>H7/f7</b></td><td>Gioco normale per movimento</td></tr><tr><td><b>H7/k6</b></td><td>Transizione, possibile leggero serraggio</td></tr><tr><td><b>H7/m6</b></td><td>Serraggio leggero</td></tr><tr><td><b>H7/p6</b></td><td>Serraggio forte</td></tr>
+  </tbody></table></div>
+ </div>
+</section>
+
+<section id="keys" class="screen">
+ <div class="header"><div class="back" onclick="show('home')">‹</div><div class="title">LINGUETTE E CAVE<small>ALBERO / MOZZO</small></div><div class="help" onclick="alert('Inserisci il diametro albero. L’app propone linguetta b×h, cava su albero t1 e cava interna mozzo t2. Controlla sempre norma/disegno per lavori critici.')">?</div></div>
+ <div class="card"><h2>RICERCA DA Ø ALBERO</h2>
+  <div class="row"><div class="label">Ø Albero</div><input id="keyD" class="inp" value="30" inputmode="decimal"></div>
+  <button class="btn" onclick="calcKey()">TROVA LINGUETTA</button><div id="keyRes"></div>
+ </div>
+ <div class="card"><h2>TABELLA LINGUETTE PARALLELE</h2>
+  <input id="keySearch" class="search" placeholder="Cerca: 30, 8x7, 50" oninput="renderKeys()">
+  <div class="tableWrap"><table class="threadTable"><thead><tr><th>Ø albero</th><th>Linguetta b×h</th><th>Cava albero t1</th><th>Cava mozzo t2</th><th>Tolleranza tipica</th></tr></thead><tbody id="keyBody"></tbody></table></div>
+  <div class="hint">b = larghezza cava. t1 = profondità cava esterna su albero. t2 = profondità cava interna nel mozzo. Tolleranze spesso usate: cava P9/N9/JS9, linguetta h9; dipende dal disegno.</div>
+ </div>
+</section>
+
+
+<section id="chamfer" class="screen">
+ <div class="header"><div class="back" onclick="show('home')">‹</div><div class="title">SMUSSI ISO<small>45° CON RAGGIO UTENSILE</small></div><div class="help" onclick="alert('Calcola punto iniziale e finale di uno smusso 45° in tornitura/fresatura. Inserisci diametro/spigolo, smusso C, verso e raggio utensile. La compensazione raggio è pratica: anticipa/ritarda il punto teorico in base al raggio utensile.')">?</div></div>
+ <div class="card"><h2>DATI SMUSSO</h2>
+  <div class="row"><div class="label">Ø / Quota spigolo</div><input id="chD" class="inp" value="50" inputmode="decimal"></div>
+  <div class="row"><div class="label">Smusso C</div><input id="chC" class="inp" value="1" inputmode="decimal"></div>
+  <div class="row"><div class="label">Z spigolo</div><input id="chZ" class="inp" value="0" inputmode="decimal"></div>
+  <div class="row"><div class="label">Raggio utensile</div><input id="chR" class="inp" value="0.8" inputmode="decimal"></div>
+  <div class="row"><div class="label">Lavorazione</div><select id="chWork"><option value="external">ESTERNO / ALBERO</option><option value="internal">INTERNO / FORO</option></select></div>
+  <div class="row"><div class="label">Verso Z</div><select id="chSide"><option value="left">Smusso verso Z negativo</option><option value="right">Smusso verso Z positivo</option></select></div>
+  <button class="btn" onclick="calcChamfer()">CALCOLA SMUSSO</button>
+  <div id="chRes"></div>
+  <div class="hint">Esempio: Ø50, C1 a 45°. Il punto teorico cambia di 1 mm in Z e 2 mm in X diametrale. Con raggio utensile inserito l’app dà anche punti compensati pratici.</div>
+ </div>
+ <div class="card"><h2>LETTURA RAPIDA</h2>
+  <div class="hint"><b>C1 su Ø50 esterno verso Z negativo:</b> partenza teorica X48, Z0 → arrivo X50, Z-1. In tornio lavora dal diametro più basso verso il diametro finito. Se lavori in raggio invece che diametro, la variazione radiale è 1 mm.</div>
+ </div>
+</section>
+
+<section id="tools" class="screen">
+ <div class="header"><div class="back" onclick="show('home')">‹</div><div class="title">ALTRI STRUMENTI<small>GIRI E AVANZAMENTO</small></div><div class="help" onclick="alert('Calcolo rapido per fresatura: giri mandrino e avanzamento. S = Vc×1000/(π×D). F = S×Z×fz.')">?</div></div>
+ <div class="card"><h2>GIRI / AVANZAMENTO</h2><div class="row"><div class="label">Ø Utensile D</div><input id="td" class="inp" value="10" inputmode="decimal"></div><div class="row"><div class="label">Vc m/min</div><input id="vc" class="inp" value="120" inputmode="decimal"></div><div class="row"><div class="label">N denti Z</div><input id="z" class="inp" value="4" inputmode="numeric"></div><div class="row"><div class="label">fz mm/dente</div><input id="fz" class="inp" value="0.05" inputmode="decimal"></div><button class="btn" onclick="calcFeeds()">CALCOLA</button><div id="resf"></div></div>
+</section>
+
+<section id="settings" class="screen">
+ <div class="header"><div class="back" onclick="show('home')">‹</div><div class="title">MENU</div><div class="help" onclick="showHistory()">▤</div></div>
+ <div class="card"><h2>AZIONI</h2><button class="btn" onclick="showHistory()">VEDI SALVATAGGI</button><button class="btn2" style="width:100%;margin-top:10px" onclick="localStorage.clear();alert('Memoria app pulita.')">PULISCI MEMORIA APP</button><div id="history"></div></div>
+</section>
+
+<section id="results" class="screen">
+ <div class="header"><div class="back" onclick="show('three')">‹</div><div class="title">RISULTATI</div><div class="help" onclick="shareRes()">⇪</div></div>
+ <div class="card"><h2>RISULTATO CALCOLO</h2><div id="res"></div><button class="btn" onclick="saveLast()">▣ SALVA RISULTATI</button><button class="btn2" style="width:100%;margin-top:10px" onclick="clearIds(['x1','y1','x2','y2','x3','y3']);show('three')">▣ NUOVA MISURA</button></div>
+ <div class="note">Nota: per foro interno il diametro reale viene aumentato del diametro sfera. Per perno esterno viene diminuito del diametro sfera.</div>
+</section>
+<button id="installBtn" class="btn install">INSTALLA SULLA HOME</button>
+</div>
+<script>
+let mode='foro', modeTwo='foro', last=null, deferredPrompt=null;
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0)}
+function setMode(m){mode=m;document.getElementById('foro').classList.toggle('on',m==='foro');document.getElementById('perno').classList.toggle('on',m==='perno');localStorage.setItem('cnc_mode',mode)}
+function setMode2(m){modeTwo=m;document.getElementById('foro2').classList.toggle('on',m==='foro');document.getElementById('perno2').classList.toggle('on',m==='perno')}
+function val(id){return parseFloat(String(document.getElementById(id).value).replace(',','.'))}
+function fmt(n,d=3){return (Math.round(n*Math.pow(10,d))/Math.pow(10,d)).toFixed(d)}
+function box(label,valore,unit='mm'){return `<div class="resultBox"><div class="resLabel">${label}<br><small>${unit}</small></div><div class="resVal">${valore}</div></div>`}
+function invalid(arr){return arr.some(v=>Number.isNaN(v)||!Number.isFinite(v))}
+function clearIds(ids){ids.forEach(id=>document.getElementById(id).value='0'); let m=document.getElementById('msg'); if(m)m.textContent=''}
+function calc3(){msg.textContent=''; let p=val('probe'),x1=val('x1'),y1=val('y1'),x2=val('x2'),y2=val('y2'),x3=val('x3'),y3=val('y3');
+ if(invalid([p,x1,y1,x2,y2,x3,y3])){msg.textContent='Controlla i numeri inseriti.';return}
+ const a=x1*(y2-y3)-y1*(x2-x3)+x2*y3-x3*y2; if(Math.abs(a)<1e-9){msg.textContent='I tre punti sono allineati: impossibile calcolare il cerchio.';return}
+ const b=((x1*x1+y1*y1)*(y3-y2)+(x2*x2+y2*y2)*(y1-y3)+(x3*x3+y3*y3)*(y2-y1))/(2*a);
+ const c=((x1*x1+y1*y1)*(x2-x3)+(x2*x2+y2*y2)*(x3-x1)+(x3*x3+y3*y3)*(x1-x2))/(2*a);
+ const cx=-b, cy=-c; const r1=Math.hypot(x1-cx,y1-cy),r2=Math.hypot(x2-cx,y2-cy),r3=Math.hypot(x3-cx,y3-cy); const r=(r1+r2+r3)/3; const measured=2*r; const dia=mode==='foro'?measured+p:measured-p; const err=Math.max(r1,r2,r3)-Math.min(r1,r2,r3);
+ last={tool:'Centro 3 punti',cx,cy,dia,err,measured,mode,p,date:new Date().toLocaleString('it-IT')}; localStorage.setItem('probe',document.getElementById('probe').value); render3(); show('results')}
+function render3(){res.innerHTML=box('CENTRO X',fmt(last.cx))+box('CENTRO Y',fmt(last.cy))+box('DIAMETRO',fmt(last.dia))+box('ERRORE CIRCOLARITÀ',fmt(last.err))}
+function calc2(){let p=val('probe2'),a=val('q21'),b=val('q22'); if(invalid([p,a,b])){res2.innerHTML='<div class="err">Controlla i numeri.</div>';return} let centro=(a+b)/2, mis=Math.abs(b-a), dia=modeTwo==='foro'?mis+p:mis-p; last={tool:'Centro 2 punti',centro,dia,mis,mode:modeTwo,date:new Date().toLocaleString('it-IT')}; res2.innerHTML=box('CENTRO',fmt(centro))+box('DIAMETRO',fmt(dia))+box('DISTANZA TASTATA',fmt(mis));}
+function calcAngle(){let x1=val('ax1'),y1=val('ay1'),x2=val('ax2'),y2=val('ay2'); if(invalid([x1,y1,x2,y2])){resa.innerHTML='<div class="err">Controlla i numeri.</div>';return} let dx=x2-x1,dy=y2-y1,ang=Math.atan2(dy,dx)*180/Math.PI,dist=Math.hypot(dx,dy); last={tool:'Angolo',ang,dist,dx,dy,date:new Date().toLocaleString('it-IT')}; resa.innerHTML=box('ANGOLO',fmt(ang),'°')+box('CORREZIONE',fmt(-ang),'°')+box('LUNGHEZZA',fmt(dist),'mm');}
+function mmToIn(){let m=val('mm'); if(invalid([m])){resc.innerHTML='<div class="err">Numero non valido.</div>';return} let i=m/25.4; inch.value=fmt(i,4); resc.innerHTML=box('RISULTATO',fmt(i,4),'inch')}
+function inToMm(){let i=val('inch'); if(invalid([i])){resc.innerHTML='<div class="err">Numero non valido.</div>';return} let m=i*25.4; mm.value=fmt(m); resc.innerHTML=box('RISULTATO',fmt(m),'mm')}
+function calcInter(){let x1=val('ix1'),y1=val('iy1'),x2=val('ix2'),y2=val('iy2'); if(invalid([x1,y1,x2,y2])){resi.innerHTML='<div class="err">Controlla i numeri.</div>';return} let dx=x2-x1,dy=y2-y1,dist=Math.hypot(dx,dy); last={tool:'Interasse',dist,dx,dy,date:new Date().toLocaleString('it-IT')}; resi.innerHTML=box('INTERASSE',fmt(dist))+box('DIFFERENZA X',fmt(dx))+box('DIFFERENZA Y',fmt(dy));}
+function calcFeeds(){let d=val('td'),vc=val('vc'),zz=val('z'),ff=val('fz'); if(invalid([d,vc,zz,ff])||d<=0){resf.innerHTML='<div class="err">Controlla i numeri.</div>';return} let rpm=(vc*1000)/(Math.PI*d), feed=rpm*zz*ff; last={tool:'Giri avanzamento',rpm,feed,date:new Date().toLocaleString('it-IT')}; resf.innerHTML=box('GIRI MANDRINO',fmt(rpm,0),'rpm')+box('AVANZAMENTO F',fmt(feed,0),'mm/min');}
+function saveLast(){if(!last){alert('Prima calcola un risultato.');return} let h=JSON.parse(localStorage.getItem('history')||'[]'); h.unshift(last); h=h.slice(0,20); localStorage.setItem('history',JSON.stringify(h)); alert('Risultato salvato nel telefono.')}
+function showHistory(){show('settings'); let h=JSON.parse(localStorage.getItem('history')||'[]'); history.innerHTML=h.length?'<h2>SALVATAGGI</h2>'+h.map((r,i)=>`<div class="historyItem"><b>${i+1}. ${r.tool}</b><br>${r.date}<br>${Object.keys(r).filter(k=>!['tool','date'].includes(k)).slice(0,4).map(k=>k+': '+(typeof r[k]==='number'?fmt(r[k]):r[k])).join(' | ')}</div>`).join(''):'<div class="note">Nessun salvataggio.</div>'}
+function shareRes(){if(!last)return; const t=`CNC Toolbox\n${last.tool}\n`+Object.keys(last).filter(k=>!['tool','date'].includes(k)).map(k=>`${k}: ${typeof last[k]==='number'?fmt(last[k]):last[k]}`).join('\n'); if(navigator.share)navigator.share({text:t}); else alert(t)}
+
+let threadTab='met';
+const THREADS={
+ met:[
+ ['M3','0.50','2.5','3.0'],['M4','0.70','3.3','4.0'],['M5','0.80','4.2','5.0'],['M6','1.00','5.0','6.0'],['M8','1.25','6.8','8.0'],['M10','1.50','8.5','10.0'],['M12','1.75','10.2','12.0'],['M14','2.00','12.0','14.0'],['M16','2.00','14.0','16.0'],['M18','2.50','15.5','18.0'],['M20','2.50','17.5','20.0'],['M22','2.50','19.5','22.0'],['M24','3.00','21.0','24.0'],['M27','3.00','24.0','27.0'],['M30','3.50','26.5','30.0'],['M33','3.50','29.5','33.0'],['M36','4.00','32.0','36.0']
+ ],
+ fine:[
+ ['M6x0.75','0.75','5.25','6.0'],['M8x1','1.00','7.0','8.0'],['M10x1','1.00','9.0','10.0'],['M10x1.25','1.25','8.8','10.0'],['M12x1','1.00','11.0','12.0'],['M12x1.25','1.25','10.8','12.0'],['M12x1.5','1.50','10.5','12.0'],['M14x1.5','1.50','12.5','14.0'],['M16x1','1.00','15.0','16.0'],['M16x1.5','1.50','14.5','16.0'],['M18x1.5','1.50','16.5','18.0'],['M20x1.5','1.50','18.5','20.0'],['M20x2','2.00','18.0','20.0'],['M22x1.5','1.50','20.5','22.0'],['M24x2','2.00','22.0','24.0'],['M27x2','2.00','25.0','27.0'],['M30x2','2.00','28.0','30.0']
+ ],
+ gas:[
+ ['G 1/8','28 TPI','8.8','9.728'],['G 1/4','19 TPI','11.8','13.157'],['G 3/8','19 TPI','15.25','16.662'],['G 1/2','14 TPI','19.0','20.955'],['G 3/4','14 TPI','24.5','26.441'],['G 1','11 TPI','30.75','33.249'],['G 1 1/4','11 TPI','39.5','41.910'],['G 1 1/2','11 TPI','45.0','47.803'],['G 2','11 TPI','56.5','59.614']
+ ],
+ npt:[
+ ['1/16 NPT','27 TPI','6.15','7.895'],['1/8 NPT','27 TPI','8.43','10.287'],['1/4 NPT','18 TPI','11.10','13.716'],['3/8 NPT','18 TPI','14.68','17.145'],['1/2 NPT','14 TPI','17.86','21.336'],['3/4 NPT','14 TPI','23.42','26.670'],['1 NPT','11.5 TPI','29.36','33.401'],['1 1/4 NPT','11.5 TPI','38.10','42.164'],['1 1/2 NPT','11.5 TPI','44.45','48.260'],['2 NPT','11.5 TPI','56.36','60.325']
+ ]
+};
+function setThreadTab(t){threadTab=t;['Met','Fine','Gas','Npt'].forEach(x=>document.getElementById('tab'+x).classList.remove('on')); const map={met:'Met',fine:'Fine',gas:'Gas',npt:'Npt'};document.getElementById('tab'+map[t]).classList.add('on');renderThreads()}
+function renderThreads(){const q=(document.getElementById('threadSearch')?.value||'').toLowerCase().replace(',','.').trim(); const rows=THREADS[threadTab].filter(r=>(r.join(' ').toLowerCase()).includes(q)); const names={met:'Passo grosso ISO metrico',fine:'Passo fine ISO metrico',gas:'Gas/BSP cilindrico G',npt:'NPT conico americano'}; if(threadInfo)threadInfo.innerHTML='<span class="pill">'+names[threadTab]+'</span> &nbsp; Foro = punta per maschio interno. Albero = diametro esterno prima/del filetto.'; if(threadBody)threadBody.innerHTML=rows.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]} mm</td><td>${r[3]} mm</td></tr>`).join('') || '<tr><td colspan="4">Nessun risultato</td></tr>'}
+
+const THREAD_PROFILE={iso:{name:'ISO 60° metrico',factor:0.61343,angle:'60°'},bsp:{name:'Whitworth GAS/BSP 55°',factor:0.64033,angle:'55°'},npt:{name:'NPT 60° conico',factor:0.80000,angle:'60°'}};
+function parsePitchMM(p){p=String(p).replace(',','.');let m=p.match(/([0-9.]+)\s*TPI/i); if(m)return 25.4/parseFloat(m[1]); return parseFloat(p)}
+function fillTurnThreadList(){let fam=document.getElementById('ttFamily')?.value||'gas'; let sel=document.getElementById('ttSize'); if(!sel)return; sel.innerHTML=THREADS[fam].map((r,i)=>`<option value="${i}">${r[0]} - ${r[1]}</option>`).join('')}
+function threadProfileFor(fam,profile){ if(profile)return THREAD_PROFILE[profile]; if(fam==='gas')return THREAD_PROFILE.bsp; if(fam==='npt')return THREAD_PROFILE.npt; return THREAD_PROFILE.iso;}
+function calcThreadValues(name,D,pmm,prof){let depth=prof.factor*pmm; let xroot=D-2*depth; return {name,D,pmm,depth,xroot,angle:prof.angle,prof:prof.name};}
+function renderTurnThreadResult(el,o){el.innerHTML=
+ box('FILETTO',o.name,'')+
+ box('ANGOLO',o.angle,'')+
+ box('PASSO',fmt(o.pmm,3),'mm')+
+ box('X PARTENZA Ø ESTERNO',fmt(o.D,3),'mm')+
+ box('PROFONDITÀ CRESTA RADIALE',fmt(o.depth,3),'mm')+
+ box('CONTROLLO X FONDO TEORICO',fmt(o.xroot,3),'mm')+
+ `<div class="hint">Profilo: ${o.prof}. Su CNC tornio: parti da X ${fmt(o.D,3)} e imposti una profondità radiale circa ${fmt(o.depth,3)} mm. Il fondo in X diametrale teorico sarebbe ${fmt(o.xroot,3)}.</div>`;}
+function calcTurnThread(){let fam=ttFamily.value, idx=parseInt(ttSize.value||0); let r=THREADS[fam][idx]; let D=parseFloat(String(r[3]).replace(',','.')); let pmm=parsePitchMM(r[1]); let prof=threadProfileFor(fam); if(invalid([D,pmm])||D<=0||pmm<=0){ttRes.innerHTML='<div class="err">Dati filetto non validi.</div>';return} let o=calcThreadValues(r[0],D,pmm,prof); last={tool:'Filetto tornio',filetto:o.name,D:o.D,pmm:o.pmm,profondita:o.depth,xFondo:o.xroot,date:new Date().toLocaleString('it-IT')}; renderTurnThreadResult(ttRes,o)}
+function calcTurnThreadManual(){let D=val('ttDman'),pmm=val('ttPman'),prof=threadProfileFor(null,ttProfile.value); if(invalid([D,pmm])||D<=0||pmm<=0){ttManRes.innerHTML='<div class="err">Controlla Ø e passo.</div>';return} let o=calcThreadValues('MANUALE',D,pmm,prof); last={tool:'Filetto tornio manuale',D:o.D,pmm:o.pmm,profondita:o.depth,xFondo:o.xroot,date:new Date().toLocaleString('it-IT')}; renderTurnThreadResult(ttManRes,o)}
+
+const HOLE_LETTERS=['H','J','JS','K','M','N','P','R','S'];
+const SHAFT_LETTERS=['h','g','f','e','js','k','m','n','p','r','s'];
+function fillTolLetters(){let kind=document.getElementById('tolKind')?.value||'hole'; let sel=document.getElementById('tolLetter'); if(!sel)return; let arr=kind==='hole'?HOLE_LETTERS:SHAFT_LETTERS; sel.innerHTML=arr.map(x=>`<option>${x}</option>`).join('')}
+function tolStep(D){const steps=[[0,3,1.5],[3,6,4.24],[6,10,7.75],[10,18,13.42],[18,30,23.24],[30,50,38.73],[50,80,63.25],[80,120,97.98],[120,180,146.97],[180,250,212.13],[250,315,280.62],[315,400,354.96],[400,500,447.21]];return (steps.find(r=>D>r[0]&&D<=r[1])||steps[steps.length-1])[2]}
+function IT(D,g){let i=0.45*Math.cbrt(tolStep(D))+0.001*tolStep(D); const mult={5:7,6:10,7:16,8:25,9:40,10:64,11:100,12:160}; return Math.round(i*(mult[g]||16))}
+function devHole(letter,D){letter=letter.toUpperCase(); if(letter==='H')return 0; if(letter==='JS')return null; let base=Math.round(2.5*Math.pow(D,0.34)); const map={J:-base/2,K:base*0.4,M:base*1.2,N:base*1.8,P:base*2.8,R:base*4.0,S:base*5.0}; return Math.round(map[letter]??0)}
+function devShaft(letter,D){letter=letter.toLowerCase(); if(letter==='h')return 0; if(letter==='js')return null; let base=Math.round(2.5*Math.pow(D,0.34)); const map={g:-base,f:-2*base,e:-3*base,k:base*0.4,m:base*1.2,n:base*1.8,p:base*2.8,r:base*4.0,s:base*5.0}; return Math.round(map[letter]??0)}
+function calcTol(){let D=val('tolD'),kind=tolKind.value,letter=tolLetter.value,grade=parseInt(tolGrade.value); if(invalid([D])||D<=0){tolRes.innerHTML='<div class="err">Diametro non valido.</div>';return} let T=IT(D,grade), es,ei,ES,EI; if(kind==='hole'){if(letter.toUpperCase()==='JS'){EI=-Math.round(T/2);ES=T+EI}else{EI=devHole(letter,D);ES=EI+T} tolRes.innerHTML=box('FORO '+letter+grade,`+${ES} / ${EI>=0?'+':''}${EI}`,'µm')+box('Ø MIN',fmt(D+EI/1000),'mm')+box('Ø MAX',fmt(D+ES/1000),'mm')+box('AMPIEZZA IT',T,'µm')}else{if(letter.toLowerCase()==='js'){ei=-Math.round(T/2);es=T+ei}else{es=devShaft(letter,D);ei=es-T} tolRes.innerHTML=box('ALBERO '+letter+grade,`${es>=0?'+':''}${es} / ${ei>=0?'+':''}${ei}`,'µm')+box('Ø MIN',fmt(D+ei/1000),'mm')+box('Ø MAX',fmt(D+es/1000),'mm')+box('AMPIEZZA IT',T,'µm')}}
+
+const KEYWAYS=[
+ [6,8,'2x2','1.2','1.0','b h9 / cava JS9-P9'],[8,10,'3x3','1.8','1.4','b h9 / cava JS9-P9'],[10,12,'4x4','2.5','1.8','b h9 / cava JS9-P9'],[12,17,'5x5','3.0','2.3','b h9 / cava JS9-P9'],[17,22,'6x6','3.5','2.8','b h9 / cava JS9-P9'],[22,30,'8x7','4.0','3.3','b h9 / cava JS9-P9'],[30,38,'10x8','5.0','3.3','b h9 / cava JS9-P9'],[38,44,'12x8','5.0','3.3','b h9 / cava JS9-P9'],[44,50,'14x9','5.5','3.8','b h9 / cava JS9-P9'],[50,58,'16x10','6.0','4.3','b h9 / cava JS9-P9'],[58,65,'18x11','7.0','4.4','b h9 / cava JS9-P9'],[65,75,'20x12','7.5','4.9','b h9 / cava JS9-P9'],[75,85,'22x14','9.0','5.4','b h9 / cava JS9-P9'],[85,95,'25x14','9.0','5.4','b h9 / cava JS9-P9'],[95,110,'28x16','10.0','6.4','b h9 / cava JS9-P9'],[110,130,'32x18','11.0','7.4','b h9 / cava JS9-P9'],[130,150,'36x20','12.0','8.4','b h9 / cava JS9-P9'],[150,170,'40x22','13.0','9.4','b h9 / cava JS9-P9'],[170,200,'45x25','15.0','10.4','b h9 / cava JS9-P9']
+];
+function renderKeys(){const q=(document.getElementById('keySearch')?.value||'').toLowerCase().replace(',','.').trim(); const rows=KEYWAYS.filter(r=>r.join(' ').toLowerCase().includes(q)); if(keyBody)keyBody.innerHTML=rows.map(r=>`<tr><td>&gt;${r[0]} a ${r[1]}</td><td><b>${r[2]}</b></td><td>${r[3]} mm</td><td>${r[4]} mm</td><td>${r[5]}</td></tr>`).join('')||'<tr><td colspan="5">Nessun risultato</td></tr>'}
+function calcKey(){let D=val('keyD'); if(invalid([D])||D<=0){keyRes.innerHTML='<div class="err">Diametro non valido.</div>';return} let r=KEYWAYS.find(x=>D>x[0]&&D<=x[1]); if(!r){keyRes.innerHTML='<div class="err">Diametro fuori tabella.</div>';return} keyRes.innerHTML=box('LINGUETTA',r[2],'b × h')+box('CAVA ALBERO t1',r[3],'mm')+box('CAVA MOZZO t2',r[4],'mm')+`<div class="hint">Campo Ø: &gt;${r[0]} fino a ${r[1]} mm. Larghezza cava normalmente uguale a b.</div>`}
+
+
+function calcChamfer(){
+ let D=val('chD'), C=val('chC'), Z=val('chZ'), R=val('chR');
+ let work=document.getElementById('chWork').value;
+ let side=document.getElementById('chSide').value;
+ if(invalid([D,C,Z,R])||C<0||R<0){chRes.innerHTML='<div class="err">Controlla diametro, smusso e raggio utensile.</div>';return}
+ let zSign=side==='left'?-1:1;
+ // punti teorici su profilo pezzo in coordinate tornio: X diametrale, Z assiale
+ // ESTERNO: esempio Ø50 C1 verso Z negativo: inizio X48 Z0, fine X50 Z-1.
+ // INTERNO: ragionamento opposto sul diametro.
+ let Xstart = work==='external' ? D-2*C : D+2*C;
+ let Zstart = Z;
+ let Xend = D;
+ let Zend = Z + zSign*C;
+ // Compensazione pratica del raggio utensile su smusso 45°: offset lungo X(radiale) e Z di R*tan(22.5°)
+ // Serve come anticipo/ritardo indicativo per programmare senza dimenticare il naso utensile.
+ let k=R*Math.tan(Math.PI/8); // 0.4142R
+ let zStartComp=Zstart - zSign*k;
+ let zEndComp=Zend + zSign*k;
+ let xDeltaComp=2*k;
+ let xStartComp=work==='external'?Xstart-xDeltaComp:Xstart+xDeltaComp;
+ let xEndComp=work==='external'?Xend+xDeltaComp:Xend-xDeltaComp;
+ let radDelta=Math.abs(Xend-Xstart)/2;
+ last={tool:'Smusso 45',D,C,Z,R,Xstart,Zstart,Xend,Zend,xStartComp,zStartComp,xEndComp,zEndComp,date:new Date().toLocaleString('it-IT')};
+ chRes.innerHTML=
+  box('PUNTO INIZIO TEORICO','X '+fmt(Xstart)+' / Z '+fmt(Zstart),'')+
+  box('PUNTO FINE TEORICO','X '+fmt(Xend)+' / Z '+fmt(Zend),'')+
+  box('VARIAZIONE X DIAM.',fmt(Math.abs(Xend-Xstart)),'mm')+
+  box('VARIAZIONE RADIALE',fmt(radDelta),'mm')+
+  '<div class="line"></div>'+
+  box('INIZIO CON R UT.', 'X '+fmt(xStartComp)+' / Z '+fmt(zStartComp),'')+
+  box('FINE CON R UT.', 'X '+fmt(xEndComp)+' / Z '+fmt(zEndComp),'')+
+  `<div class="hint">Compensazione calcolata con R utensile ${fmt(R)}. Valore pratico a 45°: k = R × tan(22,5°) = ${fmt(k)} mm. Controlla sempre il verso reale del correttore macchina.</div>`;
+}
+
+function help3(){alert('Tocca il foro/perno in 3 punti. Inserisci le coordinate X/Y lette dalla macchina. L’app calcola centro e diametro compensando la sfera del tastatore.')} 
+window.addEventListener('load',()=>{let pr=localStorage.getItem('probe'); if(pr){probe.value=pr;probe2.value=pr} let m=localStorage.getItem('cnc_mode'); if(m)setMode(m); renderThreads(); fillTurnThreadList(); fillTolLetters(); renderKeys()});
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;installBtn.style.display='block'});installBtn.onclick=async()=>{if(deferredPrompt){deferredPrompt.prompt();deferredPrompt=null;installBtn.style.display='none'}};
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./service-worker.js').catch(()=>{});
+  });
+}
+</script>
+</body>
+</html>
