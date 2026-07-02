@@ -21,7 +21,7 @@
 <body>
 <div class="app">
 <section id="home" class="screen active">
- <div class="top"><div class="hamb" onclick="show('settings')">☰</div><div><h1>CNC <span class="white">TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC · v2.0</div></div></div>
+ <div class="top"><div class="hamb" onclick="show('settings')">☰</div><div><h1>CNC <span class="white">TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC · v2.1</div></div></div>
  <div class="card"><h2>RICERCA INTELLIGENTE</h2><input id="smartQ" class="search" placeholder="Scrivi: M8, G1, G 1, G 1/2, H7 50, 50 H7..." onkeydown="if(event.key==='Enter')smartSearch()"><button class="btn" onclick="smartSearch()">CERCA SUBITO</button><div id="smartRes"></div></div>
  <div class="grid">
   <div class="tile primary" onclick="show('three')"><div class="icon">◎</div>CENTRO FORO / PERNO<br>(3 PUNTI)</div>
@@ -370,6 +370,21 @@ function smartSearch(){
  m=s.match(/c\s*([0-9.]+).*?([0-9.]+)/);
  if(m && s.includes('c')){show('chamfer'); chC.value=m[1]; calcChamfer(); return}
 
+ // FILETTATURE METRICHE: priorità prima delle tolleranze. Evita che M33x1.5 finisca su tolleranze.
+ let metQuery = s.toLowerCase().replace(',', '.').replace(/×/g,'x').replace(/-/g,'x').replace(/\s+per\s+/g,'x').replace(/\s+/g,'');
+ let metMatch = metQuery.match(/^m([0-9]+(?:\.[0-9]+)?)(?:x([0-9]+(?:\.[0-9]+)?))?$/);
+ if(metMatch){
+   const nominal='M'+metMatch[1];
+   const exact=metMatch[2] ? (nominal+'x'+metMatch[2]) : nominal;
+   let fams = metMatch[2] ? ['fine','met'] : ['met','fine'];
+   for(const fam of fams){
+     const hit=THREADS[fam].find(r=>normName(r[0])===normName(exact) || (!metMatch[2] && normName(r[0])===normName(nominal)));
+     if(hit){show('threads'); setThreadTab(fam); threadSearch.value=hit[0]; renderThreads(); smartRes.innerHTML=''; return}
+   }
+   // Se non trova esatto, apre comunque la tabella giusta filtrando la misura.
+   show('threads'); setThreadTab(metMatch[2]?'fine':'met'); threadSearch.value=exact; renderThreads(); smartRes.innerHTML=''; return
+ }
+
  // TOLLERANZE: H7 50 oppure 50 H7
  m=s.match(/(?:([a-zA-Z]{1,2})([0-9]{1,2})\s*([0-9.]+)|([0-9.]+)\s*([a-zA-Z]{1,2})([0-9]{1,2}))/);
  if(m){
@@ -466,20 +481,38 @@ const THREADS={
  ["M22x2", "2", "20", "22"],
  ["M24x1.5", "1.5", "22.5", "24"],
  ["M24x2", "2", "22", "24"],
+ ["M27x1.5", "1.5", "25.5", "27"],
  ["M27x2", "2", "25", "27"],
  ["M30x1.5", "1.5", "28.5", "30"],
  ["M30x2", "2", "28", "30"],
  ["M30x3", "3", "27", "30"],
+ ["M33x1.5", "1.5", "31.5", "33"],
  ["M33x2", "2", "31", "33"],
  ["M33x3", "3", "30", "33"],
+ ["M36x1.5", "1.5", "34.5", "36"],
  ["M36x2", "2", "34", "36"],
  ["M36x3", "3", "33", "36"],
+ ["M39x1.5", "1.5", "37.5", "39"],
+ ["M39x2", "2", "37", "39"],
  ["M39x3", "3", "36", "39"],
+ ["M42x1.5", "1.5", "40.5", "42"],
+ ["M42x2", "2", "40", "42"],
  ["M42x3", "3", "39", "42"],
+ ["M45x1.5", "1.5", "43.5", "45"],
+ ["M45x2", "2", "43", "45"],
  ["M45x3", "3", "42", "45"],
+ ["M48x1.5", "1.5", "46.5", "48"],
+ ["M48x2", "2", "46", "48"],
  ["M48x3", "3", "45", "48"],
+ ["M52x1.5", "1.5", "50.5", "52"],
+ ["M52x2", "2", "50", "52"],
+ ["M52x3", "3", "49", "52"],
  ["M52x4", "4", "48", "52"],
+ ["M56x2", "2", "54", "56"],
+ ["M56x3", "3", "53", "56"],
  ["M56x4", "4", "52", "56"],
+ ["M60x2", "2", "58", "60"],
+ ["M60x3", "3", "57", "60"],
  ["M60x4", "4", "56", "60"]
  ],
  gas:[
