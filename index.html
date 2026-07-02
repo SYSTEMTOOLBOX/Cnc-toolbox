@@ -20,7 +20,8 @@
 <body>
 <div class="app">
 <section id="home" class="screen active">
- <div class="top"><div class="hamb" onclick="show('settings')">☰</div><div><h1>CNC <span class="white">TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC · v1.2</div></div></div>
+ <div class="top"><div class="hamb" onclick="show('settings')">☰</div><div><h1>CNC <span class="white">TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC · v1.3</div></div></div>
+ <div class="card"><h2>RICERCA INTELLIGENTE</h2><input id="smartQ" class="search" placeholder="Scrivi: M8, G 1/2, H7 30, chiave 30, C1 Ø50..." onkeydown="if(event.key==='Enter')smartSearch()"><button class="btn" onclick="smartSearch()">CERCA SUBITO</button><div id="smartRes"></div></div>
  <div class="grid">
   <div class="tile primary" onclick="show('three')"><div class="icon">◎</div>CENTRO FORO / PERNO<br>(3 PUNTI)</div>
   <div class="tile" onclick="show('two')"><div class="icon">⟍</div>CENTRO CON<br>2 PUNTI</div>
@@ -33,7 +34,7 @@
   <div class="tile primary" onclick="show('tolerances')"><div class="icon">H7</div>TOLLERANZE<br>FORI / ALBERI</div>
   <div class="tile" onclick="show('keys')"><div class="icon">▰</div>LINGUETTE<br>E CAVE</div>
   <div class="tile primary" onclick="show('hexagon')"><div class="icon">⬢</div>ESAGONO<br>CHIAVE / Ø TONDO</div>
-  <div class="tile" onclick="show('tools')"><div class="icon">⬡</div>ALTRI<br>STRUMENTI</div>
+  <div class="tile" onclick="show('params')"><div class="icon">⚡</div>PARAMETRI<br>CNC</div>
  </div>
  <div class="info">ⓘ STRUMENTI VELOCI E PRECISI<br>PER IL TUO LAVORO CNC</div>
 </section>
@@ -178,9 +179,27 @@
  </div>
 </section>
 
-<section id="tools" class="screen">
- <div class="header"><div class="back" onclick="show('home')">‹</div><div class="title">ALTRI STRUMENTI<small>GIRI E AVANZAMENTO</small></div><div class="help" onclick="alert('Calcolo rapido per fresatura: giri mandrino e avanzamento. S = Vc×1000/(π×D). F = S×Z×fz.')">?</div></div>
- <div class="card"><h2>GIRI / AVANZAMENTO</h2><div class="row"><div class="label">Ø Utensile D</div><input id="td" class="inp" value="10" inputmode="decimal"></div><div class="row"><div class="label">Vc m/min</div><input id="vc" class="inp" value="120" inputmode="decimal"></div><div class="row"><div class="label">N denti Z</div><input id="z" class="inp" value="4" inputmode="numeric"></div><div class="row"><div class="label">fz mm/dente</div><input id="fz" class="inp" value="0.05" inputmode="decimal"></div><button class="btn" onclick="calcFeeds()">CALCOLA</button><div id="resf"></div></div>
+<section id="params" class="screen">
+ <div class="header"><div class="back" onclick="show('home')">‹</div><div class="title">PARAMETRI CNC<small>PUNTE · FRESE · TORNITURA</small></div><div class="help" onclick="alert('Tre calcoli separati: punta, fresa e tornitura. Inserisci Vc, diametro e avanzamento: l’app calcola giri e F.')">?</div></div>
+ <div class="card"><h2>AVANZAMENTO PUNTA</h2>
+  <div class="row"><div class="label">Ø Punta</div><input id="drD" class="inp" value="8.5" inputmode="decimal"></div>
+  <div class="row"><div class="label">Vc m/min</div><input id="drVc" class="inp" value="25" inputmode="decimal"></div>
+  <div class="row"><div class="label">Avanz. mm/giro</div><input id="drFrev" class="inp" value="0.12" inputmode="decimal"></div>
+  <button class="btn" onclick="calcDrill()">CALCOLA PUNTA</button><div id="drRes"></div>
+ </div>
+ <div class="card"><h2>AVANZAMENTO FRESA</h2>
+  <div class="row"><div class="label">Ø Fresa</div><input id="millD" class="inp" value="10" inputmode="decimal"></div>
+  <div class="row"><div class="label">Vc m/min</div><input id="millVc" class="inp" value="120" inputmode="decimal"></div>
+  <div class="row"><div class="label">N denti Z</div><input id="millZ" class="inp" value="4" inputmode="numeric"></div>
+  <div class="row"><div class="label">fz mm/dente</div><input id="millFz" class="inp" value="0.05" inputmode="decimal"></div>
+  <button class="btn" onclick="calcMill()">CALCOLA FRESA</button><div id="millRes"></div>
+ </div>
+ <div class="card"><h2>PARAMETRI TORNITURA</h2>
+  <div class="row"><div class="label">Ø Pezzo</div><input id="turnD" class="inp" value="50" inputmode="decimal"></div>
+  <div class="row"><div class="label">Vc m/min</div><input id="turnVc" class="inp" value="180" inputmode="decimal"></div>
+  <div class="row"><div class="label">Avanz. mm/giro</div><input id="turnFrev" class="inp" value="0.20" inputmode="decimal"></div>
+  <button class="btn" onclick="calcTurning()">CALCOLA TORNIO</button><div id="turnRes"></div>
+ </div>
 </section>
 
 <section id="settings" class="screen">
@@ -219,6 +238,19 @@ function mmToIn(){let m=val('mm'); if(invalid([m])){resc.innerHTML='<div class="
 function inToMm(){let i=val('inch'); if(invalid([i])){resc.innerHTML='<div class="err">Numero non valido.</div>';return} let m=i*25.4; mm.value=fmt(m); resc.innerHTML=box('RISULTATO',fmt(m),'mm')}
 function calcInter(){let x1=val('ix1'),y1=val('iy1'),x2=val('ix2'),y2=val('iy2'); if(invalid([x1,y1,x2,y2])){resi.innerHTML='<div class="err">Controlla i numeri.</div>';return} let dx=x2-x1,dy=y2-y1,dist=Math.hypot(dx,dy); last={tool:'Interasse',dist,dx,dy,date:new Date().toLocaleString('it-IT')}; resi.innerHTML=box('INTERASSE',fmt(dist))+box('DIFFERENZA X',fmt(dx))+box('DIFFERENZA Y',fmt(dy));}
 function calcFeeds(){let d=val('td'),vc=val('vc'),zz=val('z'),ff=val('fz'); if(invalid([d,vc,zz,ff])||d<=0){resf.innerHTML='<div class="err">Controlla i numeri.</div>';return} let rpm=(vc*1000)/(Math.PI*d), feed=rpm*zz*ff; last={tool:'Giri avanzamento',rpm,feed,date:new Date().toLocaleString('it-IT')}; resf.innerHTML=box('GIRI MANDRINO',fmt(rpm,0),'rpm')+box('AVANZAMENTO F',fmt(feed,0),'mm/min');}
+function rpmFrom(D,Vc){return (Vc*1000)/(Math.PI*D)}
+function calcDrill(){let D=val('drD'),Vc=val('drVc'),f=val('drFrev'); if(invalid([D,Vc,f])||D<=0){drRes.innerHTML='<div class="err">Controlla Ø, Vc e avanzamento.</div>';return} let rpm=rpmFrom(D,Vc),F=rpm*f; last={tool:'Punta',D,Vc,f,rpm,F,date:new Date().toLocaleString('it-IT')}; drRes.innerHTML=box('GIRI MANDRINO',fmt(rpm,0),'rpm')+box('AVANZAMENTO F',fmt(F,0),'mm/min')+box('AVANZ. GIRO',fmt(f,3),'mm/giro')}
+function calcMill(){let D=val('millD'),Vc=val('millVc'),Z=val('millZ'),fz=val('millFz'); if(invalid([D,Vc,Z,fz])||D<=0||Z<=0){millRes.innerHTML='<div class="err">Controlla Ø, Vc, denti e fz.</div>';return} let rpm=rpmFrom(D,Vc),F=rpm*Z*fz; last={tool:'Fresa',D,Vc,Z,fz,rpm,F,date:new Date().toLocaleString('it-IT')}; millRes.innerHTML=box('GIRI MANDRINO',fmt(rpm,0),'rpm')+box('AVANZAMENTO F',fmt(F,0),'mm/min')+box('fz',fmt(fz,3),'mm/dente')}
+function calcTurning(){let D=val('turnD'),Vc=val('turnVc'),f=val('turnFrev'); if(invalid([D,Vc,f])||D<=0){turnRes.innerHTML='<div class="err">Controlla Ø, Vc e avanzamento.</div>';return} let rpm=rpmFrom(D,Vc),F=rpm*f; last={tool:'Tornitura',D,Vc,f,rpm,F,date:new Date().toLocaleString('it-IT')}; turnRes.innerHTML=box('GIRI MANDRINO',fmt(rpm,0),'rpm')+box('AVANZAMENTO F',fmt(F,0),'mm/min')+box('AVANZ. GIRO',fmt(f,3),'mm/giro')}
+function smartSearch(){let q=(document.getElementById('smartQ').value||'').trim(); let s=q.toLowerCase().replace(',', '.'); if(!s){smartRes.innerHTML='<div class="err">Scrivi cosa cerchi.</div>';return}
+ let m=s.match(/chiave\s*([0-9.]+)/)||s.match(/esagono\s*([0-9.]+)/); if(m){show('hexagon'); hexS.value=m[1]; calcHexFromS(); return}
+ m=s.match(/h7\s*([0-9.]+)/i); if(m){show('tolerances'); tolKind.value='hole'; fillTolLetters(); tolLetter.value='H'; tolGrade.value='7'; tolD.value=m[1]; calcTol(); return}
+ m=s.match(/c\s*([0-9.]+).*?(?:ø|d|diametro)?\s*([0-9.]+)/i); if(m){show('chamfer'); chC.value=m[1]; chD.value=m[2]; calcChamfer(); return}
+ let all=[...THREADS.met,...THREADS.fine,...THREADS.gas,...THREADS.npt]; let hit=all.find(r=>r[0].toLowerCase().replace(/\s+/g,'')===s.replace(/\s+/g,''))||all.find(r=>s.includes(r[0].toLowerCase().replace(/\s+/g,''))||r[0].toLowerCase().includes(s));
+ if(hit){show('threads'); threadSearch.value=hit[0]; renderThreads(); smartRes.innerHTML=''; return}
+ smartRes.innerHTML='<div class="hint">Non trovato. Prova: M8, M10x1, G 1/2, H7 30, chiave 30, C1 Ø50.</div>'
+}
+
 function saveLast(){if(!last){alert('Prima calcola un risultato.');return} let h=JSON.parse(localStorage.getItem('history')||'[]'); h.unshift(last); h=h.slice(0,20); localStorage.setItem('history',JSON.stringify(h)); alert('Risultato salvato nel telefono.')}
 function showHistory(){show('settings'); let h=JSON.parse(localStorage.getItem('history')||'[]'); history.innerHTML=h.length?'<h2>SALVATAGGI</h2>'+h.map((r,i)=>`<div class="historyItem"><b>${i+1}. ${r.tool}</b><br>${r.date}<br>${Object.keys(r).filter(k=>!['tool','date'].includes(k)).slice(0,4).map(k=>k+': '+(typeof r[k]==='number'?fmt(r[k]):r[k])).join(' | ')}</div>`).join(''):'<div class="note">Nessun salvataggio.</div>'}
 function shareRes(){if(!last)return; const t=`CNC Toolbox\n${last.tool}\n`+Object.keys(last).filter(k=>!['tool','date'].includes(k)).map(k=>`${k}: ${typeof last[k]==='number'?fmt(last[k]):last[k]}`).join('\n'); if(navigator.share)navigator.share({text:t}); else alert(t)}
