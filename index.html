@@ -20,7 +20,7 @@
 <body>
 <div class="app">
 <section id="home" class="screen active">
- <div class="top"><div class="hamb" onclick="show('settings')">☰</div><div><h1>CNC <span class="white">TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div></div></div>
+ <div class="top"><div class="hamb" onclick="show('settings')">☰</div><div><h1>CNC <span class="white">TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC · v1.1</div></div></div>
  <div class="grid">
   <div class="tile primary" onclick="show('three')"><div class="icon">◎</div>CENTRO FORO / PERNO<br>(3 PUNTI)</div>
   <div class="tile" onclick="show('two')"><div class="icon">⟍</div>CENTRO CON<br>2 PUNTI</div>
@@ -32,6 +32,7 @@
   <div class="tile primary" onclick="show('turnthread')"><div class="icon">🔩</div>FILETTO TORNIO<br>CRESTA / X</div>
   <div class="tile primary" onclick="show('tolerances')"><div class="icon">H7</div>TOLLERANZE<br>FORI / ALBERI</div>
   <div class="tile" onclick="show('keys')"><div class="icon">▰</div>LINGUETTE<br>E CAVE</div>
+  <div class="tile primary" onclick="show('hexagon')"><div class="icon">⬢</div>ESAGONO<br>CHIAVE / Ø TONDO</div>
   <div class="tile" onclick="show('tools')"><div class="icon">⬡</div>ALTRI<br>STRUMENTI</div>
  </div>
  <div class="info">ⓘ STRUMENTI VELOCI E PRECISI<br>PER IL TUO LAVORO CNC</div>
@@ -156,6 +157,24 @@
  </div>
  <div class="card"><h2>LETTURA RAPIDA</h2>
   <div class="hint"><b>C1 su Ø50 esterno verso Z negativo:</b> partenza teorica X48, Z0 → arrivo X50, Z-1. In tornio lavora dal diametro più basso verso il diametro finito. Se lavori in raggio invece che diametro, la variazione radiale è 1 mm.</div>
+ </div>
+</section>
+
+<section id="hexagon" class="screen">
+ <div class="header"><div class="back" onclick="show('home')">‹</div><div class="title">ESAGONO<small>CHIAVE ↔ Ø TONDO</small></div><div class="help" onclick="alert('Per un esagono regolare: Ø punte = chiave / cos30°. Esempio chiave 30: Ø minimo circa 34.641 mm. Serve per sapere il diametro del tondo da cui ricavare l’esagono.')">?</div></div>
+ <div class="card"><h2>DA CHIAVE A Ø TONDO</h2>
+  <div class="row"><div class="label">Chiave S</div><input id="hexS" class="inp" value="30" inputmode="decimal"></div>
+  <button class="btn" onclick="calcHexFromS()">CALCOLA Ø</button>
+  <div id="hexRes1"></div>
+  <div class="hint">Esempio: chiave 30 = distanza tra due facce. Il Ø tondo minimo è il diametro sulle punte dell’esagono.</div>
+ </div>
+ <div class="card"><h2>DA Ø TONDO A CHIAVE MASSIMA</h2>
+  <div class="row"><div class="label">Ø Tondo</div><input id="hexD" class="inp" value="35" inputmode="decimal"></div>
+  <button class="btn" onclick="calcHexFromD()">CALCOLA CHIAVE</button>
+  <div id="hexRes2"></div>
+ </div>
+ <div class="card"><h2>FORMULE RAPIDE</h2>
+  <div class="hint"><b>Ø punte = S × 1,154701</b><br><b>S = Ø × 0,866025</b><br><b>Lato esagono = Ø / 2 = S / 1,73205</b></div>
  </div>
 </section>
 
@@ -286,6 +305,33 @@ function calcChamfer(){
   box('INIZIO CON R UT.', 'X '+fmt(xStartComp)+' / Z '+fmt(zStartComp),'')+
   box('FINE CON R UT.', 'X '+fmt(xEndComp)+' / Z '+fmt(zEndComp),'')+
   `<div class="hint">Compensazione calcolata con R utensile ${fmt(R)}. Valore pratico a 45°: k = R × tan(22,5°) = ${fmt(k)} mm. Controlla sempre il verso reale del correttore macchina.</div>`;
+}
+
+function calcHexFromS(){
+ let S=val('hexS');
+ if(invalid([S])||S<=0){hexRes1.innerHTML='<div class="err">Inserisci la misura chiave.</div>';return}
+ let D=S/Math.cos(Math.PI/6);
+ let side=D/2;
+ let radiusFlat=S/2;
+ last={tool:'Esagono da chiave',chiave:S,diametroPunte:D,lato:side,date:new Date().toLocaleString('it-IT')};
+ hexRes1.innerHTML=
+  box('Ø TONDO MINIMO',fmt(D),'mm')+
+  box('RAGGIO PUNTE',fmt(D/2),'mm')+
+  box('RAGGIO FACCE',fmt(radiusFlat),'mm')+
+  box('LATO ESAGONO',fmt(side),'mm')+
+  `<div class="hint">Per chiave ${fmt(S)} usa un tondo almeno Ø${fmt(D)}. In pratica lascia qualche decimo di sovrametallo se devi finire le facce.</div>`;
+}
+function calcHexFromD(){
+ let D=val('hexD');
+ if(invalid([D])||D<=0){hexRes2.innerHTML='<div class="err">Inserisci il diametro del tondo.</div>';return}
+ let S=D*Math.cos(Math.PI/6);
+ let side=D/2;
+ last={tool:'Chiave da tondo',diametro:D,chiave:S,lato:side,date:new Date().toLocaleString('it-IT')};
+ hexRes2.innerHTML=
+  box('CHIAVE MASSIMA',fmt(S),'mm')+
+  box('Ø PUNTE',fmt(D),'mm')+
+  box('LATO ESAGONO',fmt(side),'mm')+
+  `<div class="hint">Con un tondo Ø${fmt(D)} puoi ricavare massimo una chiave ${fmt(S)} teorica.</div>`;
 }
 
 function help3(){alert('Tocca il foro/perno in 3 punti. Inserisci le coordinate X/Y lette dalla macchina. L’app calcola centro e diametro compensando la sfera del tastatore.')} 
