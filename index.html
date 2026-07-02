@@ -20,13 +20,13 @@
 <body>
 <div class="app">
 <section id="home" class="screen active">
- <div class="top"><div class="hamb" onclick="show('settings')">☰</div><div><h1>CNC <span class="white">TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC · v1.5.1</div></div></div>
+ <div class="top"><div class="hamb" onclick="show('settings')">☰</div><div><h1>CNC <span class="white">TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC · v1.6</div></div></div>
  <div class="card"><h2>RICERCA INTELLIGENTE</h2><input id="smartQ" class="search" placeholder="Scrivi: M8, G1, G 1, G 1/2, H7 50, 50 H7..." onkeydown="if(event.key==='Enter')smartSearch()"><button class="btn" onclick="smartSearch()">CERCA SUBITO</button><div id="smartRes"></div></div>
  <div class="grid">
   <div class="tile primary" onclick="show('three')"><div class="icon">◎</div>CENTRO FORO / PERNO<br>(3 PUNTI)</div>
   <div class="tile" onclick="show('two')"><div class="icon">⟍</div>CENTRO CON<br>2 PUNTI</div>
   <div class="tile" onclick="show('angle')"><div class="icon">∠</div>CALCOLO<br>ANGOLO</div>
-  <div class="tile primary" onclick="show('chamfer')"><div class="icon">45°</div>SMUSSI ISO<br>RAGGIO UTENSILE</div>
+  <div class="tile primary" onclick="show('chamfer')"><div class="icon">∠</div>SMUSSI ISO<br>15° / 30° / 45°</div>
   <div class="tile" onclick="show('conv')"><div class="icon">↻</div>CONVERSIONI<br>MM ↔ POLLICI</div>
   <div class="tile" onclick="show('inter')"><div class="icon">↔</div>INTERASSE<br>TRA FORI</div>
   <div class="tile primary" onclick="show('threads')"><div class="icon">⚙</div>TABELLE<br>FILETTATURE</div>
@@ -144,20 +144,22 @@
 
 
 <section id="chamfer" class="screen">
- <div class="header"><div class="back" onclick="show('home')">‹</div><div class="title">SMUSSI ISO<small>45° CON RAGGIO UTENSILE</small></div><div class="help" onclick="alert('Calcola punto iniziale e finale di uno smusso 45° in tornitura/fresatura. Inserisci diametro/spigolo, smusso C, verso e raggio utensile. La compensazione raggio è pratica: anticipa/ritarda il punto teorico in base al raggio utensile.')">?</div></div>
+ <div class="header"><div class="back" onclick="show('home')">‹</div><div class="title">SMUSSI ISO<small>15° / 30° / 45° CON RAGGIO UTENSILE</small></div><div class="help" onclick="alert('Calcola punto iniziale e finale dello smusso con qualsiasi angolo. Inserisci diametro/spigolo, quota assiale C, angolo, verso Z e raggio utensile. Per C1 a 45° su Ø50 verso Z-: X48 Z0 → X50 Z-1.')">?</div></div>
  <div class="card"><h2>DATI SMUSSO</h2>
   <div class="row"><div class="label">Ø / Quota spigolo</div><input id="chD" class="inp" value="50" inputmode="decimal"></div>
-  <div class="row"><div class="label">Smusso C</div><input id="chC" class="inp" value="1" inputmode="decimal"></div>
+  <div class="row"><div class="label">Quota Z smusso C</div><input id="chC" class="inp" value="1" inputmode="decimal"></div>
+  <div class="row"><div class="label">Angolo</div><select id="chA"><option value="45">45°</option><option value="30">30°</option><option value="15">15°</option><option value="60">60°</option><option value="custom">Altro</option></select></div>
+  <div class="row" id="chArow" style="display:none"><div class="label">Angolo manuale</div><input id="chAcustom" class="inp" value="45" inputmode="decimal"></div>
   <div class="row"><div class="label">Z spigolo</div><input id="chZ" class="inp" value="0" inputmode="decimal"></div>
   <div class="row"><div class="label">Raggio utensile</div><input id="chR" class="inp" value="0.8" inputmode="decimal"></div>
   <div class="row"><div class="label">Lavorazione</div><select id="chWork"><option value="external">ESTERNO / ALBERO</option><option value="internal">INTERNO / FORO</option></select></div>
   <div class="row"><div class="label">Verso Z</div><select id="chSide"><option value="left">Smusso verso Z negativo</option><option value="right">Smusso verso Z positivo</option></select></div>
   <button class="btn" onclick="calcChamfer()">CALCOLA SMUSSO</button>
   <div id="chRes"></div>
-  <div class="hint">Esempio: Ø50, C1 a 45°. Il punto teorico cambia di 1 mm in Z e 2 mm in X diametrale. Con raggio utensile inserito l’app dà anche punti compensati pratici.</div>
+  <div class="hint">C = quota assiale in Z dello smusso. A 45° C1: cambia 1 mm in Z e 2 mm in X diametrale. A 30° C1: cambio X diametrale = 2 × tan(30°) = 1,155 mm. Con raggio utensile inserito l’app dà anche punti compensati pratici.</div>
  </div>
  <div class="card"><h2>LETTURA RAPIDA</h2>
-  <div class="hint"><b>C1 su Ø50 esterno verso Z negativo:</b> partenza teorica X48, Z0 → arrivo X50, Z-1. In tornio lavora dal diametro più basso verso il diametro finito. Se lavori in raggio invece che diametro, la variazione radiale è 1 mm.</div>
+  <div class="hint"><b>Esempio 45°:</b> Ø50 C1 esterno verso Z negativo: X48 Z0 → X50 Z-1.<br><b>Esempio 30°:</b> Ø50 C1 esterno verso Z negativo: X48,845 Z0 → X50 Z-1. In tornio lavora dal diametro più basso verso il diametro finito.</div>
  </div>
 </section>
 
@@ -386,34 +388,38 @@ function calcChamfer(){
  let D=val('chD'), C=val('chC'), Z=val('chZ'), R=val('chR');
  let work=document.getElementById('chWork').value;
  let side=document.getElementById('chSide').value;
- if(invalid([D,C,Z,R])||C<0||R<0){chRes.innerHTML='<div class="err">Controlla diametro, smusso e raggio utensile.</div>';return}
+ let sel=document.getElementById('chA').value;
+ let A = sel==='custom' ? val('chAcustom') : parseFloat(sel);
+ if(invalid([D,C,Z,R,A])||C<0||R<0||A<=0||A>=90){chRes.innerHTML='<div class="err">Controlla diametro, quota Z, angolo e raggio utensile. Angolo valido: maggiore di 0 e minore di 90°.</div>';return}
  let zSign=side==='left'?-1:1;
- // punti teorici su profilo pezzo in coordinate tornio: X diametrale, Z assiale
- // ESTERNO: esempio Ø50 C1 verso Z negativo: inizio X48 Z0, fine X50 Z-1.
- // INTERNO: ragionamento opposto sul diametro.
- let Xstart = work==='external' ? D-2*C : D+2*C;
+ let ar=A*Math.PI/180;
+ // C è la quota assiale in Z. La variazione radiale è C*tan(angolo). X è diametrale quindi vale 2 volte.
+ let radialDelta=C*Math.tan(ar);
+ let xDiamDelta=2*radialDelta;
+ let Xstart = work==='external' ? D-xDiamDelta : D+xDiamDelta;
  let Zstart = Z;
  let Xend = D;
  let Zend = Z + zSign*C;
- // Compensazione pratica del raggio utensile su smusso 45°: offset lungo X(radiale) e Z di R*tan(22.5°)
- // Serve come anticipo/ritardo indicativo per programmare senza dimenticare il naso utensile.
- let k=R*Math.tan(Math.PI/8); // 0.4142R
- let zStartComp=Zstart - zSign*k;
- let zEndComp=Zend + zSign*k;
- let xDeltaComp=2*k;
+ // Compensazione pratica raggio utensile per angoli diversi:
+ // estensione su Z = R*tan(A/2); estensione radiale = R*tan((90-A)/2). A 45° torna uguale al vecchio valore 0.4142R.
+ let kZ=R*Math.tan(ar/2);
+ let kRad=R*Math.tan((Math.PI/2-ar)/2);
+ let zStartComp=Zstart - zSign*kZ;
+ let zEndComp=Zend + zSign*kZ;
+ let xDeltaComp=2*kRad;
  let xStartComp=work==='external'?Xstart-xDeltaComp:Xstart+xDeltaComp;
  let xEndComp=work==='external'?Xend+xDeltaComp:Xend-xDeltaComp;
- let radDelta=Math.abs(Xend-Xstart)/2;
- last={tool:'Smusso 45',D,C,Z,R,Xstart,Zstart,Xend,Zend,xStartComp,zStartComp,xEndComp,zEndComp,date:new Date().toLocaleString('it-IT')};
+ last={tool:'Smusso '+A+'°',D,C,Z,R,A,Xstart,Zstart,Xend,Zend,xStartComp,zStartComp,xEndComp,zEndComp,date:new Date().toLocaleString('it-IT')};
  chRes.innerHTML=
   box('PUNTO INIZIO TEORICO','X '+fmt(Xstart)+' / Z '+fmt(Zstart),'')+
   box('PUNTO FINE TEORICO','X '+fmt(Xend)+' / Z '+fmt(Zend),'')+
   box('VARIAZIONE X DIAM.',fmt(Math.abs(Xend-Xstart)),'mm')+
-  box('VARIAZIONE RADIALE',fmt(radDelta),'mm')+
-  '<div class="line"></div>'+
+  box('VARIAZIONE RADIALE',fmt(radialDelta),'mm')+
+  box('ANGOLO',fmt(A),'°')+
+  '<div class="line"></div>'+ 
   box('INIZIO CON R UT.', 'X '+fmt(xStartComp)+' / Z '+fmt(zStartComp),'')+
   box('FINE CON R UT.', 'X '+fmt(xEndComp)+' / Z '+fmt(zEndComp),'')+
-  `<div class="hint">Compensazione calcolata con R utensile ${fmt(R)}. Valore pratico a 45°: k = R × tan(22,5°) = ${fmt(k)} mm. Controlla sempre il verso reale del correttore macchina.</div>`;
+  `<div class="hint">Compensazione pratica con R utensile ${fmt(R)}. Correzione Z = R×tan(${fmt(A/2)}°) = ${fmt(kZ)} mm. Correzione radiale = R×tan(${fmt((90-A)/2)}°) = ${fmt(kRad)} mm. Controlla sempre il verso reale del correttore macchina.</div>`;
 }
 
 function calcHexFromS(){
