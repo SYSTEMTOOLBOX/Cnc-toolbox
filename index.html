@@ -9,7 +9,7 @@
 :root{--yellow:#ffc400;--black:#050505;--panel:#111;--line:#333;--white:#fff;--gray:#aaa;--red:#ff5252;--green:#6cff6c}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent} body{margin:0;background:var(--black);color:white;font-family:Arial,Helvetica,sans-serif;min-height:100vh;} .app{max-width:520px;margin:auto;padding:18px 14px 28px;} .top{display:flex;align-items:center;gap:12px;margin:12px 0 20px}.hamb{font-size:34px;color:var(--yellow)} h1{font-size:35px;margin:0;color:var(--yellow);letter-spacing:1px}.white{color:white}.sub{color:var(--yellow);font-weight:700;margin-top:2px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.tile{min-height:150px;border:2px solid #555;border-radius:13px;background:linear-gradient(145deg,#181818,#080808);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-weight:900;font-size:17px;padding:12px;color:white}.tile.primary{background:linear-gradient(145deg,#ffd21f,#e6a900);color:#050505;border-color:#ffd21f}.icon{font-size:46px;margin-bottom:14px}.info{border:2px solid var(--yellow);border-radius:10px;margin-top:28px;padding:18px;text-align:center;color:var(--yellow);font-weight:800}.screen{display:none}.screen.active{display:block}.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.back,.help{font-size:34px;color:var(--yellow);font-weight:bold;min-width:44px;text-align:center}.title{text-align:center;flex:1;font-weight:900;color:var(--yellow);font-size:23px}.title small{display:block;color:white;font-size:17px;margin-top:4px}.card{background:linear-gradient(145deg,#151515,#080808);border:1.5px solid #3b3b3b;border-radius:12px;padding:16px;margin:12px 0}.card h2{font-size:18px;color:var(--yellow);margin:0 0 16px;border-bottom:1px solid #333;padding-bottom:10px}.row{display:grid;grid-template-columns:1fr 160px;align-items:center;gap:10px;margin:12px 0}.label{font-size:20px;font-weight:800;color:#ddd}.inp,select{width:100%;height:58px;border-radius:9px;border:2px solid #ddd;background:#fff;color:#000;font-size:24px;font-weight:800;text-align:right;padding:0 12px}select{text-align:center;font-size:18px}.seg{display:grid;grid-template-columns:1fr 1fr;gap:6px}.seg button{height:54px;border-radius:8px;border:2px solid #444;background:#111;color:white;font-size:16px;font-weight:900}.seg button.on{background:var(--yellow);color:#050505;border-color:var(--yellow)}.line{height:1px;background:#333;margin:14px 0}.btn{width:100%;height:70px;border:0;border-radius:10px;background:linear-gradient(#ffd21f,#e5aa00);color:#050505;font-size:28px;font-weight:900;margin-top:12px}.btn2{height:54px;border:2px solid var(--yellow);border-radius:8px;background:#080808;color:var(--yellow);font-size:17px;font-weight:900}.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.resultBox{border:1.5px solid #444;border-radius:10px;padding:15px;margin:10px 0;display:flex;justify-content:space-between;align-items:center}.resLabel{font-size:18px;font-weight:900;color:#eee}.resVal{font-size:34px;color:var(--yellow);font-weight:900;text-align:right}.err{color:var(--red);font-weight:800;margin-top:10px;font-size:17px}.ok{color:var(--green)}.note{color:#aaa;font-size:14px;line-height:1.35;margin-top:12px}.install{position:fixed;bottom:10px;left:10px;right:10px;max-width:500px;margin:auto;display:none}.mini{font-size:14px;color:#aaa}.full{grid-template-columns:1fr}.wide{grid-template-columns:1fr 1fr}.smallBtn{font-size:15px}.historyItem{border:1px solid #333;border-radius:9px;padding:10px;margin:8px 0;color:#ddd}.hidden{display:none}
 .calcDisplay{width:100%;height:74px;border:2px solid var(--yellow);border-radius:10px;background:#fff;color:#000;font-size:32px;font-weight:900;text-align:right;padding:0 14px;margin-bottom:10px}.calcGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.calcGrid button{height:62px;border-radius:9px;border:1px solid #444;background:#181818;color:white;font-size:24px;font-weight:900}.calcGrid button.op{background:var(--yellow);color:#050505}.calcGrid button.wide2{grid-column:span 2}.rulerBox{background:#fff;color:#000;border-radius:10px;padding:10px;overflow:hidden;touch-action:none}.rulerLine{height:72px;border-left:2px solid #000;position:relative;background:repeating-linear-gradient(to right,#000 0,#000 1px,transparent 1px,transparent var(--mmPx,3px))}.rulerText{font-size:13px;font-weight:900;color:#000;margin-top:8px}.sliderRow{display:grid;grid-template-columns:1fr;gap:8px;margin-top:10px}.range{width:100%}
-.tabbar{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}.tabbar button{height:48px;border:2px solid #444;border-radius:8px;background:#111;color:white;font-weight:900;font-size:14px}.tabbar button.on{background:var(--yellow);color:#050505;border-color:var(--yellow)}.search{width:100%;height:56px;border-radius:9px;border:2px solid var(--yellow);background:#fff;color:#000;font-size:22px;font-weight:800;padding:0 12px;margin:8px 0 12px}.tableWrap{overflow:auto;border:1px solid #333;border-radius:10px}.threadTable{width:100%;border-collapse:collapse;font-size:14px;min-width:500px}.threadTable th{position:sticky;top:0;background:#202020;color:var(--yellow);padding:10px;border-bottom:1px solid #555;text-align:left}.threadTable td{padding:10px;border-bottom:1px solid #2b2b2b;color:#eee}.threadTable tr:nth-child(even){background:#101010}.pill{display:inline-block;border:1px solid var(--yellow);color:var(--yellow);border-radius:999px;padding:4px 8px;font-weight:900}.hint{color:#bbb;font-size:13px;line-height:1.35;margin-top:10px}.cameraBox{position:relative;background:#000;border:2px solid var(--yellow);border-radius:12px;overflow:hidden;min-height:320px}.cameraBox video{width:100%;height:420px;object-fit:cover;display:block}.overlayLine{position:absolute;left:50%;top:50%;width:46%;height:4px;background:var(--yellow);transform-origin:left center;box-shadow:0 0 8px #000}.overlayBase{position:absolute;left:5%;right:5%;top:50%;height:2px;background:rgba(255,255,255,.85)}.angleRead{position:absolute;right:10px;top:10px;background:rgba(0,0,0,.75);border:1px solid var(--yellow);border-radius:8px;color:var(--yellow);font-size:28px;font-weight:900;padding:8px 12px}.torchOn{background:#6cff6c!important;color:#050505!important;border-color:#6cff6c!important}
+.tabbar{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}.tabbar button{height:48px;border:2px solid #444;border-radius:8px;background:#111;color:white;font-weight:900;font-size:14px}.tabbar button.on{background:var(--yellow);color:#050505;border-color:var(--yellow)}.search{width:100%;height:56px;border-radius:9px;border:2px solid var(--yellow);background:#fff;color:#000;font-size:22px;font-weight:800;padding:0 12px;margin:8px 0 12px}.tableWrap{overflow:auto;border:1px solid #333;border-radius:10px}.threadTable{width:100%;border-collapse:collapse;font-size:14px;min-width:500px}.threadTable th{position:sticky;top:0;background:#202020;color:var(--yellow);padding:10px;border-bottom:1px solid #555;text-align:left}.threadTable td{padding:10px;border-bottom:1px solid #2b2b2b;color:#eee}.threadTable tr:nth-child(even){background:#101010}.pill{display:inline-block;border:1px solid var(--yellow);color:var(--yellow);border-radius:999px;padding:4px 8px;font-weight:900}.hint{color:#bbb;font-size:13px;line-height:1.35;margin-top:10px}.cameraBox{position:relative;background:#000;border:2px solid var(--yellow);border-radius:12px;overflow:hidden;min-height:320px}.cameraBox video{width:100%;height:420px;object-fit:cover;display:block}.overlayLine{position:absolute;left:50%;top:50%;width:46%;height:4px;background:var(--yellow);transform-origin:left center;box-shadow:0 0 8px #000}.overlayBase{position:absolute;left:5%;right:5%;top:50%;height:2px;background:rgba(255,255,255,.85)}.angleRead{position:absolute;right:10px;top:10px;background:rgba(0,0,0,.75);border:1px solid var(--yellow);border-radius:8px;color:var(--yellow);font-size:28px;font-weight:900;padding:8px 12px}.torchOn{background:#6cff6c!important;color:#050505!important;border-color:#6cff6c!important}.frameThumbs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}.frameThumbs canvas{width:100%;border:1px solid #444;border-radius:6px}.badge{display:inline-block;background:#222;border:1px solid var(--yellow);color:var(--yellow);padding:5px 8px;border-radius:999px;font-size:13px;font-weight:900;margin:3px}
 </style>
 
 <link rel="manifest" href="manifest.webmanifest">
@@ -21,7 +21,7 @@
 <body>
 <div class="app">
 <section id="home" class="screen active">
- <div class="top"><div class="hamb" onclick="show('settings')">☰</div><div><h1>CNC <span class="white">TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC · v2.1</div></div></div>
+ <div class="top"><div class="hamb" onclick="show('settings')">☰</div><div><h1>CNC <span class="white">TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC · v2.2</div></div></div>
  <div class="card"><h2>RICERCA INTELLIGENTE</h2><input id="smartQ" class="search" placeholder="Scrivi: M8, G1, G 1, G 1/2, H7 50, 50 H7..." onkeydown="if(event.key==='Enter')smartSearch()"><button class="btn" onclick="smartSearch()">CERCA SUBITO</button><div id="smartRes"></div></div>
  <div class="grid">
   <div class="tile primary" onclick="show('three')"><div class="icon">◎</div>CENTRO FORO / PERNO<br>(3 PUNTI)</div>
@@ -40,6 +40,7 @@
   <div class="tile" onclick="show('ruler')"><div class="icon">📏</div>RIGHELLO<br>CALIBRO RAPIDO</div>
   <div class="tile primary" onclick="show('cameraTools')"><div class="icon">📷</div>GONIOMETRO<br>FOTOCAMERA</div>
   <div class="tile" onclick="show('torchTool')"><div class="icon">💡</div>TORCIA<br>RAPIDA</div>
+  <div class="tile primary" onclick="show('scanner3d')"><div class="icon">📦</div>SCANNER 3D<br>OFFICINA</div>
  </div>
  <div class="info">ⓘ STRUMENTI VELOCI E PRECISI<br>PER IL TUO LAVORO CNC</div>
 </section>
@@ -301,6 +302,35 @@
  <div class="card"><h2>RISULTATO CALCOLO</h2><div id="res"></div><button class="btn" onclick="saveLast()">▣ SALVA RISULTATI</button><button class="btn2" style="width:100%;margin-top:10px" onclick="clearIds(['x1','y1','x2','y2','x3','y3']);show('three')">▣ NUOVA MISURA</button></div>
  <div class="note">Nota: per foro interno il diametro reale viene aumentato del diametro sfera. Per perno esterno viene diminuito del diametro sfera.</div>
 </section>
+
+<section id="scanner3d" class="screen">
+ <div class="header"><div class="back" onclick="show('home')">‹</div><div class="title">SCANNER 3D<small>VIDEO + RIFERIMENTO SCALA</small></div><div></div></div>
+ <div class="card"><h2>1. RIFERIMENTO SCALA</h2>
+  <div class="row"><div class="label">Tipo riferimento</div><select id="scanRefType"><option>Cubo</option><option>Parallelepipedo</option><option>Cilindro</option></select></div>
+  <div class="row"><div class="label">X / Ø (mm)</div><input id="scanRefX" class="inp" value="50" inputmode="decimal"></div>
+  <div class="row"><div class="label">Y (mm)</div><input id="scanRefY" class="inp" value="50" inputmode="decimal"></div>
+  <div class="row"><div class="label">Z / H (mm)</div><input id="scanRefZ" class="inp" value="50" inputmode="decimal"></div>
+  <button class="btn" onclick="saveScanRef()">SALVA RIFERIMENTO</button>
+  <div id="scanRefMsg" class="note"></div>
+ </div>
+ <div class="card"><h2>2. NUOVA SCANSIONE</h2>
+  <div class="cameraBox"><video id="scanVideo" autoplay playsinline muted></video><div class="angleRead" id="scanStatus">0 frame</div></div>
+  <div class="actions"><button class="btn2" onclick="startScanCamera()">📷 CAMERA</button><button class="btn2" onclick="stopScanCamera()">STOP CAMERA</button></div>
+  <button class="btn" id="scanStartBtn" onclick="startScan()">START SCANSIONE</button>
+  <button class="btn2" style="width:100%;margin-top:8px" onclick="stopScan()">STOP / SALVA PROGETTO</button>
+  <div id="scanMsg" class="note">V1 scanner: registra video, cattura frame automatici e salva il progetto. Mesh/STL arriveranno nella fase successiva.</div>
+  <div id="scanFrames" class="frameThumbs"></div>
+ </div>
+ <div class="card"><h2>3. PROGETTI SALVATI</h2>
+  <div id="scanProjects"></div>
+  <div class="actions"><button class="btn2" onclick="renderScanProjects()">AGGIORNA</button><button class="btn2" onclick="clearScanProjects()">PULISCI LISTA</button></div>
+ </div>
+ <div class="card"><h2>ROADMAP</h2>
+  <span class="badge">V1 video + frame</span><span class="badge">V2 nuvola punti</span><span class="badge">V2 mesh STL/OBJ</span><span class="badge">V3 STEP/IGES</span>
+  <div class="hint">Pensato per pezzi meccanici. Per ora è una base leggera: se diventa pesante, lo separiamo in app dedicata.</div>
+ </div>
+</section>
+
 <button id="installBtn" class="btn install">INSTALLA SULLA HOME</button>
 </div>
 <script>
@@ -396,6 +426,7 @@ function smartSearch(){
  // CALCOLATRICE / RIGHELLO
  if(s.includes('calcol')||s==='calc'){show('calculator');smartRes.innerHTML='';return}
  if(s.includes('righello')||s.includes('calibro')){show('ruler');smartRes.innerHTML='';return}
+ if(s.includes('scanner')||s.includes('scansione')||s.includes('3d')||s.includes('mesh')||s.includes('stl')||s.includes('iges')||s.includes('step')){show('scanner3d');smartRes.innerHTML='';return}
  if(s.includes('torcia')||s.includes('luce')){show('torchTool');smartRes.innerHTML='';return}
  if(s.includes('camera')||s.includes('fotocamera')||s.includes('goniometro')){show('cameraTools');smartRes.innerHTML='';return}
 
@@ -788,8 +819,68 @@ function stopTorch(){
  const msg=document.getElementById('torchMsg'); if(msg)msg.innerHTML='Torcia spenta.';
 }
 
+
+let scanStream=null, scanRecorder=null, scanChunks=[], scanTimer=null, scanFrameCount=0;
+function saveScanRef(){
+ const ref={type:scanRefType.value,x:val('scanRefX'),y:val('scanRefY'),z:val('scanRefZ')};
+ if(invalid([ref.x,ref.z])||ref.x<=0||ref.z<=0){scanRefMsg.innerHTML='<div class="err">Inserisci misure valide.</div>';return}
+ localStorage.setItem('scanRef',JSON.stringify(ref));
+ scanRefMsg.innerHTML='<span class="ok">Riferimento salvato:</span> '+ref.type+' '+fmt(ref.x,2)+' × '+fmt(ref.y,2)+' × '+fmt(ref.z,2)+' mm';
+}
+function loadScanRef(){
+ try{let r=JSON.parse(localStorage.getItem('scanRef')||'{}'); if(r.type){scanRefType.value=r.type;scanRefX.value=r.x;scanRefY.value=r.y;scanRefZ.value=r.z; scanRefMsg.innerHTML='Riferimento attivo: '+r.type+' '+r.x+' × '+r.y+' × '+r.z+' mm';}}catch(e){}
+}
+async function startScanCamera(){
+ try{
+  if(scanStream) stopScanCamera(false);
+  scanStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}},audio:false});
+  scanVideo.srcObject=scanStream;
+  scanMsg.innerHTML='<span class="ok">Camera scanner attiva.</span> Premi START e gira attorno al pezzo lentamente.';
+ }catch(e){scanMsg.innerHTML='<div class="err">Camera non attiva. Controlla permessi Chrome.</div>';}
+}
+function stopScanCamera(clear=true){
+ if(scanStream){scanStream.getTracks().forEach(t=>t.stop()); scanStream=null;}
+ if(clear&&document.getElementById('scanVideo'))scanVideo.srcObject=null;
+}
+function captureScanFrame(){
+ if(!scanVideo||!scanVideo.videoWidth)return;
+ scanFrameCount++;
+ scanStatus.textContent=scanFrameCount+' frame';
+ if(scanFrameCount%8===1){
+  const c=document.createElement('canvas'); c.width=160; c.height=90;
+  const ctx=c.getContext('2d'); ctx.drawImage(scanVideo,0,0,c.width,c.height);
+  scanFrames.prepend(c); while(scanFrames.children.length>6)scanFrames.removeChild(scanFrames.lastChild);
+ }
+}
+async function startScan(){
+ if(!scanStream){await startScanCamera(); if(!scanStream)return;}
+ scanChunks=[]; scanFrameCount=0; scanFrames.innerHTML=''; scanStatus.textContent='0 frame';
+ try{
+  scanRecorder=new MediaRecorder(scanStream,{mimeType:'video/webm'});
+  scanRecorder.ondataavailable=e=>{if(e.data&&e.data.size)scanChunks.push(e.data)};
+  scanRecorder.start();
+ }catch(e){scanRecorder=null;}
+ scanTimer=setInterval(captureScanFrame,500);
+ scanMsg.innerHTML='<span class="ok">Scansione in corso.</span> Gira attorno al pezzo, movimento lento e luce uniforme.';
+}
+function stopScan(){
+ if(scanTimer){clearInterval(scanTimer);scanTimer=null;}
+ if(scanRecorder&&scanRecorder.state!=='inactive')scanRecorder.stop();
+ const ref=localStorage.getItem('scanRef')||'{}';
+ const project={date:new Date().toLocaleString(),frames:scanFrameCount,ref:ref};
+ const arr=JSON.parse(localStorage.getItem('scanProjects')||'[]'); arr.unshift(project); localStorage.setItem('scanProjects',JSON.stringify(arr.slice(0,20)));
+ scanMsg.innerHTML='<span class="ok">Progetto salvato.</span> Frame acquisiti: '+scanFrameCount+'.';
+ renderScanProjects();
+}
+function renderScanProjects(){
+ let arr=[]; try{arr=JSON.parse(localStorage.getItem('scanProjects')||'[]')}catch(e){}
+ if(!arr.length){scanProjects.innerHTML='<div class="note">Nessun progetto salvato.</div>';return}
+ scanProjects.innerHTML=arr.map((p,i)=>{let r={};try{r=JSON.parse(p.ref||'{}')}catch(e){} return '<div class="historyItem"><b>Progetto '+(i+1)+'</b><br>'+p.date+'<br>Frame: '+p.frames+'<br>Rif.: '+(r.type||'-')+' '+(r.x||'')+'×'+(r.y||'')+'×'+(r.z||'')+' mm</div>'}).join('');
+}
+function clearScanProjects(){localStorage.removeItem('scanProjects');renderScanProjects();}
+
 function help3(){alert('Tocca il foro/perno in 3 punti. Inserisci le coordinate X/Y lette dalla macchina. L’app calcola centro e diametro compensando la sfera del tastatore.')} 
-window.addEventListener('load',()=>{let pr=localStorage.getItem('probe'); if(pr){probe.value=pr;probe2.value=pr} let m=localStorage.getItem('cnc_mode'); if(m)setMode(m); renderThreads(); fillTurnThreadList(); fillTolLetters(); renderKeys(); updateMem(); updateRuler(); calcCaliper();});
+window.addEventListener('load',()=>{let pr=localStorage.getItem('probe'); if(pr){probe.value=pr;probe2.value=pr} let m=localStorage.getItem('cnc_mode'); if(m)setMode(m); renderThreads(); fillTurnThreadList(); fillTolLetters(); renderKeys(); updateMem(); updateRuler(); calcCaliper(); loadScanRef(); renderScanProjects();});
 window.addEventListener('resize',()=>{updateRuler();calcCaliper();});
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;installBtn.style.display='block'});installBtn.onclick=async()=>{if(deferredPrompt){deferredPrompt.prompt();deferredPrompt=null;installBtn.style.display='none'}};
 </script>
