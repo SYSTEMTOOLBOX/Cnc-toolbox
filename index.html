@@ -21,7 +21,7 @@
 <body>
 <div class="app">
 <section id="home" class="screen active">
- <div class="top"><div class="hamb" onclick="show('settings')">☰</div><div><h1>CNC <span class="white">TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC · v2.2</div></div></div>
+ <div class="top"><div class="hamb" onclick="show('settings')">☰</div><div><h1>CNC <span class="white">TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC · v2.3</div></div></div>
  <div class="card"><h2>RICERCA INTELLIGENTE</h2><input id="smartQ" class="search" placeholder="Scrivi: M8, G1, G 1, G 1/2, H7 50, 50 H7..." onkeydown="if(event.key==='Enter')smartSearch()"><button class="btn" onclick="smartSearch()">CERCA SUBITO</button><div id="smartRes"></div></div>
  <div class="grid">
   <div class="tile primary" onclick="show('three')"><div class="icon">◎</div>CENTRO FORO / PERNO<br>(3 PUNTI)</div>
@@ -304,30 +304,41 @@
 </section>
 
 <section id="scanner3d" class="screen">
- <div class="header"><div class="back" onclick="show('home')">‹</div><div class="title">SCANNER 3D<small>VIDEO + RIFERIMENTO SCALA</small></div><div></div></div>
- <div class="card"><h2>1. RIFERIMENTO SCALA</h2>
-  <div class="row"><div class="label">Tipo riferimento</div><select id="scanRefType"><option>Cubo</option><option>Parallelepipedo</option><option>Cilindro</option></select></div>
+ <div class="header"><div class="back" onclick="stopScanCamera();show('home')">‹</div><div class="title">SCANNER 3D<small>2 AZIONI: RIFERIMENTO + PEZZO</small></div><div></div></div>
+ <div class="card"><h2>1. DATI RIFERIMENTO</h2>
+  <div class="note">Prima inserisci le misure del riferimento, poi lo inquadri con la fotocamera. Esempio prova: parallelepipedo 50×50×85 mm.</div>
+  <div class="row"><div class="label">Tipo riferimento</div><select id="scanRefType"><option>Parallelepipedo</option><option>Cubo</option><option>Cilindro</option></select></div>
   <div class="row"><div class="label">X / Ø (mm)</div><input id="scanRefX" class="inp" value="50" inputmode="decimal"></div>
   <div class="row"><div class="label">Y (mm)</div><input id="scanRefY" class="inp" value="50" inputmode="decimal"></div>
-  <div class="row"><div class="label">Z / H (mm)</div><input id="scanRefZ" class="inp" value="50" inputmode="decimal"></div>
-  <button class="btn" onclick="saveScanRef()">SALVA RIFERIMENTO</button>
+  <div class="row"><div class="label">Z / H (mm)</div><input id="scanRefZ" class="inp" value="85" inputmode="decimal"></div>
+  <button class="btn" onclick="saveScanRef()">SALVA MISURE</button>
   <div id="scanRefMsg" class="note"></div>
  </div>
- <div class="card"><h2>2. NUOVA SCANSIONE</h2>
-  <div class="cameraBox"><video id="scanVideo" autoplay playsinline muted></video><div class="angleRead" id="scanStatus">0 frame</div></div>
-  <div class="actions"><button class="btn2" onclick="startScanCamera()">📷 CAMERA</button><button class="btn2" onclick="stopScanCamera()">STOP CAMERA</button></div>
-  <button class="btn" id="scanStartBtn" onclick="startScan()">START SCANSIONE</button>
+ <div class="card"><h2>2. FOTOCAMERA</h2>
+  <div class="cameraBox"><video id="scanVideo" autoplay playsinline muted></video><div class="angleRead" id="scanStatus">pronto</div></div>
+  <div class="actions"><button class="btn2" onclick="startScanCamera()">📷 AVVIA CAMERA</button><button class="btn2" onclick="stopScanCamera()">STOP CAMERA</button></div>
+  <div id="scanMsg" class="note">Procedura corretta: 1) inquadra solo il riferimento, 2) poi inquadra pezzo + riferimento.</div>
+ </div>
+ <div class="card"><h2>3. AZIONE 1 - INQUADRA RIFERIMENTO</h2>
+  <div class="note">Metti il parallelepipedo/cubo ben visibile. Premi calibra e giraci attorno lentamente 5-8 secondi. L'app salva i frame del riferimento.</div>
+  <button class="btn" onclick="startReferenceCapture()">CALIBRA RIFERIMENTO</button>
+  <button class="btn2" style="width:100%;margin-top:8px" onclick="stopReferenceCapture()">STOP RIFERIMENTO</button>
+  <div id="refCaptureMsg" class="note"></div>
+  <div id="refFrames" class="frameThumbs"></div>
+ </div>
+ <div class="card"><h2>4. AZIONE 2 - SCANSIONE PEZZO</h2>
+  <div class="note">Ora lascia il riferimento vicino al pezzo. Premi START e gira attorno al pezzo lentamente. La scala userà il riferimento salvato.</div>
+  <button class="btn" id="scanStartBtn" onclick="startScan()">START SCANSIONE PEZZO</button>
   <button class="btn2" style="width:100%;margin-top:8px" onclick="stopScan()">STOP / SALVA PROGETTO</button>
-  <div id="scanMsg" class="note">V1 scanner: registra video, cattura frame automatici e salva il progetto. Mesh/STL arriveranno nella fase successiva.</div>
   <div id="scanFrames" class="frameThumbs"></div>
  </div>
- <div class="card"><h2>3. PROGETTI SALVATI</h2>
+ <div class="card"><h2>5. PROGETTI SALVATI</h2>
   <div id="scanProjects"></div>
   <div class="actions"><button class="btn2" onclick="renderScanProjects()">AGGIORNA</button><button class="btn2" onclick="clearScanProjects()">PULISCI LISTA</button></div>
  </div>
  <div class="card"><h2>ROADMAP</h2>
-  <span class="badge">V1 video + frame</span><span class="badge">V2 nuvola punti</span><span class="badge">V2 mesh STL/OBJ</span><span class="badge">V3 STEP/IGES</span>
-  <div class="hint">Pensato per pezzi meccanici. Per ora è una base leggera: se diventa pesante, lo separiamo in app dedicata.</div>
+  <span class="badge">V2.3 due fasi</span><span class="badge">V2 nuvola punti</span><span class="badge">V2 mesh STL/OBJ</span><span class="badge">V3 STEP/IGES</span>
+  <div class="hint">Questa versione serve a provare il flusso corretto: prima riconoscere il riferimento 50×50×85, poi usarlo nella scansione del pezzo.</div>
  </div>
 </section>
 
@@ -820,62 +831,83 @@ function stopTorch(){
 }
 
 
-let scanStream=null, scanRecorder=null, scanChunks=[], scanTimer=null, scanFrameCount=0;
+let scanStream=null, scanRecorder=null, scanChunks=[], scanTimer=null, scanFrameCount=0, refTimer=null, refFrameCount=0;
 function saveScanRef(){
- const ref={type:scanRefType.value,x:val('scanRefX'),y:val('scanRefY'),z:val('scanRefZ')};
+ const ref={type:scanRefType.value,x:val('scanRefX'),y:val('scanRefY'),z:val('scanRefZ'),refFrames:parseInt(localStorage.getItem('scanRefFrames')||'0')};
  if(invalid([ref.x,ref.z])||ref.x<=0||ref.z<=0){scanRefMsg.innerHTML='<div class="err">Inserisci misure valide.</div>';return}
  localStorage.setItem('scanRef',JSON.stringify(ref));
- scanRefMsg.innerHTML='<span class="ok">Riferimento salvato:</span> '+ref.type+' '+fmt(ref.x,2)+' × '+fmt(ref.y,2)+' × '+fmt(ref.z,2)+' mm';
+ scanRefMsg.innerHTML='<span class="ok">Misure salvate:</span> '+ref.type+' '+fmt(ref.x,2)+' × '+fmt(ref.y,2)+' × '+fmt(ref.z,2)+' mm';
 }
 function loadScanRef(){
- try{let r=JSON.parse(localStorage.getItem('scanRef')||'{}'); if(r.type){scanRefType.value=r.type;scanRefX.value=r.x;scanRefY.value=r.y;scanRefZ.value=r.z; scanRefMsg.innerHTML='Riferimento attivo: '+r.type+' '+r.x+' × '+r.y+' × '+r.z+' mm';}}catch(e){}
+ try{let r=JSON.parse(localStorage.getItem('scanRef')||'{}'); if(r.type){scanRefType.value=r.type;scanRefX.value=r.x;scanRefY.value=r.y;scanRefZ.value=r.z; scanRefMsg.innerHTML='Riferimento attivo: '+r.type+' '+r.x+' × '+r.y+' × '+r.z+' mm · frame riferimento: '+(localStorage.getItem('scanRefFrames')||'0');}}catch(e){}
 }
 async function startScanCamera(){
  try{
   if(scanStream) stopScanCamera(false);
   scanStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}},audio:false});
   scanVideo.srcObject=scanStream;
-  scanMsg.innerHTML='<span class="ok">Camera scanner attiva.</span> Premi START e gira attorno al pezzo lentamente.';
+  scanMsg.innerHTML='<span class="ok">Camera scanner attiva.</span> Fai prima AZIONE 1 sul riferimento, poi AZIONE 2 sul pezzo.';
  }catch(e){scanMsg.innerHTML='<div class="err">Camera non attiva. Controlla permessi Chrome.</div>';}
 }
 function stopScanCamera(clear=true){
  if(scanStream){scanStream.getTracks().forEach(t=>t.stop()); scanStream=null;}
  if(clear&&document.getElementById('scanVideo'))scanVideo.srcObject=null;
 }
+function addThumb(target){
+ if(!scanVideo||!scanVideo.videoWidth)return false;
+ const c=document.createElement('canvas'); c.width=160; c.height=90;
+ const ctx=c.getContext('2d'); ctx.drawImage(scanVideo,0,0,c.width,c.height);
+ target.prepend(c); while(target.children.length>6)target.removeChild(target.lastChild);
+ return true;
+}
+async function startReferenceCapture(){
+ saveScanRef();
+ if(!scanStream){await startScanCamera(); if(!scanStream)return;}
+ refFrameCount=0; refFrames.innerHTML=''; scanStatus.textContent='REF 0';
+ if(refTimer)clearInterval(refTimer);
+ refTimer=setInterval(()=>{ if(addThumb(refFrames)){refFrameCount++; scanStatus.textContent='REF '+refFrameCount;} },500);
+ refCaptureMsg.innerHTML='<span class="ok">Calibrazione riferimento in corso.</span> Inquadra bene il blocco 50×50×85 e giraci attorno lentamente.';
+}
+function stopReferenceCapture(){
+ if(refTimer){clearInterval(refTimer);refTimer=null;}
+ localStorage.setItem('scanRefFrames',String(refFrameCount));
+ let ref={}; try{ref=JSON.parse(localStorage.getItem('scanRef')||'{}')}catch(e){}
+ ref.refFrames=refFrameCount; localStorage.setItem('scanRef',JSON.stringify(ref));
+ refCaptureMsg.innerHTML='<span class="ok">Riferimento acquisito.</span> Frame salvati: '+refFrameCount+'. Ora puoi fare la scansione del pezzo con il riferimento vicino.';
+ loadScanRef();
+}
 function captureScanFrame(){
  if(!scanVideo||!scanVideo.videoWidth)return;
  scanFrameCount++;
- scanStatus.textContent=scanFrameCount+' frame';
- if(scanFrameCount%8===1){
-  const c=document.createElement('canvas'); c.width=160; c.height=90;
-  const ctx=c.getContext('2d'); ctx.drawImage(scanVideo,0,0,c.width,c.height);
-  scanFrames.prepend(c); while(scanFrames.children.length>6)scanFrames.removeChild(scanFrames.lastChild);
- }
+ scanStatus.textContent='PEZZO '+scanFrameCount;
+ if(scanFrameCount%2===1)addThumb(scanFrames);
 }
 async function startScan(){
  if(!scanStream){await startScanCamera(); if(!scanStream)return;}
- scanChunks=[]; scanFrameCount=0; scanFrames.innerHTML=''; scanStatus.textContent='0 frame';
+ const refFramesN=parseInt(localStorage.getItem('scanRefFrames')||'0');
+ if(!refFramesN){scanMsg.innerHTML='<div class="err">Prima fai AZIONE 1: calibra/inquadra il riferimento.</div>'; return;}
+ scanChunks=[]; scanFrameCount=0; scanFrames.innerHTML=''; scanStatus.textContent='PEZZO 0';
  try{
   scanRecorder=new MediaRecorder(scanStream,{mimeType:'video/webm'});
   scanRecorder.ondataavailable=e=>{if(e.data&&e.data.size)scanChunks.push(e.data)};
   scanRecorder.start();
  }catch(e){scanRecorder=null;}
  scanTimer=setInterval(captureScanFrame,500);
- scanMsg.innerHTML='<span class="ok">Scansione in corso.</span> Gira attorno al pezzo, movimento lento e luce uniforme.';
+ scanMsg.innerHTML='<span class="ok">Scansione pezzo in corso.</span> Tieni il riferimento vicino al pezzo e muoviti lentamente.';
 }
 function stopScan(){
  if(scanTimer){clearInterval(scanTimer);scanTimer=null;}
  if(scanRecorder&&scanRecorder.state!=='inactive')scanRecorder.stop();
  const ref=localStorage.getItem('scanRef')||'{}';
- const project={date:new Date().toLocaleString(),frames:scanFrameCount,ref:ref};
+ const project={date:new Date().toLocaleString(),frames:scanFrameCount,refFrames:localStorage.getItem('scanRefFrames')||'0',ref:ref};
  const arr=JSON.parse(localStorage.getItem('scanProjects')||'[]'); arr.unshift(project); localStorage.setItem('scanProjects',JSON.stringify(arr.slice(0,20)));
- scanMsg.innerHTML='<span class="ok">Progetto salvato.</span> Frame acquisiti: '+scanFrameCount+'.';
+ scanMsg.innerHTML='<span class="ok">Progetto salvato.</span> Frame pezzo: '+scanFrameCount+' · frame riferimento: '+project.refFrames+'.';
  renderScanProjects();
 }
 function renderScanProjects(){
  let arr=[]; try{arr=JSON.parse(localStorage.getItem('scanProjects')||'[]')}catch(e){}
  if(!arr.length){scanProjects.innerHTML='<div class="note">Nessun progetto salvato.</div>';return}
- scanProjects.innerHTML=arr.map((p,i)=>{let r={};try{r=JSON.parse(p.ref||'{}')}catch(e){} return '<div class="historyItem"><b>Progetto '+(i+1)+'</b><br>'+p.date+'<br>Frame: '+p.frames+'<br>Rif.: '+(r.type||'-')+' '+(r.x||'')+'×'+(r.y||'')+'×'+(r.z||'')+' mm</div>'}).join('');
+ scanProjects.innerHTML=arr.map((p,i)=>{let r={};try{r=JSON.parse(p.ref||'{}')}catch(e){} return '<div class="historyItem"><b>Progetto '+(i+1)+'</b><br>'+p.date+'<br>Frame pezzo: '+p.frames+' · Frame riferimento: '+(p.refFrames||r.refFrames||0)+'<br>Rif.: '+(r.type||'-')+' '+(r.x||'')+'×'+(r.y||'')+'×'+(r.z||'')+' mm</div>'}).join('');
 }
 function clearScanProjects(){localStorage.removeItem('scanProjects');renderScanProjects();}
 
