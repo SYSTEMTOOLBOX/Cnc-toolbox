@@ -5,7 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#050505">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>CNC Toolbox v3.8</title>
+<link rel="manifest" href="./manifest.webmanifest?v=3.9">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<title>CNC Toolbox v3.9</title>
 <style>
 :root{--y:#ffc400;--y2:#dfa500;--b:#050505;--p:#141414;--p2:#0b0b0b;--l:#3e3e3e;--w:#fff;--g:#aaa;--ok:#68e36f;--err:#ff5b5b;--blue:#54baff}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -38,6 +40,8 @@ select{text-align:center;font-size:15px}
 .seg{display:grid;grid-template-columns:1fr 1fr;gap:6px}.seg button{height:49px;border-radius:8px;border:2px solid #444;background:#111;color:#fff;font-weight:900}.seg button.on{background:var(--y);color:#050505;border-color:var(--y)}
 .btn{width:100%;min-height:58px;border:0;border-radius:10px;background:linear-gradient(var(--y),var(--y2));color:#050505;font-weight:900;font-size:19px;margin-top:9px;padding:9px}
 .btn2{width:100%;min-height:49px;border:2px solid var(--y);border-radius:9px;background:#080808;color:var(--y);font-weight:900;padding:8px}
+.voiceTestButton{position:relative;z-index:80;pointer-events:auto!important;touch-action:manipulation;-webkit-user-select:none;user-select:none;transition:transform .08s ease,background .08s ease,color .08s ease}
+.voiceTestButton:active,.voiceTestButton.pressed{transform:scale(.96);background:#fff;color:#050505;border-color:#fff}
 .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}
 .resultBox{border:1.5px solid #444;border-radius:10px;padding:13px;margin:9px 0;display:flex;justify-content:space-between;align-items:center;gap:10px}
 .resLabel{font-weight:900;color:#eee}.resLabel small{color:#aaa}.resVal{font-size:27px;color:var(--y);font-weight:900;text-align:right}
@@ -73,7 +77,7 @@ select{text-align:center;font-size:15px}
 <div class="app">
 
 <section id="home" class="screen active">
- <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v3.8 · RISPOSTA AUDIO AUTOMATICA</div></div></div>
+ <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v3.9 · PULSANTE VOCE ANDROID</div></div></div>
  <div class="grid"><button class="tile primary wide" onclick="show('assistant')"><div class="icon">🎙️</div>ASSISTENTE VOCALE MECCANICO</button></div>
 
  <div class="sectionTitle">GEOMETRIA</div>
@@ -127,7 +131,11 @@ select{text-align:center;font-size:15px}
   <div class="rangeRow"><div class="label">Velocità</div><input id="voiceRate" type="range" min=".7" max="1.5" step=".05" value="1.12"><div id="voiceRateV" class="rangeVal">1.12</div></div>
   <div class="rangeRow"><div class="label">Tonalità</div><input id="voicePitch" type="range" min=".55" max="1.45" step=".05" value="1"><div id="voicePitchV" class="rangeVal">1.00</div></div>
   <div class="rangeRow"><div class="label">Volume</div><input id="voiceVolume" type="range" min=".2" max="1" step=".05" value="1"><div id="voiceVolumeV" class="rangeVal">1.00</div></div>
-  <div class="actions"><button class="btn2" onclick="testVoice()">PROVA LA VOCE</button><button class="btn2" onclick="stopSpeech(true)">STOP VOCE</button></div>
+  <div class="actions">
+   <button id="testVoiceBtn" type="button" class="btn2 voiceTestButton"
+     onpointerup="return testVoice(event)" ontouchend="return testVoice(event)" onclick="return testVoice(event)">PROVA LA VOCE</button>
+   <button id="stopVoiceBtn" type="button" class="btn2" onclick="stopSpeech(true)">STOP VOCE</button>
+  </div>
  </div>
  <div class="card"><h2>CONTROLLO TELEFONO</h2><div id="voiceSupport" class="support"></div><div id="voiceDebug" class="debug"></div></div>
 </section>
@@ -244,12 +252,12 @@ select{text-align:center;font-size:15px}
 
 <section id="scanner" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">SCANNER 3D<small>PROGETTO SEPARATO</small></div><button class="help">?</button></div>
- <div class="card"><h2>LO RIPRENDEREMO SUCCESSIVAMENTE</h2><div class="note">Lo scanner 3D resta separato per non appesantire la Toolbox. Questa v3.8 contiene gli strumenti CNC e l’assistente vocale completo.</div></div>
+ <div class="card"><h2>LO RIPRENDEREMO SUCCESSIVAMENTE</h2><div class="note">Lo scanner 3D resta separato per non appesantire la Toolbox. Questa v3.9 contiene gli strumenti CNC e l’assistente vocale completo.</div></div>
 </section>
 
 <section id="settings" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">MENU</div><button class="help">▤</button></div>
- <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v3.8</div></div><div class="note">Risposta audio automatica corretta: la voce parte dopo la chiusura del microfono.</div></div>
+ <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v3.9</div></div><div class="note">Pulsante PROVA LA VOCE corretto per Android e risposta automatica dopo il microfono.</div></div>
  <div class="card"><h2>AZIONI</h2><button class="btn2" onclick="clearSettings()">PULISCI IMPOSTAZIONI</button></div>
 </section>
 
@@ -467,7 +475,7 @@ async function torchOn(){
 }
 async function torchOff(){if(mediaStream){const track=mediaStream.getVideoTracks()[0];try{await track.applyConstraints({advanced:[{torch:false}]})}catch(e){}stopCamera()}$('torchMsg').textContent='Torcia spenta.'}
 
-/* ASSISTENTE VOCALE v3.8 */
+/* ASSISTENTE VOCALE v3.9 */
 const synth=window.speechSynthesis;
 let voices=[],rec=null,listening=false,finalHandled=false,lastDetail='',pendingFollow=null;
 let speechPending='',speechTimer=null,speechWatchdog=null,speechToken=0,activeUtterance=null,speechUnlocked=false,retryCount=0;
@@ -543,7 +551,94 @@ function startSpeech(text,token){
   },1500);
  },260);
 }
-function testVoice(){unlockSpeech();speechPending='Prova voce. Punta da quattordici millimetri.';flushSpeech()}
+let lastVoiceTestAt=0;
+function testVoice(ev){
+ if(ev){try{ev.preventDefault()}catch(e){}try{ev.stopPropagation()}catch(e){}}
+ const now=Date.now();
+ if(now-lastVoiceTestAt<650)return false;
+ lastVoiceTestAt=now;
+
+ const btn=$('testVoiceBtn');
+ if(btn){
+  btn.classList.add('pressed');
+  const oldText=btn.textContent;
+  btn.textContent='AVVIO VOCE…';
+  setTimeout(()=>{btn.classList.remove('pressed');btn.textContent=oldText},700);
+ }
+
+ if($('audioEnabled')){
+  $('audioEnabled').checked=true;
+  saveVoice();
+ }
+
+ setVA('Tasto ricevuto. Avvio la voce…','talk');
+ debugVoice('Tocco ricevuto: '+new Date().toLocaleTimeString('it-IT'));
+
+ if(!synth){
+  setVA('Sintesi vocale non disponibile su questo browser.','bad');
+  debugVoice('window.speechSynthesis non disponibile.');
+  return false;
+ }
+
+ clearTimeout(speechTimer);
+ clearTimeout(speechWatchdog);
+ speechPending='';
+ retryCount=0;
+ const token=++speechToken;
+
+ try{
+  populateVoices();
+  synth.cancel();
+  synth.resume();
+
+  const text='Prova voce. Il pulsante funziona.';
+  const u=new SpeechSynthesisUtterance(text);
+  const v=selectedVoice();
+  if(v)u.voice=v;
+  u.lang=v?.lang||'it-IT';
+  u.rate=clamp($('voiceRate').value,.7,1.5,1.05);
+  u.pitch=clamp($('voicePitch').value,.55,1.45,1);
+  u.volume=clamp($('voiceVolume').value,.2,1,1);
+  activeUtterance=u;
+
+  let started=false;
+  u.onstart=()=>{
+   if(token!==speechToken)return;
+   started=true;
+   clearTimeout(speechWatchdog);
+   setVA('Sto parlando…','talk');
+   debugVoice('Voce avviata correttamente.');
+  };
+  u.onend=()=>{
+   if(token!==speechToken)return;
+   clearTimeout(speechWatchdog);
+   activeUtterance=null;
+   setVA('Prova completata. Premi il microfono.');
+  };
+  u.onerror=e=>{
+   if(token!==speechToken)return;
+   clearTimeout(speechWatchdog);
+   activeUtterance=null;
+   setVA('Errore voce: '+(e.error||'sconosciuto'),'bad');
+   debugVoice('SpeechSynthesis error: '+(e.error||'sconosciuto'));
+  };
+
+  /* Chiamata immediata dentro il tocco: necessaria su alcuni Android. */
+  synth.speak(u);
+
+  speechWatchdog=setTimeout(()=>{
+   if(token!==speechToken||started)return;
+   try{synth.resume()}catch(e){}
+   setVA('Il tasto funziona, ma Android non ha avviato la voce.','bad');
+   debugVoice('Tocco rilevato, nessun evento onstart. Controlla motore TTS e volume multimediale.');
+  },1800);
+ }catch(e){
+  activeUtterance=null;
+  setVA('Errore durante l’avvio della voce.','bad');
+  debugVoice(e?.message||String(e));
+ }
+ return false;
+}
 function showVA(text,isQuestion=false,detail=''){
  $('vaAnswer').textContent=text;$('vaAnswer').classList.toggle('q',isQuestion);
  if(detail)lastDetail=detail;queueSpeech(text)
@@ -669,6 +764,12 @@ function init(){
  $('voiceRate').value=localStorage.getItem('voice_rate')||'1.12';$('voicePitch').value=localStorage.getItem('voice_pitch')||'1';$('voiceVolume').value=localStorage.getItem('voice_volume')||'1';
  $('audioEnabled').checked=localStorage.getItem('audio_enabled')!=='0';saveVoice();populateVoices();if(synth){synth.onvoiceschanged=populateVoices;setTimeout(populateVoices,250);setTimeout(populateVoices,1000)}
  setupRecognition();
+ const testBtn=$('testVoiceBtn');
+ if(testBtn){
+  testBtn.disabled=false;
+  testBtn.style.pointerEvents='auto';
+  testBtn.style.touchAction='manipulation';
+ }
  $('vaText').addEventListener('keydown',e=>{if(e.key==='Enter')sendTyped()});
  $('voiceSelect').addEventListener('change',saveVoice);$('audioEnabled').addEventListener('change',saveVoice);
  ['Rate','Pitch','Volume'].forEach(x=>$('voice'+x).addEventListener('input',()=>{document.querySelectorAll('.preset').forEach(b=>b.classList.toggle('on',b.dataset.p==='custom'));saveVoice()}));
@@ -676,7 +777,21 @@ function init(){
  window.addEventListener('resize',()=>{if($('ruler')?.classList.contains('active'))updateRuler()});
  document.addEventListener('visibilitychange',()=>{if(document.hidden){try{rec?.stop()}catch(e){}stopSpeech(false);stopCamera()}});
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+async function registerV39ServiceWorker(){
+ if(!('serviceWorker' in navigator)||location.protocol==='file:')return;
+ try{
+  const reg=await navigator.serviceWorker.register('./service-worker.js?v=3.9',{updateViaCache:'none'});
+  await reg.update();
+  debugVoice(($('voiceDebug')?.textContent||'')+(($('voiceDebug')?.textContent||'')?'\n':'')+'Cache app: v3.9');
+ }catch(e){
+  console.warn('Service worker v3.9 non registrato:',e);
+ }
+}
+if(document.readyState==='loading'){
+ document.addEventListener('DOMContentLoaded',()=>{init();registerV39ServiceWorker()});
+}else{
+ init();registerV39ServiceWorker();
+}
 </script>
 </body>
 </html>
