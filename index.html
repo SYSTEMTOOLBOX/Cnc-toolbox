@@ -66,7 +66,7 @@ select{text-align:center;font-size:16px}
 <div class="app">
 
 <section id="home" class="screen active">
- <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v3.1 · ASSISTENTE OFFLINE COMPLETO</div></div></div>
+ <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v3.3 · MODALITÀ OFFICINA</div></div></div>
  <div class="grid">
   <button class="tile primary wide" onclick="show('assistant')"><div class="icon">🎙️</div>ASSISTENTE VOCALE MECCANICO</button>
  </div>
@@ -108,7 +108,7 @@ select{text-align:center;font-size:16px}
   <div id="vaHeard" class="heard">Esempio: “Che punta per M16?”</div>
  </div>
  <div class="card"><h2>RISPOSTA</h2><div id="vaAnswer" class="answer q">In attesa della domanda</div><div class="note" style="text-align:center">Solo la risposta. Per approfondire di': “spiegami”.</div></div>
- <div class="card"><h2>PROVA SCRIVENDO</h2><div class="writeRow"><input id="vaText" placeholder="Che punta per M16?"><button onclick="sendTyped()">INVIA</button></div><div class="actions"><button class="btn2" onclick="askAssistant('Che punta per M16?')">M16?</button><button class="btn2" onclick="askAssistant('M16 passo grosso')">M16 GROSSO</button></div></div>
+ <div class="card"><h2>PROVA SCRIVENDO</h2><div class="writeRow"><input id="vaText" placeholder="Che punta per M16?"><button onclick="sendTyped()">INVIA</button></div><div class="actions"><button class="btn2" onclick="askAssistant('Che punta per M16?')">M16?</button><button class="btn2" onclick="askAssistant('M16 passo grosso')">M16 GROSSO</button><button class="btn2" onclick="askAssistant('Quanto devo forare per un pollice GAS?')">GAS 1"</button></div></div>
  <div class="card"><h2>CAMBIA VOCE</h2>
   <div class="row"><div class="label">Voce</div><select id="voiceSelect"></select></div>
   <div class="presets"><button class="preset on" data-p="fast">RAPIDA</button><button class="preset" data-p="natural">NATURALE</button><button class="preset" data-p="deep">PROFONDA</button><button class="preset" data-p="clear">CHIARA</button><button class="preset" data-p="slow">LENTA</button><button class="preset" data-p="custom">PERSONALE</button></div>
@@ -225,7 +225,7 @@ select{text-align:center;font-size:16px}
 
 <section id="settings" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">MENU</div><button class="help">▤</button></div>
- <div class="card"><h2>AZIONI</h2><button class="btn2" onclick="localStorage.clear();alert('Impostazioni cancellate.')">PULISCI MEMORIA APP</button><div class="note">CNC Toolbox v3.1 · Assistente offline completo.</div></div>
+ <div class="card"><h2>AZIONI</h2><button class="btn2" onclick="localStorage.clear();alert('Impostazioni cancellate.')">PULISCI MEMORIA APP</button><div class="note">CNC Toolbox v3.3 · Interpretazione vocale da officina.</div></div>
 </section>
 
 <button class="fab" onclick="show('assistant')" aria-label="Assistente vocale">🎤</button>
@@ -342,21 +342,138 @@ let voices=[],rec=null,listening=false,pending=null,lastAnswer=null;
 
 function aiFmt(n,d=3){return Number(n).toLocaleString('it-IT',{minimumFractionDigits:d,maximumFractionDigits:d})}
 function aiShort(n){return Number(n).toLocaleString('it-IT',{maximumFractionDigits:3})}
+function removeSpeechAccents(value){
+ return String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+}
+function editDistance(a,b){
+ a=String(a);b=String(b);
+ const row=Array.from({length:b.length+1},(_,i)=>i);
+ for(let i=1;i<=a.length;i++){
+  let prev=row[0];row[0]=i;
+  for(let j=1;j<=b.length;j++){
+   const old=row[j];
+   row[j]=Math.min(row[j]+1,row[j-1]+1,prev+(a[i-1]===b[j-1]?0:1));
+   prev=old;
+  }
+ }
+ return row[b.length];
+}
+const MECHANICAL_WORDS=[
+ 'gas','bsp','npt','forare','foro','punta','passo','grosso','fine','filetto',
+ 'tolleranza','albero','linguetta','cava','mozzo','diametro','esterno',
+ 'avanzamento','giri','velocita','tagli','denti','smusso','esagono',
+ 'interasse','angolo','tornio','profondita','metrico'
+];
+function fuzzyMechanicalWords(s){
+ return String(s).split(/\s+/).map(token=>{
+  if(!/^[a-z]+$/.test(token)||token.length<4||MECHANICAL_WORDS.includes(token))return token;
+  let best=token,bestDistance=99;
+  for(const target of MECHANICAL_WORDS){
+   if(Math.abs(target.length-token.length)>2)continue;
+   const distance=editDistance(token,target);
+   if(distance<bestDistance){bestDistance=distance;best=target}
+  }
+  const limit=token.length>=8?2:1;
+  return bestDistance<=limit?best:token;
+ }).join(' ');
+}
 function normalizeSpeech(t){
- let s=String(t||'').toLowerCase().replace(/[“”"]/g,'').replace(/,/g,'.');
+ let s=removeSpeechAccents(t).toLowerCase().replace(/[“”"]/g,'').replace(/,/g,'.');
+
+ /* Espressioni che devono essere risolte prima delle singole parole. */
+ s=s
+  .replace(/\bpasso\s+(?:uno|un|1)\s+(?:e\s+mezzo|virgola\s+cinque|punto\s+cinque)\b/g,'passo 1.5')
+  .replace(/\bpasso\s+(?:uno|un|1)\s+(?:e\s+un\s+quarto|virgola\s+venticinque|punto\s+venticinque)\b/g,'passo 1.25')
+  .replace(/\b(?:uno|un|1)\s+pollice\s+e\s+mezzo\b/g,'1 1/2 pollice')
+  .replace(/\b(?:uno|un|1)\s+pollice\s+e\s+(?:un\s+)?quarto\b/g,'1 1/4 pollice')
+  .replace(/\b(?:uno|un|1)\s+e\s+mezzo\s+(?:pollice|gas|bsp)\b/g,'1 1/2 pollice gas')
+  .replace(/\b(?:uno|un|1)\s+e\s+(?:un\s+)?quarto\s+(?:pollice|gas|bsp)\b/g,'1 1/4 pollice gas')
+  .replace(/\btre\s+quarti\b/g,'3/4')
+  .replace(/\bmezzo\s+pollice\b/g,'1/2 pollice')
+  .replace(/\bmezzo\b/g,'1/2')
+  .replace(/\bun\s+quarto\b/g,'1/4')
+  .replace(/\btre\s+ottavi\b/g,'3/8')
+  .replace(/\bun\s+ottavo\b/g,'1/8')
+  .replace(/\benne\s+pi\s+ti\b|\bn\s+p\s+t\b/g,'npt')
+  .replace(/\bbi\s+esse\s+pi\b|\bb\s+s\s+p\b/g,'bsp')
+  .replace(/\bjay\s+esse\b|\bj\s+esse\b/g,'js');
+
  const words={
-  'zero':'0','uno':'1','una':'1','due':'2','tre':'3','quattro':'4','cinque':'5','sei':'6','sette':'7','otto':'8',
-  'nove':'9','dieci':'10','dodici':'12','quattordici':'14','sedici':'16','diciotto':'18','venti':'20',
-  'ventidue':'22','ventiquattro':'24','ventisette':'27','trenta':'30','trentatre':'33','trentatré':'33',
-  'trentasei':'36','quarantadue':'42','quarantotto':'48','cinquanta':'50','sessanta':'60'
+  'zero':'0','un':'1','uno':'1','una':'1','due':'2','tre':'3','quattro':'4','cinque':'5','sei':'6','sette':'7','otto':'8',
+  'nove':'9','dieci':'10','undici':'11','dodici':'12','tredici':'13','quattordici':'14','quindici':'15','sedici':'16',
+  'diciassette':'17','diciotto':'18','diciannove':'19','venti':'20','ventuno':'21','ventidue':'22','ventitre':'23',
+  'ventiquattro':'24','venticinque':'25','ventisei':'26','ventisette':'27','ventotto':'28','ventinove':'29',
+  'trenta':'30','trentuno':'31','trentadue':'32','trentatre':'33','trentaquattro':'34','trentacinque':'35',
+  'trentasei':'36','trentasette':'37','trentotto':'38','trentanove':'39','quaranta':'40','quarantadue':'42',
+  'quarantacinque':'45','quarantotto':'48','cinquanta':'50','cinquantadue':'52','cinquantasei':'56','sessanta':'60'
  };
- Object.entries(words).forEach(([w,n])=>s=s.replace(new RegExp('\\b'+w+'\\b','g'),n));
- return s
-  .replace(/\buno e mezzo\b/g,'1 1/2').replace(/\buno e un quarto\b/g,'1 1/4')
-  .replace(/\btre quarti\b/g,'3/4').replace(/\bmezzo\b/g,'1/2')
-  .replace(/\bun quarto\b/g,'1/4').replace(/\btre ottavi\b/g,'3/8').replace(/\bun ottavo\b/g,'1/8')
-  .replace(/\bmillimetri?\b/g,' mm ').replace(/\bpollici?\b/g,' pollice ')
-  .replace(/\s+/g,' ').trim();
+ Object.entries(words).forEach(([word,number])=>s=s.replace(new RegExp('\\b'+word+'\\b','g'),number));
+
+ /* Numeri decimali dettati: “uno virgola cinque”, “uno punto venticinque”. */
+ s=s
+  .replace(/\b(\d+)\s+(?:virgola|punto)\s+(\d+)\b/g,'$1.$2')
+  .replace(/\bpasso\s+(\d+)\s+e\s+(\d+)\b/g,'passo $1.$2');
+
+ /* Errori reali e parole simili prodotte dal riconoscimento in officina. */
+ s=s
+  .replace(/\b(emme|meme|em)\s*(?=\d|\s+\d)/g,'m ')
+  .replace(/\bm\s+(\d)\s+(\d)\b/g,'m $1$2')
+  .replace(/\b(gaz|gass|gasse|guas|ghas|gasch|cas|cash)\b/g,'gas')
+  .replace(/\b(g\s+as|gea)\b/g,'gas')
+  .replace(/\bgi\s*(?=\d)/g,'g ')
+  .replace(/\b(curare|furare|ferrare|corare|colorare|volare|forrare|foraree)\b/g,'forare')
+  .replace(/\b(bucare|buca|foratura|preforare|fare\s+(?:un|il)\s+foro)\b/g,'forare')
+  .replace(/\b(punto|punda|puntaia)\b/g,'punta')
+  .replace(/\b(grasso|grassa|rosso|rossa|groso|grosa)\b/g,'grosso')
+  .replace(/\b(finito|fina|fino)\b/g,'fine')
+  .replace(/\b(poro|forro|foro)\b/g,'foro')
+  .replace(/\bal\s+vero\b|\barbero\b|\balberoo\b/g,'albero')
+  .replace(/\bmozo\b|\bmozzo\b/g,'mozzo')
+  .replace(/\blingueta\b|\blinguettaa\b|\bchiaveta\b/g,'linguetta')
+  .replace(/\btoleranza\b|\btolleransa\b|\btoleransa\b/g,'tolleranza')
+  .replace(/\bdiametroo\b|\bdiametro\b/g,'diametro')
+  .replace(/\bavansamento\b|\bavanzameto\b/g,'avanzamento')
+  .replace(/\bvelocita\s+di\s+taglio\b/g,'vc')
+  .replace(/\bmillimetri?\b/g,' mm ')
+  .replace(/\bpollici?\b/g,' pollice ')
+  .replace(/\b(eh|uh|mmm|dunque|allora)\b/g,' ')
+  .replace(/\s+/g,' ')
+  .trim();
+
+ return fuzzyMechanicalWords(s);
+}
+function mechanicalScore(text){
+ const s=normalizeSpeech(text);
+ let score=0;
+ if(/\bm\s*\d/.test(s))score+=8;
+ if(/\b(gas|bsp|npt|g\s*\d)\b/.test(s))score+=8;
+ if(/\b(?:h|acca|g|f|k|m|js)\s*(?:6|7|8)\b/.test(s))score+=7;
+ if(/\d/.test(s))score+=2;
+ const keywords=[
+  'punta','forare','foro','passo','grosso','fine','filetto','tolleranza','albero',
+  'linguetta','cava','mozzo','diametro','avanzamento','giri','vc','smusso',
+  'esagono','interasse','angolo','tornio','profondita'
+ ];
+ keywords.forEach(word=>{if(new RegExp('\\b'+word+'\\b').test(s))score+=3});
+ if(pending){
+  if(pending.type==='metric-family'&&/\b(grosso|fine)\b/.test(s))score+=12;
+  if(pending.type==='metric-pitch'&&/\d/.test(s))score+=9;
+  if(pending.type==='tol-side'&&/\b(foro|albero)\b/.test(s))score+=12;
+  if(pending.type==='tol-class'&&/\b(?:h|acca|g|f|k|m|js)\s*(?:6|7|8)\b/.test(s))score+=12;
+  if(pending.type==='key-side'&&/\b(albero|mozzo)\b/.test(s))score+=12;
+  if(pending.type==='pipe-intent'&&/\b(punta|forare|passo|esterno)\b/.test(s))score+=12;
+ }
+ return score;
+}
+function chooseBestSpeechAlternative(result){
+ let best=result[0]?.transcript||'',bestScore=-999;
+ for(let i=0;i<result.length;i++){
+  const alt=result[i];
+  const confidence=Number.isFinite(alt.confidence)?alt.confidence:0;
+  const score=mechanicalScore(alt.transcript)+(confidence*2);
+  if(score>bestScore){bestScore=score;best=alt.transcript}
+ }
+ return best;
 }
 function setVA(text,type=''){$('vaStatus').textContent=text;$('vaDot').className='dot'+(type?' '+type:'');$('vaMic').classList.toggle('listen',type==='listen')}
 function showVA(text,q=false,detail=''){lastAnswer=detail?{detail}:lastAnswer;$('vaAnswer').textContent=text;$('vaAnswer').classList.toggle('q',q);speak(text)}
@@ -369,13 +486,29 @@ function numberAfter(s,patterns){
 }
 function firstNumber(s){const m=s.match(/\d+(?:\.\d+)?/);return m?Number(m[0]):null}
 function fractionSize(s){
- for(const x of ['1 1/2','1 1/4','3/4','1/2','3/8','1/4','1/8','2','1'])if(s.includes(x))return x;
+ const text=String(s||'').toLowerCase();
+
+ /* Prima le misure più lunghe, per evitare che “1” catturi “1 1/4”. */
+ for(const x of ['1 1/2','1 1/4','3/4','1/2','3/8','1/4','1/8','2']){
+  if(text.includes(x))return x;
+ }
+
+ /* Tutte le forme vocali del GAS da un pollice. */
+ if(
+  /\b1\s*(?:pollice)?\s*(?:gas|bsp)\b/.test(text) ||
+  /\b(?:gas|bsp)\s*(?:da|di)?\s*1\s*(?:pollice)?\b/.test(text) ||
+  /\bg\s*1\b/.test(text) ||
+  /\b1\s*g\b/.test(text) ||
+  /\bpollice\s*(?:gas|bsp)\b/.test(text) ||
+  /\b(?:gas|bsp)\s*(?:da|di)?\s*1?\s*pollice\b/.test(text)
+ )return '1';
+
  return null;
 }
 function threadIntent(s){
- if(/\b(punta|forare|foro|preforo)\b/.test(s))return 'drill';
- if(/\b(diametro esterno|esterno|diametro nominale)\b/.test(s))return 'ext';
- if(/\b(passo|tpi|filetti per pollice)\b/.test(s))return 'pitch';
+ if(/\b(punta|forare|foro|preforo|foratura|bucare|buca|trapano|diametro punta)\b/.test(s))return 'drill';
+ if(/\b(diametro esterno|esterno|diametro nominale|diametro del filetto)\b/.test(s))return 'ext';
+ if(/\b(passo|tpi|filetti per pollice|quanti filetti)\b/.test(s))return 'pitch';
  return 'unknown';
 }
 function pitchList(obj){
@@ -517,7 +650,7 @@ function askAssistant(raw){
   const size=fractionSize(s);if(!size){showVA('Che misura NPT?',true);return}
   pipeResult('npt',size,threadIntent(s));return;
  }
- if(/\b(gas|bsp)\b/.test(s)||/\bg\s*(?:1|2|3\/|1\/)/.test(s)||/^\s*(?:1|2|3\/|1\/).*\bgas\b/.test(s)){
+ if(/\b(gas|bsp)\b/.test(s)||/\bg\s*(?:1|2|3\/|1\/)/.test(s)||/\b(?:1|2|3\/|1\/)\s*g\b/.test(s)||/\bpollice\s*(?:gas|bsp)\b/.test(s)){
   const size=fractionSize(s);if(!size){showVA('Che misura GAS?',true);return}
   pipeResult('gas',size,threadIntent(s));return;
  }
@@ -618,7 +751,8 @@ function askAssistant(raw){
   const ang=Math.atan2(y2-y1,x2-x1)*180/Math.PI;direct(`Angolo ${aiFmt(ang,4)} gradi.`,`Angolo ${aiFmt(ang,4)} gradi; correzione ${aiFmt(-ang,4)} gradi.`);return;
  }
 
- showVA('Dato non presente nella Toolbox.',true);
+ if(mechanicalScore(s)<2)showVA('Non ho capito bene. Ripeti più corto.',true);
+ else showVA('Dato non presente nella Toolbox.',true);
 }
 function sendTyped(){askAssistant($('vaText').value);$('vaText').value=''}
 function populateVoices(){
@@ -645,15 +779,50 @@ function preset(name){
 }
 function setupRecognition(){
  const SR=window.SpeechRecognition||window.webkitSpeechRecognition,secure=window.isSecureContext;
- $('voiceSupport').innerHTML=(secure?'<span class="ok">✓ Pagina sicura HTTPS.</span>':'<span class="err">✗ Apri la Toolbox online.</span>')+'<br>'+
- (SR?'<span class="ok">✓ Microfono vocale disponibile.</span>':'<span class="err">✗ Riconoscimento vocale non disponibile.</span>')+'<br>'+
- ('speechSynthesis'in window?'<span class="ok">✓ Risposta parlata disponibile.</span>':'<span class="err">✗ Voce non disponibile.</span>');
+ $('voiceSupport').innerHTML=
+  (secure?'<span class="ok">✓ Pagina sicura HTTPS.</span>':'<span class="err">✗ Apri la Toolbox online.</span>')+'<br>'+
+  (SR?'<span class="ok">✓ Microfono vocale disponibile.</span>':'<span class="err">✗ Riconoscimento vocale non disponibile.</span>')+'<br>'+
+  ('speechSynthesis'in window?'<span class="ok">✓ Risposta parlata disponibile.</span>':'<span class="err">✗ Voce non disponibile.</span>')+'<br>'+
+  '<span class="ok">✓ Modalità officina: corregge parole simili e confronta più interpretazioni.</span>';
  if(!SR){setVA('Microfono non supportato. Puoi scrivere.','bad');return}
- rec=new SR();rec.lang='it-IT';rec.interimResults=true;rec.continuous=false;
- rec.onstart=()=>{listening=true;setVA('Sto ascoltando…','listen');$('vaHeard').textContent='Parla adesso…'};
- rec.onresult=e=>{let fin='',tmp='';for(let i=e.resultIndex;i<e.results.length;i++){const t=e.results[i][0].transcript;e.results[i].isFinal?fin+=t:tmp+=t}$('vaHeard').textContent=fin||tmp;if(fin)askAssistant(fin)};
- rec.onerror=e=>{listening=false;setVA(e.error==='not-allowed'?'Permesso microfono negato.':'Errore microfono: '+e.error,'bad')};
- rec.onend=()=>{listening=false;$('vaMic').classList.remove('listen');if(!$('vaDot').classList.contains('bad'))setVA('Pronto. Premi il microfono.')}
+ rec=new SR();
+ rec.lang='it-IT';
+ rec.interimResults=true;
+ rec.continuous=false;
+ rec.maxAlternatives=5;
+ rec.onstart=()=>{
+  listening=true;
+  setVA('Sto ascoltando…','listen');
+  $('vaHeard').textContent='Parla adesso…';
+ };
+ rec.onresult=e=>{
+  let finalParts=[],interimParts=[];
+  for(let i=e.resultIndex;i<e.results.length;i++){
+   const result=e.results[i];
+   if(result.isFinal)finalParts.push(chooseBestSpeechAlternative(result));
+   else interimParts.push(result[0]?.transcript||'');
+  }
+  const finalText=finalParts.join(' ').trim();
+  const interimText=interimParts.join(' ').trim();
+  $('vaHeard').textContent=finalText||interimText||'Sto ascoltando…';
+  if(finalText)askAssistant(finalText);
+ };
+ rec.onerror=e=>{
+  listening=false;
+  const errors={
+   'not-allowed':'Permesso microfono negato.',
+   'service-not-allowed':'Servizio vocale non consentito.',
+   'audio-capture':'Microfono non disponibile.',
+   'no-speech':'Non ho sentito bene. Riprova.',
+   'network':'Problema di rete del riconoscimento.'
+  };
+  setVA(errors[e.error]||('Errore microfono: '+e.error),'bad');
+ };
+ rec.onend=()=>{
+  listening=false;
+  $('vaMic').classList.remove('listen');
+  if(!$('vaDot').classList.contains('bad'))setVA('Pronto. Premi il microfono.');
+ };
 }
 function toggleListen(){if(!rec)return;if(listening){rec.stop();return}speechSynthesis?.cancel();try{rec.start()}catch(e){}}
 
