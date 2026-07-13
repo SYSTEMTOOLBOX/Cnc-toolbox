@@ -59,15 +59,6 @@ select{text-align:center;font-size:16px}
 .ruler{height:72px;border:1px solid #555;border-radius:8px;background:repeating-linear-gradient(90deg,#fff 0,#fff 1px,transparent 1px,transparent 10px);position:relative;margin-top:12px}.ruler:after{content:"0   10   20   30   40   50";white-space:pre;position:absolute;left:5px;top:42px;color:var(--y);font-weight:900;word-spacing:18px}
 .videoBox{width:100%;aspect-ratio:4/3;background:#000;border:1px solid #444;border-radius:10px;overflow:hidden;position:relative}.videoBox video{width:100%;height:100%;object-fit:cover}.angleLine{position:absolute;left:50%;top:50%;width:42%;height:3px;background:var(--y);transform-origin:left center}
 .fab{position:fixed;right:15px;bottom:16px;width:70px;height:70px;border-radius:50%;border:4px solid #050505;background:var(--y);font-size:33px;z-index:900;box-shadow:0 5px 22px rgba(0,0,0,.7)}
-
-.cornerModeNote{border-left:4px solid var(--y);background:#19170d;border-radius:8px;padding:10px 11px;color:#ddd;font-size:13px;line-height:1.4;margin-top:10px}
-.cornerGroup{border:1px solid #333;border-radius:10px;padding:11px;margin-top:10px}
-.cornerGroup h3{color:var(--y);font-size:14px;margin:0 0 9px}
-.corner3Only{display:none}
-.cornerCanvas{width:100%;height:250px;border:1px solid #444;border-radius:10px;background:#080808;margin-top:12px}
-.cornerLegend{display:flex;flex-wrap:wrap;gap:10px;color:#aaa;font-size:12px;margin-top:7px}
-.cornerLegend span:before{content:"●";color:var(--y);margin-right:5px}
-
 @media(max-width:380px){.row{grid-template-columns:1fr 130px}.tile{min-height:105px}.answer{font-size:26px}.fab{width:62px;height:62px;font-size:29px}}
 </style>
 </head>
@@ -75,7 +66,7 @@ select{text-align:center;font-size:16px}
 <div class="app">
 
 <section id="home" class="screen active">
- <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v3.6 · SPIGOLO 3/4 PUNTI</div></div></div>
+ <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v3.6 · SPIGOLO 3–4 PUNTI</div></div></div>
  <div class="grid">
   <button class="tile primary wide" onclick="show('assistant')"><div class="icon">🎙️</div>ASSISTENTE VOCALE MECCANICO</button>
  </div>
@@ -83,10 +74,10 @@ select{text-align:center;font-size:16px}
  <div class="grid">
   <button class="tile primary" onclick="show('three')"><div class="icon">◎</div>CENTRO 3 PUNTI</button>
   <button class="tile" onclick="show('two')"><div class="icon">⟍</div>CENTRO 2 PUNTI</button>
+  <button class="tile primary wide" onclick="show('corner34');setCornerMode('4')"><div class="icon">⌞</div>SPIGOLO / PARETI 3–4 PUNTI</button>
   <button class="tile" onclick="show('angle')"><div class="icon">∠</div>ANGOLO</button>
   <button class="tile primary" onclick="show('chamfer')"><div class="icon">45°</div>SMUSSI</button>
   <button class="tile" onclick="show('inter')"><div class="icon">↔</div>INTERASSE</button>
-  <button class="tile primary wide" onclick="show('corner');setCornerMode('4')"><div class="icon">⌞</div>SPIGOLO 3 / 4 PUNTI</button>
   <button class="tile" onclick="show('hex')"><div class="icon">⬢</div>ESAGONO</button>
  </div>
  <div class="sectionTitle">FILETTATURE E LAVORAZIONI</div>
@@ -147,6 +138,74 @@ select{text-align:center;font-size:16px}
  <div class="card"><div class="row"><div class="label">Ø sfera</div><input id="probe2" class="inp" value="10"></div><div class="seg"><button id="m2foro" class="on" onclick="setSeg('m2','foro')">FORO</button><button id="m2perno" onclick="setSeg('m2','perno')">PERNO</button></div><div class="row"><div class="label">Quota 1</div><input id="q1" class="inp" value="0"></div><div class="row"><div class="label">Quota 2</div><input id="q2" class="inp" value="100"></div><button class="btn" onclick="calc2()">CALCOLA</button><div id="res2"></div></div>
 </section>
 
+
+<section id="corner34" class="screen">
+ <div class="header">
+  <button class="back" onclick="show('home')">‹</button>
+  <div class="title">SPIGOLO / PARETI<small>3 O 4 PUNTI · COMPENSAZIONE SFERA</small></div>
+  <button class="help" onclick="alert('4 PUNTI: due punti su ogni parete. 3 PUNTI: un punto sulla ganascia fissa parallela a X o Y e due sulla parete inclinata. Guardando dal primo punto al secondo, indica da quale lato si trova il materiale. La Toolbox compensa il raggio della sfera e calcola lo spigolo virtuale.')">?</button>
+ </div>
+
+ <div class="card">
+  <h2>IMPOSTAZIONE</h2>
+  <div class="row"><div class="label">Ø sfera tastatore</div><input id="c34Probe" class="inp" value="10"></div>
+  <div class="seg">
+   <button id="c34Mode4" class="on" onclick="setCornerMode('4')">4 PUNTI</button>
+   <button id="c34Mode3" onclick="setCornerMode('3')">3 PUNTI</button>
+  </div>
+  <div class="hint">Guardando dal primo punto verso il secondo, scegli se il materiale è a SINISTRA o a DESTRA.</div>
+ </div>
+
+ <div id="c34Four">
+  <div class="card">
+   <h2>PARETE 1 · GANASCIA FISSA</h2>
+   <div class="row"><div class="label">P1 X</div><input id="c34x1" class="inp" value="0"></div>
+   <div class="row"><div class="label">P1 Y</div><input id="c34y1" class="inp" value="10"></div>
+   <div class="row"><div class="label">P2 X</div><input id="c34x2" class="inp" value="100"></div>
+   <div class="row"><div class="label">P2 Y</div><input id="c34y2" class="inp" value="10"></div>
+   <div class="row"><div class="label">Materiale P1→P2</div><select id="c34Side1"><option value="right">DESTRA</option><option value="left">SINISTRA</option></select></div>
+  </div>
+
+  <div class="card">
+   <h2>PARETE 2 · INCLINATA</h2>
+   <div class="row"><div class="label">P3 X</div><input id="c34x3" class="inp" value="20"></div>
+   <div class="row"><div class="label">P3 Y</div><input id="c34y3" class="inp" value="0"></div>
+   <div class="row"><div class="label">P4 X</div><input id="c34x4" class="inp" value="20"></div>
+   <div class="row"><div class="label">P4 Y</div><input id="c34y4" class="inp" value="100"></div>
+   <div class="row"><div class="label">Materiale P3→P4</div><select id="c34Side2"><option value="right">DESTRA</option><option value="left">SINISTRA</option></select></div>
+  </div>
+ </div>
+
+ <div id="c34Three" style="display:none">
+  <div class="card">
+   <h2>PARETE FISSA · 1 PUNTO</h2>
+   <div class="row"><div class="label">Parallela a</div><select id="c34Axis" onchange="updateCornerAxisLabel()"><option value="x">ASSE X · Y COSTANTE</option><option value="y">ASSE Y · X COSTANTE</option></select></div>
+   <div class="row"><div class="label">Punto fisso X</div><input id="c34fx" class="inp" value="0"></div>
+   <div class="row"><div class="label">Punto fisso Y</div><input id="c34fy" class="inp" value="10"></div>
+   <div class="row"><div class="label">Materiale verso</div><select id="c34FixedSide"><option value="minus">−Y</option><option value="plus">+Y</option></select></div>
+  </div>
+
+  <div class="card">
+   <h2>PARETE INCLINATA · 2 PUNTI</h2>
+   <div class="row"><div class="label">P2 X</div><input id="c34qx1" class="inp" value="20"></div>
+   <div class="row"><div class="label">P2 Y</div><input id="c34qy1" class="inp" value="0"></div>
+   <div class="row"><div class="label">P3 X</div><input id="c34qx2" class="inp" value="20"></div>
+   <div class="row"><div class="label">P3 Y</div><input id="c34qy2" class="inp" value="100"></div>
+   <div class="row"><div class="label">Materiale P2→P3</div><select id="c34QuickSide"><option value="right">DESTRA</option><option value="left">SINISTRA</option></select></div>
+  </div>
+ </div>
+
+ <div class="card">
+  <button class="btn" onclick="calcCorner34()">CALCOLA SPIGOLO</button>
+  <div class="actions">
+   <button class="btn2" onclick="invertCornerSides()">INVERTI I LATI</button>
+   <button class="btn2" onclick="resetCorner34()">ESEMPIO 90°</button>
+  </div>
+  <div id="resCorner34"></div>
+  <div class="hint">Se lo spigolo esce dalla parte opposta, inverti il lato della parete interessata. Con Ø sfera = 0 non viene applicata compensazione.</div>
+ </div>
+</section>
+
 <section id="angle" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">ANGOLO<small>DA 2 PUNTI</small></div><button class="help">?</button></div>
  <div class="card"><div class="row"><div class="label">P1 X</div><input id="ax1" class="inp" value="0"></div><div class="row"><div class="label">P1 Y</div><input id="ay1" class="inp" value="0"></div><div class="row"><div class="label">P2 X</div><input id="ax2" class="inp" value="100"></div><div class="row"><div class="label">P2 Y</div><input id="ay2" class="inp" value="1"></div><button class="btn" onclick="calcAngle()">CALCOLA</button><div id="resAngle"></div></div>
@@ -160,91 +219,6 @@ select{text-align:center;font-size:16px}
 <section id="inter" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">INTERASSE<small>TRA CENTRI</small></div><button class="help">?</button></div>
  <div class="card"><div class="row"><div class="label">C1 X</div><input id="ix1" class="inp" value="0"></div><div class="row"><div class="label">C1 Y</div><input id="iy1" class="inp" value="0"></div><div class="row"><div class="label">C2 X</div><input id="ix2" class="inp" value="100"></div><div class="row"><div class="label">C2 Y</div><input id="iy2" class="inp" value="50"></div><button class="btn" onclick="calcInter()">CALCOLA</button><div id="resInter"></div></div>
-</section>
-
-
-<section id="corner" class="screen">
- <div class="header">
-  <button class="back" onclick="show('home')">‹</button>
-  <div class="title">SPIGOLO 3 / 4 PUNTI<small>PARETE FISSA + PARETE INCLINATA</small></div>
-  <button class="help" onclick="alert('4 PUNTI: tasta due punti su ogni parete. 3 PUNTI: un punto sulla parete fissa, indicando se è parallela a X oppure Y, e due punti sulla parete inclinata. Per compensare la sfera scegli, guardando dal primo punto verso il secondo, se il materiale sta a sinistra o a destra.')">?</button>
- </div>
-
- <div class="card">
-  <h2>MODALITÀ</h2>
-  <div class="seg">
-   <button id="cornerMode4" class="on" onclick="setCornerMode('4')">4 PUNTI COMPLETA</button>
-   <button id="cornerMode3" onclick="setCornerMode('3')">3 PUNTI RAPIDA</button>
-  </div>
-  <div class="row"><div class="label">Ø sfera</div><input id="cornerProbe" class="inp" value="10"></div>
-  <div class="row">
-   <div class="label">Compensazione</div>
-   <select id="cornerComp">
-    <option value="on">ATTIVA</option>
-    <option value="off">NESSUNA</option>
-   </select>
-  </div>
-  <div class="cornerModeNote">
-   Con compensazione attiva, ogni retta misurata viene spostata di mezzo diametro sfera verso il materiale.
-  </div>
- </div>
-
- <div class="card">
-  <h2>PARETE FISSA</h2>
-  <div id="corner4Fixed" class="cornerGroup">
-   <h3>DUE PUNTI SULLA PARETE</h3>
-   <div class="row"><div class="label">P1 X</div><input id="c1x" class="inp" value="0"></div>
-   <div class="row"><div class="label">P1 Y</div><input id="c1y" class="inp" value="0"></div>
-   <div class="row"><div class="label">P2 X</div><input id="c2x" class="inp" value="100"></div>
-   <div class="row"><div class="label">P2 Y</div><input id="c2y" class="inp" value="0"></div>
-  </div>
-
-  <div id="corner3Fixed" class="cornerGroup corner3Only">
-   <h3>UN PUNTO + ASSE CONOSCIUTO</h3>
-   <div class="row"><div class="label">P1 X</div><input id="cfx" class="inp" value="0"></div>
-   <div class="row"><div class="label">P1 Y</div><input id="cfy" class="inp" value="0"></div>
-   <div class="row">
-    <div class="label">Parete parallela</div>
-    <select id="cornerFixedAxis">
-     <option value="x">ASSE X · ORIZZONTALE</option>
-     <option value="y">ASSE Y · VERTICALE</option>
-    </select>
-   </div>
-  </div>
-
-  <div class="row">
-   <div class="label">Materiale</div>
-   <select id="cornerSide1">
-    <option value="left">A SINISTRA DI P1 → P2</option>
-    <option value="right">A DESTRA DI P1 → P2</option>
-   </select>
-  </div>
- </div>
-
- <div class="card">
-  <h2>PARETE INCLINATA</h2>
-  <div class="cornerGroup">
-   <h3>DUE PUNTI SULLA PARETE</h3>
-   <div class="row"><div class="label">P3 X</div><input id="c3x" class="inp" value="0"></div>
-   <div class="row"><div class="label">P3 Y</div><input id="c3y" class="inp" value="0"></div>
-   <div class="row"><div class="label">P4 X</div><input id="c4x" class="inp" value="20"></div>
-   <div class="row"><div class="label">P4 Y</div><input id="c4y" class="inp" value="-80"></div>
-  </div>
-  <div class="row">
-   <div class="label">Materiale</div>
-   <select id="cornerSide2">
-    <option value="left">A SINISTRA DI P3 → P4</option>
-    <option value="right" selected>A DESTRA DI P3 → P4</option>
-   </select>
-  </div>
-
-  <button class="btn" onclick="calcCorner()">CALCOLA SPIGOLO</button>
-  <div id="resCorner"></div>
-  <canvas id="cornerCanvas" class="cornerCanvas"></canvas>
-  <div class="cornerLegend">
-   <span>Punti tastati</span><span>Rette misurate</span><span>Spigolo calcolato</span>
-  </div>
- </div>
 </section>
 
 <section id="hex" class="screen">
@@ -320,7 +294,7 @@ select{text-align:center;font-size:16px}
 
 <section id="settings" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">MENU</div><button class="help">▤</button></div>
- <div class="card"><h2>AZIONI</h2><button class="btn2" onclick="localStorage.clear();alert('Impostazioni cancellate.')">PULISCI MEMORIA APP</button><div class="note">CNC Toolbox v3.6 · Aggiunto spigolo a 3 e 4 punti.</div></div>
+ <div class="card"><h2>AZIONI</h2><button class="btn2" onclick="localStorage.clear();alert('Impostazioni cancellate.')">PULISCI MEMORIA APP</button><div class="note">CNC Toolbox v3.6 · Spigolo e pareti inclinate a 3–4 punti.</div></div>
 </section>
 
 <button class="fab" onclick="show('assistant')" aria-label="Assistente vocale">🎤</button>
@@ -349,213 +323,124 @@ function calc3(){
  $('res3').innerHTML=box('CENTRO X',fmt(cx))+box('CENTRO Y',fmt(cy))+box('DIAMETRO',fmt(dia))+box('ERRORE',fmt(err));
 }
 function calc2(){const p=num('probe2'),a=num('q1'),b=num('q2');if(bad([p,a,b]))return;const m=Math.abs(b-a),c=(a+b)/2,d=modes.m2==='foro'?m+p:m-p;$('res2').innerHTML=box('CENTRO',fmt(c))+box('DIAMETRO',fmt(d))}
-function calcAngle(){const x1=num('ax1'),y1=num('ay1'),x2=num('ax2'),y2=num('ay2');const a=Math.atan2(y2-y1,x2-x1)*180/Math.PI;$('resAngle').innerHTML=box('ANGOLO',fmt(a,4),'°')+box('CORREZIONE',fmt(-a,4),'°')}
-function calcChamfer(){const d=num('chD'),c=num('chC'),a=num('chA'),z=num('chZ'),r=num('chR'),type=$('chType').value;if(bad([d,c,a,z,r])||a<=0||a>=90)return;const radial=c/Math.tan(a*Math.PI/180),dx=2*radial;const xStart=type==='ext'?d-dx:d+dx;const comp=r*(1-Math.sin(a*Math.PI/180));$('resChamfer').innerHTML=box('X INIZIO',fmt(xStart))+box('X FINE',fmt(d))+box('Z FINE',fmt(z-c))+box('COMP. R INDICATIVA',fmt(comp))}
-function calcInter(){const dx=num('ix2')-num('ix1'),dy=num('iy2')-num('iy1');$('resInter').innerHTML=box('INTERASSE',fmt(Math.hypot(dx,dy)))+box('DELTA X',fmt(dx))+box('DELTA Y',fmt(dy))}
-
 let cornerMode='4';
 
 function setCornerMode(mode){
  cornerMode=String(mode);
- $('cornerMode4').classList.toggle('on',cornerMode==='4');
- $('cornerMode3').classList.toggle('on',cornerMode==='3');
- $('corner4Fixed').style.display=cornerMode==='4'?'block':'none';
- $('corner3Fixed').style.display=cornerMode==='3'?'block':'none';
- $('resCorner').innerHTML='';
- requestAnimationFrame(()=>drawCornerPreview(null));
+ $('c34Mode4').classList.toggle('on',cornerMode==='4');
+ $('c34Mode3').classList.toggle('on',cornerMode==='3');
+ $('c34Four').style.display=cornerMode==='4'?'block':'none';
+ $('c34Three').style.display=cornerMode==='3'?'block':'none';
+ $('resCorner34').innerHTML='';
+ updateCornerAxisLabel();
 }
 
-function cornerPoint(xId,yId){
- return {x:num(xId),y:num(yId)};
+function updateCornerAxisLabel(){
+ const axis=$('c34Axis')?.value||'x',select=$('c34FixedSide');
+ if(!select)return;
+ const old=select.value;
+ select.innerHTML=axis==='x'
+  ?'<option value="minus">−Y</option><option value="plus">+Y</option>'
+  :'<option value="minus">−X</option><option value="plus">+X</option>';
+ if(old==='plus'||old==='minus')select.value=old;
 }
 
-function cornerLine(p1,p2){
- const dx=p2.x-p1.x,dy=p2.y-p1.y,len=Math.hypot(dx,dy);
- if(!Number.isFinite(len)||len<1e-9)return null;
- const ux=dx/len,uy=dy/len;
- return {p:{x:p1.x,y:p1.y},d:{x:ux,y:uy},n:{x:-uy,y:ux}};
+function cornerLineFromTwoPoints(x1,y1,x2,y2,r,side){
+ const dx=x2-x1,dy=y2-y1,L=Math.hypot(dx,dy);
+ if(!Number.isFinite(L)||L<0.000001)throw new Error('I due punti di una parete coincidono.');
+ const nx=-dy/L,ny=dx/L;
+ return {nx,ny,c:nx*x1+ny*y1+(side==='left'?1:-1)*r,angle:Math.atan2(dy,dx)*180/Math.PI};
 }
 
-function cornerOffsetLine(line,distance,side){
- const sign=side==='left'?1:-1;
- return {
-  p:{x:line.p.x+sign*distance*line.n.x,y:line.p.y+sign*distance*line.n.y},
-  d:{x:line.d.x,y:line.d.y},
-  n:{x:line.n.x,y:line.n.y}
- };
+function cornerFixedLine(axis,x,y,r,direction){
+ const sign=direction==='plus'?1:-1;
+ return axis==='x'?{nx:0,ny:1,c:y+sign*r,angle:0}:{nx:1,ny:0,c:x+sign*r,angle:90};
 }
 
-function cornerCross(a,b){return a.x*b.y-a.y*b.x}
-
-function cornerIntersection(l1,l2){
- const den=cornerCross(l1.d,l2.d);
- if(Math.abs(den)<1e-9)return null;
- const delta={x:l2.p.x-l1.p.x,y:l2.p.y-l1.p.y};
- const t=cornerCross(delta,l2.d)/den;
- return {x:l1.p.x+t*l1.d.x,y:l1.p.y+t*l1.d.y};
+function cornerIntersection(a,b){
+ const det=a.nx*b.ny-a.ny*b.nx;
+ if(Math.abs(det)<0.000001)throw new Error('Le due pareti sono parallele o quasi parallele.');
+ return {x:(a.c*b.ny-a.ny*b.c)/det,y:(a.nx*b.c-a.c*b.nx)/det};
 }
 
-function cornerLineAngle(line){
- let angle=Math.atan2(line.d.y,line.d.x)*180/Math.PI;
- while(angle>=90)angle-=180;
- while(angle< -90)angle+=180;
- return angle;
+function cornerLineAngle(a){
+ while(a<=-90)a+=180;
+ while(a>90)a-=180;
+ return a;
 }
 
-function cornerIncludedAngle(a1,a2){
- let diff=Math.abs(a2-a1)%180;
- if(diff>90)diff=180-diff;
- return diff;
+function cornerRelativeAngle(a1,a2){
+ let d=cornerLineAngle(a2)-cornerLineAngle(a1);
+ while(d<=-90)d+=180;
+ while(d>90)d-=180;
+ return d;
 }
 
-function calcCorner(){
- const probe=num('cornerProbe');
- if(!Number.isFinite(probe)||probe<0){
-  $('resCorner').innerHTML='<div class="err">Controlla il diametro della sfera.</div>';return;
+function calcCorner34(){
+ try{
+  const diameter=num('c34Probe');
+  if(!Number.isFinite(diameter)||diameter<0)throw new Error('Controlla il diametro della sfera.');
+  const r=diameter/2;
+  let wall1,wall2;
+
+  if(cornerMode==='4'){
+   const v=[num('c34x1'),num('c34y1'),num('c34x2'),num('c34y2'),num('c34x3'),num('c34y3'),num('c34x4'),num('c34y4')];
+   if(bad(v))throw new Error('Controlla tutte le coordinate.');
+   wall1=cornerLineFromTwoPoints(v[0],v[1],v[2],v[3],r,$('c34Side1').value);
+   wall2=cornerLineFromTwoPoints(v[4],v[5],v[6],v[7],r,$('c34Side2').value);
+  }else{
+   const v=[num('c34fx'),num('c34fy'),num('c34qx1'),num('c34qy1'),num('c34qx2'),num('c34qy2')];
+   if(bad(v))throw new Error('Controlla tutte le coordinate.');
+   wall1=cornerFixedLine($('c34Axis').value,v[0],v[1],r,$('c34FixedSide').value);
+   wall2=cornerLineFromTwoPoints(v[2],v[3],v[4],v[5],r,$('c34QuickSide').value);
+  }
+
+  const corner=cornerIntersection(wall1,wall2);
+  const a1=cornerLineAngle(wall1.angle),a2=cornerLineAngle(wall2.angle);
+  const relative=cornerRelativeAngle(a1,a2),minor=Math.abs(relative),major=180-minor;
+
+  $('resCorner34').innerHTML=
+   box('SPIGOLO X',fmt(corner.x))+
+   box('SPIGOLO Y',fmt(corner.y))+
+   box('ANGOLO PARETE FISSA',fmt(a1,4),'°')+
+   box('ANGOLO PARETE INCLINATA',fmt(a2,4),'°')+
+   box('INCLINAZIONE RELATIVA',fmt(relative,4),'°')+
+   box('ANGOLO MINORE',fmt(minor,4),'°')+
+   box('ANGOLO SUPPLEMENTARE',fmt(major,4),'°')+
+   box('CORREZIONE PARETE FISSA',fmt(-a1,4),'°');
+ }catch(e){
+  $('resCorner34').innerHTML='<div class="err">'+e.message+'</div>';
  }
+}
 
- let p1,p2;
+function invertCornerSides(){
  if(cornerMode==='4'){
-  p1=cornerPoint('c1x','c1y');
-  p2=cornerPoint('c2x','c2y');
+  $('c34Side1').value=$('c34Side1').value==='left'?'right':'left';
+  $('c34Side2').value=$('c34Side2').value==='left'?'right':'left';
  }else{
-  p1=cornerPoint('cfx','cfy');
-  p2=$('cornerFixedAxis').value==='x'
-   ?{x:p1.x+100,y:p1.y}
-   :{x:p1.x,y:p1.y+100};
+  $('c34FixedSide').value=$('c34FixedSide').value==='plus'?'minus':'plus';
+  $('c34QuickSide').value=$('c34QuickSide').value==='left'?'right':'left';
  }
-
- const p3=cornerPoint('c3x','c3y');
- const p4=cornerPoint('c4x','c4y');
-
- if([p1.x,p1.y,p2.x,p2.y,p3.x,p3.y,p4.x,p4.y].some(v=>!Number.isFinite(v))){
-  $('resCorner').innerHTML='<div class="err">Controlla tutte le coordinate.</div>';return;
- }
-
- const measured1=cornerLine(p1,p2),measured2=cornerLine(p3,p4);
- if(!measured1||!measured2){
-  $('resCorner').innerHTML='<div class="err">Due punti della stessa parete non possono coincidere.</div>';return;
- }
-
- const measuredCorner=cornerIntersection(measured1,measured2);
- if(!measuredCorner){
-  $('resCorner').innerHTML='<div class="err">Le due pareti risultano parallele.</div>';return;
- }
-
- const radius=probe/2;
- const compensation=$('cornerComp').value==='on';
- const real1=compensation?cornerOffsetLine(measured1,radius,$('cornerSide1').value):measured1;
- const real2=compensation?cornerOffsetLine(measured2,radius,$('cornerSide2').value):measured2;
- const realCorner=cornerIntersection(real1,real2);
-
- if(!realCorner){
-  $('resCorner').innerHTML='<div class="err">Impossibile calcolare lo spigolo compensato.</div>';return;
- }
-
- const angle1=cornerLineAngle(measured1);
- const angle2=cornerLineAngle(measured2);
- const included=cornerIncludedAngle(angle1,angle2);
-
- let result='';
- result+=box('SPIGOLO X',fmt(realCorner.x));
- result+=box('SPIGOLO Y',fmt(realCorner.y));
- result+=box('ANGOLO PARETE FISSA',fmt(angle1,4),'°');
- result+=box('ANGOLO PARETE INCLINATA',fmt(angle2,4),'°');
- result+=box('ANGOLO COMPRESO',fmt(included,4),'°');
- result+=box('CORREZIONE INCLINATA',fmt(-angle2,4),'°');
-
- if(compensation){
-  result+=box('X CENTRO SFERA',fmt(measuredCorner.x));
-  result+=box('Y CENTRO SFERA',fmt(measuredCorner.y));
- }
-
- $('resCorner').innerHTML=result;
-
- drawCornerPreview({
-  points:[p1,p2,p3,p4],
-  measured:[measured1,measured2],
-  actual:[real1,real2],
-  measuredCorner,
-  realCorner,
-  compensated:compensation
- });
+ calcCorner34();
 }
 
-function drawCornerPreview(data){
- const canvas=$('cornerCanvas');
- if(!canvas)return;
-
- const cssWidth=Math.max(280,canvas.clientWidth||320),cssHeight=250;
- const ratio=window.devicePixelRatio||1;
- canvas.width=Math.round(cssWidth*ratio);
- canvas.height=Math.round(cssHeight*ratio);
-
- const ctx=canvas.getContext('2d');
- ctx.setTransform(ratio,0,0,ratio,0,0);
- ctx.clearRect(0,0,cssWidth,cssHeight);
- ctx.fillStyle='#080808';
- ctx.fillRect(0,0,cssWidth,cssHeight);
-
- if(!data){
-  ctx.fillStyle='#888';
-  ctx.font='14px Arial';
-  ctx.textAlign='center';
-  ctx.fillText('Inserisci i punti e premi CALCOLA',cssWidth/2,cssHeight/2);
-  return;
+function resetCorner34(){
+ $('c34Probe').value='10';
+ if(cornerMode==='4'){
+  $('c34x1').value='0';$('c34y1').value='10';$('c34x2').value='100';$('c34y2').value='10';
+  $('c34x3').value='20';$('c34y3').value='0';$('c34x4').value='20';$('c34y4').value='100';
+  $('c34Side1').value='right';$('c34Side2').value='right';
+ }else{
+  $('c34Axis').value='x';updateCornerAxisLabel();$('c34fx').value='0';$('c34fy').value='10';
+  $('c34FixedSide').value='minus';$('c34qx1').value='20';$('c34qy1').value='0';
+  $('c34qx2').value='20';$('c34qy2').value='100';$('c34QuickSide').value='right';
  }
-
- const all=[...data.points,data.measuredCorner,data.realCorner].filter(Boolean);
- let minX=Math.min(...all.map(p=>p.x)),maxX=Math.max(...all.map(p=>p.x));
- let minY=Math.min(...all.map(p=>p.y)),maxY=Math.max(...all.map(p=>p.y));
- if(Math.abs(maxX-minX)<1)maxX=minX+1;
- if(Math.abs(maxY-minY)<1)maxY=minY+1;
-
- const pad=34;
- const scale=Math.min((cssWidth-2*pad)/(maxX-minX),(cssHeight-2*pad)/(maxY-minY));
- const tx=x=>pad+(x-minX)*scale;
- const ty=y=>cssHeight-pad-(y-minY)*scale;
-
- function drawInfinite(line,color,dash,width){
-  const span=Math.max(maxX-minX,maxY-minY)*3+100;
-  const a={x:line.p.x-line.d.x*span,y:line.p.y-line.d.y*span};
-  const b={x:line.p.x+line.d.x*span,y:line.p.y+line.d.y*span};
-  ctx.save();
-  ctx.strokeStyle=color;
-  ctx.lineWidth=width;
-  ctx.setLineDash(dash);
-  ctx.beginPath();
-  ctx.moveTo(tx(a.x),ty(a.y));
-  ctx.lineTo(tx(b.x),ty(b.y));
-  ctx.stroke();
-  ctx.restore();
- }
-
- data.measured.forEach(line=>drawInfinite(line,'#777',[7,5],2));
- if(data.compensated)data.actual.forEach(line=>drawInfinite(line,'#ffc400',[],2.5));
-
- data.points.forEach((point,index)=>{
-  ctx.fillStyle='#fff';
-  ctx.beginPath();
-  ctx.arc(tx(point.x),ty(point.y),5,0,Math.PI*2);
-  ctx.fill();
-  ctx.fillStyle='#ffc400';
-  ctx.font='bold 12px Arial';
-  ctx.fillText('P'+(index+1),tx(point.x)+8,ty(point.y)-7);
- });
-
- ctx.fillStyle='#ffc400';
- ctx.beginPath();
- ctx.arc(tx(data.realCorner.x),ty(data.realCorner.y),8,0,Math.PI*2);
- ctx.fill();
- ctx.strokeStyle='#050505';
- ctx.lineWidth=2;
- ctx.stroke();
- ctx.fillStyle='#ffc400';
- ctx.font='bold 12px Arial';
- ctx.fillText('SPIGOLO',tx(data.realCorner.x)+10,ty(data.realCorner.y)-9);
+ calcCorner34();
 }
 
-
+function calcAngle(){const x1=num('ax1'),y1=num('ay1'),x2=num('ax2'),y2=num('ay2');const a=Math.atan2(y2-y1,x2-x1)*180/Math.PI;$('resAngle').innerHTML=box('ANGOLO',fmt(a,4),'°')+box('CORREZIONE',fmt(-a,4),'°')}
+function calcChamfer(){const d=num('chD'),c=num('chC'),a=num('chA'),z=num('chZ'),r=num('chR'),type=$('chType').value;if(bad([d,c,a,z,r])||a<=0||a>=90)return;const radial=c/Math.tan(a*Math.PI/180),dx=2*radial;const xStart=type==='ext'?d-dx:d+dx;const comp=r*(1-Math.sin(a*Math.PI/180));$('resChamfer').innerHTML=box('X INIZIO',fmt(xStart))+box('X FINE',fmt(d))+box('Z FINE',fmt(z-c))+box('COMP. R INDICATIVA',fmt(comp))}
+function calcInter(){const dx=num('ix2')-num('ix1'),dy=num('iy2')-num('iy1');$('resInter').innerHTML=box('INTERASSE',fmt(Math.hypot(dx,dy)))+box('DELTA X',fmt(dx))+box('DELTA Y',fmt(dy))}
 function calcHexS(){const s=num('hexS');$('resHexS').innerHTML=box('Ø SULLE PUNTE',fmt(s/0.8660254))+box('LATO',fmt(s/1.7320508))}
 function calcHexD(){const d=num('hexD');$('resHexD').innerHTML=box('CHIAVE MASSIMA',fmt(d*0.8660254))}
 
@@ -1092,6 +977,13 @@ function askAssistant(raw){
   return;
  }
 
+ /* SPIGOLO / PARETI 3–4 PUNTI */
+ if(/\b(spigolo|parete inclinata|pareti inclinate|4 punti|quattro punti|3 punti parete|tre punti parete|ganascia fissa)\b/.test(s)){
+  direct('Apri Spigolo / Pareti 3–4 punti in Geometria.',
+   'Usa uno o due punti sulla parete fissa, due punti sulla parete inclinata e compensa il raggio della sfera.');
+  return;
+ }
+
  /* INTERASSE */
  if(/\b(interasse|distanza tra centri)\b/.test(s)){
   const x1=numberAfter(s,['x1','x 1']),y1=numberAfter(s,['y1','y 1']),x2=numberAfter(s,['x2','x 2']),y2=numberAfter(s,['y2','y 2']);
@@ -1182,7 +1074,6 @@ function setupRecognition(){
 function toggleListen(){if(!rec)return;if(listening){rec.stop();return}speechSynthesis?.cancel();try{rec.start()}catch(e){}}
 
 function init(){
- setCornerMode('4');
  renderThreads();const rm=localStorage.getItem('ruler_mm');if(rm)$('rulerMm').value=rm;
  $('voiceRate').value=localStorage.getItem('voice_rate')||'1.18';$('voicePitch').value=localStorage.getItem('voice_pitch')||'1';$('voiceVolume').value=localStorage.getItem('voice_volume')||'1';saveVoice();populateVoices();if('speechSynthesis'in window){speechSynthesis.onvoiceschanged=populateVoices;setTimeout(populateVoices,300)}setupRecognition();
  $('vaText').addEventListener('keydown',e=>{if(e.key==='Enter')sendTyped()});$('voiceSelect').addEventListener('change',saveVoice);['Rate','Pitch','Volume'].forEach(x=>$('voice'+x).addEventListener('input',saveVoice));document.querySelectorAll('.preset').forEach(b=>b.onclick=()=>preset(b.dataset.p));
