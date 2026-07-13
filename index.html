@@ -4,94 +4,89 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#050505">
-<title>CNC Toolbox v3.7 · Spigolo pareti e risposta vocale riparata.</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>CNC Toolbox v3.8</title>
 <style>
-:root{--y:#ffc400;--y2:#e2a700;--b:#050505;--p:#121212;--l:#404040;--w:#fff;--g:#aaa;--ok:#65e36e;--err:#ff5a5a}
+:root{--y:#ffc400;--y2:#dfa500;--b:#050505;--p:#141414;--p2:#0b0b0b;--l:#3e3e3e;--w:#fff;--g:#aaa;--ok:#68e36f;--err:#ff5b5b;--blue:#54baff}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;min-height:100%;background:var(--b);color:var(--w);font-family:Arial,Helvetica,sans-serif}
 button,input,select{font:inherit}
-.app{max-width:560px;margin:auto;padding:14px 13px 40px}
+button{cursor:pointer}
+.app{max-width:590px;margin:auto;padding:14px 13px 90px}
 .screen{display:none}.screen.active{display:block}
-.top{display:flex;align-items:center;gap:12px;margin:8px 0 18px}
+.top{display:flex;align-items:center;gap:12px;margin:7px 0 17px}
 .menu{font-size:34px;color:var(--y);border:0;background:none;padding:0 5px}
-h1{margin:0;color:var(--y);font-size:32px;letter-spacing:.5px}h1 span{color:#fff}
+h1{margin:0;color:var(--y);font-size:32px;letter-spacing:.4px}h1 span{color:#fff}
 .sub{color:var(--y);font-size:13px;font-weight:900;margin-top:3px}
-.version{display:inline-block;border:1px solid var(--y);border-radius:999px;padding:4px 8px;margin-top:6px;font-size:11px;font-weight:900;color:var(--y)}
+.version{display:inline-block;border:1px solid var(--y);border-radius:999px;padding:5px 9px;margin-top:6px;font-size:11px;font-weight:900;color:var(--y)}
 .sectionTitle{color:var(--y);font-size:16px;font-weight:900;margin:20px 2px 9px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.tile{min-height:112px;border:1.5px solid #555;border-radius:13px;background:linear-gradient(145deg,#1a1a1a,#080808);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-weight:900;padding:10px}
-.tile.primary{background:linear-gradient(#ffd31f,#e5aa00);color:#050505;border-color:var(--y)}
-.tile.wide{grid-column:1/-1;min-height:98px}.icon{font-size:37px;margin-bottom:8px}
+.tile{min-height:111px;border:1.5px solid #555;border-radius:13px;background:linear-gradient(145deg,#1b1b1b,#080808);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-weight:900;padding:10px}
+.tile.primary{background:linear-gradient(#ffd526,#e5aa00);color:#050505;border-color:var(--y)}
+.tile.wide{grid-column:1/-1;min-height:96px}.icon{font-size:37px;margin-bottom:8px}
 .info{border:2px solid var(--y);border-radius:10px;margin-top:20px;padding:14px;text-align:center;color:var(--y);font-weight:900}
-.header{display:flex;align-items:center;justify-content:space-between;margin:5px 0 13px}
+.header{display:flex;align-items:center;justify-content:space-between;margin:4px 0 13px;position:sticky;top:0;background:rgba(5,5,5,.96);z-index:30;padding:5px 0}
 .back,.help{min-width:48px;height:48px;border:0;background:none;color:var(--y);font-size:38px;font-weight:900}
-.title{text-align:center;flex:1;color:var(--y);font-weight:900;font-size:21px}.title small{display:block;color:#fff;font-size:14px;margin-top:4px}
+.help{font-size:28px}
+.title{text-align:center;flex:1;color:var(--y);font-weight:900;font-size:20px}.title small{display:block;color:#fff;font-size:13px;margin-top:4px}
 .card{background:linear-gradient(145deg,#171717,#090909);border:1.5px solid #3d3d3d;border-radius:13px;padding:14px;margin:11px 0}
 .card h2{color:var(--y);font-size:16px;margin:0 0 13px;padding-bottom:9px;border-bottom:1px solid #333}
-.row{display:grid;grid-template-columns:1fr 150px;gap:9px;align-items:center;margin:10px 0}
-.label{font-weight:900;color:#ddd;font-size:17px}
-.inp,select{width:100%;height:52px;border-radius:9px;border:2px solid #ddd;background:#fff;color:#050505;padding:0 10px;font-size:19px;font-weight:900;text-align:right}
-select{text-align:center;font-size:16px}
+.row{display:grid;grid-template-columns:1fr 155px;gap:9px;align-items:center;margin:10px 0}
+.label{font-weight:900;color:#ddd;font-size:16px}
+.inp,select{width:100%;height:52px;border-radius:9px;border:2px solid #ddd;background:#fff;color:#050505;padding:0 10px;font-size:18px;font-weight:900;text-align:right}
+select{text-align:center;font-size:15px}
 .seg{display:grid;grid-template-columns:1fr 1fr;gap:6px}.seg button{height:49px;border-radius:8px;border:2px solid #444;background:#111;color:#fff;font-weight:900}.seg button.on{background:var(--y);color:#050505;border-color:var(--y)}
-.btn{width:100%;min-height:58px;border:0;border-radius:10px;background:linear-gradient(var(--y),var(--y2));color:#050505;font-weight:900;font-size:20px;margin-top:9px;padding:9px}
+.btn{width:100%;min-height:58px;border:0;border-radius:10px;background:linear-gradient(var(--y),var(--y2));color:#050505;font-weight:900;font-size:19px;margin-top:9px;padding:9px}
 .btn2{width:100%;min-height:49px;border:2px solid var(--y);border-radius:9px;background:#080808;color:var(--y);font-weight:900;padding:8px}
 .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}
-.resultBox{border:1.5px solid #444;border-radius:10px;padding:13px;margin:9px 0;display:flex;justify-content:space-between;align-items:center}
-.resLabel{font-weight:900;color:#eee}.resVal{font-size:28px;color:var(--y);font-weight:900;text-align:right}
-.note,.hint{color:#aaa;font-size:13px;line-height:1.4;margin-top:10px}.err{color:var(--err);font-weight:900;margin-top:9px}.ok{color:var(--ok)}
-.tableWrap{overflow:auto;border:1px solid #333;border-radius:10px}.tbl{width:100%;border-collapse:collapse;min-width:470px;font-size:13px}.tbl th{position:sticky;top:0;background:#222;color:var(--y);padding:9px;text-align:left}.tbl td{padding:9px;border-top:1px solid #2c2c2c}
+.resultBox{border:1.5px solid #444;border-radius:10px;padding:13px;margin:9px 0;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.resLabel{font-weight:900;color:#eee}.resLabel small{color:#aaa}.resVal{font-size:27px;color:var(--y);font-weight:900;text-align:right}
+.note,.hint{color:#aaa;font-size:13px;line-height:1.45;margin-top:10px}.err{color:var(--err);font-weight:900;margin-top:9px}.ok{color:var(--ok)}.blue{color:var(--blue)}
+.tableWrap{overflow:auto;border:1px solid #333;border-radius:10px;max-height:520px}.tbl{width:100%;border-collapse:collapse;min-width:470px;font-size:13px}.tbl th{position:sticky;top:0;background:#222;color:var(--y);padding:9px;text-align:left}.tbl td{padding:9px;border-top:1px solid #2c2c2c}
 .search{width:100%;height:52px;border:2px solid var(--y);border-radius:9px;background:#fff;color:#050505;padding:0 10px;font-weight:900;font-size:18px}
-.tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:9px 0}.tabs button{min-height:44px;border:1px solid #555;border-radius:8px;background:#111;color:#fff;font-weight:900}.tabs button.on{background:var(--y);color:#050505}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:9px 0}.tabs button{min-height:44px;border:1px solid #555;border-radius:8px;background:#111;color:#fff;font-weight:900;font-size:12px}.tabs button.on{background:var(--y);color:#050505}
 .calcGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.calcGrid button{height:52px;border:1px solid #555;border-radius:8px;background:#161616;color:#fff;font-size:20px;font-weight:900}.calcGrid .op{color:var(--y)}.calcGrid .eq{background:var(--y);color:#050505}
 #calcDisplay{width:100%;height:62px;border:2px solid var(--y);border-radius:9px;background:#fff;color:#050505;font-size:27px;font-weight:900;text-align:right;padding:0 10px;margin-bottom:9px}
-.rangeRow{display:grid;grid-template-columns:83px 1fr 43px;gap:7px;align-items:center;margin:9px 0}.rangeRow input{width:100%;accent-color:var(--y)}.rangeVal{text-align:right;color:var(--y);font-weight:900}
+.rangeRow{display:grid;grid-template-columns:84px 1fr 45px;gap:7px;align-items:center;margin:9px 0}.rangeRow input{width:100%;accent-color:var(--y)}.rangeVal{text-align:right;color:var(--y);font-weight:900}
 .assistantHero{border:2px solid var(--y);border-radius:14px;background:radial-gradient(circle at 50% 15%,#292100,#080808 70%);padding:15px;text-align:center}
-.status{display:flex;align-items:center;gap:8px;background:#080808;border:1px solid #333;border-radius:10px;padding:10px;font-weight:900;text-align:left}
-.dot{width:12px;height:12px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 4px rgba(101,227,110,.12)}.dot.listen{background:var(--y);animation:pulse .75s infinite}.dot.bad{background:var(--err)}
+.status{display:flex;align-items:center;gap:8px;background:#080808;border:1px solid #333;border-radius:10px;padding:10px;font-weight:900;text-align:left;min-height:45px}
+.dot{width:12px;height:12px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 4px rgba(101,227,110,.12)}.dot.listen{background:var(--y);animation:pulse .75s infinite}.dot.talk{background:var(--blue);animation:pulse .85s infinite}.dot.bad{background:var(--err)}
 @keyframes pulse{50%{transform:scale(1.35)}}
 .mic{width:140px;height:140px;border-radius:50%;border:4px solid var(--y);background:radial-gradient(circle at 35% 30%,#343434,#080808 70%);color:var(--y);font-size:62px;margin:17px auto 9px;display:block;box-shadow:0 0 0 10px rgba(255,196,0,.08)}
 .mic.listen{background:var(--y);color:#050505;animation:pulse .75s infinite}
-.heard{min-height:47px;border:1px dashed #555;border-radius:9px;padding:10px;margin-top:11px;color:#ddd;text-align:left}
-.answer{min-height:94px;border:2px solid var(--y);border-radius:11px;display:flex;align-items:center;justify-content:center;padding:13px;color:var(--y);font-size:30px;font-weight:900;text-align:center;line-height:1.12}.answer.q{font-size:24px;color:#fff}
-.writeRow{display:grid;grid-template-columns:1fr 82px;gap:7px}.writeRow input{height:52px;border-radius:9px;border:2px solid #ddd;padding:0 10px;font-weight:900;font-size:17px}.writeRow button{border:0;border-radius:9px;background:var(--y);font-weight:900}
+.heard{min-height:47px;border:1px dashed #555;border-radius:9px;padding:10px;margin-top:11px;color:#ddd;text-align:left;line-height:1.35}
+.answer{min-height:100px;border:2px solid var(--y);border-radius:11px;display:flex;align-items:center;justify-content:center;padding:13px;color:var(--y);font-size:29px;font-weight:900;text-align:center;line-height:1.12}.answer.q{font-size:23px;color:#fff}
+.writeRow{display:grid;grid-template-columns:1fr 82px;gap:7px}.writeRow input{height:52px;border-radius:9px;border:2px solid #ddd;padding:0 10px;font-weight:900;font-size:17px;min-width:0}.writeRow button{border:0;border-radius:9px;background:var(--y);font-weight:900}
 .presets{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.preset{height:41px;border:1px solid #555;border-radius:8px;background:#151515;color:#fff;font-weight:900}.preset.on{background:var(--y);color:#050505}
-.support{font-size:13px;line-height:1.55}
-.ruler{height:72px;border:1px solid #555;border-radius:8px;background:repeating-linear-gradient(90deg,#fff 0,#fff 1px,transparent 1px,transparent 10px);position:relative;margin-top:12px}.ruler:after{content:"0   10   20   30   40   50";white-space:pre;position:absolute;left:5px;top:42px;color:var(--y);font-weight:900;word-spacing:18px}
-.videoBox{width:100%;aspect-ratio:4/3;background:#000;border:1px solid #444;border-radius:10px;overflow:hidden;position:relative}.videoBox video{width:100%;height:100%;object-fit:cover}.angleLine{position:absolute;left:50%;top:50%;width:42%;height:3px;background:var(--y);transform-origin:left center}
+.switchRow{display:flex;align-items:center;justify-content:space-between;gap:15px;margin:13px 0;font-weight:900}.switchRow input{width:24px;height:24px;accent-color:var(--y)}
+.support{font-size:13px;line-height:1.6}
+.videoBox{width:100%;aspect-ratio:4/3;background:#000;border:1px solid #444;border-radius:10px;overflow:hidden;position:relative}.videoBox video{width:100%;height:100%;object-fit:cover}.angleLine{position:absolute;left:50%;top:50%;width:43%;height:3px;background:var(--y);transform-origin:left center}
+.rulerVisual{height:82px;border:1px solid #555;border-radius:8px;position:relative;overflow:hidden;margin-top:12px;background-color:#101010}
+.rulerTicks{position:absolute;left:8px;top:7px;height:54px;border-left:2px solid var(--y)}
+.rulerText{position:absolute;left:8px;bottom:5px;color:var(--y);font-size:12px;font-weight:900;white-space:pre}
+.debug{font-family:monospace;font-size:11px;color:#aaa;white-space:pre-wrap;word-break:break-word;max-height:120px;overflow:auto}
 .fab{position:fixed;right:15px;bottom:16px;width:70px;height:70px;border-radius:50%;border:4px solid #050505;background:var(--y);font-size:33px;z-index:900;box-shadow:0 5px 22px rgba(0,0,0,.7)}
-@media(max-width:380px){.row{grid-template-columns:1fr 130px}.tile{min-height:105px}.answer{font-size:26px}.fab{width:62px;height:62px;font-size:29px}}
-
-.wallModePanel{display:none}.wallModePanel.active{display:block}
-.wallHint{border-left:4px solid var(--y);background:#19170d;border-radius:8px;padding:10px 11px;color:#ddd;font-size:13px;line-height:1.45;margin-top:10px}
-.wallPointTitle{color:var(--y);font-weight:900;margin:14px 0 5px}
-.wallDiagram{height:120px;border:1px solid #444;border-radius:10px;background:#090909;position:relative;overflow:hidden;margin-top:9px}
-.wallDiagram .fixed{position:absolute;left:12%;right:8%;top:28%;height:3px;background:var(--y)}
-.wallDiagram .inclined{position:absolute;left:12%;top:28%;width:48%;height:3px;background:#fff;transform-origin:left center;transform:rotate(64deg)}
-.wallDiagram .corner{position:absolute;left:calc(12% - 7px);top:calc(28% - 7px);width:14px;height:14px;border-radius:50%;background:var(--ok)}
-.wallDiagram .labA{position:absolute;right:10%;top:10%;color:var(--y);font-weight:900;font-size:12px}
-.wallDiagram .labB{position:absolute;left:30%;bottom:7%;color:#fff;font-weight:900;font-size:12px}
-.audioState{margin-top:8px;font-size:12px;color:#aaa;text-align:center}
-
+@media(max-width:390px){.row{grid-template-columns:1fr 132px}.tile{min-height:104px}.answer{font-size:25px}.fab{width:62px;height:62px;font-size:29px}.tabs{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
 <div class="app">
 
 <section id="home" class="screen active">
- <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v3.7 · SPIGOLO 3/4 PUNTI + VOCE RIPARATA</div></div></div>
- <div class="grid">
-  <button class="tile primary wide" onclick="show('assistant')"><div class="icon">🎙️</div>ASSISTENTE VOCALE MECCANICO</button>
- </div>
+ <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v3.8 · RISPOSTA AUDIO AUTOMATICA</div></div></div>
+ <div class="grid"><button class="tile primary wide" onclick="show('assistant')"><div class="icon">🎙️</div>ASSISTENTE VOCALE MECCANICO</button></div>
+
  <div class="sectionTitle">GEOMETRIA</div>
  <div class="grid">
   <button class="tile primary" onclick="show('three')"><div class="icon">◎</div>CENTRO 3 PUNTI</button>
+  <button class="tile" onclick="show('four')"><div class="icon">◉</div>CENTRO/RAGGIO 4 PUNTI</button>
   <button class="tile" onclick="show('two')"><div class="icon">⟍</div>CENTRO 2 PUNTI</button>
-  <button class="tile primary wide" onclick="show('walls');setWallMode('quick')"><div class="icon">⌞</div>SPIGOLO PARETI 3 / 4 PUNTI</button>
   <button class="tile" onclick="show('angle')"><div class="icon">∠</div>ANGOLO</button>
   <button class="tile primary" onclick="show('chamfer')"><div class="icon">45°</div>SMUSSI</button>
   <button class="tile" onclick="show('inter')"><div class="icon">↔</div>INTERASSE</button>
   <button class="tile" onclick="show('hex')"><div class="icon">⬢</div>ESAGONO</button>
  </div>
+
  <div class="sectionTitle">FILETTATURE E LAVORAZIONI</div>
  <div class="grid">
   <button class="tile primary" onclick="show('threads');renderThreads()"><div class="icon">⚙</div>TABELLE FILETTI</button>
@@ -101,41 +96,44 @@ select{text-align:center;font-size:16px}
   <button class="tile" onclick="show('keys')"><div class="icon">▰</div>LINGUETTE</button>
   <button class="tile" onclick="show('conv')"><div class="icon">↻</div>CONVERSIONI</button>
  </div>
+
  <div class="sectionTitle">STRUMENTI</div>
  <div class="grid">
   <button class="tile" onclick="show('calculator')"><div class="icon">🧮</div>CALCOLATRICE</button>
-  <button class="tile" onclick="show('ruler')"><div class="icon">📏</div>RIGHELLO</button>
+  <button class="tile" onclick="show('ruler');updateRuler()"><div class="icon">📏</div>RIGHELLO / CALIBRO</button>
   <button class="tile" onclick="show('goniometer')"><div class="icon">📐</div>GONIOMETRO</button>
   <button class="tile" onclick="show('torch')"><div class="icon">🔦</div>TORCIA</button>
-  <button class="tile wide" onclick="show('scanner')"><div class="icon">🧊</div>SCANNER 3D · LO RIPRENDEREMO DOPO</button>
+  <button class="tile wide" onclick="show('scanner')"><div class="icon">🧊</div>SCANNER 3D · PROGETTO SEPARATO</button>
  </div>
  <div class="info">ⓘ CASSETTA DEGLI ATTREZZI DIGITALE<br>PER OFFICINA CNC</div>
 </section>
 
-<!-- ASSISTANT -->
 <section id="assistant" class="screen">
- <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">ASSISTENTE VOCALE<small>RISPOSTE IMMEDIATE</small></div><button class="help" onclick="alert('Puoi chiedere filetti, tolleranze, linguette, cave, parametri CNC, smussi, esagoni, conversioni e geometria. Se manca un dato, te lo chiede. Pronuncia spiegami per i dettagli.')">?</button></div>
+ <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">ASSISTENTE VOCALE<small>PREMI · PARLA · ASCOLTA</small></div><button class="help" onclick="alert('Premi il microfono e fai la domanda. La risposta viene letta automaticamente dopo che il microfono si è chiuso. Esempi: Che punta per M16? Quanto foro per un pollice GAS? 50 H7.')">?</button></div>
  <div class="assistantHero">
   <div class="status"><span id="vaDot" class="dot"></span><span id="vaStatus">Pronto. Premi il microfono.</span></div>
   <button id="vaMic" class="mic" onclick="toggleListen()">🎤</button>
-  <div id="vaHeard" class="heard">Esempio: “Che punta per M16?”</div>
+  <div id="vaHeard" class="heard">Esempio: “Quanto devo forare per un pollice GAS?”</div>
  </div>
- <div class="card"><h2>RISPOSTA</h2><div id="vaAnswer" class="answer q">In attesa della domanda</div><div class="note" style="text-align:center">Solo la risposta. Per approfondire di': “spiegami”.</div></div>
- <div class="card"><h2>PROVA SCRIVENDO</h2><div class="writeRow"><input id="vaText" placeholder="Che punta per M16?"><button onclick="sendTyped()">INVIA</button></div><div class="actions"><button class="btn2" onclick="askAssistant('Che punta per M16?')">M16?</button><button class="btn2" onclick="askAssistant('M16 passo grosso')">M16 GROSSO</button><button class="btn2" onclick="askAssistant('Quanto devo forare per un pollice GAS?')">GAS 1"</button></div></div>
- <div class="card"><h2>CAMBIA VOCE</h2>
+ <div class="card"><h2>RISPOSTA</h2><div id="vaAnswer" class="answer q">In attesa della domanda</div><div class="note" style="text-align:center">La risposta parte da sola. Per i dettagli pronuncia: “spiegami”.</div></div>
+ <div class="card"><h2>PROVA SCRIVENDO</h2>
+  <div class="writeRow"><input id="vaText" placeholder="Che punta per M16?"><button onclick="sendTyped()">INVIA</button></div>
+  <div class="actions"><button class="btn2" onclick="askAssistant('Che punta per M16?')">M16?</button><button class="btn2" onclick="askAssistant('Quanto devo forare per un pollice GAS?')">GAS 1"</button><button class="btn2" onclick="askAssistant('M33 per 1.5')">M33×1,5</button><button class="btn2" onclick="askAssistant('50 H7')">50 H7</button></div>
+ </div>
+ <div class="card"><h2>AUDIO AUTOMATICO</h2>
+  <div class="switchRow"><span>Leggi ogni risposta</span><input id="audioEnabled" type="checkbox" checked></div>
   <div class="row"><div class="label">Voce</div><select id="voiceSelect"></select></div>
   <div class="presets"><button class="preset on" data-p="fast">RAPIDA</button><button class="preset" data-p="natural">NATURALE</button><button class="preset" data-p="deep">PROFONDA</button><button class="preset" data-p="clear">CHIARA</button><button class="preset" data-p="slow">LENTA</button><button class="preset" data-p="custom">PERSONALE</button></div>
-  <div class="rangeRow"><div class="label">Velocità</div><input id="voiceRate" type="range" min=".7" max="1.5" step=".05" value="1.18"><div id="voiceRateV" class="rangeVal">1.18</div></div>
+  <div class="rangeRow"><div class="label">Velocità</div><input id="voiceRate" type="range" min=".7" max="1.5" step=".05" value="1.12"><div id="voiceRateV" class="rangeVal">1.12</div></div>
   <div class="rangeRow"><div class="label">Tonalità</div><input id="voicePitch" type="range" min=".55" max="1.45" step=".05" value="1"><div id="voicePitchV" class="rangeVal">1.00</div></div>
   <div class="rangeRow"><div class="label">Volume</div><input id="voiceVolume" type="range" min=".2" max="1" step=".05" value="1"><div id="voiceVolumeV" class="rangeVal">1.00</div></div>
-  <button class="btn" onclick="speak('Punta da 14 millimetri.')">PROVA LA VOCE</button><div class="audioState">La prova vocale parte anche senza usare il microfono.</div>
+  <div class="actions"><button class="btn2" onclick="testVoice()">PROVA LA VOCE</button><button class="btn2" onclick="stopSpeech(true)">STOP VOCE</button></div>
  </div>
- <div class="card"><h2>CONTROLLO TELEFONO</h2><div id="voiceSupport" class="support"></div></div>
+ <div class="card"><h2>CONTROLLO TELEFONO</h2><div id="voiceSupport" class="support"></div><div id="voiceDebug" class="debug"></div></div>
 </section>
 
-<!-- BASIC GEOMETRY -->
 <section id="three" class="screen">
- <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">CENTRO FORO / PERNO<small>3 PUNTI</small></div><button class="help" onclick="alert('Inserisci tre coordinate toccate sul diametro. La sfera viene compensata sul diametro finale.')">?</button></div>
+ <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">CENTRO FORO / PERNO<small>3 PUNTI</small></div><button class="help" onclick="alert('Inserisci le tre coordinate X/Y lette battendo sul diametro. Il diametro finale viene compensato con la sfera.')">?</button></div>
  <div class="card"><h2>SETUP</h2><div class="row"><div class="label">Ø sfera</div><input id="probe3" class="inp" value="10"></div><div class="seg"><button id="m3foro" class="on" onclick="setSeg('m3','foro')">FORO</button><button id="m3perno" onclick="setSeg('m3','perno')">PERNO</button></div></div>
  <div class="card"><h2>COORDINATE</h2>
   <div class="row"><div class="label">P1 X</div><input id="x1" class="inp" value="0"></div><div class="row"><div class="label">P1 Y</div><input id="y1" class="inp" value="0"></div>
@@ -145,113 +143,21 @@ select{text-align:center;font-size:16px}
  </div>
 </section>
 
+<section id="four" class="screen">
+ <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">CENTRO / RAGGIO<small>4 PUNTI · MEDIA MIGLIORE</small></div><button class="help" onclick="alert('Usa quattro punti sullo stesso arco o diametro. Il calcolo ai minimi quadrati riduce l’effetto di un piccolo errore di battuta.')">?</button></div>
+ <div class="card"><h2>SETUP</h2><div class="row"><div class="label">Ø sfera</div><input id="probe4" class="inp" value="10"></div><div class="seg"><button id="m4foro" class="on" onclick="setSeg('m4','foro')">FORO</button><button id="m4perno" onclick="setSeg('m4','perno')">PERNO</button></div></div>
+ <div class="card"><h2>QUATTRO PUNTI</h2>
+  <div class="row"><div class="label">P1 X</div><input id="f4x1" class="inp" value="0"></div><div class="row"><div class="label">P1 Y</div><input id="f4y1" class="inp" value="50"></div>
+  <div class="row"><div class="label">P2 X</div><input id="f4x2" class="inp" value="50"></div><div class="row"><div class="label">P2 Y</div><input id="f4y2" class="inp" value="100"></div>
+  <div class="row"><div class="label">P3 X</div><input id="f4x3" class="inp" value="100"></div><div class="row"><div class="label">P3 Y</div><input id="f4y3" class="inp" value="50"></div>
+  <div class="row"><div class="label">P4 X</div><input id="f4x4" class="inp" value="50"></div><div class="row"><div class="label">P4 Y</div><input id="f4y4" class="inp" value="0"></div>
+  <button class="btn" onclick="calc4()">CALCOLA CENTRO E RAGGIO</button><div id="res4"></div>
+ </div>
+</section>
+
 <section id="two" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">CENTRO 2 PUNTI<small>BATTUTE OPPOSTE</small></div><button class="help">?</button></div>
  <div class="card"><div class="row"><div class="label">Ø sfera</div><input id="probe2" class="inp" value="10"></div><div class="seg"><button id="m2foro" class="on" onclick="setSeg('m2','foro')">FORO</button><button id="m2perno" onclick="setSeg('m2','perno')">PERNO</button></div><div class="row"><div class="label">Quota 1</div><input id="q1" class="inp" value="0"></div><div class="row"><div class="label">Quota 2</div><input id="q2" class="inp" value="100"></div><button class="btn" onclick="calc2()">CALCOLA</button><div id="res2"></div></div>
-</section>
-
-
-<section id="walls" class="screen">
- <div class="header">
-  <button class="back" onclick="show('home')">‹</button>
-  <div class="title">SPIGOLO PARETI<small>3 PUNTI RAPIDO · 4 PUNTI COMPLETO</small></div>
-  <button class="help" onclick="alert('Le coordinate sono quelle del centro della sfera mentre tocca le pareti. Seleziona il lato dove si trova il materiale guardando dal primo punto verso il secondo. La Toolbox compensa il raggio della sfera e calcola l’incrocio reale delle pareti.')">?</button>
- </div>
-
- <div class="card">
-  <h2>MODALITÀ</h2>
-  <div class="seg">
-   <button id="wallQuickBtn" class="on" onclick="setWallMode('quick')">3 PUNTI RAPIDO</button>
-   <button id="wallFullBtn" onclick="setWallMode('full')">4 PUNTI COMPLETO</button>
-  </div>
-  <div class="row"><div class="label">Ø sfera</div><input id="wallProbe" class="inp" value="10"></div>
-  <div class="wallDiagram">
-   <div class="fixed"></div><div class="inclined"></div><div class="corner"></div>
-   <div class="labA">PARETE FISSA</div><div class="labB">PARETE INCLINATA</div>
-  </div>
-  <div class="wallHint">
-   <b>3 punti:</b> un solo tocco sulla parete fissa, perché la dichiari parallela a X oppure Y; due tocchi sulla parete inclinata.<br>
-   <b>4 punti:</b> due tocchi su ogni parete, utile se anche la morsa è leggermente fuori asse.
-  </div>
- </div>
-
- <div id="wallQuickPanel" class="wallModePanel active">
-  <div class="card">
-   <h2>PARETE FISSA · 1 PUNTO</h2>
-   <div class="row"><div class="label">Parallela a</div>
-    <select id="wallFixedAxis" onchange="updateWallAxisHint()">
-     <option value="x">ASSE X</option><option value="y">ASSE Y</option>
-    </select>
-   </div>
-   <div class="row"><div class="label">Punto X</div><input id="wallFX" class="inp" value="0"></div>
-   <div class="row"><div class="label">Punto Y</div><input id="wallFY" class="inp" value="5"></div>
-   <div class="row"><div class="label">Materiale</div>
-    <select id="wallFixedSide">
-     <option value="right">DESTRA rispetto al verso asse</option>
-     <option value="left">SINISTRA rispetto al verso asse</option>
-    </select>
-   </div>
-   <div id="wallAxisHint" class="hint"></div>
-  </div>
-
-  <div class="card">
-   <h2>PARETE INCLINATA · 2 PUNTI</h2>
-   <div class="wallPointTitle">PUNTO 1</div>
-   <div class="row"><div class="label">X1</div><input id="wallBX1" class="inp" value="0"></div>
-   <div class="row"><div class="label">Y1</div><input id="wallBY1" class="inp" value="0"></div>
-   <div class="wallPointTitle">PUNTO 2</div>
-   <div class="row"><div class="label">X2</div><input id="wallBX2" class="inp" value="100"></div>
-   <div class="row"><div class="label">Y2</div><input id="wallBY2" class="inp" value="-50"></div>
-   <div class="row"><div class="label">Materiale</div>
-    <select id="wallBSideQuick">
-     <option value="left">SINISTRA guardando P1 → P2</option>
-     <option value="right">DESTRA guardando P1 → P2</option>
-    </select>
-   </div>
-  </div>
- </div>
-
- <div id="wallFullPanel" class="wallModePanel">
-  <div class="card">
-   <h2>PARETE A · 2 PUNTI</h2>
-   <div class="wallPointTitle">PUNTO A1</div>
-   <div class="row"><div class="label">X1</div><input id="wallAX1" class="inp" value="0"></div>
-   <div class="row"><div class="label">Y1</div><input id="wallAY1" class="inp" value="5"></div>
-   <div class="wallPointTitle">PUNTO A2</div>
-   <div class="row"><div class="label">X2</div><input id="wallAX2" class="inp" value="100"></div>
-   <div class="row"><div class="label">Y2</div><input id="wallAY2" class="inp" value="5"></div>
-   <div class="row"><div class="label">Materiale</div>
-    <select id="wallASide">
-     <option value="right">DESTRA guardando A1 → A2</option>
-     <option value="left">SINISTRA guardando A1 → A2</option>
-    </select>
-   </div>
-  </div>
-
-  <div class="card">
-   <h2>PARETE B · 2 PUNTI</h2>
-   <div class="wallPointTitle">PUNTO B1</div>
-   <div class="row"><div class="label">X1</div><input id="wallBFX1" class="inp" value="0"></div>
-   <div class="row"><div class="label">Y1</div><input id="wallBFY1" class="inp" value="0"></div>
-   <div class="wallPointTitle">PUNTO B2</div>
-   <div class="row"><div class="label">X2</div><input id="wallBFX2" class="inp" value="100"></div>
-   <div class="row"><div class="label">Y2</div><input id="wallBFY2" class="inp" value="-50"></div>
-   <div class="row"><div class="label">Materiale</div>
-    <select id="wallBSideFull">
-     <option value="left">SINISTRA guardando B1 → B2</option>
-     <option value="right">DESTRA guardando B1 → B2</option>
-    </select>
-   </div>
-  </div>
- </div>
-
- <div class="card">
-  <button class="btn" onclick="calcWallCorner()">CALCOLA SPIGOLO</button>
-  <div id="resWalls"></div>
-  <div class="hint">
-   Se il risultato viene compensato dalla parte sbagliata, cambia soltanto il lato materiale della parete interessata.
-  </div>
- </div>
 </section>
 
 <section id="angle" class="screen">
@@ -260,8 +166,8 @@ select{text-align:center;font-size:16px}
 </section>
 
 <section id="chamfer" class="screen">
- <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">SMUSSI ISO<small>ANGOLO LIBERO</small></div><button class="help">?</button></div>
- <div class="card"><div class="row"><div class="label">Ø pezzo</div><input id="chD" class="inp" value="50"></div><div class="row"><div class="label">C in Z</div><input id="chC" class="inp" value="1"></div><div class="row"><div class="label">Angolo</div><input id="chA" class="inp" value="45"></div><div class="row"><div class="label">Z inizio</div><input id="chZ" class="inp" value="0"></div><div class="row"><div class="label">R utensile</div><input id="chR" class="inp" value="0.8"></div><div class="row"><div class="label">Tipo</div><select id="chType"><option value="ext">ESTERNO</option><option value="int">INTERNO</option></select></div><button class="btn" onclick="calcChamfer()">CALCOLA</button><div id="resChamfer"></div></div>
+ <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">SMUSSI ISO<small>15° · 30° · 45° · 60° · LIBERO</small></div><button class="help">?</button></div>
+ <div class="card"><div class="row"><div class="label">Ø pezzo</div><input id="chD" class="inp" value="50"></div><div class="row"><div class="label">C in Z</div><input id="chC" class="inp" value="1"></div><div class="row"><div class="label">Angolo</div><select id="chA"><option>45</option><option>30</option><option>15</option><option>60</option><option value="other">ALTRO</option></select></div><div class="row"><div class="label">Angolo libero</div><input id="chCustom" class="inp" value="17.5"></div><div class="row"><div class="label">Z spigolo</div><input id="chZ" class="inp" value="0"></div><div class="row"><div class="label">R utensile</div><input id="chR" class="inp" value="0.8"></div><div class="row"><div class="label">Tipo</div><select id="chType"><option value="ext">ESTERNO / ALBERO</option><option value="int">INTERNO / FORO</option></select></div><div class="row"><div class="label">Verso Z</div><select id="chSide"><option value="-1">NEGATIVO</option><option value="1">POSITIVO</option></select></div><button class="btn" onclick="calcChamfer()">CALCOLA</button><div id="resChamfer"></div><div class="hint">C è la quota assiale in Z. La compensazione del raggio utensile dipende dal controllo/CAM: qui viene mostrata anche la distanza normale teorica.</div></div>
 </section>
 
 <section id="inter" class="screen">
@@ -275,31 +181,31 @@ select{text-align:center;font-size:16px}
  <div class="card"><h2>DA Ø TONDO</h2><div class="row"><div class="label">Ø tondo</div><input id="hexD" class="inp" value="35"></div><button class="btn" onclick="calcHexD()">CALCOLA CHIAVE</button><div id="resHexD"></div></div>
 </section>
 
-<!-- THREADS -->
 <section id="threads" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">TABELLE FILETTATURE<small>PUNTA E DIAMETRO</small></div><button class="help">?</button></div>
- <div class="card"><input id="threadSearch" class="search" placeholder="M16, M16x1.5, G1, 1/2 NPT" oninput="renderThreads()"><div class="tabs"><button id="tMet" class="on" onclick="setThreadTab('met')">METRICO</button><button id="tFine" onclick="setThreadTab('fine')">FINE</button><button id="tGas" onclick="setThreadTab('gas')">GAS/BSP</button><button id="tNpt" onclick="setThreadTab('npt')">NPT</button></div><div class="tableWrap"><table class="tbl"><thead><tr><th>Filetto</th><th>Passo/TPI</th><th>Punta</th><th>Esterno</th></tr></thead><tbody id="threadBody"></tbody></table></div><div class="hint">Valori pratici indicativi. Per collaudi e materiali particolari verifica la tabella aziendale.</div></div>
+ <div class="card"><input id="threadSearch" class="search" placeholder="M16, M16x1.5, G1, 1/2 NPT" oninput="renderThreads()"><div class="tabs"><button id="tMet" class="on" onclick="setThreadTab('met')">METRICO</button><button id="tFine" onclick="setThreadTab('fine')">FINE</button><button id="tGas" onclick="setThreadTab('gas')">GAS/BSP</button><button id="tNpt" onclick="setThreadTab('npt')">NPT</button></div><div class="tableWrap"><table class="tbl"><thead><tr><th>Filetto</th><th>Passo/TPI</th><th>Punta</th><th>Esterno</th></tr></thead><tbody id="threadBody"></tbody></table></div><div class="hint">Valori pratici indicativi. Per collaudi, materiali particolari e tolleranze strette verifica la tabella aziendale.</div></div>
 </section>
 
 <section id="turnthread" class="screen">
- <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">FILETTO TORNIO<small>CRESTA / X</small></div><button class="help">?</button></div>
- <div class="card"><div class="row"><div class="label">Ø esterno</div><input id="ttD" class="inp" value="33.249"></div><div class="row"><div class="label">Passo mm</div><input id="ttP" class="inp" value="2.309"></div><div class="row"><div class="label">Profilo</div><select id="ttProfile"><option value="55">GAS 55°</option><option value="60">METRICO 60°</option></select></div><button class="btn" onclick="calcTurnThread()">CALCOLA</button><div id="resTT"></div></div>
+ <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">FILETTO TORNIO<small>CRESTA / PROFONDITÀ RADIALE</small></div><button class="help">?</button></div>
+ <div class="card"><div class="row"><div class="label">Ø esterno</div><input id="ttD" class="inp" value="33.249"></div><div class="row"><div class="label">Passo mm</div><input id="ttP" class="inp" value="2.309"></div><div class="row"><div class="label">Profilo</div><select id="ttProfile"><option value="55">GAS 55°</option><option value="60">METRICO 60°</option></select></div><button class="btn" onclick="calcTurnThread()">CALCOLA</button><div id="resTT"></div><div class="hint">Profondità teorica: partire sempre più prudenti e controllare con tampone, anello o filetto campione.</div></div>
 </section>
 
 <section id="tol" class="screen">
- <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">TOLLERANZE ISO<small>STIMA RAPIDA</small></div><button class="help">?</button></div>
- <div class="card"><div class="row"><div class="label">Ø nominale</div><input id="tolD" class="inp" value="20"></div><div class="row"><div class="label">Accoppiamento</div><select id="tolType"><option>H7</option><option>H8</option><option>h6</option><option>g6</option><option>f7</option><option>js6</option><option>k6</option><option>m6</option></select></div><button class="btn" onclick="calcTol()">CALCOLA</button><div id="resTol"></div><div class="hint">Calcolo pratico semplificato. Per quote critiche verifica ISO 286 o il software aziendale.</div></div>
+ <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">TOLLERANZE ISO<small>STIMA RAPIDA ISO 286</small></div><button class="help">?</button></div>
+ <div class="card"><div class="row"><div class="label">Ø nominale</div><input id="tolD" class="inp" value="20"></div><div class="row"><div class="label">Zona</div><select id="tolType"><option>H7</option><option>H8</option><option>h6</option><option>g6</option><option>f7</option><option>js6</option><option>k6</option><option>m6</option></select></div><button class="btn" onclick="calcTol()">CALCOLA</button><div id="resTol"></div><div class="hint">Stima pratica. Per quote critiche e collaudi usa la tabella ISO 286 completa o il software aziendale.</div></div>
 </section>
 
 <section id="keys" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">LINGUETTE<small>ALBERO / MOZZO</small></div><button class="help">?</button></div>
- <div class="card"><div class="row"><div class="label">Ø albero</div><input id="keyD" class="inp" value="30"></div><button class="btn" onclick="calcKey()">TROVA</button><div id="resKey"></div></div>
+ <div class="card"><div class="row"><div class="label">Ø albero</div><input id="keyD" class="inp" value="30"></div><button class="btn" onclick="calcKey()">TROVA</button><div id="resKey"></div><div class="hint">Dimensioni DIN 6885 orientative. Verifica sempre il disegno e la tolleranza della cava.</div></div>
 </section>
 
 <section id="feeds" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">PARAMETRI CNC<small>PUNTE · FRESE · TORNIO</small></div><button class="help">?</button></div>
- <div class="card"><h2>FRESA</h2><div class="row"><div class="label">Ø fresa</div><input id="fD" class="inp" value="20"></div><div class="row"><div class="label">Vc m/min</div><input id="fVc" class="inp" value="120"></div><div class="row"><div class="label">N. tagli</div><input id="fZ" class="inp" value="4"></div><div class="row"><div class="label">fz</div><input id="fFz" class="inp" value="0.08"></div><button class="btn" onclick="calcMill()">CALCOLA</button><div id="resMill"></div></div>
- <div class="card"><h2>PUNTA / TORNIO</h2><div class="row"><div class="label">Ø</div><input id="pD" class="inp" value="10"></div><div class="row"><div class="label">Vc</div><input id="pVc" class="inp" value="25"></div><div class="row"><div class="label">mm/giro</div><input id="pF" class="inp" value="0.15"></div><button class="btn" onclick="calcDrill()">CALCOLA</button><div id="resDrill"></div></div>
+ <div class="card"><h2>FRESA</h2><div class="row"><div class="label">Ø fresa</div><input id="fD" class="inp" value="20"></div><div class="row"><div class="label">Vc m/min</div><input id="fVc" class="inp" value="120"></div><div class="row"><div class="label">N. tagli</div><input id="fZ" class="inp" value="4"></div><div class="row"><div class="label">fz mm/dente</div><input id="fFz" class="inp" value="0.08"></div><button class="btn" onclick="calcMill()">CALCOLA FRESA</button><div id="resMill"></div></div>
+ <div class="card"><h2>PUNTA</h2><div class="row"><div class="label">Ø punta</div><input id="pD" class="inp" value="10"></div><div class="row"><div class="label">Vc</div><input id="pVc" class="inp" value="25"></div><div class="row"><div class="label">mm/giro</div><input id="pF" class="inp" value="0.15"></div><button class="btn" onclick="calcDrill()">CALCOLA PUNTA</button><div id="resDrill"></div></div>
+ <div class="card"><h2>TORNIO</h2><div class="row"><div class="label">Ø pezzo</div><input id="latD" class="inp" value="50"></div><div class="row"><div class="label">Vc</div><input id="latVc" class="inp" value="160"></div><div class="row"><div class="label">mm/giro</div><input id="latF" class="inp" value="0.2"></div><button class="btn" onclick="calcLathe()">CALCOLA TORNIO</button><div id="resLathe"></div></div>
 </section>
 
 <section id="conv" class="screen">
@@ -308,7 +214,6 @@ select{text-align:center;font-size:16px}
  <div class="card"><div class="row"><div class="label">Pollici</div><input id="convIn" class="inp" value="1"></div><button class="btn" onclick="inMm()">POLLICI → MM</button><div id="resConv2"></div></div>
 </section>
 
-<!-- OTHER TOOLS -->
 <section id="calculator" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">CALCOLATRICE<small>OFFICINA</small></div><button class="help">?</button></div>
  <div class="card"><input id="calcDisplay" value=""><div class="calcGrid">
@@ -318,31 +223,34 @@ select{text-align:center;font-size:16px}
   <button onclick="calcAdd('1')">1</button><button onclick="calcAdd('2')">2</button><button onclick="calcAdd('3')">3</button><button class="op" onclick="calcAdd('-')">−</button>
   <button onclick="calcAdd('0')">0</button><button onclick="calcAdd('.')">.</button><button class="eq" onclick="calcEq()">=</button><button class="op" onclick="calcAdd('+')">+</button>
  </div></div>
+ <div class="card"><h2>FORMULE RAPIDE</h2><div class="row"><div class="label">Ø</div><input id="cfD" class="inp" value="20"></div><div class="row"><div class="label">Vc</div><input id="cfVc" class="inp" value="120"></div><button class="btn" onclick="calcQuickRpm()">CALCOLA RPM</button><div id="resQuick"></div></div>
 </section>
 
 <section id="ruler" class="screen">
- <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">RIGHELLO<small>CALIBRAZIONE SCHERMO</small></div><button class="help">?</button></div>
- <div class="card"><div class="row"><div class="label">Larghezza mm</div><input id="rulerMm" class="inp" value="85.6"></div><button class="btn" onclick="saveRuler()">SALVA CALIBRAZIONE</button><div class="ruler" id="rulerVisual"></div><div class="hint">Usa una carta di credito da 85,60 mm come riferimento. È una stima, non sostituisce il calibro.</div></div>
+ <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">RIGHELLO / CALIBRO<small>CALIBRAZIONE SCHERMO</small></div><button class="help">?</button></div>
+ <div class="card"><div class="row"><div class="label">Larghezza schermo mm</div><input id="rulerMm" class="inp" value="68"></div><button class="btn" onclick="saveRuler()">SALVA CALIBRAZIONE</button><div id="rulerVisual" class="rulerVisual"><div id="rulerTicks" class="rulerTicks"></div><div id="rulerText" class="rulerText"></div></div><div class="hint">Calibra con una carta da 85,60 mm o un righello vero. È una stima, non sostituisce il calibro.</div></div>
+ <div class="card"><h2>CALIBRO A CURSORI</h2><div class="rangeRow"><div class="label">Cursore A</div><input id="calA" type="range" min="0" max="100" value="20" oninput="calcCaliper()"><div id="calAV" class="rangeVal">20%</div></div><div class="rangeRow"><div class="label">Cursore B</div><input id="calB" type="range" min="0" max="100" value="70" oninput="calcCaliper()"><div id="calBV" class="rangeVal">70%</div></div><div id="resCaliper"></div></div>
 </section>
 
 <section id="goniometer" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">GONIOMETRO<small>FOTOCAMERA</small></div><button class="help">?</button></div>
- <div class="card"><div class="videoBox"><video id="gonVideo" autoplay playsinline></video><div id="gonLine" class="angleLine"></div></div><div class="rangeRow"><div class="label">Angolo</div><input id="gonAngle" type="range" min="-90" max="90" value="0" oninput="setGonAngle()"><div id="gonVal" class="rangeVal">0°</div></div><button class="btn" onclick="startCamera('gonVideo')">AVVIA CAMERA</button><button class="btn2" style="margin-top:8px" onclick="stopCamera()">SPEGNI CAMERA</button></div>
+ <div class="card"><div class="videoBox"><video id="gonVideo" autoplay playsinline muted></video><div id="gonLine" class="angleLine"></div></div><div class="rangeRow"><div class="label">Angolo</div><input id="gonAngle" type="range" min="-90" max="90" value="0" oninput="setGonAngle()"><div id="gonVal" class="rangeVal">0°</div></div><div class="actions"><button class="btn2" onclick="startCamera('gonVideo')">AVVIA CAMERA</button><button class="btn2" onclick="stopCamera()">SPEGNI CAMERA</button></div></div>
 </section>
 
 <section id="torch" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">TORCIA<small>LUCE OFFICINA</small></div><button class="help">?</button></div>
- <div class="card"><div class="videoBox"><video id="torchVideo" autoplay playsinline></video></div><button class="btn" onclick="torchOn()">ACCENDI TORCIA</button><button class="btn2" style="margin-top:8px" onclick="torchOff()">SPEGNI TORCIA</button><div id="torchMsg" class="note"></div></div>
+ <div class="card"><div class="videoBox"><video id="torchVideo" autoplay playsinline muted></video></div><div class="actions"><button class="btn2" onclick="torchOn()">ACCENDI</button><button class="btn2" onclick="torchOff()">SPEGNI</button></div><div id="torchMsg" class="note">La disponibilità del flash dipende dal telefono e dal browser.</div></div>
 </section>
 
 <section id="scanner" class="screen">
- <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">SCANNER 3D<small>PROGETTO SOSPESO</small></div><button class="help">?</button></div>
- <div class="card"><h2>LO RIPRENDEREMO SUCCESSIVAMENTE</h2><div class="note">Il progetto scanner 3D resta separato. Adesso stiamo lavorando soltanto sull’assistente vocale.</div></div>
+ <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">SCANNER 3D<small>PROGETTO SEPARATO</small></div><button class="help">?</button></div>
+ <div class="card"><h2>LO RIPRENDEREMO SUCCESSIVAMENTE</h2><div class="note">Lo scanner 3D resta separato per non appesantire la Toolbox. Questa v3.8 contiene gli strumenti CNC e l’assistente vocale completo.</div></div>
 </section>
 
 <section id="settings" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">MENU</div><button class="help">▤</button></div>
- <div class="card"><h2>AZIONI</h2><button class="btn2" onclick="localStorage.clear();alert('Impostazioni cancellate.')">PULISCI MEMORIA APP</button><div class="note">CNC Toolbox v3.5 · Le nuove domande annullano il vecchio contesto.</div></div>
+ <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v3.8</div></div><div class="note">Risposta audio automatica corretta: la voce parte dopo la chiusura del microfono.</div></div>
+ <div class="card"><h2>AZIONI</h2><button class="btn2" onclick="clearSettings()">PULISCI IMPOSTAZIONI</button></div>
 </section>
 
 <button class="fab" onclick="show('assistant')" aria-label="Assistente vocale">🎤</button>
@@ -351,813 +259,422 @@ select{text-align:center;font-size:16px}
 <script>
 'use strict';
 const $=id=>document.getElementById(id);
-function show(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));$(id).classList.add('active');window.scrollTo(0,0);if(id!=='goniometer'&&id!=='torch')stopCamera()}
+function show(id){
+ document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
+ const el=$(id); if(el)el.classList.add('active');
+ window.scrollTo(0,0);
+ if(id!=='goniometer'&&id!=='torch')stopCamera();
+ if(id==='assistant')setTimeout(populateVoices,80);
+}
 function num(id){return parseFloat(String($(id).value).replace(',','.'))}
 function fmt(n,d=3){return Number(n).toLocaleString('it-IT',{minimumFractionDigits:d,maximumFractionDigits:d})}
+function fmtFlex(n,d=3){return Number(n).toLocaleString('it-IT',{maximumFractionDigits:d})}
 function box(label,value,unit='mm'){return `<div class="resultBox"><div class="resLabel">${label}<br><small>${unit}</small></div><div class="resVal">${value}</div></div>`}
 function bad(vals){return vals.some(x=>!Number.isFinite(x))}
-let modes={m3:'foro',m2:'foro'};
+let modes={m3:'foro',m4:'foro',m2:'foro'};
 function setSeg(group,mode){modes[group]=mode;$(group+'foro').classList.toggle('on',mode==='foro');$(group+'perno').classList.toggle('on',mode==='perno')}
-
-
-let wallMode='quick';
-function setWallMode(mode){
- wallMode=mode;
- $('wallQuickBtn').classList.toggle('on',mode==='quick');
- $('wallFullBtn').classList.toggle('on',mode==='full');
- $('wallQuickPanel').classList.toggle('active',mode==='quick');
- $('wallFullPanel').classList.toggle('active',mode==='full');
- updateWallAxisHint();
-}
-function updateWallAxisHint(){
- if(!$('wallFixedAxis')||!$('wallAxisHint'))return;
- $('wallAxisHint').textContent=$('wallFixedAxis').value==='x'
-  ? 'Verso della parete: +X. Sinistra = +Y; destra = −Y.'
-  : 'Verso della parete: +Y. Sinistra = −X; destra = +X.';
-}
-function wallPoint(x,y){return {x:Number(x),y:Number(y)}}
-function wallLine(p1,p2){
- const dx=p2.x-p1.x,dy=p2.y-p1.y,len=Math.hypot(dx,dy);
- if(!Number.isFinite(len)||len<0.000001)throw new Error('I due punti della stessa parete coincidono.');
- return {p:p1,u:{x:dx/len,y:dy/len}};
-}
-function wallOffset(line,r,side){
- const nx=-line.u.y,ny=line.u.x,sign=side==='left'?1:-1;
- return {p:{x:line.p.x+sign*r*nx,y:line.p.y+sign*r*ny},u:line.u};
-}
-function wallIntersection(a,b){
- const cross=a.u.x*b.u.y-a.u.y*b.u.x;
- if(Math.abs(cross)<0.0000001)throw new Error('Le due pareti risultano parallele o quasi parallele.');
- const qx=b.p.x-a.p.x,qy=b.p.y-a.p.y;
- const t=(qx*b.u.y-qy*b.u.x)/cross;
- return {x:a.p.x+t*a.u.x,y:a.p.y+t*a.u.y};
-}
-function wallAngle(line){
- let a=Math.atan2(line.u.y,line.u.x)*180/Math.PI;
- while(a>180)a-=360;while(a<=-180)a+=360;
- return a;
-}
-function wallAngleBetween(a,b){
- let d=Math.abs(wallAngle(a)-wallAngle(b))%180;
- if(d>90)d=180-d;
- return d;
-}
-function calcWallCorner(){
- try{
-  const diameter=num('wallProbe');
-  if(!Number.isFinite(diameter)||diameter<0)throw new Error('Controlla il diametro della sfera.');
-  const r=diameter/2;
-  let measuredA,measuredB,sideA,sideB;
-
-  if(wallMode==='quick'){
-   const fx=num('wallFX'),fy=num('wallFY');
-   if(bad([fx,fy]))throw new Error('Controlla il punto della parete fissa.');
-   measuredA=$('wallFixedAxis').value==='x'
-    ? wallLine(wallPoint(fx,fy),wallPoint(fx+100,fy))
-    : wallLine(wallPoint(fx,fy),wallPoint(fx,fy+100));
-   measuredB=wallLine(
-    wallPoint(num('wallBX1'),num('wallBY1')),
-    wallPoint(num('wallBX2'),num('wallBY2'))
-   );
-   sideA=$('wallFixedSide').value;
-   sideB=$('wallBSideQuick').value;
-  }else{
-   measuredA=wallLine(
-    wallPoint(num('wallAX1'),num('wallAY1')),
-    wallPoint(num('wallAX2'),num('wallAY2'))
-   );
-   measuredB=wallLine(
-    wallPoint(num('wallBFX1'),num('wallBFY1')),
-    wallPoint(num('wallBFX2'),num('wallBFY2'))
-   );
-   sideA=$('wallASide').value;
-   sideB=$('wallBSideFull').value;
-  }
-
-  const realA=wallOffset(measuredA,r,sideA);
-  const realB=wallOffset(measuredB,r,sideB);
-  const corner=wallIntersection(realA,realB);
-  const angleA=wallAngle(realA),angleB=wallAngle(realB),between=wallAngleBetween(realA,realB);
-
-  $('resWalls').innerHTML=
-   box('SPIGOLO X',fmt(corner.x))+
-   box('SPIGOLO Y',fmt(corner.y))+
-   box('ANGOLO PARETE A',fmt(angleA,4),'°')+
-   box('ANGOLO PARETE B',fmt(angleB,4),'°')+
-   box('ANGOLO TRA PARETI',fmt(between,4),'°')+
-   box('CORREZIONE PARETE B',fmt(-angleB,4),'°');
- }catch(error){
-  $('resWalls').innerHTML='<div class="err">'+error.message+'</div>';
- }
-}
 
 function calc3(){
  const p=num('probe3'),x1=num('x1'),y1=num('y1'),x2=num('x2'),y2=num('y2'),x3=num('x3'),y3=num('y3');
  if(bad([p,x1,y1,x2,y2,x3,y3])){$('res3').innerHTML='<div class="err">Controlla i numeri.</div>';return}
  const a=x1*(y2-y3)-y1*(x2-x3)+x2*y3-x3*y2;
- if(Math.abs(a)<1e-9){$('res3').innerHTML='<div class="err">I punti sono allineati.</div>';return}
+ if(Math.abs(a)<1e-10){$('res3').innerHTML='<div class="err">I punti sono allineati.</div>';return}
  const b=((x1*x1+y1*y1)*(y3-y2)+(x2*x2+y2*y2)*(y1-y3)+(x3*x3+y3*y3)*(y2-y1))/(2*a);
  const c=((x1*x1+y1*y1)*(x2-x3)+(x2*x2+y2*y2)*(x3-x1)+(x3*x3+y3*y3)*(x1-x2))/(2*a);
- const cx=-b,cy=-c,r=[Math.hypot(x1-cx,y1-cy),Math.hypot(x2-cx,y2-cy),Math.hypot(x3-cx,y3-cy)];
- const measured=2*(r.reduce((s,v)=>s+v,0)/3),dia=modes.m3==='foro'?measured+p:measured-p,err=Math.max(...r)-Math.min(...r);
- $('res3').innerHTML=box('CENTRO X',fmt(cx))+box('CENTRO Y',fmt(cy))+box('DIAMETRO',fmt(dia))+box('ERRORE',fmt(err));
+ const cx=-b,cy=-c,r1=Math.hypot(x1-cx,y1-cy),r2=Math.hypot(x2-cx,y2-cy),r3=Math.hypot(x3-cx,y3-cy),r=(r1+r2+r3)/3;
+ const measured=2*r,dia=modes.m3==='foro'?measured+p:measured-p,err=Math.max(r1,r2,r3)-Math.min(r1,r2,r3);
+ localStorage.setItem('probe',p);
+ $('res3').innerHTML=box('CENTRO X',fmt(cx))+box('CENTRO Y',fmt(cy))+box('DIAMETRO REALE',fmt(dia))+box('ERRORE PUNTI',fmt(err));
 }
-function calc2(){const p=num('probe2'),a=num('q1'),b=num('q2');if(bad([p,a,b]))return;const m=Math.abs(b-a),c=(a+b)/2,d=modes.m2==='foro'?m+p:m-p;$('res2').innerHTML=box('CENTRO',fmt(c))+box('DIAMETRO',fmt(d))}
-function calcAngle(){const x1=num('ax1'),y1=num('ay1'),x2=num('ax2'),y2=num('ay2');const a=Math.atan2(y2-y1,x2-x1)*180/Math.PI;$('resAngle').innerHTML=box('ANGOLO',fmt(a,4),'°')+box('CORREZIONE',fmt(-a,4),'°')}
-function calcChamfer(){const d=num('chD'),c=num('chC'),a=num('chA'),z=num('chZ'),r=num('chR'),type=$('chType').value;if(bad([d,c,a,z,r])||a<=0||a>=90)return;const radial=c/Math.tan(a*Math.PI/180),dx=2*radial;const xStart=type==='ext'?d-dx:d+dx;const comp=r*(1-Math.sin(a*Math.PI/180));$('resChamfer').innerHTML=box('X INIZIO',fmt(xStart))+box('X FINE',fmt(d))+box('Z FINE',fmt(z-c))+box('COMP. R INDICATIVA',fmt(comp))}
-function calcInter(){const dx=num('ix2')-num('ix1'),dy=num('iy2')-num('iy1');$('resInter').innerHTML=box('INTERASSE',fmt(Math.hypot(dx,dy)))+box('DELTA X',fmt(dx))+box('DELTA Y',fmt(dy))}
-function calcHexS(){const s=num('hexS');$('resHexS').innerHTML=box('Ø SULLE PUNTE',fmt(s/0.8660254))+box('LATO',fmt(s/1.7320508))}
-function calcHexD(){const d=num('hexD');$('resHexD').innerHTML=box('CHIAVE MASSIMA',fmt(d*0.8660254))}
+function solve3(A,b){
+ const m=A.map((r,i)=>[...r,b[i]]);
+ for(let i=0;i<3;i++){
+  let pivot=i;for(let j=i+1;j<3;j++)if(Math.abs(m[j][i])>Math.abs(m[pivot][i]))pivot=j;
+  [m[i],m[pivot]]=[m[pivot],m[i]];
+  if(Math.abs(m[i][i])<1e-12)return null;
+  const div=m[i][i];for(let k=i;k<4;k++)m[i][k]/=div;
+  for(let j=0;j<3;j++)if(j!==i){const f=m[j][i];for(let k=i;k<4;k++)m[j][k]-=f*m[i][k]}
+ }
+ return [m[0][3],m[1][3],m[2][3]];
+}
+function calc4(){
+ const p=num('probe4'),pts=[];
+ for(let i=1;i<=4;i++)pts.push([num('f4x'+i),num('f4y'+i)]);
+ if(bad([p,...pts.flat()])){$('res4').innerHTML='<div class="err">Controlla i numeri.</div>';return}
+ let sx=0,sy=0,sxx=0,syy=0,sxy=0,sxz=0,syz=0,sz=0;
+ pts.forEach(([x,y])=>{const z=-(x*x+y*y);sx+=x;sy+=y;sxx+=x*x;syy+=y*y;sxy+=x*y;sxz+=x*z;syz+=y*z;sz+=z});
+ const sol=solve3([[sxx,sxy,sx],[sxy,syy,sy],[sx,sy,4]],[sxz,syz,sz]);
+ if(!sol){$('res4').innerHTML='<div class="err">Punti non adatti al calcolo.</div>';return}
+ const [D,E,F]=sol,cx=-D/2,cy=-E/2,rr=cx*cx+cy*cy-F;
+ if(rr<=0){$('res4').innerHTML='<div class="err">Raggio non valido.</div>';return}
+ const r=Math.sqrt(rr),residuals=pts.map(([x,y])=>Math.abs(Math.hypot(x-cx,y-cy)-r)),err=Math.max(...residuals);
+ const measured=2*r,dia=modes.m4==='foro'?measured+p:measured-p,realR=dia/2;
+ $('res4').innerHTML=box('CENTRO X',fmt(cx))+box('CENTRO Y',fmt(cy))+box('RAGGIO REALE',fmt(realR))+box('DIAMETRO REALE',fmt(dia))+box('SCARTO MAX',fmt(err));
+}
+function calc2(){
+ const p=num('probe2'),a=num('q1'),b=num('q2');
+ if(bad([p,a,b])){$('res2').innerHTML='<div class="err">Controlla i numeri.</div>';return}
+ const center=(a+b)/2,measured=Math.abs(b-a),dia=modes.m2==='foro'?measured+p:measured-p;
+ $('res2').innerHTML=box('CENTRO',fmt(center))+box('DIAMETRO REALE',fmt(dia));
+}
+function calcAngle(){
+ const x1=num('ax1'),y1=num('ay1'),x2=num('ax2'),y2=num('ay2');
+ if(bad([x1,y1,x2,y2])||(x1===x2&&y1===y2)){$('resAngle').innerHTML='<div class="err">Controlla i punti.</div>';return}
+ const ang=Math.atan2(y2-y1,x2-x1)*180/Math.PI;
+ $('resAngle').innerHTML=box('ANGOLO',fmt(ang,4),'gradi')+box('CORREZIONE',fmt(-ang,4),'gradi');
+}
+function calcChamfer(){
+ const d=num('chD'),c=num('chC'),z=num('chZ'),r=num('chR'),sel=$('chA').value,a=sel==='other'?num('chCustom'):Number(sel),side=Number($('chSide').value),type=$('chType').value;
+ if(bad([d,c,z,r,a])||c<0||a<=0||a>=90){$('resChamfer').innerHTML='<div class="err">Controlla i dati.</div>';return}
+ const radial=c*Math.tan(a*Math.PI/180),diaDelta=2*radial,z2=z+side*c;
+ const xSmall=type==='ext'?d-diaDelta:d+diaDelta;
+ const normalOffset=r,diag=Math.hypot(c,radial);
+ $('resChamfer').innerHTML=box('X PICCOLO',fmt(xSmall))+box('X SPIGOLO',fmt(d))+box('Z FINALE',fmt(z2))+box('Δ X DIAMETRALE',fmt(diaDelta))+box('LUNGHEZZA SMUSSO',fmt(diag))+box('OFFSET NORMALE R',fmt(normalOffset));
+}
+function calcInter(){
+ const x1=num('ix1'),y1=num('iy1'),x2=num('ix2'),y2=num('iy2');
+ if(bad([x1,y1,x2,y2])){$('resInter').innerHTML='<div class="err">Controlla i numeri.</div>';return}
+ const dx=x2-x1,dy=y2-y1,dist=Math.hypot(dx,dy);
+ $('resInter').innerHTML=box('INTERASSE',fmt(dist))+box('DELTA X',fmt(dx))+box('DELTA Y',fmt(dy));
+}
+function calcHexS(){
+ const s=num('hexS');if(!Number.isFinite(s)||s<=0){$('resHexS').innerHTML='<div class="err">Controlla la chiave.</div>';return}
+ const circ=s/Math.cos(Math.PI/6),side=circ/2;
+ $('resHexS').innerHTML=box('Ø SULLE PUNTE',fmt(circ))+box('LATO',fmt(side));
+}
+function calcHexD(){
+ const d=num('hexD');if(!Number.isFinite(d)||d<=0){$('resHexD').innerHTML='<div class="err">Controlla il diametro.</div>';return}
+ const s=d*Math.cos(Math.PI/6);
+ $('resHexD').innerHTML=box('CHIAVE MASSIMA',fmt(s));
+}
 
+/* TABELLE */
 const THREADS={
-met:[['M3','0.50','2.5','3'],['M4','0.70','3.3','4'],['M5','0.80','4.2','5'],['M6','1.00','5.0','6'],['M8','1.25','6.8','8'],['M10','1.50','8.5','10'],['M12','1.75','10.2','12'],['M14','2.00','12.0','14'],['M16','2.00','14.0','16'],['M18','2.50','15.5','18'],['M20','2.50','17.5','20'],['M22','2.50','19.5','22'],['M24','3.00','21.0','24'],['M27','3.00','24.0','27'],['M30','3.50','26.5','30'],['M33','3.50','29.5','33'],['M36','4.00','32.0','36'],['M42','4.50','37.5','42'],['M48','5.00','43.0','48'],['M60','5.50','54.5','60']],
-fine:[['M6x0.75','0.75','5.25','6'],['M8x1','1.00','7.0','8'],['M10x1','1.00','9.0','10'],['M10x1.25','1.25','8.8','10'],['M12x1','1.00','11.0','12'],['M12x1.5','1.50','10.5','12'],['M14x1.5','1.50','12.5','14'],['M16x1','1.00','15.0','16'],['M16x1.5','1.50','14.5','16'],['M18x1.5','1.50','16.5','18'],['M20x1.5','1.50','18.5','20'],['M24x2','2.00','22.0','24'],['M30x2','2.00','28.0','30'],['M33x1.5','1.50','31.5','33'],['M36x2','2.00','34.0','36'],['M42x2','2.00','40.0','42'],['M48x2','2.00','46.0','48'],['M60x2','2.00','58.0','60']],
-gas:[['G1/8','28','8.8','9.728'],['G1/4','19','11.8','13.157'],['G3/8','19','15.3','16.662'],['G1/2','14','19.1','20.955'],['G3/4','14','24.6','26.441'],['G1','11','30.9','33.249'],['G1 1/4','11','39.6','41.910'],['G1 1/2','11','45.5','47.803'],['G2','11','57.2','59.614']],
-npt:[['1/8 NPT','27','8.6','10.287'],['1/4 NPT','18','11.1','13.716'],['3/8 NPT','18','14.5','17.145'],['1/2 NPT','14','17.8','21.336'],['3/4 NPT','14','23.0','26.670'],['1 NPT','11.5','29.0','33.401']]
+met:[
+['M1',.25,.75,1],['M1.2',.25,.95,1.2],['M1.4',.3,1.1,1.4],['M1.6',.35,1.25,1.6],['M2',.4,1.6,2],['M2.5',.45,2.05,2.5],['M3',.5,2.5,3],['M3.5',.6,2.9,3.5],['M4',.7,3.3,4],['M4.5',.75,3.7,4.5],['M5',.8,4.2,5],['M6',1,5,6],['M7',1,6,7],['M8',1.25,6.8,8],['M9',1.25,7.8,9],['M10',1.5,8.5,10],['M11',1.5,9.5,11],['M12',1.75,10.2,12],['M14',2,12,14],['M16',2,14,16],['M18',2.5,15.5,18],['M20',2.5,17.5,20],['M22',2.5,19.5,22],['M24',3,21,24],['M27',3,24,27],['M30',3.5,26.5,30],['M33',3.5,29.5,33],['M36',4,32,36],['M39',4,35,39],['M42',4.5,37.5,42],['M45',4.5,40.5,45],['M48',5,43,48],['M52',5,47,52],['M56',5.5,50.5,56],['M60',5.5,54.5,60]],
+fine:[
+['M6x0.75',.75,5.25,6],['M8x1',1,7,8],['M10x1',1,9,10],['M10x1.25',1.25,8.8,10],['M12x1',1,11,12],['M12x1.25',1.25,10.8,12],['M12x1.5',1.5,10.5,12],['M14x1.5',1.5,12.5,14],['M16x1',1,15,16],['M16x1.5',1.5,14.5,16],['M18x1.5',1.5,16.5,18],['M18x2',2,16,18],['M20x1.5',1.5,18.5,20],['M20x2',2,18,20],['M22x1.5',1.5,20.5,22],['M22x2',2,20,22],['M24x1.5',1.5,22.5,24],['M24x2',2,22,24],['M27x1.5',1.5,25.5,27],['M27x2',2,25,27],['M30x1.5',1.5,28.5,30],['M30x2',2,28,30],['M33x1.5',1.5,31.5,33],['M33x2',2,31,33],['M36x1.5',1.5,34.5,36],['M36x2',2,34,36],['M39x1.5',1.5,37.5,39],['M39x2',2,37,39],['M42x1.5',1.5,40.5,42],['M42x2',2,40,42],['M45x1.5',1.5,43.5,45],['M45x2',2,43,45],['M48x1.5',1.5,46.5,48],['M48x2',2,46,48],['M52x1.5',1.5,50.5,52],['M52x2',2,50,52],['M56x2',2,54,56],['M60x2',2,58,60]],
+gas:[
+['G1/8',28,8.8,9.728],['G1/4',19,11.8,13.157],['G3/8',19,15.25,16.662],['G1/2',14,18.75,20.955],['G5/8',14,20.75,22.911],['G3/4',14,24.25,26.441],['G7/8',14,28,30.201],['G1',11,30.75,33.249],['G1 1/8',11,35.5,37.897],['G1 1/4',11,39.5,41.91],['G1 1/2',11,45,47.803],['G1 3/4',11,51,53.746],['G2',11,57,59.614]],
+npt:[
+['1/8 NPT',27,8.6,10.287],['1/4 NPT',18,11.1,13.716],['3/8 NPT',18,14.5,17.145],['1/2 NPT',14,17.9,21.336],['3/4 NPT',14,23.2,26.67],['1 NPT',11.5,29.2,33.401],['1 1/4 NPT',11.5,38.1,42.164],['1 1/2 NPT',11.5,44,48.26],['2 NPT',11.5,56,60.325]]
 };
 let threadTab='met';
-function setThreadTab(t){threadTab=t;['Met','Fine','Gas','Npt'].forEach(x=>$('t'+x).classList.toggle('on',x.toLowerCase()===t));renderThreads()}
-function renderThreads(){const q=($('threadSearch')?.value||'').toLowerCase().replace(',','.');const rows=THREADS[threadTab].filter(r=>r.join(' ').toLowerCase().includes(q));$('threadBody').innerHTML=rows.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td></tr>`).join('')}
+function setThreadTab(t){threadTab=t;['met','fine','gas','npt'].forEach(x=>$('t'+x[0].toUpperCase()+x.slice(1))?.classList.toggle('on',x===t));renderThreads()}
+function renderThreads(){
+ const q=String($('threadSearch')?.value||'').toLowerCase().replace(/\s+/g,'');
+ const rows=THREADS[threadTab].filter(r=>!q||String(r[0]).toLowerCase().replace(/\s+/g,'').includes(q));
+ $('threadBody').innerHTML=rows.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${fmtFlex(r[2],2)} mm</td><td>${fmtFlex(r[3],3)} mm</td></tr>`).join('');
+}
+function findMetric(n,pitch=null){
+ const arr=pitch===null?THREADS.met:THREADS.fine;
+ return arr.find(r=>{
+  if(pitch===null)return Number(String(r[0]).slice(1))===n;
+  const m=String(r[0]).match(/^M([\d.]+)x([\d.]+)$/i);return m&&Number(m[1])===n&&Math.abs(Number(m[2])-pitch)<1e-6;
+ });
+}
+function findGas(size){const s=String(size).replace(/^g/i,'').replace(/\s+/g,' ');return THREADS.gas.find(r=>String(r[0]).replace(/^G/i,'').replace(/\s+/g,' ')===s)}
+function calcTurnThread(){
+ const d=num('ttD'),p=num('ttP'),profile=$('ttProfile').value;
+ if(bad([d,p])||d<=0||p<=0){$('resTT').innerHTML='<div class="err">Controlla i dati.</div>';return}
+ const depth=p*(profile==='55'?.6403:.6134),minor=d-2*depth;
+ $('resTT').innerHTML=box('PROFONDITÀ RADIALE',fmt(depth))+box('X FONDO TEORICO',fmt(minor))+box('PASSO',fmt(p));
+}
 
-function calcTurnThread(){const d=num('ttD'),p=num('ttP'),profile=$('ttProfile').value;const depth=p*(profile==='55'?0.6403:0.6134),xf=d-2*depth;$('resTT').innerHTML=box('PROFONDITÀ RADIALE',fmt(depth))+box('X FONDO TEORICO',fmt(xf))+box('X PARTENZA',fmt(d))}
-function calcTol(){const d=num('tolD'),t=$('tolType').value;const grade=parseInt(t.match(/\d+/)[0]);const i=0.45*Math.cbrt(d)+0.001*d;const factors={6:10,7:16,8:25};const IT=(factors[grade]||16)*i/1000;let lo=0,hi=IT;if(t[0]==='h'){lo=-IT;hi=0}else if(t==='g6'){hi=-2.5*Math.pow(d,0.34)/1000;lo=hi-IT}else if(t==='f7'){hi=-5.5*Math.pow(d,0.41)/1000;lo=hi-IT}else if(t==='js6'){lo=-IT/2;hi=IT/2}else if(t==='k6'){lo=IT*.2;hi=lo+IT}else if(t==='m6'){lo=IT*.5;hi=lo+IT}$('resTol').innerHTML=box('LIMITE MIN',fmt(d+lo))+box('LIMITE MAX',fmt(d+hi))+box('TOLLERANZA',fmt(hi-lo))}
-const KEYS=[[6,8,2,2,1.2],[8,10,3,3,1.8],[10,12,4,4,2.5],[12,17,5,5,3],[17,22,6,6,3.5],[22,30,8,7,4],[30,38,10,8,5],[38,44,12,8,5],[44,50,14,9,5.5],[50,58,16,10,6],[58,65,18,11,7],[65,75,20,12,7.5],[75,85,22,14,9],[85,95,25,14,9],[95,110,28,16,10]];
-function calcKey(){const d=num('keyD'),r=KEYS.find(x=>d>x[0]&&d<=x[1]);$('resKey').innerHTML=r?box('LINGUETTA',`${r[2]} × ${r[3]}`,'mm')+box('CAVA ALBERO t1',fmt(r[4],1)): '<div class="err">Diametro fuori tabella.</div>'}
-function calcMill(){const d=num('fD'),vc=num('fVc'),z=num('fZ'),fz=num('fFz'),rpm=vc*1000/(Math.PI*d),feed=rpm*z*fz;$('resMill').innerHTML=box('GIRI',fmt(rpm,0),'rpm')+box('AVANZAMENTO',fmt(feed,0),'mm/min')}
-function calcDrill(){const d=num('pD'),vc=num('pVc'),f=num('pF'),rpm=vc*1000/(Math.PI*d),feed=rpm*f;$('resDrill').innerHTML=box('GIRI',fmt(rpm,0),'rpm')+box('AVANZAMENTO',fmt(feed,0),'mm/min')}
+/* TOLLERANZE */
+const IT_TABLE=[
+[0,3,{5:4,6:6,7:10,8:14}],[3,6,{5:5,6:8,7:12,8:18}],[6,10,{5:6,6:9,7:15,8:22}],
+[10,18,{5:8,6:11,7:18,8:27}],[18,30,{5:9,6:13,7:21,8:33}],[30,50,{5:11,6:16,7:25,8:39}],
+[50,80,{5:13,6:19,7:30,8:46}],[80,120,{5:15,6:22,7:35,8:54}],[120,180,{5:18,6:25,7:40,8:63}],
+[180,250,{5:20,6:29,7:46,8:72}],[250,315,{5:23,6:32,7:52,8:81}],[315,400,{5:25,6:36,7:57,8:89}],[400,500,{5:27,6:40,7:63,8:97}]
+];
+function calcTolValues(d,code){
+ const m=String(code).match(/^([A-Za-z]+)(\d+)$/);if(!m)return null;
+ const letter=m[1],grade=Number(m[2]),step=IT_TABLE.find(r=>d>r[0]&&d<=r[1])||IT_TABLE.find(r=>d>=r[0]&&d<=r[1]);
+ if(!step||!step[2][grade])return null;
+ const IT=step[2][grade],D=Math.max(d,.1);let lower=0,upper=0;
+ if(letter==='H'){lower=0;upper=IT}
+ else if(letter==='h'){upper=0;lower=-IT}
+ else if(letter==='js'){lower=-IT/2;upper=IT/2}
+ else if(letter==='g'){upper=-2.5*Math.pow(D,.34);lower=upper-IT}
+ else if(letter==='f'){upper=-5.5*Math.pow(D,.41);lower=upper-IT}
+ else if(letter==='k'){lower=2.5*Math.pow(D,.34);upper=lower+IT}
+ else if(letter==='m'){lower=5.5*Math.pow(D,.34);upper=lower+IT}
+ else return null;
+ return {lower,upper,IT,min:d+lower/1000,max:d+upper/1000};
+}
+function calcTol(){
+ const d=num('tolD'),code=$('tolType').value;
+ if(!Number.isFinite(d)||d<=0){$('resTol').innerHTML='<div class="err">Controlla il diametro.</div>';return}
+ const v=calcTolValues(d,code);if(!v){$('resTol').innerHTML='<div class="err">Campo non disponibile.</div>';return}
+ $('resTol').innerHTML=box('MINIMO',fmt(v.min))+box('MASSIMO',fmt(v.max))+box('SCOSTAMENTO INF.',fmt(v.lower,0),'µm')+box('SCOSTAMENTO SUP.',fmt(v.upper,0),'µm');
+}
+
+/* LINGUETTE */
+const KEYS=[
+[6,8,2,2,1.2,1],[8,10,3,3,1.8,1.4],[10,12,4,4,2.5,1.8],[12,17,5,5,3,2.3],[17,22,6,6,3.5,2.8],[22,30,8,7,4,3.3],[30,38,10,8,5,3.3],[38,44,12,8,5,3.3],[44,50,14,9,5.5,3.8],[50,58,16,10,6,4.3],[58,65,18,11,7,4.4],[65,75,20,12,7.5,4.9],[75,85,22,14,9,5.4],[85,95,25,14,9,5.4],[95,110,28,16,10,6.4],[110,130,32,18,11,7.4],[130,150,36,20,12,8.4],[150,170,40,22,13,9.4],[170,200,45,25,15,10.4],[200,230,50,28,17,11.4],[230,260,56,32,20,12.4],[260,290,63,32,20,12.4],[290,330,70,36,22,14.4],[330,380,80,40,25,15.4],[380,440,90,45,28,17.4],[440,500,100,50,31,19.5]
+];
+function calcKey(){
+ const d=num('keyD'),r=KEYS.find(x=>d>x[0]&&d<=x[1])||KEYS.find(x=>d>=x[0]&&d<=x[1]);
+ if(!r){$('resKey').innerHTML='<div class="err">Diametro fuori tabella.</div>';return}
+ $('resKey').innerHTML=box('LINGUETTA',`${r[2]} × ${r[3]}`,'mm')+box('CAVA ALBERO t1',fmt(r[4],1))+box('CAVA MOZZO t2',fmt(r[5],1));
+}
+
+/* PARAMETRI */
+function calcMill(){const d=num('fD'),vc=num('fVc'),z=num('fZ'),fz=num('fFz');if(bad([d,vc,z,fz])||d<=0){$('resMill').innerHTML='<div class="err">Controlla i dati.</div>';return}const rpm=vc*1000/(Math.PI*d),feed=rpm*z*fz;$('resMill').innerHTML=box('GIRI',fmt(rpm,0),'rpm')+box('AVANZAMENTO',fmt(feed,0),'mm/min')}
+function calcDrill(){const d=num('pD'),vc=num('pVc'),f=num('pF');if(bad([d,vc,f])||d<=0){$('resDrill').innerHTML='<div class="err">Controlla i dati.</div>';return}const rpm=vc*1000/(Math.PI*d),feed=rpm*f;$('resDrill').innerHTML=box('GIRI',fmt(rpm,0),'rpm')+box('AVANZAMENTO',fmt(feed,0),'mm/min')}
+function calcLathe(){const d=num('latD'),vc=num('latVc'),f=num('latF');if(bad([d,vc,f])||d<=0){$('resLathe').innerHTML='<div class="err">Controlla i dati.</div>';return}const rpm=vc*1000/(Math.PI*d),feed=rpm*f;$('resLathe').innerHTML=box('GIRI',fmt(rpm,0),'rpm')+box('AVANZAMENTO',fmt(feed,0),'mm/min')}
 function mmIn(){$('resConv1').innerHTML=box('POLLICI',fmt(num('convMm')/25.4,4),'inch')}
 function inMm(){$('resConv2').innerHTML=box('MILLIMETRI',fmt(num('convIn')*25.4,3),'mm')}
-function calcAdd(x){$('calcDisplay').value+=x}function calcClear(){$('calcDisplay').value=''}function calcDel(){$('calcDisplay').value=$('calcDisplay').value.slice(0,-1)}function calcEq(){try{const s=$('calcDisplay').value;if(!/^[0-9+\-*/().\s]+$/.test(s))throw 0;$('calcDisplay').value=Function('"use strict";return ('+s+')')()}catch(e){$('calcDisplay').value='ERRORE'}}
-function saveRuler(){localStorage.setItem('ruler_mm',$('rulerMm').value);alert('Calibrazione salvata.')}
+function calcAdd(x){$('calcDisplay').value+=x}
+function calcClear(){$('calcDisplay').value=''}
+function calcDel(){$('calcDisplay').value=$('calcDisplay').value.slice(0,-1)}
+function calcEq(){try{const s=$('calcDisplay').value;if(!/^[0-9+\-*/().\s]+$/.test(s))throw 0;$('calcDisplay').value=Function('"use strict";return ('+s+')')()}catch(e){$('calcDisplay').value='ERRORE'}}
+function calcQuickRpm(){const d=num('cfD'),vc=num('cfVc');if(bad([d,vc])||d<=0){$('resQuick').innerHTML='<div class="err">Controlla i dati.</div>';return}$('resQuick').innerHTML=box('GIRI',fmt(vc*1000/(Math.PI*d),0),'rpm')}
+
+/* RIGHELLO */
+function saveRuler(){localStorage.setItem('ruler_mm',$('rulerMm').value);updateRuler()}
+function updateRuler(){
+ const saved=localStorage.getItem('ruler_mm');if(saved)$('rulerMm').value=saved;
+ const mm=Math.max(20,num('rulerMm')||68),el=$('rulerVisual');if(!el)return;
+ const width=Math.max(100,el.clientWidth-16),pxPerMm=width/mm;
+ let bg=[];
+ for(let i=0;i<=Math.floor(mm);i++){const x=8+i*pxPerMm,h=i%10===0?42:i%5===0?29:17;bg.push(`linear-gradient(90deg,transparent ${x}px,var(--y) ${x}px,var(--y) ${x+1}px,transparent ${x+1}px) 0 0/100% ${h}px no-repeat`)}
+ el.style.backgroundImage=bg.join(',');
+ let labels='';for(let i=0;i<=Math.floor(mm/10)*10;i+=10)labels+=String(i).padEnd(5,' ');
+ $('rulerText').textContent=labels+' mm';calcCaliper();
+}
+function calcCaliper(){
+ const a=Number($('calA')?.value||0),b=Number($('calB')?.value||0),mm=Math.max(20,num('rulerMm')||68),dist=Math.abs(b-a)/100*mm;
+ if($('calAV'))$('calAV').textContent=a+'%';if($('calBV'))$('calBV').textContent=b+'%';
+ if($('resCaliper'))$('resCaliper').innerHTML=box('DISTANZA STIMATA',fmt(dist));
+}
+
+/* CAMERA */
 let mediaStream=null;
-async function startCamera(id){stopCamera();try{mediaStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false});$(id).srcObject=mediaStream}catch(e){alert('Fotocamera non disponibile o permesso negato.')}}
+async function startCamera(id){
+ stopCamera();
+ try{mediaStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});$(id).srcObject=mediaStream}
+ catch(e){alert('Fotocamera non disponibile o permesso negato.')}
+}
 function stopCamera(){if(mediaStream){mediaStream.getTracks().forEach(t=>t.stop());mediaStream=null}}
 function setGonAngle(){const a=+$('gonAngle').value;$('gonVal').textContent=a+'°';$('gonLine').style.transform=`rotate(${a}deg)`}
-async function torchOn(){try{await startCamera('torchVideo');const track=mediaStream.getVideoTracks()[0];const cap=track.getCapabilities();if(cap.torch){await track.applyConstraints({advanced:[{torch:true}]});$('torchMsg').textContent='Torcia accesa.'}else $('torchMsg').textContent='Il telefono/browser non permette il flash da questa pagina.'}catch(e){$('torchMsg').textContent='Torcia non disponibile.'}}
+async function torchOn(){
+ try{await startCamera('torchVideo');const track=mediaStream.getVideoTracks()[0],cap=track.getCapabilities?.()||{};
+  if(cap.torch){await track.applyConstraints({advanced:[{torch:true}]});$('torchMsg').textContent='Torcia accesa.'}
+  else $('torchMsg').textContent='Il telefono o il browser non permette il flash da questa pagina.'
+ }catch(e){$('torchMsg').textContent='Torcia non disponibile.'}
+}
 async function torchOff(){if(mediaStream){const track=mediaStream.getVideoTracks()[0];try{await track.applyConstraints({advanced:[{torch:false}]})}catch(e){}stopCamera()}$('torchMsg').textContent='Torcia spenta.'}
 
-/* ASSISTENTE VOCALE OFFLINE COMPLETO v3.1 */
-const A_COARSE={
- M1:[.25,.75],'M1.2':[.25,.95],'M1.4':[.30,1.10],'M1.6':[.35,1.25],M2:[.40,1.60],'M2.5':[.45,2.05],
- M3:[.50,2.50],'M3.5':[.60,2.90],M4:[.70,3.30],M5:[.80,4.20],M6:[1,5],M7:[1,6],M8:[1.25,6.8],
- M10:[1.5,8.5],M12:[1.75,10.2],M14:[2,12],M16:[2,14],M18:[2.5,15.5],M20:[2.5,17.5],
- M22:[2.5,19.5],M24:[3,21],M27:[3,24],M30:[3.5,26.5],M33:[3.5,29.5],M36:[4,32],
- M39:[4,35],M42:[4.5,37.5],M45:[4.5,40.5],M48:[5,43],M52:[5,47],M56:[5.5,50.5],M60:[5.5,54.5]
-};
-const A_FINE={
- M3:{'.35':2.65},M4:{'.5':3.5},M5:{'.5':4.5},M6:{'.75':5.25},M8:{'1':7},
- M10:{'1':9,'1.25':8.8},M12:{'1':11,'1.25':10.8,'1.5':10.5},M14:{'1.5':12.5},
- M16:{'1':15,'1.5':14.5},M18:{'1.5':16.5},M20:{'1.5':18.5,'2':18},
- M22:{'1.5':20.5,'2':20},M24:{'1.5':22.5,'2':22},M27:{'1.5':25.5,'2':25},
- M30:{'1.5':28.5,'2':28,'3':27},M33:{'1.5':31.5,'2':31,'3':30},
- M36:{'1.5':34.5,'2':34,'3':33},M39:{'1.5':37.5,'2':37,'3':36},
- M42:{'1.5':40.5,'2':40,'3':39},M45:{'1.5':43.5,'2':43,'3':42},
- M48:{'1.5':46.5,'2':46,'3':45},M52:{'1.5':50.5,'2':50,'3':49,'4':48},
- M56:{'2':54,'3':53,'4':52},M60:{'2':58,'3':57,'4':56}
-};
-const A_GAS={
- '1/8':{tpi:28,drill:8.8,ext:9.728},'1/4':{tpi:19,drill:11.8,ext:13.157},
- '3/8':{tpi:19,drill:15.3,ext:16.662},'1/2':{tpi:14,drill:19.1,ext:20.955},
- '3/4':{tpi:14,drill:24.6,ext:26.441},'1':{tpi:11,drill:30.9,ext:33.249},
- '1 1/4':{tpi:11,drill:39.6,ext:41.910},'1 1/2':{tpi:11,drill:45.5,ext:47.803},
- '2':{tpi:11,drill:57.2,ext:59.614}
-};
-const A_NPT={
- '1/8':{tpi:27,drill:8.6,ext:10.287},'1/4':{tpi:18,drill:11.1,ext:13.716},
- '3/8':{tpi:18,drill:14.5,ext:17.145},'1/2':{tpi:14,drill:17.8,ext:21.336},
- '3/4':{tpi:14,drill:23.0,ext:26.670},'1':{tpi:11.5,drill:29.0,ext:33.401}
-};
-const A_KEYS=[
- {min:6,max:8,b:2,h:2,t1:1.2,t2:1.0},{min:8,max:10,b:3,h:3,t1:1.8,t2:1.4},
- {min:10,max:12,b:4,h:4,t1:2.5,t2:1.8},{min:12,max:17,b:5,h:5,t1:3.0,t2:2.3},
- {min:17,max:22,b:6,h:6,t1:3.5,t2:2.8},{min:22,max:30,b:8,h:7,t1:4.0,t2:3.3},
- {min:30,max:38,b:10,h:8,t1:5.0,t2:3.3},{min:38,max:44,b:12,h:8,t1:5.0,t2:3.3},
- {min:44,max:50,b:14,h:9,t1:5.5,t2:3.8},{min:50,max:58,b:16,h:10,t1:6.0,t2:4.3},
- {min:58,max:65,b:18,h:11,t1:7.0,t2:4.4},{min:65,max:75,b:20,h:12,t1:7.5,t2:4.9},
- {min:75,max:85,b:22,h:14,t1:9.0,t2:5.4},{min:85,max:95,b:25,h:14,t1:9.0,t2:5.4},
- {min:95,max:110,b:28,h:16,t1:10.0,t2:6.4}
-];
-const ISO_STEPS=[
- {min:0,max:3,it6:6,it7:10,it8:14},{min:3,max:6,it6:8,it7:12,it8:18},
- {min:6,max:10,it6:9,it7:15,it8:22},{min:10,max:18,it6:11,it7:18,it8:27},
- {min:18,max:30,it6:13,it7:21,it8:33},{min:30,max:50,it6:16,it7:25,it8:39},
- {min:50,max:80,it6:19,it7:30,it8:46},{min:80,max:120,it6:22,it7:35,it8:54},
- {min:120,max:180,it6:25,it7:40,it8:63},{min:180,max:250,it6:29,it7:46,it8:72},
- {min:250,max:315,it6:32,it7:52,it8:81},{min:315,max:400,it6:36,it7:57,it8:89},
- {min:400,max:500,it6:40,it7:63,it8:97}
-];
+/* ASSISTENTE VOCALE v3.8 */
+const synth=window.speechSynthesis;
+let voices=[],rec=null,listening=false,finalHandled=false,lastDetail='',pendingFollow=null;
+let speechPending='',speechTimer=null,speechWatchdog=null,speechToken=0,activeUtterance=null,speechUnlocked=false,retryCount=0;
 
-let voices=[],rec=null,listening=false,pending=null,lastAnswer=null,pendingSpeech='',speechTimer=null;
-
-function aiFmt(n,d=3){return Number(n).toLocaleString('it-IT',{minimumFractionDigits:d,maximumFractionDigits:d})}
-function aiShort(n){return Number(n).toLocaleString('it-IT',{maximumFractionDigits:3})}
-function removeSpeechAccents(value){
- return String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+function setVA(text,type=''){
+ $('vaStatus').textContent=text;$('vaDot').className='dot'+(type?' '+type:'');
+ $('vaMic').classList.toggle('listen',type==='listen');
 }
-function editDistance(a,b){
- a=String(a);b=String(b);
- const row=Array.from({length:b.length+1},(_,i)=>i);
- for(let i=1;i<=a.length;i++){
-  let prev=row[0];row[0]=i;
-  for(let j=1;j<=b.length;j++){
-   const old=row[j];
-   row[j]=Math.min(row[j]+1,row[j-1]+1,prev+(a[i-1]===b[j-1]?0:1));
-   prev=old;
-  }
- }
- return row[b.length];
-}
-const MECHANICAL_WORDS=[
- 'gas','bsp','npt','forare','foro','punta','passo','grosso','fine','filetto',
- 'tolleranza','albero','linguetta','cava','mozzo','diametro','esterno',
- 'avanzamento','giri','velocita','tagli','denti','smusso','esagono',
- 'interasse','angolo','tornio','profondita','metrico'
-];
-function fuzzyMechanicalWords(s){
- return String(s).split(/\s+/).map(token=>{
-  if(!/^[a-z]+$/.test(token)||token.length<4||MECHANICAL_WORDS.includes(token))return token;
-  let best=token,bestDistance=99;
-  for(const target of MECHANICAL_WORDS){
-   if(Math.abs(target.length-token.length)>2)continue;
-   const distance=editDistance(token,target);
-   if(distance<bestDistance){bestDistance=distance;best=target}
-  }
-  const limit=token.length>=8?2:1;
-  return bestDistance<=limit?best:token;
- }).join(' ');
-}
-function normalizeSpeech(t){
- let s=removeSpeechAccents(t).toLowerCase().replace(/[“”"]/g,'').replace(/,/g,'.');
-
- /* Espressioni che devono essere risolte prima delle singole parole. */
- s=s
-  .replace(/\bpasso\s+(?:uno|un|1)\s+(?:e\s+mezzo|virgola\s+cinque|punto\s+cinque)\b/g,'passo 1.5')
-  .replace(/\bpasso\s+(?:uno|un|1)\s+(?:e\s+un\s+quarto|virgola\s+venticinque|punto\s+venticinque)\b/g,'passo 1.25')
-  .replace(/\b(?:uno|un|1)\s+pollice\s+e\s+mezzo\b/g,'1 1/2 pollice')
-  .replace(/\b(?:uno|un|1)\s+pollice\s+e\s+(?:un\s+)?quarto\b/g,'1 1/4 pollice')
-  .replace(/\b(?:uno|un|1)\s+e\s+mezzo\s+(?:pollice|gas|bsp)\b/g,'1 1/2 pollice gas')
-  .replace(/\b(?:uno|un|1)\s+e\s+(?:un\s+)?quarto\s+(?:pollice|gas|bsp)\b/g,'1 1/4 pollice gas')
-  .replace(/\btre\s+quarti\b/g,'3/4')
-  .replace(/\bmezzo\s+pollice\b/g,'1/2 pollice')
-  .replace(/\bmezzo\b/g,'1/2')
-  .replace(/\bun\s+quarto\b/g,'1/4')
-  .replace(/\btre\s+ottavi\b/g,'3/8')
-  .replace(/\bun\s+ottavo\b/g,'1/8')
-  .replace(/\benne\s+pi\s+ti\b|\bn\s+p\s+t\b/g,'npt')
-  .replace(/\bbi\s+esse\s+pi\b|\bb\s+s\s+p\b/g,'bsp')
-  .replace(/\bjay\s+esse\b|\bj\s+esse\b/g,'js');
-
- const words={
-  'zero':'0','uno':'1','due':'2','tre':'3','quattro':'4','cinque':'5','sei':'6','sette':'7','otto':'8',
-  'nove':'9','dieci':'10','undici':'11','dodici':'12','tredici':'13','quattordici':'14','quindici':'15','sedici':'16',
-  'diciassette':'17','diciotto':'18','diciannove':'19','venti':'20','ventuno':'21','ventidue':'22','ventitre':'23',
-  'ventiquattro':'24','venticinque':'25','ventisei':'26','ventisette':'27','ventotto':'28','ventinove':'29',
-  'trenta':'30','trentuno':'31','trentadue':'32','trentatre':'33','trentaquattro':'34','trentacinque':'35',
-  'trentasei':'36','trentasette':'37','trentotto':'38','trentanove':'39','quaranta':'40','quarantadue':'42',
-  'quarantacinque':'45','quarantotto':'48','cinquanta':'50','cinquantadue':'52','cinquantasei':'56','sessanta':'60'
- };
- Object.entries(words).forEach(([word,number])=>s=s.replace(new RegExp('\\b'+word+'\\b','g'),number));
-
- /* Numeri decimali dettati: “uno virgola cinque”, “uno punto venticinque”. */
- s=s
-  .replace(/\b(\d+)\s+(?:virgola|punto)\s+(\d+)\b/g,'$1.$2')
-  .replace(/\bpasso\s+(\d+)\s+e\s+(\d+)\b/g,'passo $1.$2');
-
- /* Errori reali e parole simili prodotte dal riconoscimento in officina. */
- s=s
-  .replace(/\b(emme|meme|em)\s*(?=\d|\s+\d)/g,'m ')
-  .replace(/\bm\s+(\d)\s+(\d)\b/g,'m $1$2')
-  .replace(/\b(gaz|gass|gasse|guas|ghas|gasch|cas|cash)\b/g,'gas')
-  .replace(/\b(g\s+as|gea)\b/g,'gas')
-  .replace(/\bgi\s*(?=\d)/g,'g ')
-  .replace(/\b(curare|furare|ferrare|corare|colorare|volare|forrare|foraree)\b/g,'forare')
-  .replace(/\b(bucare|buca|foratura|preforare|fare\s+(?:un|il)\s+foro)\b/g,'forare')
-  .replace(/\b(punto|punda|puntaia)\b/g,'punta')
-  .replace(/\b(grasso|grassa|rosso|rossa|groso|grosa)\b/g,'grosso')
-  .replace(/\b(finito|fina|fino)\b/g,'fine')
-  .replace(/\b(poro|forro|foro)\b/g,'foro')
-  .replace(/\bal\s+vero\b|\barbero\b|\balberoo\b/g,'albero')
-  .replace(/\bmozo\b|\bmozzo\b/g,'mozzo')
-  .replace(/\blingueta\b|\blinguettaa\b|\bchiaveta\b/g,'linguetta')
-  .replace(/\btoleranza\b|\btolleransa\b|\btoleransa\b/g,'tolleranza')
-  .replace(/\bdiametroo\b|\bdiametro\b/g,'diametro')
-  .replace(/\bavansamento\b|\bavanzameto\b/g,'avanzamento')
-  .replace(/\bvelocita\s+di\s+taglio\b/g,'vc')
-  .replace(/\bmillimetri?\b/g,' mm ')
-  .replace(/\bpollici?\b/g,' pollice ')
-  .replace(/\b(eh|uh|mmm|dunque|allora)\b/g,' ')
-  .replace(/\s+/g,' ')
-  .trim();
-
- return fuzzyMechanicalWords(s);
-}
-function mechanicalScore(text){
- const s=normalizeSpeech(text);
- let score=0;
- if(/\bm\s*\d/.test(s))score+=8;
- if(/\b(gas|bsp|npt|g\s*\d)\b/.test(s))score+=8;
- if(/\b(?:h|acca|g|f|k|m|js)\s*(?:6|7|8)\b/.test(s))score+=7;
- if(/\d/.test(s))score+=2;
- const keywords=[
-  'punta','forare','foro','passo','grosso','fine','filetto','tolleranza','albero',
-  'linguetta','cava','mozzo','diametro','avanzamento','giri','vc','smusso',
-  'esagono','interasse','angolo','tornio','profondita'
- ];
- keywords.forEach(word=>{if(new RegExp('\\b'+word+'\\b').test(s))score+=3});
- if(pending){
-  if(pending.type==='metric-family'&&/\b(grosso|fine)\b/.test(s))score+=12;
-  if(pending.type==='metric-pitch'&&/\d/.test(s))score+=9;
-  if(pending.type==='tol-side'&&/\b(foro|albero)\b/.test(s))score+=12;
-  if(pending.type==='tol-class'&&/\b(?:h|acca|g|f|k|m|js)\s*(?:6|7|8)\b/.test(s))score+=12;
-  if(pending.type==='key-side'&&/\b(albero|mozzo)\b/.test(s))score+=12;
-  if(pending.type==='pipe-intent'&&/\b(punta|forare|passo|esterno)\b/.test(s))score+=12;
- }
- return score;
-}
-function chooseBestSpeechAlternative(result){
- let best=result[0]?.transcript||'',bestScore=-999;
- for(let i=0;i<result.length;i++){
-  const alt=result[i];
-  const confidence=Number.isFinite(alt.confidence)?alt.confidence:0;
-  const score=mechanicalScore(alt.transcript)+(confidence*2);
-  if(score>bestScore){bestScore=score;best=alt.transcript}
- }
- return best;
-}
-function setVA(text,type=''){$('vaStatus').textContent=text;$('vaDot').className='dot'+(type?' '+type:'');$('vaMic').classList.toggle('listen',type==='listen')}
-function showVA(text,q=false,detail=''){lastAnswer=detail?{detail}:lastAnswer;$('vaAnswer').textContent=text;$('vaAnswer').classList.toggle('q',q);speak(text)}
-function ask(text,pend){pending=pend;showVA(text,true)}
-function direct(text,detail=text){pending=null;lastAnswer={detail};showVA(text,false)}
-function drillText(v){return 'Punta da '+aiShort(v)+' millimetri.'}
-function numberAfter(s,patterns){
- for(const p of patterns){const m=s.match(new RegExp('(?:'+p+')\\s*(?:di|da|=)?\\s*(\\d+(?:\\.\\d+)?)'));if(m)return Number(m[1])}
- return null;
-}
-function firstNumber(s){const m=s.match(/\d+(?:\.\d+)?/);return m?Number(m[0]):null}
-function fractionSize(s){
- const text=String(s||'').toLowerCase();
-
- /* Prima le misure più lunghe, per evitare che “1” catturi “1 1/4”. */
- for(const x of ['1 1/2','1 1/4','3/4','1/2','3/8','1/4','1/8','2']){
-  if(text.includes(x))return x;
- }
-
- /* Tutte le forme vocali del GAS da un pollice. */
- if(
-  /\b1\s*(?:pollice)?\s*(?:gas|bsp)\b/.test(text) ||
-  /\b(?:gas|bsp)\s*(?:da|di)?\s*1\s*(?:pollice)?\b/.test(text) ||
-  /\bg\s*1\b/.test(text) ||
-  /\b1\s*g\b/.test(text) ||
-  /\bpollice\s*(?:gas|bsp)\b/.test(text) ||
-  /\b(?:gas|bsp)\s*(?:da|di)?\s*1?\s*pollice\b/.test(text)
- )return '1';
-
- return null;
-}
-function threadIntent(s){
- if(/\b(punta|forare|foro|preforo|foratura|bucare|buca|trapano|diametro punta|maschiare|maschiatura|maschio)\b/.test(s))return 'drill';
- if(/\b(diametro esterno|esterno|diametro nominale|diametro del filetto)\b/.test(s))return 'ext';
- if(/\b(passo|tpi|filetti per pollice|quanti filetti)\b/.test(s))return 'pitch';
- return 'unknown';
-}
-function pitchList(obj){
- const a=Object.keys(obj).map(Number);
- if(a.length===1)return aiShort(a[0]);
- if(a.length===2)return aiShort(a[0])+' oppure '+aiShort(a[1]);
- return a.slice(0,-1).map(aiShort).join(', ')+' oppure '+aiShort(a[a.length-1]);
-}
-function metricResult(n,p,intent){
- const c=A_COARSE[n],f=A_FINE[n],ps=String(Number(p));
- let drill=null,actualPitch=Number(p);
- if(c&&String(Number(c[0]))===ps)drill=c[1];
- else if(f&&f[ps]!==undefined)drill=f[ps];
- if(drill===null){showVA('Passo non presente.',true);return}
- if(intent==='pitch')direct('Passo '+aiShort(actualPitch)+' millimetri.',`${n}, passo ${aiShort(actualPitch)} millimetri.`);
- else if(intent==='ext')direct('Diametro '+aiShort(Number(n.slice(1)))+' millimetri.',`${n}: diametro esterno nominale ${aiShort(Number(n.slice(1)))} millimetri.`);
- else direct(drillText(drill),`${n}, passo ${aiShort(actualPitch)}: punta ${aiShort(drill)} millimetri.`);
-}
-function pipeResult(kind,size,intent){
- const data=(kind==='gas'?A_GAS:A_NPT)[size];
- if(!data){showVA('Misura non presente.',true);return}
- const name=(kind==='gas'?'GAS ':'NPT ')+size;
- if(intent==='pitch')direct(aiShort(data.tpi)+' filetti per pollice.',`${name}: ${aiShort(data.tpi)} filetti per pollice.`);
- else if(intent==='ext')direct('Diametro '+aiShort(data.ext)+' millimetri.',`${name}: diametro esterno ${aiShort(data.ext)} millimetri.`);
- else if(intent==='drill')direct(drillText(data.drill),`${name}: punta ${aiShort(data.drill)} millimetri.`);
- else ask('Punta, passo o diametro esterno?',{type:'pipe-intent',kind,size});
-}
-function tolClassFrom(s){
- if(/\b(js|j esse)\s*6\b/.test(s))return 'js6';
- if(/\b(g|gi)\s*6\b/.test(s))return 'g6';
- if(/\b(f|effe)\s*7\b/.test(s))return 'f7';
- if(/\b(k|kappa)\s*6\b/.test(s))return 'k6';
- if(/\b(m|emme)\s*6\b/.test(s))return 'm6';
- const h=s.match(/\b(?:h|acca)\s*(6|7|8)\b/);
- return h?'h'+h[1]:null;
-}
-function toleranceLimits(d,cls,side){
- const grade=Number(cls.match(/\d/)[0]);
- const step=ISO_STEPS.find(x=>d>x.min&&d<=x.max)||ISO_STEPS[0];
- const IT=(step['it'+grade]||step.it7)/1000;
- let lo=0,hi=IT,label=cls;
- if(side==='foro'){
-  label='H'+grade;lo=0;hi=IT;
- }else{
-  label=cls;
-  if(cls==='h6'||cls==='h7'||cls==='h8'){lo=-IT;hi=0}
-  else if(cls==='g6'){hi=-Math.round(2.5*Math.pow(d,.34))/1000;lo=hi-IT}
-  else if(cls==='f7'){hi=-Math.round(5.5*Math.pow(d,.41))/1000;lo=hi-IT}
-  else if(cls==='js6'){lo=-IT/2;hi=IT/2}
-  else if(cls==='k6'){lo=.20*IT;hi=lo+IT}
-  else if(cls==='m6'){lo=.50*IT;hi=lo+IT}
-  else {lo=-IT;hi=0}
- }
- return {label,min:d+lo,max:d+hi,tol:hi-lo};
-}
-function answerTolerance(d,cls,side){
- const r=toleranceLimits(d,cls,side);
- direct(`Minimo ${aiFmt(r.min)}. Massimo ${aiFmt(r.max)} millimetri.`,
-  `Diametro ${aiShort(d)} ${r.label}, ${side}: minimo ${aiFmt(r.min)}, massimo ${aiFmt(r.max)}, tolleranza ${aiFmt(r.tol)} millimetri.`);
-}
-function keyRow(d){return A_KEYS.find(x=>d>x.min&&d<=x.max)}
-function answerKey(d,intent,side){
- const r=keyRow(d);
- if(!r){showVA('Diametro fuori tabella.',true);return}
- if(intent==='key')direct(`Linguetta ${r.b} per ${r.h} millimetri.`,`Albero ${aiShort(d)}: linguetta ${r.b} per ${r.h} millimetri.`);
- else if(side==='albero')direct(`Cava albero ${aiShort(r.t1)} millimetri.`,`Albero ${aiShort(d)}: cava albero t1 ${aiShort(r.t1)} millimetri, linguetta ${r.b} per ${r.h}.`);
- else if(side==='mozzo')direct(`Cava mozzo ${aiShort(r.t2)} millimetri.`,`Albero ${aiShort(d)}: cava mozzo t2 ${aiShort(r.t2)} millimetri, linguetta ${r.b} per ${r.h}.`);
- else ask('Cava sull’albero o nel mozzo?',{type:'key-side',d});
-}
-function assistantHelp(){
- direct('Filetti, tolleranze, linguette, cave, parametri, smussi, esagoni e geometria.',
- 'Posso rispondere usando le tabelle offline della Toolbox: metrici grossi e fini, GAS, NPT, tolleranze foro e albero, linguette, cave, giri, avanzamenti, smussi, esagoni, conversioni, angoli e interassi.');
-}
-function handlePending(raw,s){
- if(!pending)return false;
- const p=pending;
-
- if(p.type==='metric-family'){
-  if(/\b(grosso|grossa|standard|normale)\b/.test(s)){metricResult(p.n,A_COARSE[p.n][0],p.intent);return true}
-  if(/\b(fine|fino)\b/.test(s)){
-   const o=A_FINE[p.n];if(!o){pending=null;showVA('Passo fine non presente.',true);return true}
-   if(Object.keys(o).length===1){metricResult(p.n,Object.keys(o)[0],p.intent);return true}
-   ask('Che passo: '+pitchList(o)+'?',{type:'metric-pitch',n:p.n,intent:p.intent,o});return true
-  }
-  showVA('Passo grosso o fine?',true);return true;
- }
- if(p.type==='metric-pitch'){
-  const v=firstNumber(s),key=v===null?'':String(Number(v));
-  if(p.o[key]!==undefined){metricResult(p.n,key,p.intent);return true}
-  showVA('Che passo: '+pitchList(p.o)+'?',true);return true;
- }
- if(p.type==='pipe-intent'){
-  const intent=threadIntent(s);
-  if(intent==='unknown'){showVA('Punta, passo o diametro esterno?',true);return true}
-  pipeResult(p.kind,p.size,intent);return true;
- }
- if(p.type==='tol-side'){
-  if(/\b(foro|poro|femmina)\b/.test(s)){answerTolerance(p.d,p.cls,'foro');return true}
-  if(/\b(albero|maschio)\b/.test(s)){answerTolerance(p.d,p.cls,'albero');return true}
-  showVA('Foro o albero?',true);return true;
- }
- if(p.type==='tol-class'){
-  const cls=tolClassFrom(s);
-  if(!cls){showVA('Quale classe? Per esempio H7, h6 o g6.',true);return true}
-  if(p.side)answerTolerance(p.d,cls,p.side);else ask('Foro o albero?',{type:'tol-side',d:p.d,cls});return true;
- }
- if(p.type==='key-side'){
-  if(/\b(albero)\b/.test(s)){answerKey(p.d,'cava','albero');return true}
-  if(/\b(mozzo|foro)\b/.test(s)){answerKey(p.d,'cava','mozzo');return true}
-  showVA('Albero o mozzo?',true);return true;
- }
- return false;
-}
-function looksLikeMetricThreadQuestion(s){
- return /\bm\s*\d+(?:\.\d+)?\b/.test(s) &&
-  /\b(punta|forare|foro|preforo|foratura|bucare|trapano|filetto|filettare|maschiare|maschiatura|maschio|passo)\b/.test(s);
-}
-function looksLikeToleranceQuestion(s){
- const explicit=/\b(tolleranza|tolleranze|accoppiamento|scostamento|limite|limiti|minimo|massimo|campo di tolleranza)\b/.test(s);
- const clearClass=/\b(?:h|acca|g|f|k|js)\s*(?:6|7|8)\b/.test(s);
- const shaftM6=/\bm\s*6\b/.test(s)&&/\b(tolleranza|accoppiamento|scostamento|limite|albero)\b/.test(s);
- return explicit||clearClass||shaftM6;
-}
-function isShortReplyForPending(s,p){
- const text=String(s||'').trim();
- if(!p)return false;
-
- if(p.type==='metric-family'){
-  return /^(?:passo\s+)?(?:grosso|grossa|standard|normale|fine|fino)$/.test(text);
- }
- if(p.type==='metric-pitch'){
-  return /^(?:passo\s*)?\d+(?:\.\d+)?$/.test(text);
- }
- if(p.type==='pipe-intent'){
-  return /^(?:la\s+)?(?:punta|foro|forare|passo|tpi|diametro(?:\s+esterno)?|esterno)$/.test(text);
- }
- if(p.type==='tol-side'){
-  return /^(?:il\s+|lo\s+|l\s+)?(?:foro|poro|femmina|albero|maschio)$/.test(text);
- }
- if(p.type==='tol-class'){
-  return /^(?:classe\s+)?(?:h|acca|g|f|k|m|js)\s*(?:6|7|8)$/.test(text);
- }
- if(p.type==='key-side'){
-  return /^(?:sull?\s+|nel\s+)?(?:albero|mozzo|foro)$/.test(text);
- }
- return false;
-}
-function looksLikeFreshMechanicalRequest(s){
- return (
-  looksLikeMetricThreadQuestion(s) ||
-  looksLikeToleranceQuestion(s) ||
-  /\b(gas|bsp|npt)\b/.test(s) ||
-  /\b(linguetta|chiavetta|cava)\b/.test(s) ||
-  /\b(giri|rpm|avanzamento|parametri|vc|fz|tagli|denti)\b/.test(s) ||
-  /\b(smusso|chamfer|esagono|interasse|calcola angolo|filetto tornio|profondita filetto)\b/.test(s)
- );
-}
-function resetOldContextForNewQuestion(s){
- if(!pending)return;
- if(isShortReplyForPending(s,pending))return;
-
- /*
-  Una frase completa con un nuovo argomento prevale sulla domanda rimasta aperta.
-  Esempio: dopo “Foro o albero?”, la frase “quanto devo forare per M6”
-  deve aprire il filetto M6 e non diventare una risposta sulla tolleranza.
- */
- if(looksLikeFreshMechanicalRequest(s))pending=null;
-}
-function askAssistant(raw){
- raw=String(raw||'').trim();if(!raw)return;
- $('vaHeard').textContent=raw;
- const s=normalizeSpeech(raw);
-
- if(/\b(annulla|cancella|ricomincia)\b/.test(s)){pending=null;lastAnswer=null;showVA('Annullato.');return}
- if(/\b(spiegami|spiega|dettagli)\b/.test(s)){showVA(lastAnswer?.detail||'Prima fammi una domanda.',!lastAnswer);return}
- if(/\b(cosa sai fare|cosa puoi fare|aiuto|funzioni)\b/.test(s)){assistantHelp();return}
- resetOldContextForNewQuestion(s);
- if(handlePending(raw,s))return;
-
- /* TOLLERANZE */
- if(looksLikeToleranceQuestion(s)&&!looksLikeMetricThreadQuestion(s)){
-  const cls=tolClassFrom(s);
-  const nums=[...s.matchAll(/\d+(?:\.\d+)?/g)].map(x=>Number(x[0]));
-  let d=numberAfter(s,['diametro','quota','foro','albero']);
-  if(d===null)d=nums.length?nums[0]:null;
-  const side=/\b(foro|poro|femmina)\b/.test(s)?'foro':(/\b(albero|maschio)\b/.test(s)?'albero':null);
-  if(d===null){showVA('Quale diametro?',true);return}
-  if(!cls){ask('Quale classe? Per esempio H7, h6 o g6.',{type:'tol-class',d,side});return}
-  if(!side){ask('Foro o albero?',{type:'tol-side',d,cls});return}
-  answerTolerance(d,cls,side);return;
- }
-
- /* GAS E NPT */
- if(/\b(npt)\b/.test(s)){
-  const size=fractionSize(s);if(!size){showVA('Che misura NPT?',true);return}
-  pipeResult('npt',size,threadIntent(s));return;
- }
- if(/\b(gas|bsp)\b/.test(s)||/\bg\s*(?:1|2|3\/|1\/)/.test(s)||/\b(?:1|2|3\/|1\/)\s*g\b/.test(s)||/\bpollice\s*(?:gas|bsp)\b/.test(s)){
-  const size=fractionSize(s);if(!size){showVA('Che misura GAS?',true);return}
-  pipeResult('gas',size,threadIntent(s));return;
- }
-
- /* METRICO */
- const ms=s.replace(/\s+per\s+/g,'x').match(/\bm\s*(\d+(?:\.\d+)?)\s*(?:x|passo)?\s*(\d+(?:\.\d+)?)?/);
- if(ms){
-  const n='M'+String(Number(ms[1])),p=ms[2]?String(Number(ms[2])):null;
-  const c=A_COARSE[n],f=A_FINE[n],intent=threadIntent(s)==='unknown'?'drill':threadIntent(s);
-  if(!c&&!f){showVA('Filetto non presente.',true);return}
-  if(p){metricResult(n,p,intent);return}
-  if(/\b(grosso|grossa|standard|normale)\b/.test(s)){metricResult(n,c[0],intent);return}
-  if(/\b(fine|fino)\b/.test(s)){
-   if(!f){showVA('Passo fine non presente.',true);return}
-   if(Object.keys(f).length===1){metricResult(n,Object.keys(f)[0],intent);return}
-   ask('Che passo: '+pitchList(f)+'?',{type:'metric-pitch',n,intent,o:f});return;
-  }
-  if(c&&f){ask('Passo grosso o fine?',{type:'metric-family',n,intent});return}
-  metricResult(n,c[0],intent);return;
- }
-
- /* LINGUETTE E CAVE */
- if(/\b(linguetta|chiavetta|cava)\b/.test(s)){
-  const d=numberAfter(s,['diametro','albero','d'])??firstNumber(s);
-  if(d===null){showVA('Quale diametro albero?',true);return}
-  const intent=/\b(linguetta|chiavetta)\b/.test(s)?'key':'cava';
-  const side=/\balbero\b/.test(s)?'albero':(/\b(mozzo|foro)\b/.test(s)?'mozzo':null);
-  answerKey(d,intent,side);return;
- }
-
- /* ESAGONO */
- if(/\b(esagono|chiave|sulle punte|tondo)\b/.test(s)){
-  const v=numberAfter(s,['chiave','s'])??numberAfter(s,['diametro','tondo','d'])??firstNumber(s);
-  if(v===null){showVA('Quale misura?',true);return}
-  if(/\bchiave\b/.test(s)&&!/\bda diametro|tondo\b/.test(s)){
-   const d=v/0.8660254;direct(`Diametro ${aiFmt(d)} millimetri.`,`Chiave ${aiShort(v)}: diametro sulle punte ${aiFmt(d)} millimetri.`);return
-  }
-  const key=v*0.8660254;direct(`Chiave ${aiFmt(key)} millimetri.`,`Diametro tondo ${aiShort(v)}: chiave massima ${aiFmt(key)} millimetri.`);return
- }
-
- /* GIRI E AVANZAMENTI */
- if(/\b(giri|rpm|avanzamento|parametri|velocita di taglio|vc|fz|mm giro|tagli|denti)\b/.test(s)){
-  const d=numberAfter(s,['diametro','d']);
-  const vc=numberAfter(s,['vc','velocita di taglio','velocita']);
-  const z=numberAfter(s,['tagli','denti','z']);
-  const fz=numberAfter(s,['fz','avanzamento per dente']);
-  const fg=numberAfter(s,['mm giro','avanzamento per giro','f']);
-  const missing=[];if(d===null)missing.push('diametro');if(vc===null)missing.push('Vc');
-  if(missing.length){showVA('Mi servono '+missing.join(' e ')+'.',true);return}
-  const rpm=vc*1000/(Math.PI*d);
-  if(/\bavanzamento\b/.test(s)){
-   if(fz!==null&&z!==null){const feed=rpm*z*fz;direct(`${aiFmt(rpm,0)} giri. ${aiFmt(feed,0)} millimetri al minuto.`,`Diametro ${aiShort(d)}, Vc ${aiShort(vc)}, ${aiShort(z)} tagli, fz ${aiShort(fz)}: ${aiFmt(rpm,0)} giri e ${aiFmt(feed,0)} millimetri al minuto.`);return}
-   if(fg!==null){const feed=rpm*fg;direct(`${aiFmt(rpm,0)} giri. ${aiFmt(feed,0)} millimetri al minuto.`,`Diametro ${aiShort(d)}, Vc ${aiShort(vc)}, avanzamento ${aiShort(fg)} millimetri giro: ${aiFmt(rpm,0)} giri e ${aiFmt(feed,0)} millimetri al minuto.`);return}
-   showVA('Mi servono tagli e f z, oppure millimetri giro.',true);return
-  }
-  direct(`${aiFmt(rpm,0)} giri al minuto.`,`Diametro ${aiShort(d)}, Vc ${aiShort(vc)}: ${aiFmt(rpm,0)} giri al minuto.`);return;
- }
-
- /* CONVERSIONI */
- if(/\b(pollice|inch|millimetri| mm )\b/.test(s)&&/\b(converti|conversione|in pollice|in mm|quanto)\b/.test(s)){
-  const v=firstNumber(s);if(v===null){showVA('Quale valore?',true);return}
-  if(/\b(in pollice|pollice|inch)\b/.test(s)&&/\bmm\b/.test(s)){direct(aiFmt(v/25.4,4)+' pollici.',`${aiShort(v)} millimetri sono ${aiFmt(v/25.4,4)} pollici.`);return}
-  if(/\b(in mm|millimetri)\b/.test(s)){direct(aiFmt(v*25.4,3)+' millimetri.',`${aiShort(v)} pollici sono ${aiFmt(v*25.4,3)} millimetri.`);return}
- }
-
- /* SMUSSO */
- if(/\b(smusso|chamfer)\b/.test(s)){
-  const d=numberAfter(s,['diametro','d']),c=numberAfter(s,['c','smusso']),a=numberAfter(s,['angolo','gradi']);
-  const external=/\b(esterno|esterno)\b/.test(s),internal=/\b(interno)\b/.test(s);
-  const miss=[];if(d===null)miss.push('diametro');if(c===null)miss.push('C');if(a===null)miss.push('angolo');if(!external&&!internal)miss.push('interno o esterno');
-  if(miss.length){showVA('Mi serve '+miss.join(', ')+'.',true);return}
-  const radial=c/Math.tan(a*Math.PI/180),x=external?d-2*radial:d+2*radial;
-  direct(`X iniziale ${aiFmt(x)} millimetri.`,`Smusso ${external?'esterno':'interno'}, diametro ${aiShort(d)}, C ${aiShort(c)}, angolo ${aiShort(a)}: X iniziale ${aiFmt(x)} millimetri.`);return;
- }
-
- /* FILETTO AL TORNIO */
- if(/\b(profondita filetto|filetto tornio|cresta filetto)\b/.test(s)){
-  const p=numberAfter(s,['passo']),d=numberAfter(s,['diametro','d']);
-  const gas=/\b(gas|55)\b/.test(s);
-  if(p===null){showVA('Quale passo?',true);return}
-  const depth=p*(gas?.6403:.6134);
-  if(d!==null){const x=d-2*depth;direct(`Profondità ${aiFmt(depth)}. X fondo ${aiFmt(x)} millimetri.`,`Passo ${aiShort(p)}, profilo ${gas?'55':'60'} gradi: profondità radiale ${aiFmt(depth)}, X fondo ${aiFmt(x)} millimetri.`)}
-  else direct(`Profondità radiale ${aiFmt(depth)} millimetri.`,`Passo ${aiShort(p)}, profilo ${gas?'55':'60'} gradi: profondità radiale ${aiFmt(depth)} millimetri.`);
-  return;
- }
-
- /* INTERASSE */
- if(/\b(interasse|distanza tra centri)\b/.test(s)){
-  const x1=numberAfter(s,['x1','x 1']),y1=numberAfter(s,['y1','y 1']),x2=numberAfter(s,['x2','x 2']),y2=numberAfter(s,['y2','y 2']);
-  if([x1,y1,x2,y2].some(v=>v===null)){showVA('Mi servono X1, Y1, X2 e Y2.',true);return}
-  const dist=Math.hypot(x2-x1,y2-y1);direct(`Interasse ${aiFmt(dist)} millimetri.`,`Tra i due centri: delta X ${aiFmt(x2-x1)}, delta Y ${aiFmt(y2-y1)}, interasse ${aiFmt(dist)} millimetri.`);return;
- }
-
- /* ANGOLO */
- if(/\b(angolo da due punti|calcola angolo)\b/.test(s)){
-  const x1=numberAfter(s,['x1','x 1']),y1=numberAfter(s,['y1','y 1']),x2=numberAfter(s,['x2','x 2']),y2=numberAfter(s,['y2','y 2']);
-  if([x1,y1,x2,y2].some(v=>v===null)){showVA('Mi servono X1, Y1, X2 e Y2.',true);return}
-  const ang=Math.atan2(y2-y1,x2-x1)*180/Math.PI;direct(`Angolo ${aiFmt(ang,4)} gradi.`,`Angolo ${aiFmt(ang,4)} gradi; correzione ${aiFmt(-ang,4)} gradi.`);return;
- }
-
- if(mechanicalScore(s)<2)showVA('Non ho capito bene. Ripeti più corto.',true);
- else showVA('Dato non presente nella Toolbox.',true);
-}
-function sendTyped(){askAssistant($('vaText').value);$('vaText').value=''}
+function debugVoice(t){$('voiceDebug').textContent=t||''}
+function clamp(n,min,max,fallback){n=Number(n);return Number.isFinite(n)?Math.min(max,Math.max(min,n)):fallback}
+function selectedVoice(){const uri=$('voiceSelect').value;return voices.find(v=>v.voiceURI===uri)||voices.find(v=>String(v.lang||'').toLowerCase().startsWith('it'))||voices[0]||null}
 function populateVoices(){
- if(!('speechSynthesis'in window))return;
- voices=speechSynthesis.getVoices();$('voiceSelect').innerHTML='';
- const sorted=[...voices].sort((a,b)=>(a.lang.toLowerCase().startsWith('it')?0:1)-(b.lang.toLowerCase().startsWith('it')?0:1)||a.name.localeCompare(b.name));
- sorted.forEach(v=>{const o=document.createElement('option');o.value=v.voiceURI;o.textContent=(v.lang.toLowerCase().startsWith('it')?'🇮🇹 ':'')+v.name+' — '+v.lang;$('voiceSelect').appendChild(o)});
- const saved=localStorage.getItem('voice_uri');if(saved)$('voiceSelect').value=saved;else{const itv=sorted.find(v=>v.lang.toLowerCase().startsWith('it'));if(itv)$('voiceSelect').value=itv.voiceURI}
+ if(!synth)return;
+ voices=synth.getVoices()||[];const sel=$('voiceSelect'),saved=localStorage.getItem('voice_uri')||sel.value;
+ sel.innerHTML='';
+ [...voices].sort((a,b)=>(String(a.lang).toLowerCase().startsWith('it')?0:1)-(String(b.lang).toLowerCase().startsWith('it')?0:1)||a.name.localeCompare(b.name)).forEach(v=>{
+  const o=document.createElement('option');o.value=v.voiceURI;o.textContent=(String(v.lang).toLowerCase().startsWith('it')?'🇮🇹 ':'')+v.name+' — '+v.lang;sel.appendChild(o)
+ });
+ if(saved&&voices.some(v=>v.voiceURI===saved))sel.value=saved;else{const it=voices.find(v=>String(v.lang).toLowerCase().startsWith('it'));if(it)sel.value=it.voiceURI}
 }
 function saveVoice(){
  localStorage.setItem('voice_uri',$('voiceSelect').value);
  ['Rate','Pitch','Volume'].forEach(x=>localStorage.setItem('voice_'+x.toLowerCase(),$('voice'+x).value));
+ localStorage.setItem('audio_enabled',$('audioEnabled').checked?'1':'0');
  $('voiceRateV').textContent=Number($('voiceRate').value).toFixed(2);$('voicePitchV').textContent=Number($('voicePitch').value).toFixed(2);$('voiceVolumeV').textContent=Number($('voiceVolume').value).toFixed(2)
 }
-function playPendingSpeech(){
- if(!pendingSpeech||!('speechSynthesis'in window))return;
- const text=pendingSpeech;
- pendingSpeech='';
- clearTimeout(speechTimer);
-
- if(!voices.length)populateVoices();
- speechSynthesis.cancel();
- speechSynthesis.resume();
-
- const utterance=new SpeechSynthesisUtterance(text);
- const selected=voices.find(x=>x.voiceURI===$('voiceSelect').value);
- if(selected)utterance.voice=selected;
- utterance.lang=selected?.lang||'it-IT';
- utterance.rate=+$('voiceRate').value;
- utterance.pitch=+$('voicePitch').value;
- utterance.volume=+$('voiceVolume').value;
-
- utterance.onstart=()=>{
-  if($('assistant').classList.contains('active'))setVA('Rispondo a voce…');
- };
- utterance.onend=()=>{
-  if($('assistant').classList.contains('active')&&!listening)setVA('Pronto. Premi il microfono.');
- };
- utterance.onerror=()=>{
-  if($('assistant').classList.contains('active'))setVA('Voce non partita. Premi PROVA LA VOCE.','bad');
- };
-
- speechTimer=setTimeout(()=>{
-  speechSynthesis.resume();
-  speechSynthesis.speak(utterance);
- },180);
-}
-function speak(text){
- if(!('speechSynthesis'in window)||!text)return;
- pendingSpeech=String(text);
-
- /*
-  Su Android il riconoscimento e la sintesi non devono lavorare insieme:
-  prima chiudiamo il microfono, poi rec.onend avvia la risposta.
- */
- if(listening&&rec){
-  try{rec.stop()}catch(error){}
-  return;
- }
- playPendingSpeech();
-}
 function preset(name){
- const p={fast:[1.18,1,1],natural:[1,1,1],deep:[.92,.72,1],clear:[1.02,1.18,1],slow:[.8,1,1]};
+ const p={fast:[1.12,1,1],natural:[1,1,1],deep:[.93,.72,1],clear:[1.02,1.18,1],slow:[.82,1,1]};
  if(p[name])[$('voiceRate').value,$('voicePitch').value,$('voiceVolume').value]=p[name];
  document.querySelectorAll('.preset').forEach(b=>b.classList.toggle('on',b.dataset.p===name));saveVoice()
 }
+function unlockSpeech(){
+ if(!synth||speechUnlocked)return;speechUnlocked=true;
+ try{const u=new SpeechSynthesisUtterance('\u200B');u.volume=0;synth.cancel();synth.resume();synth.speak(u)}catch(e){}
+}
+function stopSpeech(update=true){
+ speechToken++;clearTimeout(speechTimer);clearTimeout(speechWatchdog);speechPending='';activeUtterance=null;retryCount=0;
+ try{synth?.cancel()}catch(e){}
+ if(update&&!listening)setVA('Voce interrotta.')
+}
+function queueSpeech(text){
+ if(!$('audioEnabled').checked||!synth||!text)return;
+ speechPending=String(text);clearTimeout(speechTimer);
+ if(listening){
+  setVA('Risposta pronta. Chiudo il microfono…','listen');
+  try{rec?.stop()}catch(e){}
+ }else speechTimer=setTimeout(flushSpeech,180);
+}
+function flushSpeech(){
+ if(listening||!speechPending||!$('audioEnabled').checked)return;
+ const text=speechPending;speechPending='';retryCount=0;const token=++speechToken;startSpeech(text,token);
+}
+function startSpeech(text,token){
+ if(!synth||token!==speechToken)return;
+ clearTimeout(speechTimer);clearTimeout(speechWatchdog);
+ try{synth.cancel();synth.resume()}catch(e){}
+ speechTimer=setTimeout(()=>{
+  if(token!==speechToken)return;
+  if(!voices.length)populateVoices();
+  const u=new SpeechSynthesisUtterance(text),v=selectedVoice();if(v)u.voice=v;
+  u.lang=v?.lang||'it-IT';u.rate=clamp($('voiceRate').value,.7,1.5,1.12);u.pitch=clamp($('voicePitch').value,.55,1.45,1);u.volume=clamp($('voiceVolume').value,.2,1,1);
+  let started=false;activeUtterance=u;
+  u.onstart=()=>{if(token!==speechToken)return;started=true;clearTimeout(speechWatchdog);setVA('Sto parlando…','talk');debugVoice('')}
+  u.onend=()=>{if(token!==speechToken)return;clearTimeout(speechWatchdog);activeUtterance=null;retryCount=0;setVA('Pronto. Premi il microfono.')}
+  u.onerror=e=>{if(token!==speechToken)return;clearTimeout(speechWatchdog);activeUtterance=null;
+   if(!['interrupted','canceled'].includes(e.error)&&retryCount<1){retryCount++;speechTimer=setTimeout(()=>startSpeech(text,token),420)}
+   else if(!['interrupted','canceled'].includes(e.error)){setVA('La voce non è partita. Premi PROVA LA VOCE.','bad');debugVoice('Errore audio: '+(e.error||'sconosciuto'))}
+  };
+  try{synth.resume();synth.speak(u)}catch(e){debugVoice(e.message||String(e))}
+  speechWatchdog=setTimeout(()=>{if(token!==speechToken||started)return;try{synth.cancel()}catch(e){}activeUtterance=null;
+   if(retryCount<1){retryCount++;startSpeech(text,token)}
+   else{setVA('Audio non avviato. Controlla il volume multimediale.','bad');debugVoice('Android non ha avviato speechSynthesis.')}
+  },1500);
+ },260);
+}
+function testVoice(){unlockSpeech();speechPending='Prova voce. Punta da quattordici millimetri.';flushSpeech()}
+function showVA(text,isQuestion=false,detail=''){
+ $('vaAnswer').textContent=text;$('vaAnswer').classList.toggle('q',isQuestion);
+ if(detail)lastDetail=detail;queueSpeech(text)
+}
+function direct(shortText,detail){pendingFollow=null;showVA(shortText,false,detail||shortText)}
+function normalizeSpeech(input){
+ let s=String(input||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[“”"]/g,'').replace(/,/g,'.').replace(/\s+/g,' ').trim();
+ const repl=[
+ [/\b(curare|furare|ferrare|foraree|colorare)\b/g,'forare'],[/\b(bucare|buca|preforare|fare il foro|fare un foro)\b/g,'forare'],
+ [/\buno pollice e mezzo\b|\bun pollice e mezzo\b|\buno e mezzo\b|\bun e mezzo\b/g,'1 1/2'],
+ [/\buno pollice e un quarto\b|\bun pollice e un quarto\b|\buno e un quarto\b|\bun e un quarto\b/g,'1 1/4'],
+ [/\btre quarti\b/g,'3/4'],[/\bmezzo pollice\b/g,'1/2 gas'],[/\bmezzo\b/g,'1/2'],[/\bun quarto\b/g,'1/4'],[/\btre ottavi\b/g,'3/8'],[/\bun ottavo\b/g,'1/8'],
+ [/\bper\b(?=\s*\d)/g,'x'],[/\bg\s+as\b/g,'gas']
+ ];
+ repl.forEach(([a,b])=>s=s.replace(a,b));
+ const words={zero:'0',un:'1',uno:'1',una:'1',due:'2',tre:'3',quattro:'4',cinque:'5',sei:'6',sette:'7',otto:'8',nove:'9',dieci:'10',dodici:'12',quattordici:'14',sedici:'16',diciotto:'18',venti:'20',ventidue:'22',ventiquattro:'24',ventisette:'27',trenta:'30',trentatre:'33',trentasei:'36',trentanove:'39',quarantadue:'42',quarantacinque:'45',quarantotto:'48',cinquanta:'50',cinquantadue:'52',cinquantasei:'56',sessanta:'60'};
+ Object.entries(words).forEach(([w,n])=>s=s.replace(new RegExp('\\b'+w+'\\b','g'),n));
+ return s.replace(/\s+/g,' ').trim()
+}
+function askAssistant(raw){
+ const s=normalizeSpeech(raw);if(!s)return;$('vaHeard').textContent=raw;
+ if(/\b(spiegami|dettagli|approfondisci)\b/.test(s)){showVA(lastDetail||'Non ho ancora una risposta da spiegare.',!lastDetail);return}
+ if(pendingFollow?.type==='pitch'){const p=Number((s.match(/\d+(?:\.\d+)?/)||[])[0]);if(Number.isFinite(p)){answerMetric(pendingFollow.n,p);return}}
+
+ /* Tolleranza: 50 H7 / diametro 50 m6 */
+ let tm=s.match(/(\d+(?:\.\d+)?)\s*(h7|h8|h6|g6|f7|js6|k6|m6)\b/i);
+ if(tm){const d=Number(tm[1]),code=tm[2];answerTolerance(d,code);return}
+ tm=s.match(/\b(h7|h8|h6|g6|f7|js6|k6|m6)\s*(?:diametro\s*)?(\d+(?:\.\d+)?)/i);
+ if(tm){answerTolerance(Number(tm[2]),tm[1]);return}
+
+ /* GAS */
+ if(/\b(gas|bsp|pollice)\b/.test(s)||/\bg\s*\d/.test(s)){
+  let size=null;const sizes=THREADS.gas.map(r=>String(r[0]).slice(1)).sort((a,b)=>b.length-a.length);
+  size=sizes.find(x=>s.includes(x));
+  if(!size){const gm=s.match(/\bg\s*(\d+(?:\s+\d+\/\d+|\/\d+)?)\b/);if(gm)size=gm[1].trim()}
+  if(size){answerGas(size);return}
+  showVA('Quale misura GAS?',true);return
+ }
+
+ /* Metrico fine o grosso */
+ let mm=s.match(/\bm\s*(\d+(?:\.\d+)?)\s*(?:x|per)\s*(\d+(?:\.\d+)?)\b/i);
+ if(mm){answerMetric(Number(mm[1]),Number(mm[2]));return}
+ mm=s.match(/\bm\s*(\d+(?:\.\d+)?)\b/i);
+ if(mm){answerMetric(Number(mm[1]),null);return}
+
+ /* Linguetta */
+ if(/\b(linguetta|cava)\b/.test(s)){
+  const dm=(s.match(/(?:diametro|albero|d)\s*(\d+(?:\.\d+)?)/)||s.match(/(\d+(?:\.\d+)?)/));
+  if(dm){answerKey(Number(dm[1]));return}
+  showVA('Dimmi il diametro dell’albero.',true);return
+ }
+
+ /* Giri */
+ if(/\b(giri|rpm)\b/.test(s)){
+  const d=(s.match(/(?:diametro|d)\s*(\d+(?:\.\d+)?)/)||[])[1],vc=(s.match(/(?:vc|velocita(?: di taglio)?)\s*(\d+(?:\.\d+)?)/)||[])[1];
+  if(d&&vc){const rpm=Number(vc)*1000/(Math.PI*Number(d));direct(`${Math.round(rpm)} giri al minuto.`,`Con diametro ${fmtFlex(d)} millimetri e V C ${fmtFlex(vc)} metri minuto: ${Math.round(rpm)} giri al minuto.`);return}
+  showVA('Mi servono diametro e V C.',true);return
+ }
+
+ /* Esagono */
+ if(/\b(chiave|esagono)\b/.test(s)){
+  const n=Number((s.match(/\d+(?:\.\d+)?/)||[])[0]);if(Number.isFinite(n)){const dia=n/Math.cos(Math.PI/6);direct(`Diametro sulle punte ${fmtFlex(dia,3)} millimetri.`,`Chiave ${fmtFlex(n)}: diametro circoscritto ${fmtFlex(dia,3)} millimetri.`);return}
+ }
+
+ /* Conversioni */
+ if(/\bpollici?\b/.test(s)&&/\bmm|millimetri?\b/.test(s)){
+  const n=Number((s.match(/\d+(?:\.\d+)?/)||[])[0]);if(Number.isFinite(n)){
+   if(s.indexOf('pollic')<s.indexOf('mm'))direct(`${fmtFlex(n*25.4,3)} millimetri.`,`${fmtFlex(n)} pollici corrispondono a ${fmtFlex(n*25.4,3)} millimetri.`);
+   else direct(`${fmtFlex(n/25.4,4)} pollici.`,`${fmtFlex(n)} millimetri corrispondono a ${fmtFlex(n/25.4,4)} pollici.`);
+   return
+  }
+ }
+ showVA('Domanda non riconosciuta. Prova: “Che punta per M16?”',true)
+}
+function answerMetric(n,pitch){
+ const r=findMetric(n,pitch);
+ if(!r&&pitch!==null){const drill=n-pitch;direct(`Punta teorica circa ${fmtFlex(drill,2)} millimetri.`,`M ${fmtFlex(n)} passo ${fmtFlex(pitch)}: preforo teorico diametro meno passo, circa ${fmtFlex(drill,2)} millimetri. Verifica la tabella aziendale.`);return}
+ if(!r){showVA(`M${fmtFlex(n)} non è presente.`,true);return}
+ const detail=`${r[0]}, passo ${fmtFlex(r[1])} millimetri: punta consigliata ${fmtFlex(r[2],2)} millimetri.`;
+ direct(`Punta da ${fmtFlex(r[2],2)} millimetri.`,detail)
+}
+function answerGas(size){
+ const r=findGas(size);if(!r){showVA(`GAS ${size} non presente.`,true);return}
+ direct(`Punta da ${fmtFlex(r[2],2)} millimetri.`,`Filetto ${r[0]}, ${r[1]} filetti per pollice: preforo ${fmtFlex(r[2],2)} millimetri, diametro esterno ${fmtFlex(r[3],3)} millimetri.`)
+}
+function answerTolerance(d,code){
+ const low=String(code).toLowerCase(),c=(low==='h7'||low==='h8')?low.toUpperCase():low,v=calcTolValues(d,c);
+ if(!v){showVA('Tolleranza non disponibile.',true);return}
+ direct(`${c}: da ${fmtFlex(v.min,3)} a ${fmtFlex(v.max,3)} millimetri.`,`Diametro nominale ${fmtFlex(d)} millimetri, zona ${c}: minimo ${fmtFlex(v.min,3)} e massimo ${fmtFlex(v.max,3)} millimetri.`)
+}
+function answerKey(d){
+ const r=KEYS.find(x=>d>x[0]&&d<=x[1])||KEYS.find(x=>d>=x[0]&&d<=x[1]);
+ if(!r){showVA('Diametro fuori tabella linguette.',true);return}
+ direct(`Linguetta ${r[2]} per ${r[3]} millimetri.`,`Per albero diametro ${fmtFlex(d)}: linguetta ${r[2]} per ${r[3]}, cava albero ${r[4]} e cava mozzo ${r[5]} millimetri.`)
+}
+function sendTyped(){askAssistant($('vaText').value);$('vaText').value=''}
+
 function setupRecognition(){
  const SR=window.SpeechRecognition||window.webkitSpeechRecognition,secure=window.isSecureContext;
- $('voiceSupport').innerHTML=
-  (secure?'<span class="ok">✓ Pagina sicura HTTPS.</span>':'<span class="err">✗ Apri la Toolbox online.</span>')+'<br>'+
-  (SR?'<span class="ok">✓ Microfono vocale disponibile.</span>':'<span class="err">✗ Riconoscimento vocale non disponibile.</span>')+'<br>'+
-  ('speechSynthesis'in window?'<span class="ok">✓ Risposta parlata disponibile.</span>':'<span class="err">✗ Voce non disponibile.</span>')+'<br>'+
-  '<span class="ok">✓ v3.7: il microfono si chiude prima che inizi la risposta vocale.</span>';
-
+ $('voiceSupport').innerHTML=(secure?'<span class="ok">✓ Pagina sicura.</span>':'<span class="err">✗ Per il microfono apri l’app tramite HTTPS.</span>')+'<br>'+(SR?'<span class="ok">✓ Riconoscimento vocale disponibile.</span>':'<span class="err">✗ Riconoscimento vocale non disponibile.</span>')+'<br>'+(synth?'<span class="ok">✓ Risposta parlata disponibile.</span>':'<span class="err">✗ Sintesi vocale non disponibile.</span>');
  if(!SR){setVA('Microfono non supportato. Puoi scrivere.','bad');return}
-
- rec=new SR();
- rec.lang='it-IT';
- rec.interimResults=true;
- rec.continuous=false;
- rec.maxAlternatives=5;
-
- rec.onstart=()=>{
-  listening=true;
-  setVA('Sto ascoltando…','listen');
-  $('vaHeard').textContent='Parla adesso…';
- };
-
+ rec=new SR();rec.lang='it-IT';rec.interimResults=true;rec.continuous=false;rec.maxAlternatives=3;
+ rec.onstart=()=>{listening=true;finalHandled=false;speechPending='';setVA('Sto ascoltando…','listen');$('vaHeard').textContent='Parla adesso…'};
  rec.onresult=e=>{
-  let finalParts=[],interimParts=[];
-  for(let i=e.resultIndex;i<e.results.length;i++){
-   const result=e.results[i];
-   if(result.isFinal)finalParts.push(chooseBestSpeechAlternative(result));
-   else interimParts.push(result[0]?.transcript||'');
-  }
-  const finalText=finalParts.join(' ').trim();
-  const interimText=interimParts.join(' ').trim();
-  $('vaHeard').textContent=finalText||interimText||'Sto ascoltando…';
-  if(finalText)askAssistant(finalText);
+  let fin='',tmp='';
+  for(let i=e.resultIndex;i<e.results.length;i++){const t=e.results[i][0]?.transcript||'';e.results[i].isFinal?fin+=(fin?' ':'')+t:tmp+=(tmp?' ':'')+t}
+  $('vaHeard').textContent=fin||tmp||'Sto ascoltando…';
+  if(fin&&!finalHandled){finalHandled=true;askAssistant(fin);try{rec.stop()}catch(err){}}
  };
-
- rec.onerror=e=>{
-  listening=false;
-  const errors={
-   'not-allowed':'Permesso microfono negato.',
-   'service-not-allowed':'Servizio vocale non consentito.',
-   'audio-capture':'Microfono non disponibile.',
-   'no-speech':'Non ho sentito bene. Riprova.',
-   'network':'Problema di rete del riconoscimento.'
-  };
-  setVA(errors[e.error]||('Errore microfono: '+e.error),'bad');
- };
-
- rec.onend=()=>{
-  listening=false;
-  $('vaMic').classList.remove('listen');
-
-  if(pendingSpeech){
-   setVA('Preparo la risposta vocale…');
-   clearTimeout(speechTimer);
-   speechTimer=setTimeout(playPendingSpeech,260);
-  }else if(!$('vaDot').classList.contains('bad')){
-   setVA('Pronto. Premi il microfono.');
-  }
- };
+ rec.onerror=e=>{listening=false;$('vaMic').classList.remove('listen');const map={'not-allowed':'Permesso microfono negato.','audio-capture':'Microfono non disponibile.','no-speech':'Non ho sentito bene. Riprova.','network':'Problema di rete del riconoscimento.'};setVA(map[e.error]||('Errore microfono: '+e.error),'bad');debugVoice('SpeechRecognition: '+e.error)};
+ rec.onend=()=>{listening=false;$('vaMic').classList.remove('listen');if(speechPending){setVA('Avvio la risposta audio…','talk');clearTimeout(speechTimer);speechTimer=setTimeout(flushSpeech,420)}else if(!$('vaDot').classList.contains('bad'))setVA('Pronto. Premi il microfono.')};
 }
 function toggleListen(){
- if(!rec)return;
- if(listening){try{rec.stop()}catch(error){};return}
- pendingSpeech='';
- clearTimeout(speechTimer);
- if('speechSynthesis'in window)speechSynthesis.cancel();
- try{rec.start()}catch(error){}
+ if(!rec)return;unlockSpeech();clearTimeout(speechTimer);
+ if(listening){try{rec.stop()}catch(e){};return}
+ stopSpeech(false);speechPending='';debugVoice('');
+ try{rec.start()}catch(e){setVA('Microfono già in avvio. Riprova.','bad');debugVoice(e.message||String(e))}
 }
-
+function clearSettings(){if(confirm('Cancellare le impostazioni salvate?')){localStorage.clear();location.reload()}}
 function init(){
- renderThreads();updateWallAxisHint();const rm=localStorage.getItem('ruler_mm');if(rm)$('rulerMm').value=rm;
- $('voiceRate').value=localStorage.getItem('voice_rate')||'1.18';$('voicePitch').value=localStorage.getItem('voice_pitch')||'1';$('voiceVolume').value=localStorage.getItem('voice_volume')||'1';saveVoice();populateVoices();if('speechSynthesis'in window){speechSynthesis.onvoiceschanged=populateVoices;setTimeout(populateVoices,300)}setupRecognition();
- $('vaText').addEventListener('keydown',e=>{if(e.key==='Enter')sendTyped()});$('voiceSelect').addEventListener('change',saveVoice);['Rate','Pitch','Volume'].forEach(x=>$('voice'+x).addEventListener('input',saveVoice));document.querySelectorAll('.preset').forEach(b=>b.onclick=()=>preset(b.dataset.p));
- if('serviceWorker'in navigator)navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.update())).catch(()=>{});
+ renderThreads();
+ const pr=localStorage.getItem('probe');if(pr){$('probe3').value=pr;$('probe4').value=pr;$('probe2').value=pr}
+ $('voiceRate').value=localStorage.getItem('voice_rate')||'1.12';$('voicePitch').value=localStorage.getItem('voice_pitch')||'1';$('voiceVolume').value=localStorage.getItem('voice_volume')||'1';
+ $('audioEnabled').checked=localStorage.getItem('audio_enabled')!=='0';saveVoice();populateVoices();if(synth){synth.onvoiceschanged=populateVoices;setTimeout(populateVoices,250);setTimeout(populateVoices,1000)}
+ setupRecognition();
+ $('vaText').addEventListener('keydown',e=>{if(e.key==='Enter')sendTyped()});
+ $('voiceSelect').addEventListener('change',saveVoice);$('audioEnabled').addEventListener('change',saveVoice);
+ ['Rate','Pitch','Volume'].forEach(x=>$('voice'+x).addEventListener('input',()=>{document.querySelectorAll('.preset').forEach(b=>b.classList.toggle('on',b.dataset.p==='custom'));saveVoice()}));
+ document.querySelectorAll('.preset').forEach(b=>b.addEventListener('click',()=>preset(b.dataset.p)));
+ window.addEventListener('resize',()=>{if($('ruler')?.classList.contains('active'))updateRuler()});
+ document.addEventListener('visibilitychange',()=>{if(document.hidden){try{rec?.stop()}catch(e){}stopSpeech(false);stopCamera()}});
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 </script>
