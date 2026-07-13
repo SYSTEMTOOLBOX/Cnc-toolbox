@@ -66,7 +66,7 @@ select{text-align:center;font-size:16px}
 <div class="app">
 
 <section id="home" class="screen active">
- <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v3.3 · MODALITÀ OFFICINA</div></div></div>
+ <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v3.5 · CAMBIO ARGOMENTO INTELLIGENTE</div></div></div>
  <div class="grid">
   <button class="tile primary wide" onclick="show('assistant')"><div class="icon">🎙️</div>ASSISTENTE VOCALE MECCANICO</button>
  </div>
@@ -225,7 +225,7 @@ select{text-align:center;font-size:16px}
 
 <section id="settings" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">MENU</div><button class="help">▤</button></div>
- <div class="card"><h2>AZIONI</h2><button class="btn2" onclick="localStorage.clear();alert('Impostazioni cancellate.')">PULISCI MEMORIA APP</button><div class="note">CNC Toolbox v3.3 · Interpretazione vocale da officina.</div></div>
+ <div class="card"><h2>AZIONI</h2><button class="btn2" onclick="localStorage.clear();alert('Impostazioni cancellate.')">PULISCI MEMORIA APP</button><div class="note">CNC Toolbox v3.5 · Le nuove domande annullano il vecchio contesto.</div></div>
 </section>
 
 <button class="fab" onclick="show('assistant')" aria-label="Assistente vocale">🎤</button>
@@ -399,7 +399,7 @@ function normalizeSpeech(t){
   .replace(/\bjay\s+esse\b|\bj\s+esse\b/g,'js');
 
  const words={
-  'zero':'0','un':'1','uno':'1','una':'1','due':'2','tre':'3','quattro':'4','cinque':'5','sei':'6','sette':'7','otto':'8',
+  'zero':'0','uno':'1','due':'2','tre':'3','quattro':'4','cinque':'5','sei':'6','sette':'7','otto':'8',
   'nove':'9','dieci':'10','undici':'11','dodici':'12','tredici':'13','quattordici':'14','quindici':'15','sedici':'16',
   'diciassette':'17','diciotto':'18','diciannove':'19','venti':'20','ventuno':'21','ventidue':'22','ventitre':'23',
   'ventiquattro':'24','venticinque':'25','ventisei':'26','ventisette':'27','ventotto':'28','ventinove':'29',
@@ -506,7 +506,7 @@ function fractionSize(s){
  return null;
 }
 function threadIntent(s){
- if(/\b(punta|forare|foro|preforo|foratura|bucare|buca|trapano|diametro punta)\b/.test(s))return 'drill';
+ if(/\b(punta|forare|foro|preforo|foratura|bucare|buca|trapano|diametro punta|maschiare|maschiatura|maschio)\b/.test(s))return 'drill';
  if(/\b(diametro esterno|esterno|diametro nominale|diametro del filetto)\b/.test(s))return 'ext';
  if(/\b(passo|tpi|filetti per pollice|quanti filetti)\b/.test(s))return 'pitch';
  return 'unknown';
@@ -622,6 +622,61 @@ function handlePending(raw,s){
  }
  return false;
 }
+function looksLikeMetricThreadQuestion(s){
+ return /\bm\s*\d+(?:\.\d+)?\b/.test(s) &&
+  /\b(punta|forare|foro|preforo|foratura|bucare|trapano|filetto|filettare|maschiare|maschiatura|maschio|passo)\b/.test(s);
+}
+function looksLikeToleranceQuestion(s){
+ const explicit=/\b(tolleranza|tolleranze|accoppiamento|scostamento|limite|limiti|minimo|massimo|campo di tolleranza)\b/.test(s);
+ const clearClass=/\b(?:h|acca|g|f|k|js)\s*(?:6|7|8)\b/.test(s);
+ const shaftM6=/\bm\s*6\b/.test(s)&&/\b(tolleranza|accoppiamento|scostamento|limite|albero)\b/.test(s);
+ return explicit||clearClass||shaftM6;
+}
+function isShortReplyForPending(s,p){
+ const text=String(s||'').trim();
+ if(!p)return false;
+
+ if(p.type==='metric-family'){
+  return /^(?:passo\s+)?(?:grosso|grossa|standard|normale|fine|fino)$/.test(text);
+ }
+ if(p.type==='metric-pitch'){
+  return /^(?:passo\s*)?\d+(?:\.\d+)?$/.test(text);
+ }
+ if(p.type==='pipe-intent'){
+  return /^(?:la\s+)?(?:punta|foro|forare|passo|tpi|diametro(?:\s+esterno)?|esterno)$/.test(text);
+ }
+ if(p.type==='tol-side'){
+  return /^(?:il\s+|lo\s+|l\s+)?(?:foro|poro|femmina|albero|maschio)$/.test(text);
+ }
+ if(p.type==='tol-class'){
+  return /^(?:classe\s+)?(?:h|acca|g|f|k|m|js)\s*(?:6|7|8)$/.test(text);
+ }
+ if(p.type==='key-side'){
+  return /^(?:sull?\s+|nel\s+)?(?:albero|mozzo|foro)$/.test(text);
+ }
+ return false;
+}
+function looksLikeFreshMechanicalRequest(s){
+ return (
+  looksLikeMetricThreadQuestion(s) ||
+  looksLikeToleranceQuestion(s) ||
+  /\b(gas|bsp|npt)\b/.test(s) ||
+  /\b(linguetta|chiavetta|cava)\b/.test(s) ||
+  /\b(giri|rpm|avanzamento|parametri|vc|fz|tagli|denti)\b/.test(s) ||
+  /\b(smusso|chamfer|esagono|interasse|calcola angolo|filetto tornio|profondita filetto)\b/.test(s)
+ );
+}
+function resetOldContextForNewQuestion(s){
+ if(!pending)return;
+ if(isShortReplyForPending(s,pending))return;
+
+ /*
+  Una frase completa con un nuovo argomento prevale sulla domanda rimasta aperta.
+  Esempio: dopo “Foro o albero?”, la frase “quanto devo forare per M6”
+  deve aprire il filetto M6 e non diventare una risposta sulla tolleranza.
+ */
+ if(looksLikeFreshMechanicalRequest(s))pending=null;
+}
 function askAssistant(raw){
  raw=String(raw||'').trim();if(!raw)return;
  $('vaHeard').textContent=raw;
@@ -630,10 +685,11 @@ function askAssistant(raw){
  if(/\b(annulla|cancella|ricomincia)\b/.test(s)){pending=null;lastAnswer=null;showVA('Annullato.');return}
  if(/\b(spiegami|spiega|dettagli)\b/.test(s)){showVA(lastAnswer?.detail||'Prima fammi una domanda.',!lastAnswer);return}
  if(/\b(cosa sai fare|cosa puoi fare|aiuto|funzioni)\b/.test(s)){assistantHelp();return}
+ resetOldContextForNewQuestion(s);
  if(handlePending(raw,s))return;
 
  /* TOLLERANZE */
- if(/\b(tolleranza|accoppiamento|limite|minimo|massimo|h7|h8|h6|g6|f7|js6|k6|m6|acca)\b/.test(s)){
+ if(looksLikeToleranceQuestion(s)&&!looksLikeMetricThreadQuestion(s)){
   const cls=tolClassFrom(s);
   const nums=[...s.matchAll(/\d+(?:\.\d+)?/g)].map(x=>Number(x[0]));
   let d=numberAfter(s,['diametro','quota','foro','albero']);
