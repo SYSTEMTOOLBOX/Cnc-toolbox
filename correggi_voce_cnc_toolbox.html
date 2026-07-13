@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#050505">
+<title>CNC Toolbox - Correzione voce automatica</title>
+<style>
+:root{--y:#ffc400;--b:#050505;--p:#151515;--w:#fff;--g:#aaa;--ok:#65e36e;--err:#ff5a5a}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--b);color:var(--w);font-family:Arial,Helvetica,sans-serif}
+.app{max-width:560px;margin:auto;padding:22px 14px 40px}
+h1{color:var(--y);font-size:30px;margin:0 0 7px}
+.sub{color:#ddd;line-height:1.45;margin-bottom:18px}
+.card{background:linear-gradient(145deg,#1a1a1a,#090909);border:2px solid var(--y);border-radius:14px;padding:16px}
+.step{color:var(--y);font-weight:900;margin:14px 0 8px}
+input[type=file]{width:100%;background:#fff;color:#000;border-radius:9px;padding:13px;font-weight:700}
+button{width:100%;min-height:58px;margin-top:14px;border:0;border-radius:10px;background:var(--y);color:#050505;font-size:18px;font-weight:900}
+.note{margin-top:15px;color:var(--g);font-size:13px;line-height:1.5}
+.status{margin-top:15px;border:1px solid #444;border-radius:10px;padding:13px;font-weight:800;line-height:1.45}
+.ok{color:var(--ok)}.err{color:var(--err)}
+code{color:var(--y)}
+</style>
+</head>
+<body>
+<div class="app">
+  <h1>CNC TOOLBOX</h1>
+  <div class="sub">Correzione della risposta audio automatica per Android e cuffie.</div>
+
+  <div class="card">
+    <div class="step">1. SCEGLI L’ULTIMO FILE INDEX.HTML</div>
+    <input id="file" type="file" accept=".html,text/html">
+
+    <div class="step">2. CREA LA VERSIONE CORRETTA</div>
+    <button id="fix">CREA INDEX V3.5 CON VOCE AUTO</button>
+
+    <div id="status" class="status">In attesa del file.</div>
+
+    <div class="note">
+      La correzione ripristina la voce italiana automatica, aspetta la chiusura del microfono,
+      evita il blocco Android dopo <code>speechSynthesis.cancel()</code> e corregge il valore
+      della voce profonda da <code>72</code> a <code>0,72</code>.
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+const fileInput=document.getElementById('file');
+const statusBox=document.getElementById('status');
+const fixButton=document.getElementById('fix');
+
+function status(text,ok=false){
+  statusBox.className='status '+(ok?'ok':'err');
+  statusBox.textContent=text;
+}
+
+function replaceSpeakFunction(source){
+  const replacement = `let cncSpeechTimer=null;
+let cncSpeechToken=0;
+let cncActiveUtterance=null;
+
+function cncClamp(value,min,max,fallback){
+ const n=Number(value);
+ return Number.isFinite(n)?Math.min(max,Math.max(min,n)):fallback;
+}
+
+function speak(text){
+ if(!('speechSynthesis' in window)||!text)return;
+
+ const token=++cncSpeechToken;
+ clearTimeout(cncSpeechTimer);
+
+ const startSpeech=(attempt=0)=>{
+  if(token!==cncSpeechToken)return;
+
+  /* La risposta deve partire dopo che il riconoscimento ha liberato il microfono. */
+  if(typeof listening!=='undefined'&&listening&&attempt<15){
+   try{if(typeof rec!=='undefined'&&rec)rec.stop()}catch(e){}
+   cncSpeechTimer=setTimeout(()=>startSpeech(attempt+1),120);
+   return;
+  }
+
+  try{
+   if(!voices||!voices.length)voices=speechSynthesis.getVoices();
+
+   const select=document.getElementById('voiceSelect');
+   const selectedUri=select?select.value:'';
+   const voice=
+    (voices||[]).find(v=>v.voiceURI===selectedUri) ||
+    (voices||[]).find(v=>String(v.lang||'').toLowerCase().startsWith('it')) ||
+    (voices||[])[0];
+
+   const rateEl=document.getElementById('voiceRate');
+   const pitchEl=document.getElementById('voicePitch');
+   const volumeEl=document.getElementById('voiceVolume');
+
+   const utterance=new SpeechSynthesisUtterance(String(text));
+   if(voice)utterance.voice=voice;
+   utterance.lang=voice?.lang||'it-IT';
+   utterance.rate=cncClamp(rateEl?.value,0.5,2,1.05);
+   utterance.pitch=cncClamp(pitchEl?.value,0,2,1);
+   utterance.volume=cncClamp(volumeEl?.value,0,1,1);
+
+   /* Mantiene il riferimento: su alcuni Android evita che la frase sparisca. */
+   cncActiveUtterance=utterance;
+   utterance.onend=()=>{if(cncActiveUtterance===utterance)cncActiveUtterance=null};
+   utterance.onerror=()=>{if(cncActiveUtterance===utterance)cncActiveUtterance=null};
+
+   speechSynthesis.cancel();
+   speechSynthesis.resume();
+
+   /* Chrome Android può ignorare speak se arriva nello stesso istante di cancel. */
+   cncSpeechTimer=setTimeout(()=>{
+    if(token!==cncSpeechToken)return;
+    speechSynthesis.resume();
+    speechSynthesis.speak(utterance);
+   },160);
+  }catch(error){
+   console.error('Errore risposta vocale:',error);
+  }
+ };
+
+ cncSpeechTimer=setTimeout(()=>startSpeech(0),80);
+}
+function preset(name){`;
+
+  const regex=/function speak\(text\)\s*\{[\s\S]*?\n\}\s*\nfunction preset\(name\)\s*\{/;
+  if(!regex.test(source))return null;
+  return source.replace(regex,replacement);
+}
+
+fixButton.addEventListener('click',async()=>{
+  const file=fileInput.files[0];
+  if(!file){
+    status('Seleziona prima l’ultimo file index.html.');
+    return;
+  }
+
+  let source=await file.text();
+
+  if(!source.includes('CNC Toolbox')&&!source.includes('CNC TOOLBOX')){
+    status('Il file scelto non sembra essere CNC Toolbox.');
+    return;
+  }
+
+  /* Corregge il refuso introdotto nella modalità voce profonda. */
+  source=source
+    .replaceAll('deep:[.92,72,1]','deep:[.92,.72,1]')
+    .replaceAll('deep:[0.92,72,1]','deep:[0.92,0.72,1]');
+
+  const patched=replaceSpeakFunction(source);
+  if(!patched){
+    status('Non ho trovato la funzione vocale da correggere. Scegli la versione v3.3/v3.4.');
+    return;
+  }
+  source=patched;
+
+  /* Aggiorna le scritte della versione senza toccare i calcoli. */
+  source=source
+    .replace(/v3\.4\s*·\s*PRIORITÀ CORRETTA TRA FILETTI E TOLLERANZE/gi,'v3.5 · VOCE AUTOMATICA CORRETTA')
+    .replace(/v3\.4\s*·\s*CORREZIONE M6\s*\/\s*TOLLERANZE/gi,'v3.5 · VOCE AUTOMATICA CORRETTA')
+    .replace(/CNC Toolbox v3\.4/gi,'CNC Toolbox v3.5');
+
+  const blob=new Blob([source],{type:'text/html;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download='index_v3.5_voce_auto.html';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1500);
+
+  status('Versione corretta creata. Ora usa il file index_v3.5_voce_auto.html.',true);
+});
+</script>
+</body>
+</html>
