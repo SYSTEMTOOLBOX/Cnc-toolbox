@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#050505">
-<title>CNC Toolbox v3.0</title>
+<title>CNC Toolbox v3.7 · Spigolo pareti e risposta vocale riparata.</title>
 <style>
 :root{--y:#ffc400;--y2:#e2a700;--b:#050505;--p:#121212;--l:#404040;--w:#fff;--g:#aaa;--ok:#65e36e;--err:#ff5a5a}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -60,13 +60,25 @@ select{text-align:center;font-size:16px}
 .videoBox{width:100%;aspect-ratio:4/3;background:#000;border:1px solid #444;border-radius:10px;overflow:hidden;position:relative}.videoBox video{width:100%;height:100%;object-fit:cover}.angleLine{position:absolute;left:50%;top:50%;width:42%;height:3px;background:var(--y);transform-origin:left center}
 .fab{position:fixed;right:15px;bottom:16px;width:70px;height:70px;border-radius:50%;border:4px solid #050505;background:var(--y);font-size:33px;z-index:900;box-shadow:0 5px 22px rgba(0,0,0,.7)}
 @media(max-width:380px){.row{grid-template-columns:1fr 130px}.tile{min-height:105px}.answer{font-size:26px}.fab{width:62px;height:62px;font-size:29px}}
+
+.wallModePanel{display:none}.wallModePanel.active{display:block}
+.wallHint{border-left:4px solid var(--y);background:#19170d;border-radius:8px;padding:10px 11px;color:#ddd;font-size:13px;line-height:1.45;margin-top:10px}
+.wallPointTitle{color:var(--y);font-weight:900;margin:14px 0 5px}
+.wallDiagram{height:120px;border:1px solid #444;border-radius:10px;background:#090909;position:relative;overflow:hidden;margin-top:9px}
+.wallDiagram .fixed{position:absolute;left:12%;right:8%;top:28%;height:3px;background:var(--y)}
+.wallDiagram .inclined{position:absolute;left:12%;top:28%;width:48%;height:3px;background:#fff;transform-origin:left center;transform:rotate(64deg)}
+.wallDiagram .corner{position:absolute;left:calc(12% - 7px);top:calc(28% - 7px);width:14px;height:14px;border-radius:50%;background:var(--ok)}
+.wallDiagram .labA{position:absolute;right:10%;top:10%;color:var(--y);font-weight:900;font-size:12px}
+.wallDiagram .labB{position:absolute;left:30%;bottom:7%;color:#fff;font-weight:900;font-size:12px}
+.audioState{margin-top:8px;font-size:12px;color:#aaa;text-align:center}
+
 </style>
 </head>
 <body>
 <div class="app">
 
 <section id="home" class="screen active">
- <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v3.6 · SPIGOLO 3–4 PUNTI</div></div></div>
+ <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v3.7 · SPIGOLO 3/4 PUNTI + VOCE RIPARATA</div></div></div>
  <div class="grid">
   <button class="tile primary wide" onclick="show('assistant')"><div class="icon">🎙️</div>ASSISTENTE VOCALE MECCANICO</button>
  </div>
@@ -74,7 +86,7 @@ select{text-align:center;font-size:16px}
  <div class="grid">
   <button class="tile primary" onclick="show('three')"><div class="icon">◎</div>CENTRO 3 PUNTI</button>
   <button class="tile" onclick="show('two')"><div class="icon">⟍</div>CENTRO 2 PUNTI</button>
-  <button class="tile primary wide" onclick="show('corner34');setCornerMode('4')"><div class="icon">⌞</div>SPIGOLO / PARETI 3–4 PUNTI</button>
+  <button class="tile primary wide" onclick="show('walls');setWallMode('quick')"><div class="icon">⌞</div>SPIGOLO PARETI 3 / 4 PUNTI</button>
   <button class="tile" onclick="show('angle')"><div class="icon">∠</div>ANGOLO</button>
   <button class="tile primary" onclick="show('chamfer')"><div class="icon">45°</div>SMUSSI</button>
   <button class="tile" onclick="show('inter')"><div class="icon">↔</div>INTERASSE</button>
@@ -116,7 +128,7 @@ select{text-align:center;font-size:16px}
   <div class="rangeRow"><div class="label">Velocità</div><input id="voiceRate" type="range" min=".7" max="1.5" step=".05" value="1.18"><div id="voiceRateV" class="rangeVal">1.18</div></div>
   <div class="rangeRow"><div class="label">Tonalità</div><input id="voicePitch" type="range" min=".55" max="1.45" step=".05" value="1"><div id="voicePitchV" class="rangeVal">1.00</div></div>
   <div class="rangeRow"><div class="label">Volume</div><input id="voiceVolume" type="range" min=".2" max="1" step=".05" value="1"><div id="voiceVolumeV" class="rangeVal">1.00</div></div>
-  <button class="btn" onclick="speak('Punta da 14 millimetri.')">PROVA LA VOCE</button>
+  <button class="btn" onclick="speak('Punta da 14 millimetri.')">PROVA LA VOCE</button><div class="audioState">La prova vocale parte anche senza usare il microfono.</div>
  </div>
  <div class="card"><h2>CONTROLLO TELEFONO</h2><div id="voiceSupport" class="support"></div></div>
 </section>
@@ -139,70 +151,106 @@ select{text-align:center;font-size:16px}
 </section>
 
 
-<section id="corner34" class="screen">
+<section id="walls" class="screen">
  <div class="header">
   <button class="back" onclick="show('home')">‹</button>
-  <div class="title">SPIGOLO / PARETI<small>3 O 4 PUNTI · COMPENSAZIONE SFERA</small></div>
-  <button class="help" onclick="alert('4 PUNTI: due punti su ogni parete. 3 PUNTI: un punto sulla ganascia fissa parallela a X o Y e due sulla parete inclinata. Guardando dal primo punto al secondo, indica da quale lato si trova il materiale. La Toolbox compensa il raggio della sfera e calcola lo spigolo virtuale.')">?</button>
+  <div class="title">SPIGOLO PARETI<small>3 PUNTI RAPIDO · 4 PUNTI COMPLETO</small></div>
+  <button class="help" onclick="alert('Le coordinate sono quelle del centro della sfera mentre tocca le pareti. Seleziona il lato dove si trova il materiale guardando dal primo punto verso il secondo. La Toolbox compensa il raggio della sfera e calcola l’incrocio reale delle pareti.')">?</button>
  </div>
 
  <div class="card">
-  <h2>IMPOSTAZIONE</h2>
-  <div class="row"><div class="label">Ø sfera tastatore</div><input id="c34Probe" class="inp" value="10"></div>
+  <h2>MODALITÀ</h2>
   <div class="seg">
-   <button id="c34Mode4" class="on" onclick="setCornerMode('4')">4 PUNTI</button>
-   <button id="c34Mode3" onclick="setCornerMode('3')">3 PUNTI</button>
+   <button id="wallQuickBtn" class="on" onclick="setWallMode('quick')">3 PUNTI RAPIDO</button>
+   <button id="wallFullBtn" onclick="setWallMode('full')">4 PUNTI COMPLETO</button>
   </div>
-  <div class="hint">Guardando dal primo punto verso il secondo, scegli se il materiale è a SINISTRA o a DESTRA.</div>
- </div>
-
- <div id="c34Four">
-  <div class="card">
-   <h2>PARETE 1 · GANASCIA FISSA</h2>
-   <div class="row"><div class="label">P1 X</div><input id="c34x1" class="inp" value="0"></div>
-   <div class="row"><div class="label">P1 Y</div><input id="c34y1" class="inp" value="10"></div>
-   <div class="row"><div class="label">P2 X</div><input id="c34x2" class="inp" value="100"></div>
-   <div class="row"><div class="label">P2 Y</div><input id="c34y2" class="inp" value="10"></div>
-   <div class="row"><div class="label">Materiale P1→P2</div><select id="c34Side1"><option value="right">DESTRA</option><option value="left">SINISTRA</option></select></div>
+  <div class="row"><div class="label">Ø sfera</div><input id="wallProbe" class="inp" value="10"></div>
+  <div class="wallDiagram">
+   <div class="fixed"></div><div class="inclined"></div><div class="corner"></div>
+   <div class="labA">PARETE FISSA</div><div class="labB">PARETE INCLINATA</div>
   </div>
-
-  <div class="card">
-   <h2>PARETE 2 · INCLINATA</h2>
-   <div class="row"><div class="label">P3 X</div><input id="c34x3" class="inp" value="20"></div>
-   <div class="row"><div class="label">P3 Y</div><input id="c34y3" class="inp" value="0"></div>
-   <div class="row"><div class="label">P4 X</div><input id="c34x4" class="inp" value="20"></div>
-   <div class="row"><div class="label">P4 Y</div><input id="c34y4" class="inp" value="100"></div>
-   <div class="row"><div class="label">Materiale P3→P4</div><select id="c34Side2"><option value="right">DESTRA</option><option value="left">SINISTRA</option></select></div>
+  <div class="wallHint">
+   <b>3 punti:</b> un solo tocco sulla parete fissa, perché la dichiari parallela a X oppure Y; due tocchi sulla parete inclinata.<br>
+   <b>4 punti:</b> due tocchi su ogni parete, utile se anche la morsa è leggermente fuori asse.
   </div>
  </div>
 
- <div id="c34Three" style="display:none">
+ <div id="wallQuickPanel" class="wallModePanel active">
   <div class="card">
    <h2>PARETE FISSA · 1 PUNTO</h2>
-   <div class="row"><div class="label">Parallela a</div><select id="c34Axis" onchange="updateCornerAxisLabel()"><option value="x">ASSE X · Y COSTANTE</option><option value="y">ASSE Y · X COSTANTE</option></select></div>
-   <div class="row"><div class="label">Punto fisso X</div><input id="c34fx" class="inp" value="0"></div>
-   <div class="row"><div class="label">Punto fisso Y</div><input id="c34fy" class="inp" value="10"></div>
-   <div class="row"><div class="label">Materiale verso</div><select id="c34FixedSide"><option value="minus">−Y</option><option value="plus">+Y</option></select></div>
+   <div class="row"><div class="label">Parallela a</div>
+    <select id="wallFixedAxis" onchange="updateWallAxisHint()">
+     <option value="x">ASSE X</option><option value="y">ASSE Y</option>
+    </select>
+   </div>
+   <div class="row"><div class="label">Punto X</div><input id="wallFX" class="inp" value="0"></div>
+   <div class="row"><div class="label">Punto Y</div><input id="wallFY" class="inp" value="5"></div>
+   <div class="row"><div class="label">Materiale</div>
+    <select id="wallFixedSide">
+     <option value="right">DESTRA rispetto al verso asse</option>
+     <option value="left">SINISTRA rispetto al verso asse</option>
+    </select>
+   </div>
+   <div id="wallAxisHint" class="hint"></div>
   </div>
 
   <div class="card">
    <h2>PARETE INCLINATA · 2 PUNTI</h2>
-   <div class="row"><div class="label">P2 X</div><input id="c34qx1" class="inp" value="20"></div>
-   <div class="row"><div class="label">P2 Y</div><input id="c34qy1" class="inp" value="0"></div>
-   <div class="row"><div class="label">P3 X</div><input id="c34qx2" class="inp" value="20"></div>
-   <div class="row"><div class="label">P3 Y</div><input id="c34qy2" class="inp" value="100"></div>
-   <div class="row"><div class="label">Materiale P2→P3</div><select id="c34QuickSide"><option value="right">DESTRA</option><option value="left">SINISTRA</option></select></div>
+   <div class="wallPointTitle">PUNTO 1</div>
+   <div class="row"><div class="label">X1</div><input id="wallBX1" class="inp" value="0"></div>
+   <div class="row"><div class="label">Y1</div><input id="wallBY1" class="inp" value="0"></div>
+   <div class="wallPointTitle">PUNTO 2</div>
+   <div class="row"><div class="label">X2</div><input id="wallBX2" class="inp" value="100"></div>
+   <div class="row"><div class="label">Y2</div><input id="wallBY2" class="inp" value="-50"></div>
+   <div class="row"><div class="label">Materiale</div>
+    <select id="wallBSideQuick">
+     <option value="left">SINISTRA guardando P1 → P2</option>
+     <option value="right">DESTRA guardando P1 → P2</option>
+    </select>
+   </div>
+  </div>
+ </div>
+
+ <div id="wallFullPanel" class="wallModePanel">
+  <div class="card">
+   <h2>PARETE A · 2 PUNTI</h2>
+   <div class="wallPointTitle">PUNTO A1</div>
+   <div class="row"><div class="label">X1</div><input id="wallAX1" class="inp" value="0"></div>
+   <div class="row"><div class="label">Y1</div><input id="wallAY1" class="inp" value="5"></div>
+   <div class="wallPointTitle">PUNTO A2</div>
+   <div class="row"><div class="label">X2</div><input id="wallAX2" class="inp" value="100"></div>
+   <div class="row"><div class="label">Y2</div><input id="wallAY2" class="inp" value="5"></div>
+   <div class="row"><div class="label">Materiale</div>
+    <select id="wallASide">
+     <option value="right">DESTRA guardando A1 → A2</option>
+     <option value="left">SINISTRA guardando A1 → A2</option>
+    </select>
+   </div>
+  </div>
+
+  <div class="card">
+   <h2>PARETE B · 2 PUNTI</h2>
+   <div class="wallPointTitle">PUNTO B1</div>
+   <div class="row"><div class="label">X1</div><input id="wallBFX1" class="inp" value="0"></div>
+   <div class="row"><div class="label">Y1</div><input id="wallBFY1" class="inp" value="0"></div>
+   <div class="wallPointTitle">PUNTO B2</div>
+   <div class="row"><div class="label">X2</div><input id="wallBFX2" class="inp" value="100"></div>
+   <div class="row"><div class="label">Y2</div><input id="wallBFY2" class="inp" value="-50"></div>
+   <div class="row"><div class="label">Materiale</div>
+    <select id="wallBSideFull">
+     <option value="left">SINISTRA guardando B1 → B2</option>
+     <option value="right">DESTRA guardando B1 → B2</option>
+    </select>
+   </div>
   </div>
  </div>
 
  <div class="card">
-  <button class="btn" onclick="calcCorner34()">CALCOLA SPIGOLO</button>
-  <div class="actions">
-   <button class="btn2" onclick="invertCornerSides()">INVERTI I LATI</button>
-   <button class="btn2" onclick="resetCorner34()">ESEMPIO 90°</button>
+  <button class="btn" onclick="calcWallCorner()">CALCOLA SPIGOLO</button>
+  <div id="resWalls"></div>
+  <div class="hint">
+   Se il risultato viene compensato dalla parte sbagliata, cambia soltanto il lato materiale della parete interessata.
   </div>
-  <div id="resCorner34"></div>
-  <div class="hint">Se lo spigolo esce dalla parte opposta, inverti il lato della parete interessata. Con Ø sfera = 0 non viene applicata compensazione.</div>
  </div>
 </section>
 
@@ -294,7 +342,7 @@ select{text-align:center;font-size:16px}
 
 <section id="settings" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">MENU</div><button class="help">▤</button></div>
- <div class="card"><h2>AZIONI</h2><button class="btn2" onclick="localStorage.clear();alert('Impostazioni cancellate.')">PULISCI MEMORIA APP</button><div class="note">CNC Toolbox v3.6 · Spigolo e pareti inclinate a 3–4 punti.</div></div>
+ <div class="card"><h2>AZIONI</h2><button class="btn2" onclick="localStorage.clear();alert('Impostazioni cancellate.')">PULISCI MEMORIA APP</button><div class="note">CNC Toolbox v3.5 · Le nuove domande annullano il vecchio contesto.</div></div>
 </section>
 
 <button class="fab" onclick="show('assistant')" aria-label="Assistente vocale">🎤</button>
@@ -311,6 +359,98 @@ function bad(vals){return vals.some(x=>!Number.isFinite(x))}
 let modes={m3:'foro',m2:'foro'};
 function setSeg(group,mode){modes[group]=mode;$(group+'foro').classList.toggle('on',mode==='foro');$(group+'perno').classList.toggle('on',mode==='perno')}
 
+
+let wallMode='quick';
+function setWallMode(mode){
+ wallMode=mode;
+ $('wallQuickBtn').classList.toggle('on',mode==='quick');
+ $('wallFullBtn').classList.toggle('on',mode==='full');
+ $('wallQuickPanel').classList.toggle('active',mode==='quick');
+ $('wallFullPanel').classList.toggle('active',mode==='full');
+ updateWallAxisHint();
+}
+function updateWallAxisHint(){
+ if(!$('wallFixedAxis')||!$('wallAxisHint'))return;
+ $('wallAxisHint').textContent=$('wallFixedAxis').value==='x'
+  ? 'Verso della parete: +X. Sinistra = +Y; destra = −Y.'
+  : 'Verso della parete: +Y. Sinistra = −X; destra = +X.';
+}
+function wallPoint(x,y){return {x:Number(x),y:Number(y)}}
+function wallLine(p1,p2){
+ const dx=p2.x-p1.x,dy=p2.y-p1.y,len=Math.hypot(dx,dy);
+ if(!Number.isFinite(len)||len<0.000001)throw new Error('I due punti della stessa parete coincidono.');
+ return {p:p1,u:{x:dx/len,y:dy/len}};
+}
+function wallOffset(line,r,side){
+ const nx=-line.u.y,ny=line.u.x,sign=side==='left'?1:-1;
+ return {p:{x:line.p.x+sign*r*nx,y:line.p.y+sign*r*ny},u:line.u};
+}
+function wallIntersection(a,b){
+ const cross=a.u.x*b.u.y-a.u.y*b.u.x;
+ if(Math.abs(cross)<0.0000001)throw new Error('Le due pareti risultano parallele o quasi parallele.');
+ const qx=b.p.x-a.p.x,qy=b.p.y-a.p.y;
+ const t=(qx*b.u.y-qy*b.u.x)/cross;
+ return {x:a.p.x+t*a.u.x,y:a.p.y+t*a.u.y};
+}
+function wallAngle(line){
+ let a=Math.atan2(line.u.y,line.u.x)*180/Math.PI;
+ while(a>180)a-=360;while(a<=-180)a+=360;
+ return a;
+}
+function wallAngleBetween(a,b){
+ let d=Math.abs(wallAngle(a)-wallAngle(b))%180;
+ if(d>90)d=180-d;
+ return d;
+}
+function calcWallCorner(){
+ try{
+  const diameter=num('wallProbe');
+  if(!Number.isFinite(diameter)||diameter<0)throw new Error('Controlla il diametro della sfera.');
+  const r=diameter/2;
+  let measuredA,measuredB,sideA,sideB;
+
+  if(wallMode==='quick'){
+   const fx=num('wallFX'),fy=num('wallFY');
+   if(bad([fx,fy]))throw new Error('Controlla il punto della parete fissa.');
+   measuredA=$('wallFixedAxis').value==='x'
+    ? wallLine(wallPoint(fx,fy),wallPoint(fx+100,fy))
+    : wallLine(wallPoint(fx,fy),wallPoint(fx,fy+100));
+   measuredB=wallLine(
+    wallPoint(num('wallBX1'),num('wallBY1')),
+    wallPoint(num('wallBX2'),num('wallBY2'))
+   );
+   sideA=$('wallFixedSide').value;
+   sideB=$('wallBSideQuick').value;
+  }else{
+   measuredA=wallLine(
+    wallPoint(num('wallAX1'),num('wallAY1')),
+    wallPoint(num('wallAX2'),num('wallAY2'))
+   );
+   measuredB=wallLine(
+    wallPoint(num('wallBFX1'),num('wallBFY1')),
+    wallPoint(num('wallBFX2'),num('wallBFY2'))
+   );
+   sideA=$('wallASide').value;
+   sideB=$('wallBSideFull').value;
+  }
+
+  const realA=wallOffset(measuredA,r,sideA);
+  const realB=wallOffset(measuredB,r,sideB);
+  const corner=wallIntersection(realA,realB);
+  const angleA=wallAngle(realA),angleB=wallAngle(realB),between=wallAngleBetween(realA,realB);
+
+  $('resWalls').innerHTML=
+   box('SPIGOLO X',fmt(corner.x))+
+   box('SPIGOLO Y',fmt(corner.y))+
+   box('ANGOLO PARETE A',fmt(angleA,4),'°')+
+   box('ANGOLO PARETE B',fmt(angleB,4),'°')+
+   box('ANGOLO TRA PARETI',fmt(between,4),'°')+
+   box('CORREZIONE PARETE B',fmt(-angleB,4),'°');
+ }catch(error){
+  $('resWalls').innerHTML='<div class="err">'+error.message+'</div>';
+ }
+}
+
 function calc3(){
  const p=num('probe3'),x1=num('x1'),y1=num('y1'),x2=num('x2'),y2=num('y2'),x3=num('x3'),y3=num('y3');
  if(bad([p,x1,y1,x2,y2,x3,y3])){$('res3').innerHTML='<div class="err">Controlla i numeri.</div>';return}
@@ -323,121 +463,6 @@ function calc3(){
  $('res3').innerHTML=box('CENTRO X',fmt(cx))+box('CENTRO Y',fmt(cy))+box('DIAMETRO',fmt(dia))+box('ERRORE',fmt(err));
 }
 function calc2(){const p=num('probe2'),a=num('q1'),b=num('q2');if(bad([p,a,b]))return;const m=Math.abs(b-a),c=(a+b)/2,d=modes.m2==='foro'?m+p:m-p;$('res2').innerHTML=box('CENTRO',fmt(c))+box('DIAMETRO',fmt(d))}
-let cornerMode='4';
-
-function setCornerMode(mode){
- cornerMode=String(mode);
- $('c34Mode4').classList.toggle('on',cornerMode==='4');
- $('c34Mode3').classList.toggle('on',cornerMode==='3');
- $('c34Four').style.display=cornerMode==='4'?'block':'none';
- $('c34Three').style.display=cornerMode==='3'?'block':'none';
- $('resCorner34').innerHTML='';
- updateCornerAxisLabel();
-}
-
-function updateCornerAxisLabel(){
- const axis=$('c34Axis')?.value||'x',select=$('c34FixedSide');
- if(!select)return;
- const old=select.value;
- select.innerHTML=axis==='x'
-  ?'<option value="minus">−Y</option><option value="plus">+Y</option>'
-  :'<option value="minus">−X</option><option value="plus">+X</option>';
- if(old==='plus'||old==='minus')select.value=old;
-}
-
-function cornerLineFromTwoPoints(x1,y1,x2,y2,r,side){
- const dx=x2-x1,dy=y2-y1,L=Math.hypot(dx,dy);
- if(!Number.isFinite(L)||L<0.000001)throw new Error('I due punti di una parete coincidono.');
- const nx=-dy/L,ny=dx/L;
- return {nx,ny,c:nx*x1+ny*y1+(side==='left'?1:-1)*r,angle:Math.atan2(dy,dx)*180/Math.PI};
-}
-
-function cornerFixedLine(axis,x,y,r,direction){
- const sign=direction==='plus'?1:-1;
- return axis==='x'?{nx:0,ny:1,c:y+sign*r,angle:0}:{nx:1,ny:0,c:x+sign*r,angle:90};
-}
-
-function cornerIntersection(a,b){
- const det=a.nx*b.ny-a.ny*b.nx;
- if(Math.abs(det)<0.000001)throw new Error('Le due pareti sono parallele o quasi parallele.');
- return {x:(a.c*b.ny-a.ny*b.c)/det,y:(a.nx*b.c-a.c*b.nx)/det};
-}
-
-function cornerLineAngle(a){
- while(a<=-90)a+=180;
- while(a>90)a-=180;
- return a;
-}
-
-function cornerRelativeAngle(a1,a2){
- let d=cornerLineAngle(a2)-cornerLineAngle(a1);
- while(d<=-90)d+=180;
- while(d>90)d-=180;
- return d;
-}
-
-function calcCorner34(){
- try{
-  const diameter=num('c34Probe');
-  if(!Number.isFinite(diameter)||diameter<0)throw new Error('Controlla il diametro della sfera.');
-  const r=diameter/2;
-  let wall1,wall2;
-
-  if(cornerMode==='4'){
-   const v=[num('c34x1'),num('c34y1'),num('c34x2'),num('c34y2'),num('c34x3'),num('c34y3'),num('c34x4'),num('c34y4')];
-   if(bad(v))throw new Error('Controlla tutte le coordinate.');
-   wall1=cornerLineFromTwoPoints(v[0],v[1],v[2],v[3],r,$('c34Side1').value);
-   wall2=cornerLineFromTwoPoints(v[4],v[5],v[6],v[7],r,$('c34Side2').value);
-  }else{
-   const v=[num('c34fx'),num('c34fy'),num('c34qx1'),num('c34qy1'),num('c34qx2'),num('c34qy2')];
-   if(bad(v))throw new Error('Controlla tutte le coordinate.');
-   wall1=cornerFixedLine($('c34Axis').value,v[0],v[1],r,$('c34FixedSide').value);
-   wall2=cornerLineFromTwoPoints(v[2],v[3],v[4],v[5],r,$('c34QuickSide').value);
-  }
-
-  const corner=cornerIntersection(wall1,wall2);
-  const a1=cornerLineAngle(wall1.angle),a2=cornerLineAngle(wall2.angle);
-  const relative=cornerRelativeAngle(a1,a2),minor=Math.abs(relative),major=180-minor;
-
-  $('resCorner34').innerHTML=
-   box('SPIGOLO X',fmt(corner.x))+
-   box('SPIGOLO Y',fmt(corner.y))+
-   box('ANGOLO PARETE FISSA',fmt(a1,4),'°')+
-   box('ANGOLO PARETE INCLINATA',fmt(a2,4),'°')+
-   box('INCLINAZIONE RELATIVA',fmt(relative,4),'°')+
-   box('ANGOLO MINORE',fmt(minor,4),'°')+
-   box('ANGOLO SUPPLEMENTARE',fmt(major,4),'°')+
-   box('CORREZIONE PARETE FISSA',fmt(-a1,4),'°');
- }catch(e){
-  $('resCorner34').innerHTML='<div class="err">'+e.message+'</div>';
- }
-}
-
-function invertCornerSides(){
- if(cornerMode==='4'){
-  $('c34Side1').value=$('c34Side1').value==='left'?'right':'left';
-  $('c34Side2').value=$('c34Side2').value==='left'?'right':'left';
- }else{
-  $('c34FixedSide').value=$('c34FixedSide').value==='plus'?'minus':'plus';
-  $('c34QuickSide').value=$('c34QuickSide').value==='left'?'right':'left';
- }
- calcCorner34();
-}
-
-function resetCorner34(){
- $('c34Probe').value='10';
- if(cornerMode==='4'){
-  $('c34x1').value='0';$('c34y1').value='10';$('c34x2').value='100';$('c34y2').value='10';
-  $('c34x3').value='20';$('c34y3').value='0';$('c34x4').value='20';$('c34y4').value='100';
-  $('c34Side1').value='right';$('c34Side2').value='right';
- }else{
-  $('c34Axis').value='x';updateCornerAxisLabel();$('c34fx').value='0';$('c34fy').value='10';
-  $('c34FixedSide').value='minus';$('c34qx1').value='20';$('c34qy1').value='0';
-  $('c34qx2').value='20';$('c34qy2').value='100';$('c34QuickSide').value='right';
- }
- calcCorner34();
-}
-
 function calcAngle(){const x1=num('ax1'),y1=num('ay1'),x2=num('ax2'),y2=num('ay2');const a=Math.atan2(y2-y1,x2-x1)*180/Math.PI;$('resAngle').innerHTML=box('ANGOLO',fmt(a,4),'°')+box('CORREZIONE',fmt(-a,4),'°')}
 function calcChamfer(){const d=num('chD'),c=num('chC'),a=num('chA'),z=num('chZ'),r=num('chR'),type=$('chType').value;if(bad([d,c,a,z,r])||a<=0||a>=90)return;const radial=c/Math.tan(a*Math.PI/180),dx=2*radial;const xStart=type==='ext'?d-dx:d+dx;const comp=r*(1-Math.sin(a*Math.PI/180));$('resChamfer').innerHTML=box('X INIZIO',fmt(xStart))+box('X FINE',fmt(d))+box('Z FINE',fmt(z-c))+box('COMP. R INDICATIVA',fmt(comp))}
 function calcInter(){const dx=num('ix2')-num('ix1'),dy=num('iy2')-num('iy1');$('resInter').innerHTML=box('INTERASSE',fmt(Math.hypot(dx,dy)))+box('DELTA X',fmt(dx))+box('DELTA Y',fmt(dy))}
@@ -522,7 +547,7 @@ const ISO_STEPS=[
  {min:400,max:500,it6:40,it7:63,it8:97}
 ];
 
-let voices=[],rec=null,listening=false,pending=null,lastAnswer=null;
+let voices=[],rec=null,listening=false,pending=null,lastAnswer=null,pendingSpeech='',speechTimer=null;
 
 function aiFmt(n,d=3){return Number(n).toLocaleString('it-IT',{minimumFractionDigits:d,maximumFractionDigits:d})}
 function aiShort(n){return Number(n).toLocaleString('it-IT',{maximumFractionDigits:3})}
@@ -977,13 +1002,6 @@ function askAssistant(raw){
   return;
  }
 
- /* SPIGOLO / PARETI 3–4 PUNTI */
- if(/\b(spigolo|parete inclinata|pareti inclinate|4 punti|quattro punti|3 punti parete|tre punti parete|ganascia fissa)\b/.test(s)){
-  direct('Apri Spigolo / Pareti 3–4 punti in Geometria.',
-   'Usa uno o due punti sulla parete fissa, due punti sulla parete inclinata e compensa il raggio della sfera.');
-  return;
- }
-
  /* INTERASSE */
  if(/\b(interasse|distanza tra centri)\b/.test(s)){
   const x1=numberAfter(s,['x1','x 1']),y1=numberAfter(s,['y1','y 1']),x2=numberAfter(s,['x2','x 2']),y2=numberAfter(s,['y2','y 2']);
@@ -1014,10 +1032,52 @@ function saveVoice(){
  ['Rate','Pitch','Volume'].forEach(x=>localStorage.setItem('voice_'+x.toLowerCase(),$('voice'+x).value));
  $('voiceRateV').textContent=Number($('voiceRate').value).toFixed(2);$('voicePitchV').textContent=Number($('voicePitch').value).toFixed(2);$('voiceVolumeV').textContent=Number($('voiceVolume').value).toFixed(2)
 }
+function playPendingSpeech(){
+ if(!pendingSpeech||!('speechSynthesis'in window))return;
+ const text=pendingSpeech;
+ pendingSpeech='';
+ clearTimeout(speechTimer);
+
+ if(!voices.length)populateVoices();
+ speechSynthesis.cancel();
+ speechSynthesis.resume();
+
+ const utterance=new SpeechSynthesisUtterance(text);
+ const selected=voices.find(x=>x.voiceURI===$('voiceSelect').value);
+ if(selected)utterance.voice=selected;
+ utterance.lang=selected?.lang||'it-IT';
+ utterance.rate=+$('voiceRate').value;
+ utterance.pitch=+$('voicePitch').value;
+ utterance.volume=+$('voiceVolume').value;
+
+ utterance.onstart=()=>{
+  if($('assistant').classList.contains('active'))setVA('Rispondo a voce…');
+ };
+ utterance.onend=()=>{
+  if($('assistant').classList.contains('active')&&!listening)setVA('Pronto. Premi il microfono.');
+ };
+ utterance.onerror=()=>{
+  if($('assistant').classList.contains('active'))setVA('Voce non partita. Premi PROVA LA VOCE.','bad');
+ };
+
+ speechTimer=setTimeout(()=>{
+  speechSynthesis.resume();
+  speechSynthesis.speak(utterance);
+ },180);
+}
 function speak(text){
- if(!('speechSynthesis'in window))return;
- speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text),v=voices.find(x=>x.voiceURI===$('voiceSelect').value);
- if(v)u.voice=v;u.lang=v?.lang||'it-IT';u.rate=+$('voiceRate').value;u.pitch=+$('voicePitch').value;u.volume=+$('voiceVolume').value;speechSynthesis.speak(u)
+ if(!('speechSynthesis'in window)||!text)return;
+ pendingSpeech=String(text);
+
+ /*
+  Su Android il riconoscimento e la sintesi non devono lavorare insieme:
+  prima chiudiamo il microfono, poi rec.onend avvia la risposta.
+ */
+ if(listening&&rec){
+  try{rec.stop()}catch(error){}
+  return;
+ }
+ playPendingSpeech();
 }
 function preset(name){
  const p={fast:[1.18,1,1],natural:[1,1,1],deep:[.92,.72,1],clear:[1.02,1.18,1],slow:[.8,1,1]};
@@ -1030,18 +1090,22 @@ function setupRecognition(){
   (secure?'<span class="ok">✓ Pagina sicura HTTPS.</span>':'<span class="err">✗ Apri la Toolbox online.</span>')+'<br>'+
   (SR?'<span class="ok">✓ Microfono vocale disponibile.</span>':'<span class="err">✗ Riconoscimento vocale non disponibile.</span>')+'<br>'+
   ('speechSynthesis'in window?'<span class="ok">✓ Risposta parlata disponibile.</span>':'<span class="err">✗ Voce non disponibile.</span>')+'<br>'+
-  '<span class="ok">✓ Modalità officina: corregge parole simili e confronta più interpretazioni.</span>';
+  '<span class="ok">✓ v3.7: il microfono si chiude prima che inizi la risposta vocale.</span>';
+
  if(!SR){setVA('Microfono non supportato. Puoi scrivere.','bad');return}
+
  rec=new SR();
  rec.lang='it-IT';
  rec.interimResults=true;
  rec.continuous=false;
  rec.maxAlternatives=5;
+
  rec.onstart=()=>{
   listening=true;
   setVA('Sto ascoltando…','listen');
   $('vaHeard').textContent='Parla adesso…';
  };
+
  rec.onresult=e=>{
   let finalParts=[],interimParts=[];
   for(let i=e.resultIndex;i<e.results.length;i++){
@@ -1054,6 +1118,7 @@ function setupRecognition(){
   $('vaHeard').textContent=finalText||interimText||'Sto ascoltando…';
   if(finalText)askAssistant(finalText);
  };
+
  rec.onerror=e=>{
   listening=false;
   const errors={
@@ -1065,16 +1130,31 @@ function setupRecognition(){
   };
   setVA(errors[e.error]||('Errore microfono: '+e.error),'bad');
  };
+
  rec.onend=()=>{
   listening=false;
   $('vaMic').classList.remove('listen');
-  if(!$('vaDot').classList.contains('bad'))setVA('Pronto. Premi il microfono.');
+
+  if(pendingSpeech){
+   setVA('Preparo la risposta vocale…');
+   clearTimeout(speechTimer);
+   speechTimer=setTimeout(playPendingSpeech,260);
+  }else if(!$('vaDot').classList.contains('bad')){
+   setVA('Pronto. Premi il microfono.');
+  }
  };
 }
-function toggleListen(){if(!rec)return;if(listening){rec.stop();return}speechSynthesis?.cancel();try{rec.start()}catch(e){}}
+function toggleListen(){
+ if(!rec)return;
+ if(listening){try{rec.stop()}catch(error){};return}
+ pendingSpeech='';
+ clearTimeout(speechTimer);
+ if('speechSynthesis'in window)speechSynthesis.cancel();
+ try{rec.start()}catch(error){}
+}
 
 function init(){
- renderThreads();const rm=localStorage.getItem('ruler_mm');if(rm)$('rulerMm').value=rm;
+ renderThreads();updateWallAxisHint();const rm=localStorage.getItem('ruler_mm');if(rm)$('rulerMm').value=rm;
  $('voiceRate').value=localStorage.getItem('voice_rate')||'1.18';$('voicePitch').value=localStorage.getItem('voice_pitch')||'1';$('voiceVolume').value=localStorage.getItem('voice_volume')||'1';saveVoice();populateVoices();if('speechSynthesis'in window){speechSynthesis.onvoiceschanged=populateVoices;setTimeout(populateVoices,300)}setupRecognition();
  $('vaText').addEventListener('keydown',e=>{if(e.key==='Enter')sendTyped()});$('voiceSelect').addEventListener('change',saveVoice);['Rate','Pitch','Volume'].forEach(x=>$('voice'+x).addEventListener('input',saveVoice));document.querySelectorAll('.preset').forEach(b=>b.onclick=()=>preset(b.dataset.p));
  if('serviceWorker'in navigator)navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.update())).catch(()=>{});
