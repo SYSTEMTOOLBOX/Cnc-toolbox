@@ -66,7 +66,7 @@ select{text-align:center;font-size:16px}
 <div class="app">
 
 <section id="home" class="screen active">
- <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v3.0 · ASSISTENTE VOCALE</div></div></div>
+ <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v3.1 · ASSISTENTE OFFLINE COMPLETO</div></div></div>
  <div class="grid">
   <button class="tile primary wide" onclick="show('assistant')"><div class="icon">🎙️</div>ASSISTENTE VOCALE MECCANICO</button>
  </div>
@@ -101,7 +101,7 @@ select{text-align:center;font-size:16px}
 
 <!-- ASSISTANT -->
 <section id="assistant" class="screen">
- <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">ASSISTENTE VOCALE<small>RISPOSTE IMMEDIATE</small></div><button class="help" onclick="alert('Premi il microfono e fai una domanda. Se manca il passo, l’assistente ti chiede grosso o fine. Dice solo la risposta; pronuncia spiegami per i dettagli.')">?</button></div>
+ <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">ASSISTENTE VOCALE<small>RISPOSTE IMMEDIATE</small></div><button class="help" onclick="alert('Puoi chiedere filetti, tolleranze, linguette, cave, parametri CNC, smussi, esagoni, conversioni e geometria. Se manca un dato, te lo chiede. Pronuncia spiegami per i dettagli.')">?</button></div>
  <div class="assistantHero">
   <div class="status"><span id="vaDot" class="dot"></span><span id="vaStatus">Pronto. Premi il microfono.</span></div>
   <button id="vaMic" class="mic" onclick="toggleListen()">🎤</button>
@@ -225,7 +225,7 @@ select{text-align:center;font-size:16px}
 
 <section id="settings" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">MENU</div><button class="help">▤</button></div>
- <div class="card"><h2>AZIONI</h2><button class="btn2" onclick="localStorage.clear();alert('Impostazioni cancellate.')">PULISCI MEMORIA APP</button><div class="note">CNC Toolbox v3.0 · File unico completo e autosufficiente.</div></div>
+ <div class="card"><h2>AZIONI</h2><button class="btn2" onclick="localStorage.clear();alert('Impostazioni cancellate.')">PULISCI MEMORIA APP</button><div class="note">CNC Toolbox v3.1 · Assistente offline completo.</div></div>
 </section>
 
 <button class="fab" onclick="show('assistant')" aria-label="Assistente vocale">🎤</button>
@@ -287,46 +287,376 @@ function setGonAngle(){const a=+$('gonAngle').value;$('gonVal').textContent=a+'�
 async function torchOn(){try{await startCamera('torchVideo');const track=mediaStream.getVideoTracks()[0];const cap=track.getCapabilities();if(cap.torch){await track.applyConstraints({advanced:[{torch:true}]});$('torchMsg').textContent='Torcia accesa.'}else $('torchMsg').textContent='Il telefono/browser non permette il flash da questa pagina.'}catch(e){$('torchMsg').textContent='Torcia non disponibile.'}}
 async function torchOff(){if(mediaStream){const track=mediaStream.getVideoTracks()[0];try{await track.applyConstraints({advanced:[{torch:false}]})}catch(e){}stopCamera()}$('torchMsg').textContent='Torcia spenta.'}
 
-/* ASSISTENTE VOCALE */
-const A_COARSE={M3:[.5,2.5],M4:[.7,3.3],M5:[.8,4.2],M6:[1,5],M8:[1.25,6.8],M10:[1.5,8.5],M12:[1.75,10.2],M14:[2,12],M16:[2,14],M18:[2.5,15.5],M20:[2.5,17.5],M22:[2.5,19.5],M24:[3,21],M27:[3,24],M30:[3.5,26.5],M33:[3.5,29.5],M36:[4,32],M42:[4.5,37.5],M48:[5,43],M60:[5.5,54.5]};
-const A_FINE={M6:{'.75':5.25},M8:{'1':7},M10:{'1':9,'1.25':8.8},M12:{'1':11,'1.5':10.5},M14:{'1.5':12.5},M16:{'1':15,'1.5':14.5},M18:{'1.5':16.5},M20:{'1.5':18.5,'2':18},M24:{'2':22},M30:{'2':28},M33:{'1.5':31.5,'2':31},M36:{'2':34},M42:{'2':40},M48:{'2':46},M60:{'2':58}};
-const A_GAS={'1/8':8.8,'1/4':11.8,'3/8':15.3,'1/2':19.1,'3/4':24.6,'1':30.9,'1 1/4':39.6,'1 1/2':45.5,'2':57.2};
+/* ASSISTENTE VOCALE OFFLINE COMPLETO v3.1 */
+const A_COARSE={
+ M1:[.25,.75],'M1.2':[.25,.95],'M1.4':[.30,1.10],'M1.6':[.35,1.25],M2:[.40,1.60],'M2.5':[.45,2.05],
+ M3:[.50,2.50],'M3.5':[.60,2.90],M4:[.70,3.30],M5:[.80,4.20],M6:[1,5],M7:[1,6],M8:[1.25,6.8],
+ M10:[1.5,8.5],M12:[1.75,10.2],M14:[2,12],M16:[2,14],M18:[2.5,15.5],M20:[2.5,17.5],
+ M22:[2.5,19.5],M24:[3,21],M27:[3,24],M30:[3.5,26.5],M33:[3.5,29.5],M36:[4,32],
+ M39:[4,35],M42:[4.5,37.5],M45:[4.5,40.5],M48:[5,43],M52:[5,47],M56:[5.5,50.5],M60:[5.5,54.5]
+};
+const A_FINE={
+ M3:{'.35':2.65},M4:{'.5':3.5},M5:{'.5':4.5},M6:{'.75':5.25},M8:{'1':7},
+ M10:{'1':9,'1.25':8.8},M12:{'1':11,'1.25':10.8,'1.5':10.5},M14:{'1.5':12.5},
+ M16:{'1':15,'1.5':14.5},M18:{'1.5':16.5},M20:{'1.5':18.5,'2':18},
+ M22:{'1.5':20.5,'2':20},M24:{'1.5':22.5,'2':22},M27:{'1.5':25.5,'2':25},
+ M30:{'1.5':28.5,'2':28,'3':27},M33:{'1.5':31.5,'2':31,'3':30},
+ M36:{'1.5':34.5,'2':34,'3':33},M39:{'1.5':37.5,'2':37,'3':36},
+ M42:{'1.5':40.5,'2':40,'3':39},M45:{'1.5':43.5,'2':43,'3':42},
+ M48:{'1.5':46.5,'2':46,'3':45},M52:{'1.5':50.5,'2':50,'3':49,'4':48},
+ M56:{'2':54,'3':53,'4':52},M60:{'2':58,'3':57,'4':56}
+};
+const A_GAS={
+ '1/8':{tpi:28,drill:8.8,ext:9.728},'1/4':{tpi:19,drill:11.8,ext:13.157},
+ '3/8':{tpi:19,drill:15.3,ext:16.662},'1/2':{tpi:14,drill:19.1,ext:20.955},
+ '3/4':{tpi:14,drill:24.6,ext:26.441},'1':{tpi:11,drill:30.9,ext:33.249},
+ '1 1/4':{tpi:11,drill:39.6,ext:41.910},'1 1/2':{tpi:11,drill:45.5,ext:47.803},
+ '2':{tpi:11,drill:57.2,ext:59.614}
+};
+const A_NPT={
+ '1/8':{tpi:27,drill:8.6,ext:10.287},'1/4':{tpi:18,drill:11.1,ext:13.716},
+ '3/8':{tpi:18,drill:14.5,ext:17.145},'1/2':{tpi:14,drill:17.8,ext:21.336},
+ '3/4':{tpi:14,drill:23.0,ext:26.670},'1':{tpi:11.5,drill:29.0,ext:33.401}
+};
+const A_KEYS=[
+ {min:6,max:8,b:2,h:2,t1:1.2,t2:1.0},{min:8,max:10,b:3,h:3,t1:1.8,t2:1.4},
+ {min:10,max:12,b:4,h:4,t1:2.5,t2:1.8},{min:12,max:17,b:5,h:5,t1:3.0,t2:2.3},
+ {min:17,max:22,b:6,h:6,t1:3.5,t2:2.8},{min:22,max:30,b:8,h:7,t1:4.0,t2:3.3},
+ {min:30,max:38,b:10,h:8,t1:5.0,t2:3.3},{min:38,max:44,b:12,h:8,t1:5.0,t2:3.3},
+ {min:44,max:50,b:14,h:9,t1:5.5,t2:3.8},{min:50,max:58,b:16,h:10,t1:6.0,t2:4.3},
+ {min:58,max:65,b:18,h:11,t1:7.0,t2:4.4},{min:65,max:75,b:20,h:12,t1:7.5,t2:4.9},
+ {min:75,max:85,b:22,h:14,t1:9.0,t2:5.4},{min:85,max:95,b:25,h:14,t1:9.0,t2:5.4},
+ {min:95,max:110,b:28,h:16,t1:10.0,t2:6.4}
+];
+const ISO_STEPS=[
+ {min:0,max:3,it6:6,it7:10,it8:14},{min:3,max:6,it6:8,it7:12,it8:18},
+ {min:6,max:10,it6:9,it7:15,it8:22},{min:10,max:18,it6:11,it7:18,it8:27},
+ {min:18,max:30,it6:13,it7:21,it8:33},{min:30,max:50,it6:16,it7:25,it8:39},
+ {min:50,max:80,it6:19,it7:30,it8:46},{min:80,max:120,it6:22,it7:35,it8:54},
+ {min:120,max:180,it6:25,it7:40,it8:63},{min:180,max:250,it6:29,it7:46,it8:72},
+ {min:250,max:315,it6:32,it7:52,it8:81},{min:315,max:400,it6:36,it7:57,it8:89},
+ {min:400,max:500,it6:40,it7:63,it8:97}
+];
+
 let voices=[],rec=null,listening=false,pending=null,lastAnswer=null;
-function normalizeSpeech(t){return String(t).toLowerCase().replace(/,/g,'.').replace(/[“”"]/g,'').replace(/\bmillimetri?\b/g,'').replace(/\bpollici?\b/g,'').replace(/\buno e mezzo\b/g,'1 1/2').replace(/\buno e un quarto\b/g,'1 1/4').replace(/\btre quarti\b/g,'3/4').replace(/\bmezzo\b/g,'1/2').replace(/\bun quarto\b/g,'1/4').replace(/\btre ottavi\b/g,'3/8').replace(/\bun ottavo\b/g,'1/8').replace(/\buno\b/g,'1').replace(/\s+/g,' ').trim()}
-function drillText(v){return 'Punta da '+Number(v).toLocaleString('it-IT',{maximumFractionDigits:2})+' millimetri.'}
+
+function aiFmt(n,d=3){return Number(n).toLocaleString('it-IT',{minimumFractionDigits:d,maximumFractionDigits:d})}
+function aiShort(n){return Number(n).toLocaleString('it-IT',{maximumFractionDigits:3})}
+function normalizeSpeech(t){
+ let s=String(t||'').toLowerCase().replace(/[“”"]/g,'').replace(/,/g,'.');
+ const words={
+  'zero':'0','uno':'1','una':'1','due':'2','tre':'3','quattro':'4','cinque':'5','sei':'6','sette':'7','otto':'8',
+  'nove':'9','dieci':'10','dodici':'12','quattordici':'14','sedici':'16','diciotto':'18','venti':'20',
+  'ventidue':'22','ventiquattro':'24','ventisette':'27','trenta':'30','trentatre':'33','trentatré':'33',
+  'trentasei':'36','quarantadue':'42','quarantotto':'48','cinquanta':'50','sessanta':'60'
+ };
+ Object.entries(words).forEach(([w,n])=>s=s.replace(new RegExp('\\b'+w+'\\b','g'),n));
+ return s
+  .replace(/\buno e mezzo\b/g,'1 1/2').replace(/\buno e un quarto\b/g,'1 1/4')
+  .replace(/\btre quarti\b/g,'3/4').replace(/\bmezzo\b/g,'1/2')
+  .replace(/\bun quarto\b/g,'1/4').replace(/\btre ottavi\b/g,'3/8').replace(/\bun ottavo\b/g,'1/8')
+  .replace(/\bmillimetri?\b/g,' mm ').replace(/\bpollici?\b/g,' pollice ')
+  .replace(/\s+/g,' ').trim();
+}
 function setVA(text,type=''){$('vaStatus').textContent=text;$('vaDot').className='dot'+(type?' '+type:'');$('vaMic').classList.toggle('listen',type==='listen')}
-function showVA(text,q=false){$('vaAnswer').textContent=text;$('vaAnswer').classList.toggle('q',q);speak(text)}
-function pitchList(obj){const a=Object.keys(obj).map(Number);return a.length===2?`${a[0].toLocaleString('it-IT')} oppure ${a[1].toLocaleString('it-IT')}`:a.map(x=>x.toLocaleString('it-IT')).join(', ')}
-function askAssistant(raw){
- raw=String(raw||'').trim();if(!raw)return;$('vaHeard').textContent=raw;const s=normalizeSpeech(raw);
- if(/\b(spiegami|spiega|dettagli)\b/.test(s)){showVA(lastAnswer?.detail||'Prima fammi una domanda.',!lastAnswer);return}
- if(pending){
-  if(pending.type==='family'){
-   const n=pending.n;
-   if(/\b(grosso|grossa|standard|normale)\b/.test(s)){const r=A_COARSE[n];pending=null;lastAnswer={detail:`${n}, passo ${r[0].toLocaleString('it-IT')}: punta ${r[1].toLocaleString('it-IT')} millimetri.`};showVA(drillText(r[1]));return}
-   if(/\b(fine|fino)\b/.test(s)){const o=A_FINE[n];if(!o){pending=null;showVA('Passo fine non presente.',true);return}const ks=Object.keys(o);if(ks.length===1){const p=ks[0],d=o[p];pending=null;lastAnswer={detail:`${n}, passo ${Number(p).toLocaleString('it-IT')}: punta ${d.toLocaleString('it-IT')} millimetri.`};showVA(drillText(d))}else{pending={type:'pitch',n,o};showVA('Che passo: '+pitchList(o)+'?',true)}return}
-   const pm=s.match(/(?:passo\s*)?(\d+(?:\.\d+)?)/);if(pm&&A_FINE[n]?.[String(Number(pm[1]))]!==undefined){const p=String(Number(pm[1])),d=A_FINE[n][p];pending=null;lastAnswer={detail:`${n}, passo ${Number(p).toLocaleString('it-IT')}: punta ${d.toLocaleString('it-IT')} millimetri.`};showVA(drillText(d));return}
-   showVA('Passo grosso o fine?',true);return
+function showVA(text,q=false,detail=''){lastAnswer=detail?{detail}:lastAnswer;$('vaAnswer').textContent=text;$('vaAnswer').classList.toggle('q',q);speak(text)}
+function ask(text,pend){pending=pend;showVA(text,true)}
+function direct(text,detail=text){pending=null;lastAnswer={detail};showVA(text,false)}
+function drillText(v){return 'Punta da '+aiShort(v)+' millimetri.'}
+function numberAfter(s,patterns){
+ for(const p of patterns){const m=s.match(new RegExp('(?:'+p+')\\s*(?:di|da|=)?\\s*(\\d+(?:\\.\\d+)?)'));if(m)return Number(m[1])}
+ return null;
+}
+function firstNumber(s){const m=s.match(/\d+(?:\.\d+)?/);return m?Number(m[0]):null}
+function fractionSize(s){
+ for(const x of ['1 1/2','1 1/4','3/4','1/2','3/8','1/4','1/8','2','1'])if(s.includes(x))return x;
+ return null;
+}
+function threadIntent(s){
+ if(/\b(punta|forare|foro|preforo)\b/.test(s))return 'drill';
+ if(/\b(diametro esterno|esterno|diametro nominale)\b/.test(s))return 'ext';
+ if(/\b(passo|tpi|filetti per pollice)\b/.test(s))return 'pitch';
+ return 'unknown';
+}
+function pitchList(obj){
+ const a=Object.keys(obj).map(Number);
+ if(a.length===1)return aiShort(a[0]);
+ if(a.length===2)return aiShort(a[0])+' oppure '+aiShort(a[1]);
+ return a.slice(0,-1).map(aiShort).join(', ')+' oppure '+aiShort(a[a.length-1]);
+}
+function metricResult(n,p,intent){
+ const c=A_COARSE[n],f=A_FINE[n],ps=String(Number(p));
+ let drill=null,actualPitch=Number(p);
+ if(c&&String(Number(c[0]))===ps)drill=c[1];
+ else if(f&&f[ps]!==undefined)drill=f[ps];
+ if(drill===null){showVA('Passo non presente.',true);return}
+ if(intent==='pitch')direct('Passo '+aiShort(actualPitch)+' millimetri.',`${n}, passo ${aiShort(actualPitch)} millimetri.`);
+ else if(intent==='ext')direct('Diametro '+aiShort(Number(n.slice(1)))+' millimetri.',`${n}: diametro esterno nominale ${aiShort(Number(n.slice(1)))} millimetri.`);
+ else direct(drillText(drill),`${n}, passo ${aiShort(actualPitch)}: punta ${aiShort(drill)} millimetri.`);
+}
+function pipeResult(kind,size,intent){
+ const data=(kind==='gas'?A_GAS:A_NPT)[size];
+ if(!data){showVA('Misura non presente.',true);return}
+ const name=(kind==='gas'?'GAS ':'NPT ')+size;
+ if(intent==='pitch')direct(aiShort(data.tpi)+' filetti per pollice.',`${name}: ${aiShort(data.tpi)} filetti per pollice.`);
+ else if(intent==='ext')direct('Diametro '+aiShort(data.ext)+' millimetri.',`${name}: diametro esterno ${aiShort(data.ext)} millimetri.`);
+ else if(intent==='drill')direct(drillText(data.drill),`${name}: punta ${aiShort(data.drill)} millimetri.`);
+ else ask('Punta, passo o diametro esterno?',{type:'pipe-intent',kind,size});
+}
+function tolClassFrom(s){
+ if(/\b(js|j esse)\s*6\b/.test(s))return 'js6';
+ if(/\b(g|gi)\s*6\b/.test(s))return 'g6';
+ if(/\b(f|effe)\s*7\b/.test(s))return 'f7';
+ if(/\b(k|kappa)\s*6\b/.test(s))return 'k6';
+ if(/\b(m|emme)\s*6\b/.test(s))return 'm6';
+ const h=s.match(/\b(?:h|acca)\s*(6|7|8)\b/);
+ return h?'h'+h[1]:null;
+}
+function toleranceLimits(d,cls,side){
+ const grade=Number(cls.match(/\d/)[0]);
+ const step=ISO_STEPS.find(x=>d>x.min&&d<=x.max)||ISO_STEPS[0];
+ const IT=(step['it'+grade]||step.it7)/1000;
+ let lo=0,hi=IT,label=cls;
+ if(side==='foro'){
+  label='H'+grade;lo=0;hi=IT;
+ }else{
+  label=cls;
+  if(cls==='h6'||cls==='h7'||cls==='h8'){lo=-IT;hi=0}
+  else if(cls==='g6'){hi=-Math.round(2.5*Math.pow(d,.34))/1000;lo=hi-IT}
+  else if(cls==='f7'){hi=-Math.round(5.5*Math.pow(d,.41))/1000;lo=hi-IT}
+  else if(cls==='js6'){lo=-IT/2;hi=IT/2}
+  else if(cls==='k6'){lo=.20*IT;hi=lo+IT}
+  else if(cls==='m6'){lo=.50*IT;hi=lo+IT}
+  else {lo=-IT;hi=0}
+ }
+ return {label,min:d+lo,max:d+hi,tol:hi-lo};
+}
+function answerTolerance(d,cls,side){
+ const r=toleranceLimits(d,cls,side);
+ direct(`Minimo ${aiFmt(r.min)}. Massimo ${aiFmt(r.max)} millimetri.`,
+  `Diametro ${aiShort(d)} ${r.label}, ${side}: minimo ${aiFmt(r.min)}, massimo ${aiFmt(r.max)}, tolleranza ${aiFmt(r.tol)} millimetri.`);
+}
+function keyRow(d){return A_KEYS.find(x=>d>x.min&&d<=x.max)}
+function answerKey(d,intent,side){
+ const r=keyRow(d);
+ if(!r){showVA('Diametro fuori tabella.',true);return}
+ if(intent==='key')direct(`Linguetta ${r.b} per ${r.h} millimetri.`,`Albero ${aiShort(d)}: linguetta ${r.b} per ${r.h} millimetri.`);
+ else if(side==='albero')direct(`Cava albero ${aiShort(r.t1)} millimetri.`,`Albero ${aiShort(d)}: cava albero t1 ${aiShort(r.t1)} millimetri, linguetta ${r.b} per ${r.h}.`);
+ else if(side==='mozzo')direct(`Cava mozzo ${aiShort(r.t2)} millimetri.`,`Albero ${aiShort(d)}: cava mozzo t2 ${aiShort(r.t2)} millimetri, linguetta ${r.b} per ${r.h}.`);
+ else ask('Cava sull’albero o nel mozzo?',{type:'key-side',d});
+}
+function assistantHelp(){
+ direct('Filetti, tolleranze, linguette, cave, parametri, smussi, esagoni e geometria.',
+ 'Posso rispondere usando le tabelle offline della Toolbox: metrici grossi e fini, GAS, NPT, tolleranze foro e albero, linguette, cave, giri, avanzamenti, smussi, esagoni, conversioni, angoli e interassi.');
+}
+function handlePending(raw,s){
+ if(!pending)return false;
+ const p=pending;
+
+ if(p.type==='metric-family'){
+  if(/\b(grosso|grossa|standard|normale)\b/.test(s)){metricResult(p.n,A_COARSE[p.n][0],p.intent);return true}
+  if(/\b(fine|fino)\b/.test(s)){
+   const o=A_FINE[p.n];if(!o){pending=null;showVA('Passo fine non presente.',true);return true}
+   if(Object.keys(o).length===1){metricResult(p.n,Object.keys(o)[0],p.intent);return true}
+   ask('Che passo: '+pitchList(o)+'?',{type:'metric-pitch',n:p.n,intent:p.intent,o});return true
   }
-  if(pending.type==='pitch'){const pm=s.match(/(?:passo\s*)?(\d+(?:\.\d+)?)/),p=pm?String(Number(pm[1])):'';if(pending.o[p]!==undefined){const d=pending.o[p],n=pending.n;pending=null;lastAnswer={detail:`${n}, passo ${Number(p).toLocaleString('it-IT')}: punta ${d.toLocaleString('it-IT')} millimetri.`};showVA(drillText(d))}else showVA('Che passo: '+pitchList(pending.o)+'?',true);return}
+  showVA('Passo grosso o fine?',true);return true;
  }
- if(/\b(gas|bsp|g\s*\d)/.test(s)){const sizes=['1 1/2','1 1/4','3/4','1/2','3/8','1/4','1/8','2','1'];const size=sizes.find(x=>s.includes(x));if(size&&A_GAS[size]!==undefined){const d=A_GAS[size];lastAnswer={detail:`GAS ${size}: punta ${d.toLocaleString('it-IT')} millimetri.`};showVA(drillText(d))}else showVA('Che misura GAS?',true);return}
- const m=s.replace(/\s+per\s+/g,'x').match(/\bm\s*(\d+(?:\.\d+)?)\s*(?:x|passo)?\s*(\d+(?:\.\d+)?)?/);
- if(m){const n='M'+String(Number(m[1])),p=m[2]?String(Number(m[2])):null,c=A_COARSE[n],f=A_FINE[n];
-  if(p){if(c&&String(Number(c[0]))===p){lastAnswer={detail:`${n}, passo ${c[0].toLocaleString('it-IT')}: punta ${c[1].toLocaleString('it-IT')} millimetri.`};showVA(drillText(c[1]));return}if(f?.[p]!==undefined){const d=f[p];lastAnswer={detail:`${n}, passo ${Number(p).toLocaleString('it-IT')}: punta ${d.toLocaleString('it-IT')} millimetri.`};showVA(drillText(d));return}showVA('Passo non trovato.',true);return}
-  if(/\b(grosso|grossa|standard|normale)\b/.test(s)&&c){lastAnswer={detail:`${n}, passo ${c[0].toLocaleString('it-IT')}: punta ${c[1].toLocaleString('it-IT')} millimetri.`};showVA(drillText(c[1]));return}
-  if(c&&f){pending={type:'family',n};showVA('Passo grosso o fine?',true);return}
-  if(c){lastAnswer={detail:`${n}, passo ${c[0].toLocaleString('it-IT')}: punta ${c[1].toLocaleString('it-IT')} millimetri.`};showVA(drillText(c[1]));return}
+ if(p.type==='metric-pitch'){
+  const v=firstNumber(s),key=v===null?'':String(Number(v));
+  if(p.o[key]!==undefined){metricResult(p.n,key,p.intent);return true}
+  showVA('Che passo: '+pitchList(p.o)+'?',true);return true;
  }
- showVA('Domanda non riconosciuta.',true)
+ if(p.type==='pipe-intent'){
+  const intent=threadIntent(s);
+  if(intent==='unknown'){showVA('Punta, passo o diametro esterno?',true);return true}
+  pipeResult(p.kind,p.size,intent);return true;
+ }
+ if(p.type==='tol-side'){
+  if(/\b(foro|poro|femmina)\b/.test(s)){answerTolerance(p.d,p.cls,'foro');return true}
+  if(/\b(albero|maschio)\b/.test(s)){answerTolerance(p.d,p.cls,'albero');return true}
+  showVA('Foro o albero?',true);return true;
+ }
+ if(p.type==='tol-class'){
+  const cls=tolClassFrom(s);
+  if(!cls){showVA('Quale classe? Per esempio H7, h6 o g6.',true);return true}
+  if(p.side)answerTolerance(p.d,cls,p.side);else ask('Foro o albero?',{type:'tol-side',d:p.d,cls});return true;
+ }
+ if(p.type==='key-side'){
+  if(/\b(albero)\b/.test(s)){answerKey(p.d,'cava','albero');return true}
+  if(/\b(mozzo|foro)\b/.test(s)){answerKey(p.d,'cava','mozzo');return true}
+  showVA('Albero o mozzo?',true);return true;
+ }
+ return false;
+}
+function askAssistant(raw){
+ raw=String(raw||'').trim();if(!raw)return;
+ $('vaHeard').textContent=raw;
+ const s=normalizeSpeech(raw);
+
+ if(/\b(annulla|cancella|ricomincia)\b/.test(s)){pending=null;lastAnswer=null;showVA('Annullato.');return}
+ if(/\b(spiegami|spiega|dettagli)\b/.test(s)){showVA(lastAnswer?.detail||'Prima fammi una domanda.',!lastAnswer);return}
+ if(/\b(cosa sai fare|cosa puoi fare|aiuto|funzioni)\b/.test(s)){assistantHelp();return}
+ if(handlePending(raw,s))return;
+
+ /* TOLLERANZE */
+ if(/\b(tolleranza|accoppiamento|limite|minimo|massimo|h7|h8|h6|g6|f7|js6|k6|m6|acca)\b/.test(s)){
+  const cls=tolClassFrom(s);
+  const nums=[...s.matchAll(/\d+(?:\.\d+)?/g)].map(x=>Number(x[0]));
+  let d=numberAfter(s,['diametro','quota','foro','albero']);
+  if(d===null)d=nums.length?nums[0]:null;
+  const side=/\b(foro|poro|femmina)\b/.test(s)?'foro':(/\b(albero|maschio)\b/.test(s)?'albero':null);
+  if(d===null){showVA('Quale diametro?',true);return}
+  if(!cls){ask('Quale classe? Per esempio H7, h6 o g6.',{type:'tol-class',d,side});return}
+  if(!side){ask('Foro o albero?',{type:'tol-side',d,cls});return}
+  answerTolerance(d,cls,side);return;
+ }
+
+ /* GAS E NPT */
+ if(/\b(npt)\b/.test(s)){
+  const size=fractionSize(s);if(!size){showVA('Che misura NPT?',true);return}
+  pipeResult('npt',size,threadIntent(s));return;
+ }
+ if(/\b(gas|bsp)\b/.test(s)||/\bg\s*(?:1|2|3\/|1\/)/.test(s)||/^\s*(?:1|2|3\/|1\/).*\bgas\b/.test(s)){
+  const size=fractionSize(s);if(!size){showVA('Che misura GAS?',true);return}
+  pipeResult('gas',size,threadIntent(s));return;
+ }
+
+ /* METRICO */
+ const ms=s.replace(/\s+per\s+/g,'x').match(/\bm\s*(\d+(?:\.\d+)?)\s*(?:x|passo)?\s*(\d+(?:\.\d+)?)?/);
+ if(ms){
+  const n='M'+String(Number(ms[1])),p=ms[2]?String(Number(ms[2])):null;
+  const c=A_COARSE[n],f=A_FINE[n],intent=threadIntent(s)==='unknown'?'drill':threadIntent(s);
+  if(!c&&!f){showVA('Filetto non presente.',true);return}
+  if(p){metricResult(n,p,intent);return}
+  if(/\b(grosso|grossa|standard|normale)\b/.test(s)){metricResult(n,c[0],intent);return}
+  if(/\b(fine|fino)\b/.test(s)){
+   if(!f){showVA('Passo fine non presente.',true);return}
+   if(Object.keys(f).length===1){metricResult(n,Object.keys(f)[0],intent);return}
+   ask('Che passo: '+pitchList(f)+'?',{type:'metric-pitch',n,intent,o:f});return;
+  }
+  if(c&&f){ask('Passo grosso o fine?',{type:'metric-family',n,intent});return}
+  metricResult(n,c[0],intent);return;
+ }
+
+ /* LINGUETTE E CAVE */
+ if(/\b(linguetta|chiavetta|cava)\b/.test(s)){
+  const d=numberAfter(s,['diametro','albero','d'])??firstNumber(s);
+  if(d===null){showVA('Quale diametro albero?',true);return}
+  const intent=/\b(linguetta|chiavetta)\b/.test(s)?'key':'cava';
+  const side=/\balbero\b/.test(s)?'albero':(/\b(mozzo|foro)\b/.test(s)?'mozzo':null);
+  answerKey(d,intent,side);return;
+ }
+
+ /* ESAGONO */
+ if(/\b(esagono|chiave|sulle punte|tondo)\b/.test(s)){
+  const v=numberAfter(s,['chiave','s'])??numberAfter(s,['diametro','tondo','d'])??firstNumber(s);
+  if(v===null){showVA('Quale misura?',true);return}
+  if(/\bchiave\b/.test(s)&&!/\bda diametro|tondo\b/.test(s)){
+   const d=v/0.8660254;direct(`Diametro ${aiFmt(d)} millimetri.`,`Chiave ${aiShort(v)}: diametro sulle punte ${aiFmt(d)} millimetri.`);return
+  }
+  const key=v*0.8660254;direct(`Chiave ${aiFmt(key)} millimetri.`,`Diametro tondo ${aiShort(v)}: chiave massima ${aiFmt(key)} millimetri.`);return
+ }
+
+ /* GIRI E AVANZAMENTI */
+ if(/\b(giri|rpm|avanzamento|parametri|velocita di taglio|vc|fz|mm giro|tagli|denti)\b/.test(s)){
+  const d=numberAfter(s,['diametro','d']);
+  const vc=numberAfter(s,['vc','velocita di taglio','velocita']);
+  const z=numberAfter(s,['tagli','denti','z']);
+  const fz=numberAfter(s,['fz','avanzamento per dente']);
+  const fg=numberAfter(s,['mm giro','avanzamento per giro','f']);
+  const missing=[];if(d===null)missing.push('diametro');if(vc===null)missing.push('Vc');
+  if(missing.length){showVA('Mi servono '+missing.join(' e ')+'.',true);return}
+  const rpm=vc*1000/(Math.PI*d);
+  if(/\bavanzamento\b/.test(s)){
+   if(fz!==null&&z!==null){const feed=rpm*z*fz;direct(`${aiFmt(rpm,0)} giri. ${aiFmt(feed,0)} millimetri al minuto.`,`Diametro ${aiShort(d)}, Vc ${aiShort(vc)}, ${aiShort(z)} tagli, fz ${aiShort(fz)}: ${aiFmt(rpm,0)} giri e ${aiFmt(feed,0)} millimetri al minuto.`);return}
+   if(fg!==null){const feed=rpm*fg;direct(`${aiFmt(rpm,0)} giri. ${aiFmt(feed,0)} millimetri al minuto.`,`Diametro ${aiShort(d)}, Vc ${aiShort(vc)}, avanzamento ${aiShort(fg)} millimetri giro: ${aiFmt(rpm,0)} giri e ${aiFmt(feed,0)} millimetri al minuto.`);return}
+   showVA('Mi servono tagli e f z, oppure millimetri giro.',true);return
+  }
+  direct(`${aiFmt(rpm,0)} giri al minuto.`,`Diametro ${aiShort(d)}, Vc ${aiShort(vc)}: ${aiFmt(rpm,0)} giri al minuto.`);return;
+ }
+
+ /* CONVERSIONI */
+ if(/\b(pollice|inch|millimetri| mm )\b/.test(s)&&/\b(converti|conversione|in pollice|in mm|quanto)\b/.test(s)){
+  const v=firstNumber(s);if(v===null){showVA('Quale valore?',true);return}
+  if(/\b(in pollice|pollice|inch)\b/.test(s)&&/\bmm\b/.test(s)){direct(aiFmt(v/25.4,4)+' pollici.',`${aiShort(v)} millimetri sono ${aiFmt(v/25.4,4)} pollici.`);return}
+  if(/\b(in mm|millimetri)\b/.test(s)){direct(aiFmt(v*25.4,3)+' millimetri.',`${aiShort(v)} pollici sono ${aiFmt(v*25.4,3)} millimetri.`);return}
+ }
+
+ /* SMUSSO */
+ if(/\b(smusso|chamfer)\b/.test(s)){
+  const d=numberAfter(s,['diametro','d']),c=numberAfter(s,['c','smusso']),a=numberAfter(s,['angolo','gradi']);
+  const external=/\b(esterno|esterno)\b/.test(s),internal=/\b(interno)\b/.test(s);
+  const miss=[];if(d===null)miss.push('diametro');if(c===null)miss.push('C');if(a===null)miss.push('angolo');if(!external&&!internal)miss.push('interno o esterno');
+  if(miss.length){showVA('Mi serve '+miss.join(', ')+'.',true);return}
+  const radial=c/Math.tan(a*Math.PI/180),x=external?d-2*radial:d+2*radial;
+  direct(`X iniziale ${aiFmt(x)} millimetri.`,`Smusso ${external?'esterno':'interno'}, diametro ${aiShort(d)}, C ${aiShort(c)}, angolo ${aiShort(a)}: X iniziale ${aiFmt(x)} millimetri.`);return;
+ }
+
+ /* FILETTO AL TORNIO */
+ if(/\b(profondita filetto|filetto tornio|cresta filetto)\b/.test(s)){
+  const p=numberAfter(s,['passo']),d=numberAfter(s,['diametro','d']);
+  const gas=/\b(gas|55)\b/.test(s);
+  if(p===null){showVA('Quale passo?',true);return}
+  const depth=p*(gas?.6403:.6134);
+  if(d!==null){const x=d-2*depth;direct(`Profondità ${aiFmt(depth)}. X fondo ${aiFmt(x)} millimetri.`,`Passo ${aiShort(p)}, profilo ${gas?'55':'60'} gradi: profondità radiale ${aiFmt(depth)}, X fondo ${aiFmt(x)} millimetri.`)}
+  else direct(`Profondità radiale ${aiFmt(depth)} millimetri.`,`Passo ${aiShort(p)}, profilo ${gas?'55':'60'} gradi: profondità radiale ${aiFmt(depth)} millimetri.`);
+  return;
+ }
+
+ /* INTERASSE */
+ if(/\b(interasse|distanza tra centri)\b/.test(s)){
+  const x1=numberAfter(s,['x1','x 1']),y1=numberAfter(s,['y1','y 1']),x2=numberAfter(s,['x2','x 2']),y2=numberAfter(s,['y2','y 2']);
+  if([x1,y1,x2,y2].some(v=>v===null)){showVA('Mi servono X1, Y1, X2 e Y2.',true);return}
+  const dist=Math.hypot(x2-x1,y2-y1);direct(`Interasse ${aiFmt(dist)} millimetri.`,`Tra i due centri: delta X ${aiFmt(x2-x1)}, delta Y ${aiFmt(y2-y1)}, interasse ${aiFmt(dist)} millimetri.`);return;
+ }
+
+ /* ANGOLO */
+ if(/\b(angolo da due punti|calcola angolo)\b/.test(s)){
+  const x1=numberAfter(s,['x1','x 1']),y1=numberAfter(s,['y1','y 1']),x2=numberAfter(s,['x2','x 2']),y2=numberAfter(s,['y2','y 2']);
+  if([x1,y1,x2,y2].some(v=>v===null)){showVA('Mi servono X1, Y1, X2 e Y2.',true);return}
+  const ang=Math.atan2(y2-y1,x2-x1)*180/Math.PI;direct(`Angolo ${aiFmt(ang,4)} gradi.`,`Angolo ${aiFmt(ang,4)} gradi; correzione ${aiFmt(-ang,4)} gradi.`);return;
+ }
+
+ showVA('Dato non presente nella Toolbox.',true);
 }
 function sendTyped(){askAssistant($('vaText').value);$('vaText').value=''}
-function populateVoices(){if(!('speechSynthesis'in window))return;voices=speechSynthesis.getVoices();$('voiceSelect').innerHTML='';const sorted=[...voices].sort((a,b)=>(a.lang.toLowerCase().startsWith('it')?0:1)-(b.lang.toLowerCase().startsWith('it')?0:1)||a.name.localeCompare(b.name));sorted.forEach(v=>{const o=document.createElement('option');o.value=v.voiceURI;o.textContent=(v.lang.toLowerCase().startsWith('it')?'🇮🇹 ':'')+v.name+' — '+v.lang;$('voiceSelect').appendChild(o)});const saved=localStorage.getItem('voice_uri');if(saved)$('voiceSelect').value=saved;else{const it=sorted.find(v=>v.lang.toLowerCase().startsWith('it'));if(it)$('voiceSelect').value=it.voiceURI}}
-function saveVoice(){localStorage.setItem('voice_uri',$('voiceSelect').value);['Rate','Pitch','Volume'].forEach(x=>localStorage.setItem('voice_'+x.toLowerCase(),$('voice'+x).value));$('voiceRateV').textContent=Number($('voiceRate').value).toFixed(2);$('voicePitchV').textContent=Number($('voicePitch').value).toFixed(2);$('voiceVolumeV').textContent=Number($('voiceVolume').value).toFixed(2)}
-function speak(text){if(!('speechSynthesis'in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text),v=voices.find(x=>x.voiceURI===$('voiceSelect').value);if(v)u.voice=v;u.lang=v?.lang||'it-IT';u.rate=+$('voiceRate').value;u.pitch=+$('voicePitch').value;u.volume=+$('voiceVolume').value;speechSynthesis.speak(u)}
-function preset(name){const p={fast:[1.18,1,1],natural:[1,1,1],deep:[.92,.72,1],clear:[1.02,1.18,1],slow:[.8,1,1]};if(p[name])[$('voiceRate').value,$('voicePitch').value,$('voiceVolume').value]=p[name];document.querySelectorAll('.preset').forEach(b=>b.classList.toggle('on',b.dataset.p===name));saveVoice()}
-function setupRecognition(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;const secure=window.isSecureContext;$('voiceSupport').innerHTML=(secure?'<span class="ok">✓ Pagina sicura HTTPS.</span>':'<span class="err">✗ Apri la Toolbox online.</span>')+'<br>'+(SR?'<span class="ok">✓ Microfono vocale disponibile.</span>':'<span class="err">✗ Riconoscimento vocale non disponibile in questo browser.</span>')+'<br>'+('speechSynthesis'in window?'<span class="ok">✓ Risposta parlata disponibile.</span>':'<span class="err">✗ Voce non disponibile.</span>');if(!SR){setVA('Microfono non supportato. Puoi scrivere.','bad');return}rec=new SR();rec.lang='it-IT';rec.interimResults=true;rec.continuous=false;rec.onstart=()=>{listening=true;setVA('Sto ascoltando…','listen');$('vaHeard').textContent='Parla adesso…'};rec.onresult=e=>{let fin='',tmp='';for(let i=e.resultIndex;i<e.results.length;i++){const t=e.results[i][0].transcript;e.results[i].isFinal?fin+=t:tmp+=t}$('vaHeard').textContent=fin||tmp;if(fin)askAssistant(fin)};rec.onerror=e=>{listening=false;setVA(e.error==='not-allowed'?'Permesso microfono negato.':'Errore microfono: '+e.error,'bad')};rec.onend=()=>{listening=false;$('vaMic').classList.remove('listen');if(!$('vaDot').classList.contains('bad'))setVA('Pronto. Premi il microfono.')}}
+function populateVoices(){
+ if(!('speechSynthesis'in window))return;
+ voices=speechSynthesis.getVoices();$('voiceSelect').innerHTML='';
+ const sorted=[...voices].sort((a,b)=>(a.lang.toLowerCase().startsWith('it')?0:1)-(b.lang.toLowerCase().startsWith('it')?0:1)||a.name.localeCompare(b.name));
+ sorted.forEach(v=>{const o=document.createElement('option');o.value=v.voiceURI;o.textContent=(v.lang.toLowerCase().startsWith('it')?'🇮🇹 ':'')+v.name+' — '+v.lang;$('voiceSelect').appendChild(o)});
+ const saved=localStorage.getItem('voice_uri');if(saved)$('voiceSelect').value=saved;else{const itv=sorted.find(v=>v.lang.toLowerCase().startsWith('it'));if(itv)$('voiceSelect').value=itv.voiceURI}
+}
+function saveVoice(){
+ localStorage.setItem('voice_uri',$('voiceSelect').value);
+ ['Rate','Pitch','Volume'].forEach(x=>localStorage.setItem('voice_'+x.toLowerCase(),$('voice'+x).value));
+ $('voiceRateV').textContent=Number($('voiceRate').value).toFixed(2);$('voicePitchV').textContent=Number($('voicePitch').value).toFixed(2);$('voiceVolumeV').textContent=Number($('voiceVolume').value).toFixed(2)
+}
+function speak(text){
+ if(!('speechSynthesis'in window))return;
+ speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text),v=voices.find(x=>x.voiceURI===$('voiceSelect').value);
+ if(v)u.voice=v;u.lang=v?.lang||'it-IT';u.rate=+$('voiceRate').value;u.pitch=+$('voicePitch').value;u.volume=+$('voiceVolume').value;speechSynthesis.speak(u)
+}
+function preset(name){
+ const p={fast:[1.18,1,1],natural:[1,1,1],deep:[.92,.72,1],clear:[1.02,1.18,1],slow:[.8,1,1]};
+ if(p[name])[$('voiceRate').value,$('voicePitch').value,$('voiceVolume').value]=p[name];
+ document.querySelectorAll('.preset').forEach(b=>b.classList.toggle('on',b.dataset.p===name));saveVoice()
+}
+function setupRecognition(){
+ const SR=window.SpeechRecognition||window.webkitSpeechRecognition,secure=window.isSecureContext;
+ $('voiceSupport').innerHTML=(secure?'<span class="ok">✓ Pagina sicura HTTPS.</span>':'<span class="err">✗ Apri la Toolbox online.</span>')+'<br>'+
+ (SR?'<span class="ok">✓ Microfono vocale disponibile.</span>':'<span class="err">✗ Riconoscimento vocale non disponibile.</span>')+'<br>'+
+ ('speechSynthesis'in window?'<span class="ok">✓ Risposta parlata disponibile.</span>':'<span class="err">✗ Voce non disponibile.</span>');
+ if(!SR){setVA('Microfono non supportato. Puoi scrivere.','bad');return}
+ rec=new SR();rec.lang='it-IT';rec.interimResults=true;rec.continuous=false;
+ rec.onstart=()=>{listening=true;setVA('Sto ascoltando…','listen');$('vaHeard').textContent='Parla adesso…'};
+ rec.onresult=e=>{let fin='',tmp='';for(let i=e.resultIndex;i<e.results.length;i++){const t=e.results[i][0].transcript;e.results[i].isFinal?fin+=t:tmp+=t}$('vaHeard').textContent=fin||tmp;if(fin)askAssistant(fin)};
+ rec.onerror=e=>{listening=false;setVA(e.error==='not-allowed'?'Permesso microfono negato.':'Errore microfono: '+e.error,'bad')};
+ rec.onend=()=>{listening=false;$('vaMic').classList.remove('listen');if(!$('vaDot').classList.contains('bad'))setVA('Pronto. Premi il microfono.')}
+}
 function toggleListen(){if(!rec)return;if(listening){rec.stop();return}speechSynthesis?.cancel();try{rec.start()}catch(e){}}
+
 function init(){
  renderThreads();const rm=localStorage.getItem('ruler_mm');if(rm)$('rulerMm').value=rm;
  $('voiceRate').value=localStorage.getItem('voice_rate')||'1.18';$('voicePitch').value=localStorage.getItem('voice_pitch')||'1';$('voiceVolume').value=localStorage.getItem('voice_volume')||'1';saveVoice();populateVoices();if('speechSynthesis'in window){speechSynthesis.onvoiceschanged=populateVoices;setTimeout(populateVoices,300)}setupRecognition();
