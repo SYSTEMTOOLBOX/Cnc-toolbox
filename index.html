@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#050505">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>CNC Toolbox v4.5</title>
+<title>CNC Toolbox v4.6</title>
 <style>
 :root{--y:#ffc400;--y2:#dfa500;--b:#050505;--p:#141414;--p2:#0b0b0b;--l:#3e3e3e;--w:#fff;--g:#aaa;--ok:#68e36f;--err:#ff5b5b;--blue:#54baff}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -80,19 +80,34 @@ select{text-align:center;font-size:15px}
 .wallChoiceText{text-align:center;color:var(--y);font-size:18px;font-weight:900;margin-top:10px}.wallStep{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--y);color:#050505;font-weight:900;margin-right:7px}.wallFormula{border:1px dashed #666;border-radius:9px;padding:10px;margin-top:10px;color:#ddd;font-size:13px;line-height:1.45}.wallFormula strong{color:var(--y)}
 
 @media(max-width:390px){.row{grid-template-columns:1fr 132px}.tile{min-height:104px}.answer{font-size:25px}.fab{width:62px;height:62px;font-size:29px}.tabs{grid-template-columns:1fr 1fr}}
+
+/* v4.6 Johnson semplificato */
+.wallSketchWrap{display:flex;justify-content:center;margin-top:8px}
+.wallSketch{position:relative;width:260px;height:260px;border:3px solid var(--yellow);border-radius:14px;background:linear-gradient(145deg,#191919,#070707);overflow:hidden;touch-action:manipulation}
+.wallPoly{position:absolute;left:40px;top:40px;right:40px;bottom:40px;border:3px solid #fff;border-radius:8px;opacity:.95}
+.wallHot{position:absolute;width:44px;height:44px;border-radius:50%;background:var(--yellow);color:#050505;display:flex;align-items:center;justify-content:center;font-weight:900;border:2px solid #222;box-shadow:0 0 0 4px rgba(255,196,0,.15);cursor:pointer;z-index:4}
+.wallHot.on{transform:scale(1.08);box-shadow:0 0 0 5px rgba(255,196,0,.3)}
+.wallHot.top{left:50%;top:16px;transform:translateX(-50%)}
+.wallHot.bottom{left:50%;bottom:16px;transform:translateX(-50%)}
+.wallHot.left{left:16px;top:50%;transform:translateY(-50%)}
+.wallHot.right{right:16px;top:50%;transform:translateY(-50%)}
+.wallProbe{position:absolute;width:30px;height:30px;border-radius:50%;border:2px solid #000;background:#8ad3ff;z-index:3;transition:all .2s ease}
+.wallJohnsonA,.wallJohnsonB{position:absolute;background:#d9d9d9;border:2px solid #333;border-radius:5px;z-index:2;transition:all .2s ease}
+.wallLegend{font-size:13px;color:#ddd;line-height:1.4;margin-top:8px;text-align:center}
+
 </style>
 </head>
 <body>
 <div class="app">
 
 <section id="home" class="screen active">
- <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v4.5 · CENTRO JOHNSON DEFINITIVO</div></div></div>
+ <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v4.6 · JOHNSON SEMPLIFICATO</div></div></div>
  <div class="grid"><button class="tile primary wide" onclick="show('assistant')"><div class="icon">🎙️</div>ASSISTENTE VOCALE MECCANICO</button></div>
 
  <div class="sectionTitle">GEOMETRIA</div>
  <div class="grid">
   <button class="tile primary" onclick="show('three')"><div class="icon">◎</div>CENTRO 3 PUNTI</button>
-  <button class="tile" onclick="openJohnsonCenter()"><div class="icon">▣</div>CENTRO JOHNSON<br>3 / 4 PUNTI</button>
+  <button class="tile" onclick="openJohnsonCenter()"><div class="icon">▣</div>CENTRO JOHNSON<br>4 PUNTI</button>
   <button class="tile" onclick="show('two')"><div class="icon">⟍</div>CENTRO 2 PUNTI</button>
   <button class="tile" onclick="show('angle')"><div class="icon">∠</div>ANGOLO</button>
   <button class="tile primary" onclick="show('chamfer')"><div class="icon">45°</div>SMUSSI</button>
@@ -163,58 +178,54 @@ select{text-align:center;font-size:15px}
 <section id="four" class="screen">
  <div class="header">
   <button class="back" onclick="show('home')">‹</button>
-  <div class="title">CENTRO JOHNSON<small>3 O 4 PUNTI · PARETI INCLINATE</small></div>
-  <button class="help" onclick="alert('Prima tocca il quadrato nel punto dove vuoi ricavare il centro. 3 PUNTI: una parete è perfettamente allineata agli assi e richiede un punto; l’altra richiede due punti. 4 PUNTI: due punti su ogni parete quando anche il pezzo è inclinato. Inserisci il diametro dell’utensile o tastatore e lo spessore dei blocchetti Johnson. La compensazione viene applicata perpendicolarmente a ogni parete, quindi è corretta anche sulle pareti inclinate.')">?</button>
+  <div class="title">CENTRO JOHNSON<small>SOLO 4 PUNTI · PARETI INCLINATE</small></div>
+  <button class="help" onclick="alert('Prima inserisci Ø tastatore e Johnson. Poi scegli INTERNO o ESTERNO. Tocca uno dei 4 lati del disegno per dire dove ti interessa il centro. Infine inserisci i 4 punti: 2 sulla parete A e 2 sulla parete B. L’app calcola il centro compensando tastatore e Johnson perpendicolarmente alle pareti.')">?</button>
  </div>
 
  <div class="card">
-  <h2><span class="wallStep">1</span>TOCCA DOVE VUOI IL CENTRO</h2>
-  <div id="wallPicker" class="wallPicker" onpointerdown="setWallTargetFromEvent(event)" onpointermove="dragWallTarget(event)" onpointerup="endWallTargetDrag(event)" onpointercancel="endWallTargetDrag(event)">
-   <div class="wallAxisLabel top">ALTO · Y+</div><div class="wallAxisLabel bottom">BASSO · Y−</div>
-   <div class="wallAxisLabel left">SX · X−</div><div class="wallAxisLabel right">DX · X+</div>
-   <div id="wallTargetDot" class="wallTargetDot"></div>
+  <h2><span class="wallStep">1</span>SETUP INIZIALE</h2>
+  <div class="row"><div class="label">Ø tastatore / utensile</div><input id="wallToolD" class="inp" value="10" oninput="updateWallSketch()"></div>
+  <div class="row"><div class="label">Johnson parete A</div><input id="wallJohnsonA" class="inp" value="0" oninput="updateWallSketch()"></div>
+  <div class="row"><div class="label">Johnson parete B</div><input id="wallJohnsonB" class="inp" value="0" oninput="updateWallSketch()"></div>
+  <div class="label" style="margin:12px 0 8px">Contatto del tastatore</div>
+  <div class="seg"><button id="wallExternal" class="on" onclick="setWallMeasure('external')">ESTERNO PEZZO</button><button id="wallInternal" onclick="setWallMeasure('internal')">INTERNO CAVA</button></div>
+ </div>
+
+ <div class="card">
+  <h2><span class="wallStep">2</span>DISEGNO INIZIALE</h2>
+  <div class="wallSketchWrap">
+   <div id="wallSketch" class="wallSketch">
+    <div class="wallPoly"></div>
+    <button type="button" class="wallHot top" onclick="setWallZone('top')">1</button>
+    <button type="button" class="wallHot right" onclick="setWallZone('right')">2</button>
+    <button type="button" class="wallHot bottom" onclick="setWallZone('bottom')">3</button>
+    <button type="button" class="wallHot left on" onclick="setWallZone('left')">4</button>
+    <div id="wallJohnsonAVis" class="wallJohnsonA"></div>
+    <div id="wallJohnsonBVis" class="wallJohnsonB"></div>
+    <div id="wallProbeVis" class="wallProbe"></div>
+   </div>
   </div>
-  <div id="wallChoiceText" class="wallChoiceText">Punto scelto: CENTRO</div>
-  <div class="hint">Puoi toccare qualsiasi posizione, non soltanto i nove punti. Con CENTRO X viene usata l’altezza scelta; con CENTRO Y viene usata la posizione destra/sinistra scelta.</div>
+  <div id="wallChoiceText" class="wallChoiceText">Lato scelto: SINISTRA → verrà calcolato il CENTRO X</div>
+  <div class="wallLegend">Il cerchio azzurro rappresenta il tastatore. I rettangolini grigi dietro al cerchio rappresentano i Johnson A e B. Con ESTERNO il cerchio si sposta fuori dal profilo, con INTERNO si sposta dentro.</div>
  </div>
 
  <div class="card">
-  <h2><span class="wallStep">2</span>SCEGLI IL METODO</h2>
-  <div class="seg"><button id="wallMode3" class="on" onclick="setWallMode(3)">3 PUNTI</button><button id="wallMode4" onclick="setWallMode(4)">4 PUNTI</button></div>
-  <div id="wallModeNote" class="hint">Parete A perfettamente allineata: 1 punto. Parete B inclinata: 2 punti.</div>
+  <h2><span class="wallStep">3</span>QUOTA DEL PUNTO SCELTO</h2>
+  <div class="row"><div id="wallRefLabel" class="label">Quota Y di calcolo</div><input id="wallRef" class="inp" value="50"></div>
+  <div class="hint">Se scegli SINISTRA o DESTRA viene calcolato il centro X alla quota Y indicata. Se scegli ALTO o BASSO viene calcolato il centro Y alla quota X indicata.</div>
  </div>
 
  <div class="card">
-  <h2><span class="wallStep">3</span>SETUP JOHNSON</h2>
-  <div class="label" style="margin-bottom:8px">Direzione del centro</div>
-  <div class="seg"><button id="wallAxisX" class="on" onclick="setWallAxis('x')">TRA SX / DX · X</button><button id="wallAxisY" onclick="setWallAxis('y')">TRA BASSO / ALTO · Y</button></div>
-  <div class="label" style="margin:13px 0 8px">Quota del centro</div>
-  <div class="seg"><button id="wallRefSquare" class="on" onclick="setWallRefMode('square')">DAL QUADRATO</button><button id="wallRefManual" onclick="setWallRefMode('manual')">MANUALE</button></div>
-  <div id="wallManualRefRow" class="row" style="display:none"><div id="wallRefLabel" class="label">Quota Y manuale</div><input id="wallRef" class="inp" value="50"></div>
-  <div class="row"><div class="label">Ø utensile / tastatore</div><input id="wallToolD" class="inp" value="10"></div>
-  <div class="row"><div class="label">Johnson parete A</div><input id="wallJohnsonA" class="inp" value="0"></div>
-  <div class="row"><div class="label">Johnson parete B</div><input id="wallJohnsonB" class="inp" value="0"></div>
-  <div class="label" style="margin:12px 0 8px">Dove si trova l’utensile durante il contatto?</div>
-  <div class="seg"><button id="wallExternal" class="on" onclick="setWallMeasure('external')">FUORI DAL PEZZO</button><button id="wallInternal" onclick="setWallMeasure('internal')">DENTRO CAVA</button></div>
-  <div class="wallFormula"><strong>Compensazione Johnson reale:</strong> raggio utensile + spessore Johnson, spostati lungo la normale della singola parete. Su una parete inclinata la correzione X/Y è quindi maggiore della semplice somma lineare.</div>
- </div>
-
- <div class="card">
-  <h2 id="wallATitle"><span class="wallStep">4</span>PARETE A · DRITTA / ALLINEATA</h2>
-  <div class="row"><div class="label">P1 X centro utensile</div><input id="wAx1" class="inp" value="0"></div>
-  <div class="row"><div class="label">P1 Y centro utensile</div><input id="wAy1" class="inp" value="50"></div>
-  <div id="wallASecondPoint" style="display:none">
-   <div class="row"><div class="label">P2 X centro utensile</div><input id="wAx2" class="inp" value="10"></div>
-   <div class="row"><div class="label">P2 Y centro utensile</div><input id="wAy2" class="inp" value="150"></div>
-  </div>
- </div>
-
- <div class="card">
-  <h2 id="wallBTitle"><span class="wallStep">5</span>PARETE B · INCLINATA</h2>
-  <div class="row"><div id="wallBP1XLabel" class="label">P2 X centro utensile</div><input id="wBx1" class="inp" value="100"></div>
-  <div class="row"><div id="wallBP1YLabel" class="label">P2 Y centro utensile</div><input id="wBy1" class="inp" value="0"></div>
-  <div class="row"><div id="wallBP2XLabel" class="label">P3 X centro utensile</div><input id="wBx2" class="inp" value="110"></div>
-  <div class="row"><div id="wallBP2YLabel" class="label">P3 Y centro utensile</div><input id="wBy2" class="inp" value="100"></div>
+  <h2><span class="wallStep">4</span>INSERISCI I 4 PUNTI</h2>
+  <div class="hint" style="margin-bottom:8px">Parete A = primi 2 punti. Parete B = altri 2 punti. Inserisci le coordinate del centro tastatore durante il contatto.</div>
+  <div class="row"><div class="label">P1 X</div><input id="wAx1" class="inp" value="0"></div>
+  <div class="row"><div class="label">P1 Y</div><input id="wAy1" class="inp" value="0"></div>
+  <div class="row"><div class="label">P2 X</div><input id="wAx2" class="inp" value="0"></div>
+  <div class="row"><div class="label">P2 Y</div><input id="wAy2" class="inp" value="100"></div>
+  <div class="row"><div class="label">P3 X</div><input id="wBx1" class="inp" value="100"></div>
+  <div class="row"><div class="label">P3 Y</div><input id="wBy1" class="inp" value="0"></div>
+  <div class="row"><div class="label">P4 X</div><input id="wBx2" class="inp" value="110"></div>
+  <div class="row"><div class="label">P4 Y</div><input id="wBy2" class="inp" value="100"></div>
   <button class="btn" onclick="calcJohnsonCenter()">CALCOLA CENTRO JOHNSON</button>
   <div id="res4"></div>
  </div>
@@ -320,12 +331,12 @@ select{text-align:center;font-size:15px}
 
 <section id="scanner" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">SCANNER 3D<small>PROGETTO SEPARATO</small></div><button class="help">?</button></div>
- <div class="card"><h2>LO RIPRENDEREMO SUCCESSIVAMENTE</h2><div class="note">Lo scanner 3D resta separato per non appesantire la Toolbox. Questa v4.5 contiene gli strumenti CNC e l’assistente vocale completo.</div></div>
+ <div class="card"><h2>LO RIPRENDEREMO SUCCESSIVAMENTE</h2><div class="note">Lo scanner 3D resta separato per non appesantire la Toolbox. Questa v4.6 contiene gli strumenti CNC e l’assistente vocale completo.</div></div>
 </section>
 
 <section id="settings" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">MENU</div><button class="help">▤</button></div>
- <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v4.5</div></div><div class="note">Versione a file unico. Centro Johnson con scelta grafica del punto, 3/4 punti e compensazione normale sulle pareti inclinate. Audio, tolleranze e filetti invariati.</div></div>
+ <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v4.6</div></div><div class="note">Versione a file unico. Centro Johnson con scelta grafica del punto, 3/4 punti e compensazione normale sulle pareti inclinate. Audio, tolleranze e filetti invariati.</div></div>
  <div class="card"><h2>AZIONI</h2><button class="btn2" onclick="clearSettings()">PULISCI IMPOSTAZIONI</button></div>
 </section>
 
@@ -373,77 +384,87 @@ function solve3(A,b){
  }
  return [m[0][3],m[1][3],m[2][3]];
 }
-let wallMode=3;
+let wallMode=4;
 let wallAxis='x';
 let wallMeasure='external';
-let wallRefMode='square';
+let wallRefMode='manual';
+let wallZone='left';
 let wallTarget={u:.5,v:.5};
 let wallDragging=false;
 
 function openJohnsonCenter(){
  show('four');
- setWallMode(Number(localStorage.getItem('wall_mode'))===4?4:3);
- setWallAxis(localStorage.getItem('wall_axis')==='y'?'y':'x');
+ wallMode=4;
  setWallMeasure(localStorage.getItem('wall_measure')==='internal'?'internal':'external');
- setWallRefMode(localStorage.getItem('wall_ref_mode')==='manual'?'manual':'square');
- const saved=localStorage.getItem('wall_target');
- if(saved){try{const p=JSON.parse(saved);if(Number.isFinite(p.u)&&Number.isFinite(p.v))wallTarget={u:Math.max(0,Math.min(1,p.u)),v:Math.max(0,Math.min(1,p.v))}}catch(e){}}
- updateWallTargetUI();
+ const savedZone=localStorage.getItem('wall_zone')||'left';
+ setWallZone(savedZone);
+ updateWallSketch();
 }
-function setWallMode(mode){
- wallMode=Number(mode)===4?4:3;localStorage.setItem('wall_mode',String(wallMode));
- $('wallMode3')?.classList.toggle('on',wallMode===3);$('wallMode4')?.classList.toggle('on',wallMode===4);
- if($('wallASecondPoint'))$('wallASecondPoint').style.display=wallMode===4?'block':'none';
- if($('wallATitle'))$('wallATitle').innerHTML=wallMode===3?'<span class="wallStep">4</span>PARETE A · DRITTA / ALLINEATA':'<span class="wallStep">4</span>PARETE A · 2 PUNTI';
- if($('wallBTitle'))$('wallBTitle').innerHTML=wallMode===3?'<span class="wallStep">5</span>PARETE B · INCLINATA':'<span class="wallStep">5</span>PARETE B · 2 PUNTI';
- if($('wallModeNote'))$('wallModeNote').textContent=wallMode===3?'Parete A perfettamente allineata: 1 punto. Parete B inclinata: 2 punti.':'Pezzo inclinato: 2 punti sulla parete A e 2 punti sulla parete B.';
- const start=wallMode===3?2:3;
- if($('wallBP1XLabel'))$('wallBP1XLabel').textContent=`P${start} X centro utensile`;
- if($('wallBP1YLabel'))$('wallBP1YLabel').textContent=`P${start} Y centro utensile`;
- if($('wallBP2XLabel'))$('wallBP2XLabel').textContent=`P${start+1} X centro utensile`;
- if($('wallBP2YLabel'))$('wallBP2YLabel').textContent=`P${start+1} Y centro utensile`;
-}
-function setWallAxis(axis){
- wallAxis=axis==='y'?'y':'x';localStorage.setItem('wall_axis',wallAxis);
- $('wallAxisX')?.classList.toggle('on',wallAxis==='x');$('wallAxisY')?.classList.toggle('on',wallAxis==='y');
- if($('wallRefLabel'))$('wallRefLabel').textContent=wallAxis==='x'?'Quota Y manuale':'Quota X manuale';
- updateWallTargetUI();
-}
+function setWallMode(mode){wallMode=4}
+function setWallAxis(axis){wallAxis=(axis==='y'?'y':'x'); updateWallSketch();}
+function setWallRefMode(mode){wallRefMode='manual'}
 function setWallMeasure(type){
- wallMeasure=type==='internal'?'internal':'external';localStorage.setItem('wall_measure',wallMeasure);
- $('wallExternal')?.classList.toggle('on',wallMeasure==='external');$('wallInternal')?.classList.toggle('on',wallMeasure==='internal');
+ wallMeasure=type==='internal'?'internal':'external';
+ localStorage.setItem('wall_measure',wallMeasure);
+ $('wallExternal')?.classList.toggle('on',wallMeasure==='external');
+ $('wallInternal')?.classList.toggle('on',wallMeasure==='internal');
+ updateWallSketch();
 }
-function setWallRefMode(mode){
- wallRefMode=mode==='manual'?'manual':'square';localStorage.setItem('wall_ref_mode',wallRefMode);
- $('wallRefSquare')?.classList.toggle('on',wallRefMode==='square');$('wallRefManual')?.classList.toggle('on',wallRefMode==='manual');
- if($('wallManualRefRow'))$('wallManualRefRow').style.display=wallRefMode==='manual'?'grid':'none';
+function setWallZone(zone){
+ wallZone=['left','right','top','bottom'].includes(zone)?zone:'left';
+ localStorage.setItem('wall_zone',wallZone);
+ wallAxis=(wallZone==='left'||wallZone==='right')?'x':'y';
+ document.querySelectorAll('.wallHot').forEach(el=>el.classList.remove('on'));
+ document.querySelector('.wallHot.'+wallZone)?.classList.add('on');
+ const map={left:'SINISTRA',right:'DESTRA',top:'ALTO',bottom:'BASSO'};
+ if($('wallChoiceText'))$('wallChoiceText').textContent=`Lato scelto: ${map[wallZone]} → verrà calcolato il CENTRO ${wallAxis.toUpperCase()}`;
+ if($('wallRefLabel'))$('wallRefLabel').textContent=wallAxis==='x'?'Quota Y di calcolo':'Quota X di calcolo';
+ updateWallSketch();
 }
-function setWallTargetFromEvent(e){wallDragging=true;try{e.currentTarget.setPointerCapture(e.pointerId)}catch(err){};updateWallTargetFromPointer(e)}
-function dragWallTarget(e){if(wallDragging)updateWallTargetFromPointer(e)}
-function endWallTargetDrag(e){if(wallDragging)updateWallTargetFromPointer(e);wallDragging=false;try{e.currentTarget.releasePointerCapture(e.pointerId)}catch(err){}}
-function updateWallTargetFromPointer(e){
- const box=$('wallPicker')?.getBoundingClientRect();if(!box)return;
- wallTarget.u=Math.max(0,Math.min(1,(e.clientX-box.left)/box.width));
- wallTarget.v=Math.max(0,Math.min(1,(e.clientY-box.top)/box.height));
- localStorage.setItem('wall_target',JSON.stringify(wallTarget));updateWallTargetUI();
-}
-function wallZoneName(){
- const col=wallTarget.u<.34?'SINISTRA':wallTarget.u>.66?'DESTRA':'CENTRO';
- const row=wallTarget.v<.34?'ALTO':wallTarget.v>.66?'BASSO':'CENTRO';
- return row==='CENTRO'&&col==='CENTRO'?'CENTRO':`${row} · ${col}`;
-}
-function updateWallTargetUI(){
- const dot=$('wallTargetDot');if(dot){dot.style.left=`${wallTarget.u*100}%`;dot.style.top=`${wallTarget.v*100}%`}
- const t=$('wallChoiceText');if(t)t.textContent=`Punto scelto: ${wallZoneName()} · ${Math.round(wallTarget.u*100)}% X / ${Math.round((1-wallTarget.v)*100)}% Y`;
+function setWallTargetFromEvent(){/* v4.6 semplificata: non usato */}
+function dragWallTarget(){/* v4.6 semplificata: non usato */}
+function endWallTargetDrag(){/* v4.6 semplificata: non usato */}
+function updateWallTargetUI(){updateWallSketch()}
+function updateWallSketch(){
+ const probe=$('wallProbeVis'), ja=$('wallJohnsonAVis'), jb=$('wallJohnsonBVis');
+ if(!probe||!ja||!jb)return;
+ const tool=Math.max(0,Number($('wallToolD')?.value)||10);
+ const jA=Math.max(0,Number($('wallJohnsonA')?.value)||0);
+ const jB=Math.max(0,Number($('wallJohnsonB')?.value)||0);
+ const p=Math.max(18,Math.min(58,tool*1.9));
+ const jaSize=Math.max(0,Math.min(46,jA*1.4));
+ const jbSize=Math.max(0,Math.min(46,jB*1.4));
+ [probe,ja,jb].forEach(el=>{el.style.left='';el.style.right='';el.style.top='';el.style.bottom='';el.style.width='';el.style.height='';});
+ probe.style.width=p+'px'; probe.style.height=p+'px';
+ const half=p/2, strip=Math.max(12,p*0.72), out=wallMeasure==='external';
+ if(wallZone==='left'){
+   probe.style.left=(out?10:44)+'px'; probe.style.top=`calc(50% - ${half}px)`;
+   ja.style.width=jaSize+'px'; ja.style.height=strip+'px'; ja.style.left=(out?10+p+4:44-jaSize-4)+'px'; ja.style.top=`calc(50% - ${strip/2}px)`;
+   jb.style.width=jbSize+'px'; jb.style.height=strip+'px'; jb.style.right=(out?10:44-jbSize-4)+'px'; jb.style.top=`calc(50% - ${strip/2}px)`;
+ }
+ if(wallZone==='right'){
+   probe.style.right=(out?10:44)+'px'; probe.style.top=`calc(50% - ${half}px)`;
+   ja.style.width=jaSize+'px'; ja.style.height=strip+'px'; ja.style.right=(out?10+p+4:44-jaSize-4)+'px'; ja.style.top=`calc(50% - ${strip/2}px)`;
+   jb.style.width=jbSize+'px'; jb.style.height=strip+'px'; jb.style.left=(out?10:44-jbSize-4)+'px'; jb.style.top=`calc(50% - ${strip/2}px)`;
+ }
+ if(wallZone==='top'){
+   probe.style.top=(out?10:44)+'px'; probe.style.left=`calc(50% - ${half}px)`;
+   ja.style.height=jaSize+'px'; ja.style.width=strip+'px'; ja.style.top=(out?10+p+4:44-jaSize-4)+'px'; ja.style.left=`calc(50% - ${strip/2}px)`;
+   jb.style.height=jbSize+'px'; jb.style.width=strip+'px'; jb.style.bottom=(out?10:44-jbSize-4)+'px'; jb.style.left=`calc(50% - ${strip/2}px)`;
+ }
+ if(wallZone==='bottom'){
+   probe.style.bottom=(out?10:44)+'px'; probe.style.left=`calc(50% - ${half}px)`;
+   ja.style.height=jaSize+'px'; ja.style.width=strip+'px'; ja.style.bottom=(out?10+p+4:44-jaSize-4)+'px'; ja.style.left=`calc(50% - ${strip/2}px)`;
+   jb.style.height=jbSize+'px'; jb.style.width=strip+'px'; jb.style.top=(out?10:44-jbSize-4)+'px'; jb.style.left=`calc(50% - ${strip/2}px)`;
+ }
 }
 function measuredLineFromPoints(p1,p2){
- const dx=p2.x-p1.x,dy=p2.y-p1.y,len=Math.hypot(dx,dy);if(len<1e-9)return null;
- const nx=-dy/len,ny=dx/len;return {nx,ny,c:nx*p1.x+ny*p1.y,dx,dy};
+ const dx=p2.x-p1.x,dy=p2.y-p1.y,len=Math.hypot(dx,dy); if(len<1e-9)return null;
+ const nx=-dy/len, ny=dx/len; return {nx,ny,c:nx*p1.x+ny*p1.y,dx,dy};
 }
-function alignedMeasuredLine(p,axis){return axis==='x'?{nx:1,ny:0,c:p.x,dx:0,dy:1}:{nx:0,ny:1,c:p.y,dx:1,dy:0}}
 function lineCoordAtRef(line,ref,axis){
- if(axis==='x'){if(Math.abs(line.nx)<1e-9)return null;return (line.c-line.ny*ref)/line.nx}
- if(Math.abs(line.ny)<1e-9)return null;return (line.c-line.nx*ref)/line.ny;
+ if(axis==='x'){ if(Math.abs(line.nx)<1e-9)return null; return (line.c-line.ny*ref)/line.nx; }
+ if(Math.abs(line.ny)<1e-9)return null; return (line.c-line.nx*ref)/line.ny;
 }
 function orientLineToward(line,target){
  const signed=line.nx*target.x+line.ny*target.y-line.c;
@@ -457,48 +478,35 @@ function shiftedPhysicalLine(measured,target,distance,measure){
 }
 function wallAngle(line){
  let a=Math.atan2(line.dy,line.dx)*180/Math.PI;
- while(a>90)a-=180;while(a<=-90)a+=180;return a;
-}
-function usedWallPoints(){
- const a1={x:num('wAx1'),y:num('wAy1')},a2={x:num('wAx2'),y:num('wAy2')},b1={x:num('wBx1'),y:num('wBy1')},b2={x:num('wBx2'),y:num('wBy2')};
- return wallMode===4?[a1,a2,b1,b2]:[a1,b1,b2];
-}
-function referenceFromSquare(points){
- if(wallRefMode==='manual')return num('wallRef');
- const vals=points.map(p=>wallAxis==='x'?p.y:p.x).filter(Number.isFinite);if(!vals.length)return NaN;
- const min=Math.min(...vals),max=Math.max(...vals);if(Math.abs(max-min)<1e-9)return min;
- return wallAxis==='x'?max-wallTarget.v*(max-min):min+wallTarget.u*(max-min);
+ while(a>90)a-=180; while(a<=-90)a+=180; return a;
 }
 function calcJohnsonCenter(){
- const toolD=num('wallToolD'),jA=num('wallJohnsonA'),jB=num('wallJohnsonB');
- const a1={x:num('wAx1'),y:num('wAy1')},a2={x:num('wAx2'),y:num('wAy2')},b1={x:num('wBx1'),y:num('wBy1')},b2={x:num('wBx2'),y:num('wBy2')};
- const req=wallMode===4?[toolD,jA,jB,a1.x,a1.y,a2.x,a2.y,b1.x,b1.y,b2.x,b2.y]:[toolD,jA,jB,a1.x,a1.y,b1.x,b1.y,b2.x,b2.y];
- if(bad(req)||toolD<0||jA<0||jB<0){$('res4').innerHTML='<div class="err">Controlla Ø utensile, Johnson e coordinate.</div>';return}
- const ref=referenceFromSquare(usedWallPoints());if(!Number.isFinite(ref)){$('res4').innerHTML='<div class="err">Quota del centro non valida.</div>';return}
- const mA=wallMode===3?alignedMeasuredLine(a1,wallAxis):measuredLineFromPoints(a1,a2);
- const mB=measuredLineFromPoints(b1,b2);
- if(!mA||!mB){$('res4').innerHTML='<div class="err">Due punti uguali: impossibile ricavare l’inclinazione.</div>';return}
- const rawA=lineCoordAtRef(mA,ref,wallAxis),rawB=lineCoordAtRef(mB,ref,wallAxis);
- if(rawA===null||rawB===null){$('res4').innerHTML=`<div class="err">Una parete è parallela alla direzione del CENTRO ${wallAxis.toUpperCase()}. Scegli l’altro asse o altri punti.</div>`;return}
+ const toolD=num('wallToolD'), jA=num('wallJohnsonA'), jB=num('wallJohnsonB'), ref=num('wallRef');
+ const a1={x:num('wAx1'),y:num('wAy1')}, a2={x:num('wAx2'),y:num('wAy2')}, b1={x:num('wBx1'),y:num('wBy1')}, b2={x:num('wBx2'),y:num('wBy2')};
+ if(bad([toolD,jA,jB,ref,a1.x,a1.y,a2.x,a2.y,b1.x,b1.y,b2.x,b2.y])||toolD<0||jA<0||jB<0){ $('res4').innerHTML='<div class="err">Controlla Ø tastatore, Johnson e coordinate.</div>'; return; }
+ const mA=measuredLineFromPoints(a1,a2), mB=measuredLineFromPoints(b1,b2);
+ if(!mA||!mB){ $('res4').innerHTML='<div class="err">Due punti uguali: impossibile ricavare l’inclinazione.</div>'; return; }
+ const rawA=lineCoordAtRef(mA,ref,wallAxis), rawB=lineCoordAtRef(mB,ref,wallAxis);
+ if(rawA===null||rawB===null){ $('res4').innerHTML=`<div class="err">Una parete è parallela alla direzione del CENTRO ${wallAxis.toUpperCase()}. Scegli l’altro lato o altri punti.</div>`; return; }
  const rawCenter=(rawA+rawB)/2;
  const target=wallAxis==='x'?{x:rawCenter,y:ref}:{x:ref,y:rawCenter};
- const dA=toolD/2+jA,dB=toolD/2+jB;
- const pA=shiftedPhysicalLine(mA,target,dA,wallMeasure),pB=shiftedPhysicalLine(mB,target,dB,wallMeasure);
- const realA=lineCoordAtRef(pA,ref,wallAxis),realB=lineCoordAtRef(pB,ref,wallAxis);
- if(realA===null||realB===null){$('res4').innerHTML='<div class="err">Geometria non calcolabile alla quota scelta.</div>';return}
- const center=(realA+realB)/2,width=Math.abs(realB-realA),corrA=realA-rawA,corrB=realB-rawB;
- const centerX=wallAxis==='x'?center:ref,centerY=wallAxis==='x'?ref:center;
- if(!Number.isFinite(center)||width<=0){$('res4').innerHTML='<div class="err">Risultato non valido. Controlla se hai scelto FUORI DAL PEZZO o DENTRO CAVA.</div>';return}
- localStorage.setItem('probe',String(toolD));localStorage.setItem('wall_tool_d',String(toolD));localStorage.setItem('wall_j_a',String(jA));localStorage.setItem('wall_j_b',String(jB));
+ const dA=toolD/2+jA, dB=toolD/2+jB;
+ const pA=shiftedPhysicalLine(mA,target,dA,wallMeasure), pB=shiftedPhysicalLine(mB,target,dB,wallMeasure);
+ const realA=lineCoordAtRef(pA,ref,wallAxis), realB=lineCoordAtRef(pB,ref,wallAxis);
+ if(realA===null||realB===null||!Number.isFinite(realA)||!Number.isFinite(realB)){ $('res4').innerHTML='<div class="err">Geometria non calcolabile alla quota scelta.</div>'; return; }
+ const center=(realA+realB)/2, width=Math.abs(realB-realA), corrA=realA-rawA, corrB=realB-rawB;
+ const centerX=wallAxis==='x'?center:ref, centerY=wallAxis==='x'?ref:center;
+ if(!Number.isFinite(center)||width<=0){ $('res4').innerHTML='<div class="err">Risultato non valido. Controlla se hai scelto ESTERNO PEZZO o INTERNO CAVA.</div>'; return; }
+ localStorage.setItem('probe',String(toolD)); localStorage.setItem('wall_tool_d',String(toolD)); localStorage.setItem('wall_j_a',String(jA)); localStorage.setItem('wall_j_b',String(jB));
  $('res4').innerHTML=
-  box('CENTRO X',fmt(centerX))+box('CENTRO Y',fmt(centerY))+
-  box(`CENTRO ${wallAxis.toUpperCase()} ALLA QUOTA`,fmt(center))+
-  box('QUOTA DI CALCOLO',fmt(ref))+
-  box('LARGHEZZA REALE ALLA QUOTA',fmt(width))+
-  box('PARETE A REALE',fmt(realA))+box('PARETE B REALE',fmt(realB))+
-  box('CORREZIONE JOHNSON A',fmt(corrA))+box('CORREZIONE JOHNSON B',fmt(corrB))+
-  box('ANGOLO PARETE A',fmt(wallAngle(mA),4),'gradi')+box('ANGOLO PARETE B',fmt(wallAngle(mB),4),'gradi')+
-  `<div class="note"><strong>Punto scelto:</strong> ${wallZoneName()}. Compensazioni applicate perpendicolarmente alle pareti: A ${fmt(dA)} mm, B ${fmt(dB)} mm.</div>`;
+   box('CENTRO X',fmt(centerX))+box('CENTRO Y',fmt(centerY))+
+   box(`CENTRO ${wallAxis.toUpperCase()} ALLA QUOTA`,fmt(center))+
+   box('QUOTA DI CALCOLO',fmt(ref))+
+   box('LARGHEZZA REALE',fmt(width))+
+   box('PARETE A REALE',fmt(realA))+box('PARETE B REALE',fmt(realB))+
+   box('CORREZIONE A',fmt(corrA))+box('CORREZIONE B',fmt(corrB))+
+   box('ANGOLO PARETE A',fmt(wallAngle(mA),4),'gradi')+box('ANGOLO PARETE B',fmt(wallAngle(mB),4),'gradi')+
+   `<div class="note"><strong>Lato scelto:</strong> ${wallZone.toUpperCase()} · <strong>Contatto:</strong> ${wallMeasure==='external'?'ESTERNO PEZZO':'INTERNO CAVA'}. Compensazioni applicate perpendicolarmente alle pareti: A ${fmt(dA)} mm, B ${fmt(dB)} mm.</div>`;
 }
 
 function calc2(){
@@ -1203,7 +1211,7 @@ function init(){
  renderThreads();
  tolKind=localStorage.getItem('tol_kind')==='albero'?'albero':'foro';
  setTolKind(tolKind);
- const pr=localStorage.getItem('probe');if(pr){if($('probe3'))$('probe3').value=pr;if($('probe2'))$('probe2').value=pr;if($('wallToolD'))$('wallToolD').value=localStorage.getItem('wall_tool_d')||pr}if($('wallJohnsonA'))$('wallJohnsonA').value=localStorage.getItem('wall_j_a')||'0';if($('wallJohnsonB'))$('wallJohnsonB').value=localStorage.getItem('wall_j_b')||'0';updateWallTargetUI();
+ const pr=localStorage.getItem('probe');if(pr){if($('probe3'))$('probe3').value=pr;if($('probe2'))$('probe2').value=pr;if($('wallToolD'))$('wallToolD').value=localStorage.getItem('wall_tool_d')||pr}if($('wallJohnsonA'))$('wallJohnsonA').value=localStorage.getItem('wall_j_a')||'0';if($('wallJohnsonB'))$('wallJohnsonB').value=localStorage.getItem('wall_j_b')||'0'; if($('wallToolD'))$('wallToolD').value=localStorage.getItem('wall_tool_d')||$('wallToolD').value; updateWallTargetUI();
  $('voiceRate').value=localStorage.getItem('voice_rate')||'1.12';$('voicePitch').value=localStorage.getItem('voice_pitch')||'1';$('voiceVolume').value=localStorage.getItem('voice_volume')||'1';
  $('audioEnabled').checked=localStorage.getItem('audio_enabled')!=='0';saveVoice();populateVoices();if(synth){synth.onvoiceschanged=populateVoices;setTimeout(populateVoices,250);setTimeout(populateVoices,1000)}
  setupRecognition();
