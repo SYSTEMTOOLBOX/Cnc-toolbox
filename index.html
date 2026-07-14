@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#050505">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>CNC Toolbox v5.0</title>
+<title>CNC Toolbox v5.2</title>
 <style>
 :root{--y:#ffc400;--y2:#dfa500;--b:#050505;--p:#141414;--p2:#0b0b0b;--l:#3e3e3e;--w:#fff;--g:#aaa;--ok:#68e36f;--err:#ff5b5b;--blue:#54baff}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -141,7 +141,7 @@ select{text-align:center;font-size:15px}
 <div class="app">
 
 <section id="home" class="screen active">
- <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v5.0 · CENTRO SEMPLIFICATO</div></div></div>
+ <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v5.2 · CENTRO 3 / 4 PUNTI</div></div></div>
  <div class="grid"><button class="tile primary wide" onclick="show('assistant')"><div class="icon">🎙️</div>ASSISTENTE VOCALE MECCANICO</button></div>
 
  <div class="sectionTitle">GEOMETRIA</div>
@@ -218,8 +218,8 @@ select{text-align:center;font-size:15px}
 <section id="four" class="screen">
  <div class="header">
   <button class="back" onclick="show('home')">‹</button>
-  <div class="title">CENTRO<small>3 O 4 PUNTI · JOHNSON SOLO SE SERVE</small></div>
-  <button class="help" onclick="alert('Scegli il vertice. Con 3 PUNTI inserisci una sola misura sulla parete già allineata e due punti sull’altra parete: l’app capisce automaticamente se la misura è X oppure Y. Con 4 PUNTI inserisci due punti su ciascuna parete. Attiva i Johnson soltanto dove il grezzo impedisce la tastatura diretta.')">?</button>
+  <div class="title">CENTRO DA VERTICE<small>3 O 4 PUNTI · JOHNSON FACOLTATIVI</small></div>
+  <button class="help" onclick="alert('Scegli il vertice. Con 3 PUNTI inserisci P1 completo X/Y sulla parete parallela a X oppure Y, poi P2 e P3 sull’altra parete. Con 4 PUNTI inserisci P1-P2 sulla prima parete e P3-P4 sulla seconda. Attiva il Johnson soltanto sulla parete dove il grezzo impedisce la tastatura diretta.')">?</button>
  </div>
 
  <div class="card">
@@ -229,7 +229,7 @@ select{text-align:center;font-size:15px}
   <div class="wallCheckRow">
    <label class="wallCheckLabel">
     <input id="wallJohnsonAEnabled" type="checkbox" onchange="setCornerJohnson('A',this.checked)">
-    <span id="wallJohnsonALabel">Johnson parete 1 punto</span>
+    <span id="wallJohnsonALabel">Johnson P1</span>
    </label>
    <input id="wallJohnsonA" class="inp" value="20" disabled>
   </div>
@@ -237,7 +237,7 @@ select{text-align:center;font-size:15px}
   <div class="wallCheckRow">
    <label class="wallCheckLabel">
     <input id="wallJohnsonBEnabled" type="checkbox" onchange="setCornerJohnson('B',this.checked)">
-    <span id="wallJohnsonBLabel">Johnson parete 2 punti</span>
+    <span id="wallJohnsonBLabel">Johnson P2–P3</span>
    </label>
    <input id="wallJohnsonB" class="inp" value="20" disabled>
   </div>
@@ -277,13 +277,18 @@ select{text-align:center;font-size:15px}
   <h2><span class="wallStep">4</span>MISURE TASTATE</h2>
 
   <div id="corner3Inputs">
-   <div class="wallSubTitle">PARETE GIÀ ALLINEATA</div>
-   <div class="row">
-    <div class="label">Misura tastata</div>
-    <input id="cornerHitValue" class="inp" value="-5">
+   <div class="wallSubTitle">P1 · PARETE PARALLELA A X O Y</div>
+   <div class="wallCoordinateGrid">
+    <div>
+     <div class="row"><div class="label">P1 X</div><input id="corner3P1X" class="inp" value="-5"></div>
+    </div>
+    <div>
+     <div class="row"><div class="label">P1 Y</div><input id="corner3P1Y" class="inp" value="0"></div>
+    </div>
    </div>
+   <div class="hint">Inserisci sempre entrambe le coordinate reali di P1.</div>
 
-   <div class="wallSubTitle">ALTRA PARETE · 2 PUNTI</div>
+   <div class="wallSubTitle">SECONDA PARETE · P2 E P3</div>
    <div class="wallCoordinateGrid">
     <div>
      <div class="label" style="margin-bottom:6px">P2</div>
@@ -433,12 +438,12 @@ select{text-align:center;font-size:15px}
 
 <section id="scanner" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">SCANNER 3D<small>PROGETTO SEPARATO</small></div><button class="help">?</button></div>
- <div class="card"><h2>LO RIPRENDEREMO SUCCESSIVAMENTE</h2><div class="note">Lo scanner 3D resta separato per non appesantire la Toolbox. Questa v5.0 contiene gli strumenti CNC e l’assistente vocale completo.</div></div>
+ <div class="card"><h2>LO RIPRENDEREMO SUCCESSIVAMENTE</h2><div class="note">Lo scanner 3D resta separato per non appesantire la Toolbox. Questa v5.2 contiene gli strumenti CNC e l’assistente vocale completo.</div></div>
 </section>
 
 <section id="settings" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">MENU</div><button class="help">▤</button></div>
- <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v5.0</div></div><div class="note">Versione a file unico. Centro semplificato: nessuna scelta su dove tastare; 3 o 4 punti, Johnson facoltativi e risultato solo Centro X / Centro Y.</div></div>
+ <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v5.2</div></div><div class="note">Versione a file unico. Centro da vertice con 3 o 4 punti, P1 completo X/Y e Johnson indipendenti sulle due pareti.</div></div>
  <div class="card"><h2>AZIONI</h2><button class="btn2" onclick="clearSettings()">PULISCI IMPOSTAZIONI</button></div>
 </section>
 
@@ -566,13 +571,13 @@ function setCornerMode(mode){
 
  if($('wallJohnsonALabel')){
   $('wallJohnsonALabel').textContent=cornerMode===3
-   ?'Johnson parete 1 punto'
-   :'Johnson prima parete';
+   ?'Johnson P1'
+   :'Johnson P1–P2';
  }
  if($('wallJohnsonBLabel')){
   $('wallJohnsonBLabel').textContent=cornerMode===3
-   ?'Johnson parete 2 punti'
-   :'Johnson seconda parete';
+   ?'Johnson P2–P3'
+   :'Johnson P3–P4';
  }
 }
 
@@ -594,11 +599,12 @@ function cornerAlignedLine(axis,value){
 }
 
 /*
- In modalità 3 punti non chiediamo X o Y:
- - se la parete ricavata da P2-P3 è più orizzontale,
-   la parete già allineata è verticale e la misura singola è X;
- - se è più verticale, la parete già allineata è orizzontale
-   e la misura singola è Y.
+ In modalità 3 punti P1 viene inserito completo, con X e Y.
+ - se P2-P3 è prevalentemente orizzontale, la prima parete è verticale
+   e viene usata P1 X;
+ - se P2-P3 è prevalentemente verticale, la prima parete è orizzontale
+   e viene usata P1 Y.
+ L'altra coordinata di P1 rimane comunque registrata come tastata reale.
 */
 function detectAlignedAxis(otherLine){
  return Math.abs(otherLine.dx)>=Math.abs(otherLine.dy)?'x':'y';
@@ -646,20 +652,21 @@ function calcCornerCenter(){
  let required=[];
 
  if(cornerMode===3){
-  const touch=num('cornerHitValue');
+  const p1={x:num('corner3P1X'),y:num('corner3P1Y')};
   const p2={x:num('corner3P2X'),y:num('corner3P2Y')};
   const p3={x:num('corner3P3X'),y:num('corner3P3Y')};
 
-  required=[touch,p2.x,p2.y,p3.x,p3.y];
+  required=[p1.x,p1.y,p2.x,p2.y,p3.x,p3.y];
   measuredB=cornerLineFromPoints(p2,p3);
 
   if(!measuredB){
-   $('res4').innerHTML='<div class="err">P2 e P3 devono essere due punti diversi.</div>';
+   $('res4').innerHTML='<div class="err">P2 e P3 devono essere due tastate diverse sulla stessa parete.</div>';
    return;
   }
 
   const alignedAxis=detectAlignedAxis(measuredB);
-  measuredA=cornerAlignedLine(alignedAxis,touch);
+  const alignedValue=alignedAxis==='x'?p1.x:p1.y;
+  measuredA=cornerAlignedLine(alignedAxis,alignedValue);
  }else{
   const p1={x:num('corner4P1X'),y:num('corner4P1Y')};
   const p2={x:num('corner4P2X'),y:num('corner4P2Y')};
