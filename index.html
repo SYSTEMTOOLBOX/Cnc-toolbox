@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#050505">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>CNC Toolbox v5.2</title>
+<title>CNC Toolbox v5.4</title>
 <style>
 :root{--y:#ffc400;--y2:#dfa500;--b:#050505;--p:#141414;--p2:#0b0b0b;--l:#3e3e3e;--w:#fff;--g:#aaa;--ok:#68e36f;--err:#ff5b5b;--blue:#54baff}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -141,7 +141,7 @@ select{text-align:center;font-size:15px}
 <div class="app">
 
 <section id="home" class="screen active">
- <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v5.2 · CENTRO 3 / 4 PUNTI</div></div></div>
+ <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v5.4 · P1 X/Y OBBLIGATORI</div></div></div>
  <div class="grid"><button class="tile primary wide" onclick="show('assistant')"><div class="icon">🎙️</div>ASSISTENTE VOCALE MECCANICO</button></div>
 
  <div class="sectionTitle">GEOMETRIA</div>
@@ -219,14 +219,14 @@ select{text-align:center;font-size:15px}
  <div class="header">
   <button class="back" onclick="show('home')">‹</button>
   <div class="title">CENTRO DA VERTICE<small>3 O 4 PUNTI · JOHNSON FACOLTATIVI</small></div>
-  <button class="help" onclick="alert('Scegli il vertice. Con 3 PUNTI inserisci P1 completo X/Y sulla parete parallela a X oppure Y, poi P2 e P3 sull’altra parete. Con 4 PUNTI inserisci P1-P2 sulla prima parete e P3-P4 sulla seconda. Attiva il Johnson soltanto sulla parete dove il grezzo impedisce la tastatura diretta.')">?</button>
+  <button class="help" onclick="alert('Scegli il vertice. Con 3 PUNTI inserisci sempre P1 X e P1 Y, poi P2 X/Y e P3 X/Y sull’altra parete. Indica soltanto se P1 è già sulla parete reale oppure è il centro del tastatore da compensare. Con 4 PUNTI inserisci due tastate complete su ciascuna parete.')">?</button>
  </div>
 
  <div class="card">
   <h2><span class="wallStep">1</span>TASTATORE E JOHNSON</h2>
   <div class="row"><div class="label">Ø tastatore</div><input id="wallToolD" class="inp" value="10"></div>
 
-  <div class="wallCheckRow">
+  <div id="wallJohnsonARow" class="wallCheckRow">
    <label class="wallCheckLabel">
     <input id="wallJohnsonAEnabled" type="checkbox" onchange="setCornerJohnson('A',this.checked)">
     <span id="wallJohnsonALabel">Johnson P1</span>
@@ -234,7 +234,7 @@ select{text-align:center;font-size:15px}
    <input id="wallJohnsonA" class="inp" value="20" disabled>
   </div>
 
-  <div class="wallCheckRow">
+  <div id="wallJohnsonBRow" class="wallCheckRow">
    <label class="wallCheckLabel">
     <input id="wallJohnsonBEnabled" type="checkbox" onchange="setCornerJohnson('B',this.checked)">
     <span id="wallJohnsonBLabel">Johnson P2–P3</span>
@@ -277,16 +277,23 @@ select{text-align:center;font-size:15px}
   <h2><span class="wallStep">4</span>MISURE TASTATE</h2>
 
   <div id="corner3Inputs">
-   <div class="wallSubTitle">P1 · PARETE PARALLELA A X O Y</div>
+   <div class="wallSubTitle">P1 · INSERISCI SEMPRE X E Y</div>
+   <div class="seg">
+    <button id="cornerP1Wall" class="on" onclick="setCornerP1Source('wall')">P1 GIÀ SULLA PARETE REALE</button>
+    <button id="cornerP1Touch" onclick="setCornerP1Source('touch')">P1 CENTRO TASTATORE</button>
+   </div>
+   <div id="cornerP1SourceNote" class="hint">Inserisci sempre P1 X e P1 Y. Poi scegli se P1 è già un punto della parete reale oppure il centro del tastatore.</div>
+
+   <div class="wallSubTitle">P1 COMPLETO · COORDINATE REALI DELLA MACCHINA</div>
    <div class="wallCoordinateGrid">
     <div>
-     <div class="row"><div class="label">P1 X</div><input id="corner3P1X" class="inp" value="-5"></div>
+     <div class="row"><div class="label">P1 X</div><input id="corner3P1X" class="inp" required value="-5"></div>
     </div>
     <div>
-     <div class="row"><div class="label">P1 Y</div><input id="corner3P1Y" class="inp" value="0"></div>
+     <div class="row"><div class="label">P1 Y</div><input id="corner3P1Y" class="inp" required value="0"></div>
     </div>
    </div>
-   <div class="hint">Inserisci sempre entrambe le coordinate reali di P1.</div>
+   <div class="hint">P1 X e P1 Y sono entrambi obbligatori.</div>
 
    <div class="wallSubTitle">SECONDA PARETE · P2 E P3</div>
    <div class="wallCoordinateGrid">
@@ -438,12 +445,12 @@ select{text-align:center;font-size:15px}
 
 <section id="scanner" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">SCANNER 3D<small>PROGETTO SEPARATO</small></div><button class="help">?</button></div>
- <div class="card"><h2>LO RIPRENDEREMO SUCCESSIVAMENTE</h2><div class="note">Lo scanner 3D resta separato per non appesantire la Toolbox. Questa v5.2 contiene gli strumenti CNC e l’assistente vocale completo.</div></div>
+ <div class="card"><h2>LO RIPRENDEREMO SUCCESSIVAMENTE</h2><div class="note">Lo scanner 3D resta separato per non appesantire la Toolbox. Questa v5.4 contiene gli strumenti CNC e l’assistente vocale completo.</div></div>
 </section>
 
 <section id="settings" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">MENU</div><button class="help">▤</button></div>
- <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v5.2</div></div><div class="note">Versione a file unico. Centro da vertice con 3 o 4 punti, P1 completo X/Y e Johnson indipendenti sulle due pareti.</div></div>
+ <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v5.4</div></div><div class="note">Versione a file unico. In modalità 3 punti P1 richiede sempre X e Y; la scelta indica soltanto se applicare la compensazione.</div></div>
  <div class="card"><h2>AZIONI</h2><button class="btn2" onclick="clearSettings()">PULISCI IMPOSTAZIONI</button></div>
 </section>
 
@@ -495,6 +502,7 @@ let cornerMode=3;
 let cornerSelected=1;
 let cornerJohnsonA=false;
 let cornerJohnsonB=false;
+let cornerP1Source='wall';
 
 const CORNER_DATA={
  1:{name:'ALTO SINISTRA',inward:{x:1,y:-1}},
@@ -509,12 +517,14 @@ function openJohnsonCenter(){
  cornerSelected=Number(localStorage.getItem('corner_selected'))||1;
  cornerJohnsonA=localStorage.getItem('corner_j_a_enabled')==='1';
  cornerJohnsonB=localStorage.getItem('corner_j_b_enabled')==='1';
+ cornerP1Source=localStorage.getItem('corner_p1_source')==='touch'?'touch':'wall';
 
  if($('wallJohnsonAEnabled'))$('wallJohnsonAEnabled').checked=cornerJohnsonA;
  if($('wallJohnsonBEnabled'))$('wallJohnsonBEnabled').checked=cornerJohnsonB;
 
  setCornerJohnson('A',cornerJohnsonA,false);
  setCornerJohnson('B',cornerJohnsonB,false);
+ setCornerP1Source(cornerP1Source,false);
  selectCorner(cornerSelected,false);
  setCornerMode(cornerMode);
 }
@@ -526,6 +536,41 @@ function selectWallPoint(n,focus=true){selectCorner(n,focus)}
 function updateWallDiagram(){/* disegno semplice: solo vertici */}
 function updateWallTargetUI(){/* non serve */}
 function calcJohnsonCenter(){calcCornerCenter()}
+
+function setCornerP1Source(source,save=true){
+ cornerP1Source=source==='touch'?'touch':'wall';
+ if(save)localStorage.setItem('corner_p1_source',cornerP1Source);
+
+ $('cornerP1Wall')?.classList.toggle('on',cornerP1Source==='wall');
+ $('cornerP1Touch')?.classList.toggle('on',cornerP1Source==='touch');
+
+ if($('cornerP1SourceNote')){
+  $('cornerP1SourceNote').textContent=cornerP1Source==='wall'
+   ?'P1 X e P1 Y sono già coordinate della parete reale: nessuna compensazione.'
+   :'P1 X e P1 Y sono il centro del tastatore: vengono compensati raggio ed eventuale Johnson.';
+ }
+
+ updateCornerJohnsonVisibility();
+}
+
+function updateCornerJohnsonVisibility(){
+ const rowA=$('wallJohnsonARow');
+ if(rowA){
+  rowA.style.display=(cornerMode===4||cornerP1Source==='touch')?'grid':'none';
+ }
+
+ if(cornerMode===3&&cornerP1Source==='wall'){
+  cornerJohnsonA=false;
+  if($('wallJohnsonAEnabled'))$('wallJohnsonAEnabled').checked=false;
+  if($('wallJohnsonA'))$('wallJohnsonA').disabled=true;
+ }
+
+ if($('wallJohnsonALabel')){
+  $('wallJohnsonALabel').textContent=cornerMode===3
+   ?'Johnson su P1 tastato'
+   :'Johnson P1–P2';
+ }
+}
 
 function setCornerJohnson(which,enabled,save=true){
  const isA=which==='A';
@@ -579,6 +624,13 @@ function setCornerMode(mode){
    ?'Johnson P2–P3'
    :'Johnson P3–P4';
  }
+ if($('cornerP1Wall')?.parentElement){
+  $('cornerP1Wall').parentElement.style.display=cornerMode===3?'grid':'none';
+ }
+ if($('cornerP1SourceNote')){
+  $('cornerP1SourceNote').style.display=cornerMode===3?'block':'none';
+ }
+ updateCornerJohnsonVisibility();
 }
 
 function cornerLineFromPoints(p1,p2){
@@ -639,7 +691,7 @@ function cornerIntersection(a,b){
 
 function calcCornerCenter(){
  const toolD=num('wallToolD');
- const jA=cornerJohnsonA?num('wallJohnsonA'):0;
+ const jA=(cornerMode===4||cornerP1Source==='touch')&&cornerJohnsonA?num('wallJohnsonA'):0;
  const jB=cornerJohnsonB?num('wallJohnsonB'):0;
 
  if(bad([toolD,jA,jB])||toolD<=0||jA<0||jB<0){
@@ -657,6 +709,12 @@ function calcCornerCenter(){
   const p3={x:num('corner3P3X'),y:num('corner3P3Y')};
 
   required=[p1.x,p1.y,p2.x,p2.y,p3.x,p3.y];
+
+  if(!Number.isFinite(p1.x)||!Number.isFinite(p1.y)){
+   $('res4').innerHTML='<div class="err">Inserisci obbligatoriamente P1 X e P1 Y.</div>';
+   return;
+  }
+
   measuredB=cornerLineFromPoints(p2,p3);
 
   if(!measuredB){
@@ -688,11 +746,16 @@ function calcCornerCenter(){
  }
 
  const inward=CORNER_DATA[cornerSelected].inward;
- const physicalA=cornerPhysicalLine(
-  measuredA,
-  inward,
-  toolD/2+jA
- );
+
+ /*
+  Se in modalità 3 punti P1 è già la parete reale
+  (esempio: parete morsa già impostata a Y0),
+  NON bisogna spostarla del raggio del tastatore.
+ */
+ const physicalA=(cornerMode===3&&cornerP1Source==='wall')
+  ?measuredA
+  :cornerPhysicalLine(measuredA,inward,toolD/2+jA);
+
  const physicalB=cornerPhysicalLine(
   measuredB,
   inward,
