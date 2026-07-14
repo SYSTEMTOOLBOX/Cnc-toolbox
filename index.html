@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#050505">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>CNC Toolbox v4.7</title>
+<title>CNC Toolbox v4.8</title>
 <style>
 :root{--y:#ffc400;--y2:#dfa500;--b:#050505;--p:#141414;--p2:#0b0b0b;--l:#3e3e3e;--w:#fff;--g:#aaa;--ok:#68e36f;--err:#ff5b5b;--blue:#54baff}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -117,7 +117,7 @@ select{text-align:center;font-size:15px}
 <div class="app">
 
 <section id="home" class="screen active">
- <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v4.7 · CENTRO 3 / 4 PUNTI</div></div></div>
+ <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v4.8 · PARETI IDENTIFICATE</div></div></div>
  <div class="grid"><button class="tile primary wide" onclick="show('assistant')"><div class="icon">🎙️</div>ASSISTENTE VOCALE MECCANICO</button></div>
 
  <div class="sectionTitle">GEOMETRIA</div>
@@ -195,7 +195,7 @@ select{text-align:center;font-size:15px}
  <div class="header">
   <button class="back" onclick="show('home')">‹</button>
   <div class="title">CENTRO JOHNSON<small>3 O 4 PUNTI · RISULTATO SOLO CENTRO</small></div>
-  <button class="help" onclick="alert('3 PUNTI: P1 sulla parete fissa della morsa; P2 e P3 sulla parete opposta inclinata. 4 PUNTI: P1-P2 sulla parete A e P3-P4 sulla parete B. La direzione X o Y viene riconosciuta automaticamente. Non devi inserire nessuna quota di calcolo.')">?</button>
+  <button class="help" onclick="alert('3 PUNTI: P1 sulla PARETE FISSA DELLA MORSA; P2-P3 sulla PARETE INCLINATA. 4 PUNTI: P1-P2 formano la PRIMA PARETE; P3-P4 formano la PARETE OPPOSTA. La direzione X o Y viene riconosciuta automaticamente. Non devi inserire nessuna quota di calcolo.')">?</button>
  </div>
 
  <div class="card">
@@ -207,8 +207,8 @@ select{text-align:center;font-size:15px}
    <button id="wallJohnsonOn" onclick="setWallJohnson(true)">ABILITATI</button>
   </div>
   <div id="wallJohnsonRows" class="johnsonHidden">
-   <div class="row"><div class="label">Johnson parete A</div><input id="wallJohnsonA" class="inp" value="20" oninput="updateWallDiagram()"></div>
-   <div class="row"><div class="label">Johnson parete B</div><input id="wallJohnsonB" class="inp" value="20" oninput="updateWallDiagram()"></div>
+   <div class="row"><div id="wallJohnsonALabel" class="label">Johnson P1–P2</div><input id="wallJohnsonA" class="inp" value="20" oninput="updateWallDiagram()"></div>
+   <div class="row"><div id="wallJohnsonBLabel" class="label">Johnson P3–P4</div><input id="wallJohnsonB" class="inp" value="20" oninput="updateWallDiagram()"></div>
   </div>
   <div class="label" style="margin:12px 0 8px">Contatto tastatore</div>
   <div class="seg"><button id="wallExternal" class="on" onclick="setWallMeasure('external')">ESTERNO PEZZO</button><button id="wallInternal" onclick="setWallMeasure('internal')">INTERNO CAVA</button></div>
@@ -217,7 +217,7 @@ select{text-align:center;font-size:15px}
  <div class="card">
   <h2><span class="wallStep">2</span>NUMERO DI PUNTI</h2>
   <div class="seg"><button id="wallMode3" onclick="setWallMode(3)">3 PUNTI</button><button id="wallMode4" class="on" onclick="setWallMode(4)">4 PUNTI</button></div>
-  <div id="wallModeNote" class="hint">P1-P2 sulla parete A. P3-P4 sulla parete B.</div>
+  <div id="wallModeNote" class="hint">P1–P2 = PRIMA PARETE. P3–P4 = PARETE OPPOSTA.</div>
  </div>
 
  <div class="card">
@@ -225,6 +225,8 @@ select{text-align:center;font-size:15px}
   <div class="wallDiagramWrap">
    <svg id="wallDiagram" class="wallDiagram" viewBox="0 0 300 300" aria-label="Poligono con punti sui vertici">
     <polygon id="wallShape" class="wallShape" points="58,48 242,42 252,250 48,242"></polygon>
+    <text id="wallLeftLabel" x="18" y="148" fill="#ffc400" font-size="13" font-weight="900" text-anchor="middle" transform="rotate(-90 18 148)">P1–P2</text>
+    <text id="wallRightLabel" x="282" y="148" fill="#ffc400" font-size="13" font-weight="900" text-anchor="middle" transform="rotate(90 282 148)">P3–P4</text>
     <rect id="wallJohnsonVis" class="wallJohnsonSvg" x="0" y="0" width="18" height="12" rx="3"></rect>
     <circle id="wallProbeVis" class="wallProbeSvg" cx="0" cy="0" r="12"></circle>
     <circle id="wallV1" class="wallVertex selected" cx="58" cy="48" r="20" onclick="selectWallPoint(1)"></circle><text id="wallT1" class="wallVertexText" x="58" y="48">1</text>
@@ -239,10 +241,10 @@ select{text-align:center;font-size:15px}
 
  <div class="card">
   <h2><span class="wallStep">4</span>COORDINATE</h2>
-  <div id="wallP1Group"><div id="wallP1Title" class="label" style="margin:8px 0">P1 · PARETE FISSA / A</div><div class="row"><div class="label">X</div><input id="wAx1" class="inp" value="0"></div><div class="row"><div class="label">Y</div><input id="wAy1" class="inp" value="50"></div></div>
-  <div id="wallP2Group"><div id="wallP2Title" class="label" style="margin:8px 0">P2 · PARETE A</div><div class="row"><div class="label">X</div><input id="wAx2" class="inp" value="0"></div><div class="row"><div class="label">Y</div><input id="wAy2" class="inp" value="150"></div></div>
-  <div id="wallP3Group"><div id="wallP3Title" class="label" style="margin:8px 0">P3 · PARETE OPPOSTA / B</div><div class="row"><div class="label">X</div><input id="wBx1" class="inp" value="100"></div><div class="row"><div class="label">Y</div><input id="wBy1" class="inp" value="0"></div></div>
-  <div id="wallP4Group"><div id="wallP4Title" class="label" style="margin:8px 0">P4 · PARETE B</div><div class="row"><div class="label">X</div><input id="wBx2" class="inp" value="110"></div><div class="row"><div class="label">Y</div><input id="wBy2" class="inp" value="100"></div></div>
+  <div id="wallP1Group"><div id="wallP1Title" class="label" style="margin:8px 0">P1 · PRIMA PARETE</div><div class="row"><div class="label">X</div><input id="wAx1" class="inp" value="0"></div><div class="row"><div class="label">Y</div><input id="wAy1" class="inp" value="50"></div></div>
+  <div id="wallP2Group"><div id="wallP2Title" class="label" style="margin:8px 0">P2 · PRIMA PARETE</div><div class="row"><div class="label">X</div><input id="wAx2" class="inp" value="0"></div><div class="row"><div class="label">Y</div><input id="wAy2" class="inp" value="150"></div></div>
+  <div id="wallP3Group"><div id="wallP3Title" class="label" style="margin:8px 0">P3 · PARETE OPPOSTA</div><div class="row"><div class="label">X</div><input id="wBx1" class="inp" value="100"></div><div class="row"><div class="label">Y</div><input id="wBy1" class="inp" value="0"></div></div>
+  <div id="wallP4Group"><div id="wallP4Title" class="label" style="margin:8px 0">P4 · PARETE OPPOSTA</div><div class="row"><div class="label">X</div><input id="wBx2" class="inp" value="110"></div><div class="row"><div class="label">Y</div><input id="wBy2" class="inp" value="100"></div></div>
   <button class="btn" onclick="calcJohnsonCenter()">CALCOLA CENTRO</button>
   <div id="res4" class="simpleCenterResult"></div>
  </div>
@@ -348,12 +350,12 @@ select{text-align:center;font-size:15px}
 
 <section id="scanner" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">SCANNER 3D<small>PROGETTO SEPARATO</small></div><button class="help">?</button></div>
- <div class="card"><h2>LO RIPRENDEREMO SUCCESSIVAMENTE</h2><div class="note">Lo scanner 3D resta separato per non appesantire la Toolbox. Questa v4.7 contiene gli strumenti CNC e l’assistente vocale completo.</div></div>
+ <div class="card"><h2>LO RIPRENDEREMO SUCCESSIVAMENTE</h2><div class="note">Lo scanner 3D resta separato per non appesantire la Toolbox. Questa v4.8 contiene gli strumenti CNC e l’assistente vocale completo.</div></div>
 </section>
 
 <section id="settings" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">MENU</div><button class="help">▤</button></div>
- <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v4.7</div></div><div class="note">Versione a file unico. Centro Johnson con scelta grafica del punto, 3/4 punti e compensazione normale sulle pareti inclinate. Audio, tolleranze e filetti invariati.</div></div>
+ <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v4.8</div></div><div class="note">Versione a file unico. Centro Johnson con scelta grafica del punto, 3/4 punti e compensazione normale sulle pareti inclinate. Audio, tolleranze e filetti invariati.</div></div>
  <div class="card"><h2>AZIONI</h2><button class="btn2" onclick="clearSettings()">PULISCI IMPOSTAZIONI</button></div>
 </section>
 
@@ -436,11 +438,17 @@ function setWallMode(mode){
  $('wallMode4')?.classList.toggle('on',wallMode===4);
  if($('wallP2Group'))$('wallP2Group').style.display=wallMode===3?'none':'block';
  // In modalità 3 punti: P1 fisso, i due punti a destra diventano P2 e P3.
- if($('wallModeNote'))$('wallModeNote').textContent=wallMode===3?'P1 sulla parete fissa della morsa. P2-P3 sulla parete inclinata.':'P1-P2 sulla parete A. P3-P4 sulla parete B.';
- if($('wallP1Title'))$('wallP1Title').textContent=wallMode===3?'P1 · PARETE FISSA MORSA':'P1 · PARETE A';
- if($('wallP2Title'))$('wallP2Title').textContent='P2 · PARETE A';
- if($('wallP3Title'))$('wallP3Title').textContent=wallMode===3?'P2 · PARETE INCLINATA':'P3 · PARETE B';
- if($('wallP4Title'))$('wallP4Title').textContent=wallMode===3?'P3 · PARETE INCLINATA':'P4 · PARETE B';
+ if($('wallModeNote'))$('wallModeNote').textContent=wallMode===3
+  ?'P1 = PARETE FISSA MORSA. P2–P3 = PARETE INCLINATA.'
+  :'P1–P2 = PRIMA PARETE. P3–P4 = PARETE OPPOSTA.';
+ if($('wallP1Title'))$('wallP1Title').textContent=wallMode===3?'P1 · PARETE FISSA MORSA':'P1 · PRIMA PARETE';
+ if($('wallP2Title'))$('wallP2Title').textContent='P2 · PRIMA PARETE';
+ if($('wallP3Title'))$('wallP3Title').textContent=wallMode===3?'P2 · PARETE INCLINATA':'P3 · PARETE OPPOSTA';
+ if($('wallP4Title'))$('wallP4Title').textContent=wallMode===3?'P3 · PARETE INCLINATA':'P4 · PARETE OPPOSTA';
+ if($('wallJohnsonALabel'))$('wallJohnsonALabel').textContent=wallMode===3?'Johnson parete fissa morsa':'Johnson P1–P2';
+ if($('wallJohnsonBLabel'))$('wallJohnsonBLabel').textContent=wallMode===3?'Johnson parete inclinata':'Johnson P3–P4';
+ if($('wallLeftLabel'))$('wallLeftLabel').textContent=wallMode===3?'FISSA MORSA':'P1–P2';
+ if($('wallRightLabel'))$('wallRightLabel').textContent=wallMode===3?'INCLINATA':'P3–P4';
  if($('wallV2'))$('wallV2').style.display=wallMode===3?'none':'';
  if($('wallT2'))$('wallT2').style.display=wallMode===3?'none':'';
  if($('wallT3'))$('wallT3').textContent=wallMode===3?'2':'3';
@@ -530,7 +538,7 @@ function calcJohnsonCenter(){
   mA=measuredLineFromPoints(p1,p2);mB=measuredLineFromPoints(p3,p4);
   if(!mA||!mB){$('res4').innerHTML='<div class="err">Ogni parete deve avere due punti diversi.</div>';return}
   const axisA=dominantCenterAxis(mA),axisB=dominantCenterAxis(mB);
-  if(axisA!==axisB){$('res4').innerHTML='<div class="err">Le due coppie di punti non rappresentano pareti opposte nella stessa direzione.</div>';return}
+  if(axisA!==axisB){$('res4').innerHTML='<div class="err">P1–P2 e P3–P4 non rappresentano due pareti opposte nella stessa direzione.</div>';return}
   axis=axisA;ref=automaticReference(p1,p2,p3,p4,axis);
  }
  const rawA=lineCoordAtRef(mA,ref,axis),rawB=lineCoordAtRef(mB,ref,axis);
