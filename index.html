@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#050505">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>CNC Toolbox v4.2</title>
+<title>CNC Toolbox v4.3</title>
 <style>
 :root{--y:#ffc400;--y2:#dfa500;--b:#050505;--p:#141414;--p2:#0b0b0b;--l:#3e3e3e;--w:#fff;--g:#aaa;--ok:#68e36f;--err:#ff5b5b;--blue:#54baff}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -76,7 +76,7 @@ select{text-align:center;font-size:15px}
 <div class="app">
 
 <section id="home" class="screen active">
- <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v4.2 · FORI E ALBERI · FILETTI</div></div></div>
+ <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v4.3 · AUDIO ALBERI · H7 CORRETTO</div></div></div>
  <div class="grid"><button class="tile primary wide" onclick="show('assistant')"><div class="icon">🎙️</div>ASSISTENTE VOCALE MECCANICO</button></div>
 
  <div class="sectionTitle">GEOMETRIA</div>
@@ -262,12 +262,12 @@ select{text-align:center;font-size:15px}
 
 <section id="scanner" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">SCANNER 3D<small>PROGETTO SEPARATO</small></div><button class="help">?</button></div>
- <div class="card"><h2>LO RIPRENDEREMO SUCCESSIVAMENTE</h2><div class="note">Lo scanner 3D resta separato per non appesantire la Toolbox. Questa v4.2 contiene gli strumenti CNC e l’assistente vocale completo.</div></div>
+ <div class="card"><h2>LO RIPRENDEREMO SUCCESSIVAMENTE</h2><div class="note">Lo scanner 3D resta separato per non appesantire la Toolbox. Questa v4.3 contiene gli strumenti CNC e l’assistente vocale completo.</div></div>
 </section>
 
 <section id="settings" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">MENU</div><button class="help">▤</button></div>
- <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v4.2</div></div><div class="note">Versione a file unico. Revisione unica di tolleranze ISO supportate e filetti metrici, GAS/BSP e NPT, anche tramite voce.</div></div>
+ <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v4.3</div></div><div class="note">Versione a file unico. Corretto audio delle risposte ALBERO e riconoscimento di “cassette/casette” come H7. Filetti invariati.</div></div>
  <div class="card"><h2>AZIONI</h2><button class="btn2" onclick="clearSettings()">PULISCI IMPOSTAZIONI</button></div>
 </section>
 
@@ -415,7 +415,7 @@ function calcTurnThread(){
  $('resTT').innerHTML=box('PROFONDITÀ RADIALE',fmt(depth))+box('X FONDO TEORICO',fmt(minor))+box('PASSO',fmt(p));
 }
 
-/* TOLLERANZE ISO 286 — v4.2 */
+/* TOLLERANZE ISO 286 — v4.3 */
 const ISO_IT_TABLE=[
 [0,3,{5:4,6:6,7:10,8:14,9:25,10:40,11:60,12:100,13:140}],
 [3,6,{5:5,6:8,7:12,8:18,9:30,10:48,11:75,12:120,13:180}],
@@ -605,7 +605,7 @@ async function torchOn(){
 }
 async function torchOff(){if(mediaStream){const track=mediaStream.getVideoTracks()[0];try{await track.applyConstraints({advanced:[{torch:false}]})}catch(e){}stopCamera()}$('torchMsg').textContent='Torcia spenta.'}
 
-/* ASSISTENTE VOCALE v4.2 */
+/* ASSISTENTE VOCALE v4.3 */
 const synth=window.speechSynthesis;
 let voices=[],rec=null,listening=false,finalHandled=false,lastDetail='',pendingFollow=null;
 let speechPending='',speechTimer=null,speechWatchdog=null,speechToken=0,activeUtterance=null,speechUnlocked=false,retryCount=0;
@@ -658,28 +658,67 @@ function flushSpeech(){
  if(listening||!speechPending||!$('audioEnabled').checked)return;
  const text=speechPending;speechPending='';retryCount=0;const token=++speechToken;startSpeech(text,token);
 }
-function startSpeech(text,token){
+function retrySpeech(text,token,attempt,reason=''){
+ if(token!==speechToken)return;
+ if(attempt<2){
+  retryCount=attempt+1;
+  setVA('Riprovo la risposta audio…','talk');
+  debugVoice(reason?`Tentativo audio ${attempt+2}: ${reason}`:`Tentativo audio ${attempt+2}`);
+  speechTimer=setTimeout(()=>startSpeech(text,token,attempt+1),700);
+ }else{
+  activeUtterance=null;
+  setVA('Audio non avviato. Premi PROVA LA VOCE.','bad');
+  debugVoice(reason||'Android non ha avviato speechSynthesis.');
+ }
+}
+function startSpeech(text,token,attempt=0){
  if(!synth||token!==speechToken)return;
  clearTimeout(speechTimer);clearTimeout(speechWatchdog);
- try{synth.cancel();synth.resume()}catch(e){}
+ try{
+  if(synth.speaking||synth.pending)synth.cancel();
+  synth.resume();
+ }catch(e){}
+ const delay=attempt===0?650:attempt===1?850:1050;
  speechTimer=setTimeout(()=>{
   if(token!==speechToken)return;
   if(!voices.length)populateVoices();
-  const u=new SpeechSynthesisUtterance(text),v=selectedVoice();if(v)u.voice=v;
-  u.lang=v?.lang||'it-IT';u.rate=clamp($('voiceRate').value,.7,1.5,1.12);u.pitch=clamp($('voicePitch').value,.55,1.45,1);u.volume=clamp($('voiceVolume').value,.2,1,1);
+  const u=new SpeechSynthesisUtterance(String(text));
+  const v=selectedVoice();
+  if(attempt===0&&v)u.voice=v;
+  u.lang=(attempt===0&&v?.lang)||'it-IT';
+  u.rate=clamp($('voiceRate').value,.7,1.5,1.05);
+  u.pitch=clamp($('voicePitch').value,.55,1.45,1);
+  u.volume=clamp($('voiceVolume').value,.2,1,1);
   let started=false;activeUtterance=u;
-  u.onstart=()=>{if(token!==speechToken)return;started=true;clearTimeout(speechWatchdog);setVA('Sto parlando…','talk');debugVoice('')}
-  u.onend=()=>{if(token!==speechToken)return;clearTimeout(speechWatchdog);activeUtterance=null;retryCount=0;setVA('Pronto. Premi il microfono.')}
-  u.onerror=e=>{if(token!==speechToken)return;clearTimeout(speechWatchdog);activeUtterance=null;
-   if(!['interrupted','canceled'].includes(e.error)&&retryCount<1){retryCount++;speechTimer=setTimeout(()=>startSpeech(text,token),420)}
-   else if(!['interrupted','canceled'].includes(e.error)){setVA('La voce non è partita. Premi PROVA LA VOCE.','bad');debugVoice('Errore audio: '+(e.error||'sconosciuto'))}
+  u.onstart=()=>{
+   if(token!==speechToken)return;
+   started=true;clearTimeout(speechWatchdog);setVA('Sto parlando…','talk');debugVoice('')
   };
-  try{synth.resume();synth.speak(u)}catch(e){debugVoice(e.message||String(e))}
-  speechWatchdog=setTimeout(()=>{if(token!==speechToken||started)return;try{synth.cancel()}catch(e){}activeUtterance=null;
-   if(retryCount<1){retryCount++;startSpeech(text,token)}
-   else{setVA('Audio non avviato. Controlla il volume multimediale.','bad');debugVoice('Android non ha avviato speechSynthesis.')}
-  },1500);
- },260);
+  u.onend=()=>{
+   if(token!==speechToken)return;
+   clearTimeout(speechWatchdog);activeUtterance=null;retryCount=0;setVA('Pronto. Premi il microfono.')
+  };
+  u.onerror=e=>{
+   if(token!==speechToken)return;
+   clearTimeout(speechWatchdog);activeUtterance=null;
+   const err=e.error||'errore sconosciuto';
+   if(!['interrupted','canceled'].includes(err))retrySpeech(text,token,attempt,'Errore: '+err);
+  };
+  try{
+   synth.resume();
+   synth.speak(u);
+  }catch(e){
+   activeUtterance=null;
+   retrySpeech(text,token,attempt,e?.message||String(e));
+   return;
+  }
+  speechWatchdog=setTimeout(()=>{
+   if(token!==speechToken||started)return;
+   try{synth.cancel();synth.resume()}catch(e){}
+   activeUtterance=null;
+   retrySpeech(text,token,attempt,'Nessun evento onstart');
+  },2800);
+ },delay);
 }
 let lastVoiceTestAt=0;
 function testVoice(ev){
@@ -771,7 +810,9 @@ function testVoice(ev){
 }
 function showVA(text,isQuestion=false,detail=''){
  $('vaAnswer').textContent=text;$('vaAnswer').classList.toggle('q',isQuestion);
- if(detail)lastDetail=detail;queueSpeech(text)
+ if(detail)lastDetail=detail;
+ /* Per l'audio usa la frase completa e naturale: evita blocchi Android con sigle compatte come h7. */
+ queueSpeech(detail||text)
 }
 function direct(shortText,detail){pendingFollow=null;showVA(shortText,false,detail||shortText)}
 function normalizeSpeech(input){
@@ -789,6 +830,8 @@ function normalizeSpeech(input){
   [/\bmezzo\s+pollice\b/g,'1/2'],[/\bmezzo\b/g,'1/2'],[/\bun\s+quarto\b/g,'1/4'],
   [/\btre\s+ottavi\b/g,'3/8'],[/\bun\s+ottavo\b/g,'1/8'],
   [/\b(?:uno|un)\s+pollice\b/g,'1'],
+  /* Errori frequenti del riconoscimento vocale in officina: H7/h7 viene scritto “cassette”. */
+  [/\b(?:cassette|casette|cassetta|accasette|hassetta|ha\s*sette)\b/g,'h7'],
   [/\bacca\b/g,'h'],[/\bi\s+lunga\b|\bjota\b/g,'j'],[/\bemme\b/g,'m'],
   [/\bper\b(?=\s*\d)/g,'x'],[/\bg\s+as\b/g,'gas'],[/\bn\s+p\s+t\b/g,'npt']
  ];
@@ -935,11 +978,17 @@ function answerNpt(size){
  const r=findNpt(size);if(!r){showVA(`NPT ${size} non presente.`,true);return}
  direct(`Punta da ${fmtFlex(r[2],2)} millimetri.`,`Filetto ${r[0]}, ${r[1]} filetti per pollice: preforo pratico ${fmtFlex(r[2],2)} millimetri, diametro esterno nominale ${fmtFlex(r[3],3)} millimetri.`)
 }
+function spokenToleranceCode(code){
+ const compact=String(code||'').trim();
+ const m=compact.match(/^([A-Za-z]{1,2})(\d{1,2})$/);if(!m)return compact;
+ const names={h:'acca',f:'effe',g:'gi',j:'i lunga',js:'i esse',k:'cappa',m:'emme'};
+ return `${names[m[1].toLowerCase()]||m[1]} ${m[2]}`;
+}
 function answerTolerance(d,code){
  const c=String(code).trim(),v=calcTolValues(d,c);
  if(!v){showVA('Tolleranza non disponibile.',true);return}
- const part=/^[A-Z]/.test(c)?'FORO':'ALBERO';
- direct(`${part} ${c}: da ${fmtFlex(v.min,3)} a ${fmtFlex(v.max,3)} millimetri.`,`Diametro nominale ${fmtFlex(d)} millimetri, ${part.toLowerCase()} zona ${c}: minimo ${fmtFlex(v.min,3)} e massimo ${fmtFlex(v.max,3)} millimetri.`)
+ const part=/^[A-Z]/.test(c)?'FORO':'ALBERO',spokenCode=spokenToleranceCode(c);
+ direct(`${part} ${c}: da ${fmtFlex(v.min,3)} a ${fmtFlex(v.max,3)} millimetri.`,`Diametro nominale ${fmtFlex(d)} millimetri. ${part.toLowerCase()} con tolleranza ${spokenCode}: minimo ${fmtFlex(v.min,3)} e massimo ${fmtFlex(v.max,3)} millimetri.`)
 }
 function answerKey(d){
  const r=KEYS.find(x=>d>x[0]&&d<=x[1])||KEYS.find(x=>d>=x[0]&&d<=x[1]);
@@ -961,7 +1010,15 @@ function setupRecognition(){
   if(fin&&!finalHandled){finalHandled=true;askAssistant(fin);try{rec.stop()}catch(err){}}
  };
  rec.onerror=e=>{listening=false;$('vaMic').classList.remove('listen');const map={'not-allowed':'Permesso microfono negato.','audio-capture':'Microfono non disponibile.','no-speech':'Non ho sentito bene. Riprova.','network':'Problema di rete del riconoscimento.'};setVA(map[e.error]||('Errore microfono: '+e.error),'bad');debugVoice('SpeechRecognition: '+e.error)};
- rec.onend=()=>{listening=false;$('vaMic').classList.remove('listen');if(speechPending){setVA('Avvio la risposta audio…','talk');clearTimeout(speechTimer);speechTimer=setTimeout(flushSpeech,420)}else if(!$('vaDot').classList.contains('bad'))setVA('Pronto. Premi il microfono.')};
+ rec.onend=()=>{
+  listening=false;$('vaMic').classList.remove('listen');
+  try{synth?.resume()}catch(e){}
+  if(speechPending){
+   setVA('Avvio la risposta audio…','talk');clearTimeout(speechTimer);
+   /* Tempo necessario a liberare l'audio del microfono su Android/Honor. */
+   speechTimer=setTimeout(flushSpeech,780)
+  }else if(!$('vaDot').classList.contains('bad'))setVA('Pronto. Premi il microfono.')
+ };
 }
 function toggleListen(){
  if(!rec)return;unlockSpeech();clearTimeout(speechTimer);
