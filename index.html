@@ -5,9 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#050505">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<link rel="manifest" href="./manifest.webmanifest?v=3.9">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>CNC Toolbox v3.9</title>
+<title>CNC Toolbox v4.2</title>
 <style>
 :root{--y:#ffc400;--y2:#dfa500;--b:#050505;--p:#141414;--p2:#0b0b0b;--l:#3e3e3e;--w:#fff;--g:#aaa;--ok:#68e36f;--err:#ff5b5b;--blue:#54baff}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -77,7 +76,7 @@ select{text-align:center;font-size:15px}
 <div class="app">
 
 <section id="home" class="screen active">
- <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v3.9 · PULSANTE VOCE ANDROID</div></div></div>
+ <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v4.2 · FORI E ALBERI · FILETTI</div></div></div>
  <div class="grid"><button class="tile primary wide" onclick="show('assistant')"><div class="icon">🎙️</div>ASSISTENTE VOCALE MECCANICO</button></div>
 
  <div class="sectionTitle">GEOMETRIA</div>
@@ -113,7 +112,7 @@ select{text-align:center;font-size:15px}
 </section>
 
 <section id="assistant" class="screen">
- <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">ASSISTENTE VOCALE<small>PREMI · PARLA · ASCOLTA</small></div><button class="help" onclick="alert('Premi il microfono e fai la domanda. La risposta viene letta automaticamente dopo che il microfono si è chiuso. Esempi: Che punta per M16? Quanto foro per un pollice GAS? 50 H7.')">?</button></div>
+ <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">ASSISTENTE VOCALE<small>PREMI · PARLA · ASCOLTA</small></div><button class="help" onclick="alert('Premi il microfono e fai la domanda. La risposta viene letta automaticamente dopo che il microfono si è chiuso. Esempi: Che punta per M16? Quanto foro per un pollice GAS? Foro 40 H7. Albero 40 h6.')">?</button></div>
  <div class="assistantHero">
   <div class="status"><span id="vaDot" class="dot"></span><span id="vaStatus">Pronto. Premi il microfono.</span></div>
   <button id="vaMic" class="mic" onclick="toggleListen()">🎤</button>
@@ -191,7 +190,7 @@ select{text-align:center;font-size:15px}
 
 <section id="threads" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">TABELLE FILETTATURE<small>PUNTA E DIAMETRO</small></div><button class="help">?</button></div>
- <div class="card"><input id="threadSearch" class="search" placeholder="M16, M16x1.5, G1, 1/2 NPT" oninput="renderThreads()"><div class="tabs"><button id="tMet" class="on" onclick="setThreadTab('met')">METRICO</button><button id="tFine" onclick="setThreadTab('fine')">FINE</button><button id="tGas" onclick="setThreadTab('gas')">GAS/BSP</button><button id="tNpt" onclick="setThreadTab('npt')">NPT</button></div><div class="tableWrap"><table class="tbl"><thead><tr><th>Filetto</th><th>Passo/TPI</th><th>Punta</th><th>Esterno</th></tr></thead><tbody id="threadBody"></tbody></table></div><div class="hint">Valori pratici indicativi. Per collaudi, materiali particolari e tolleranze strette verifica la tabella aziendale.</div></div>
+ <div class="card"><input id="threadSearch" class="search" placeholder="M16, M16x1.5, G1, 1/2 NPT" oninput="renderThreads()"><div class="tabs"><button id="tMet" class="on" onclick="setThreadTab('met')">METRICO</button><button id="tFine" onclick="setThreadTab('fine')">FINE</button><button id="tGas" onclick="setThreadTab('gas')">GAS/BSP</button><button id="tNpt" onclick="setThreadTab('npt')">NPT</button></div><div class="tableWrap"><table class="tbl"><thead><tr><th>Filetto</th><th>Passo/TPI</th><th>Punta</th><th>Esterno</th></tr></thead><tbody id="threadBody"></tbody></table></div><div class="hint">Metrici grossi e fini, GAS/BSP e NPT. Per filetti con percentuale d’impegno particolare o materiali critici verifica la tabella utensile.</div></div>
 </section>
 
 <section id="turnthread" class="screen">
@@ -200,8 +199,19 @@ select{text-align:center;font-size:15px}
 </section>
 
 <section id="tol" class="screen">
- <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">TOLLERANZE ISO<small>STIMA RAPIDA ISO 286</small></div><button class="help">?</button></div>
- <div class="card"><div class="row"><div class="label">Ø nominale</div><input id="tolD" class="inp" value="20"></div><div class="row"><div class="label">Zona</div><select id="tolType"><option>H7</option><option>H8</option><option>h6</option><option>g6</option><option>f7</option><option>js6</option><option>k6</option><option>m6</option></select></div><button class="btn" onclick="calcTol()">CALCOLA</button><div id="resTol"></div><div class="hint">Stima pratica. Per quote critiche e collaudi usa la tabella ISO 286 completa o il software aziendale.</div></div>
+ <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">TOLLERANZE ISO<small>FORI E ALBERI · FINO A 500 mm</small></div><button class="help" onclick="alert('Scegli FORO o ALBERO, poi la zona di tolleranza. Nell’assistente puoi dire: foro 40 H7 oppure albero 40 h6. Se non dici foro o albero, l’app mostra entrambi quando la sigla è ambigua.')">?</button></div>
+ <div class="card">
+  <div class="row"><div class="label">Ø nominale</div><input id="tolD" class="inp" value="20"></div>
+  <div class="label" style="margin-bottom:8px">Tipo pezzo</div>
+  <div class="seg">
+   <button id="tolForo" class="on" onclick="setTolKind('foro')">FORO</button>
+   <button id="tolAlbero" onclick="setTolKind('albero')">ALBERO</button>
+  </div>
+  <div class="row"><div class="label">Zona</div><select id="tolType"></select></div>
+  <button class="btn" onclick="calcTol()">CALCOLA</button>
+  <div id="resTol"></div>
+  <div class="hint">FORO usa lettere maiuscole; ALBERO usa lettere minuscole. Nell’assistente pronuncia “foro” o “albero” per evitare ambiguità.</div>
+ </div>
 </section>
 
 <section id="keys" class="screen">
@@ -252,12 +262,12 @@ select{text-align:center;font-size:15px}
 
 <section id="scanner" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">SCANNER 3D<small>PROGETTO SEPARATO</small></div><button class="help">?</button></div>
- <div class="card"><h2>LO RIPRENDEREMO SUCCESSIVAMENTE</h2><div class="note">Lo scanner 3D resta separato per non appesantire la Toolbox. Questa v3.9 contiene gli strumenti CNC e l’assistente vocale completo.</div></div>
+ <div class="card"><h2>LO RIPRENDEREMO SUCCESSIVAMENTE</h2><div class="note">Lo scanner 3D resta separato per non appesantire la Toolbox. Questa v4.2 contiene gli strumenti CNC e l’assistente vocale completo.</div></div>
 </section>
 
 <section id="settings" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">MENU</div><button class="help">▤</button></div>
- <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v3.9</div></div><div class="note">Pulsante PROVA LA VOCE corretto per Android e risposta automatica dopo il microfono.</div></div>
+ <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v4.2</div></div><div class="note">Versione a file unico. Revisione unica di tolleranze ISO supportate e filetti metrici, GAS/BSP e NPT, anche tramite voce.</div></div>
  <div class="card"><h2>AZIONI</h2><button class="btn2" onclick="clearSettings()">PULISCI IMPOSTAZIONI</button></div>
 </section>
 
@@ -361,7 +371,7 @@ const THREADS={
 met:[
 ['M1',.25,.75,1],['M1.2',.25,.95,1.2],['M1.4',.3,1.1,1.4],['M1.6',.35,1.25,1.6],['M2',.4,1.6,2],['M2.5',.45,2.05,2.5],['M3',.5,2.5,3],['M3.5',.6,2.9,3.5],['M4',.7,3.3,4],['M4.5',.75,3.7,4.5],['M5',.8,4.2,5],['M6',1,5,6],['M7',1,6,7],['M8',1.25,6.8,8],['M9',1.25,7.8,9],['M10',1.5,8.5,10],['M11',1.5,9.5,11],['M12',1.75,10.2,12],['M14',2,12,14],['M16',2,14,16],['M18',2.5,15.5,18],['M20',2.5,17.5,20],['M22',2.5,19.5,22],['M24',3,21,24],['M27',3,24,27],['M30',3.5,26.5,30],['M33',3.5,29.5,33],['M36',4,32,36],['M39',4,35,39],['M42',4.5,37.5,42],['M45',4.5,40.5,45],['M48',5,43,48],['M52',5,47,52],['M56',5.5,50.5,56],['M60',5.5,54.5,60]],
 fine:[
-['M6x0.75',.75,5.25,6],['M8x1',1,7,8],['M10x1',1,9,10],['M10x1.25',1.25,8.8,10],['M12x1',1,11,12],['M12x1.25',1.25,10.8,12],['M12x1.5',1.5,10.5,12],['M14x1.5',1.5,12.5,14],['M16x1',1,15,16],['M16x1.5',1.5,14.5,16],['M18x1.5',1.5,16.5,18],['M18x2',2,16,18],['M20x1.5',1.5,18.5,20],['M20x2',2,18,20],['M22x1.5',1.5,20.5,22],['M22x2',2,20,22],['M24x1.5',1.5,22.5,24],['M24x2',2,22,24],['M27x1.5',1.5,25.5,27],['M27x2',2,25,27],['M30x1.5',1.5,28.5,30],['M30x2',2,28,30],['M33x1.5',1.5,31.5,33],['M33x2',2,31,33],['M36x1.5',1.5,34.5,36],['M36x2',2,34,36],['M39x1.5',1.5,37.5,39],['M39x2',2,37,39],['M42x1.5',1.5,40.5,42],['M42x2',2,40,42],['M45x1.5',1.5,43.5,45],['M45x2',2,43,45],['M48x1.5',1.5,46.5,48],['M48x2',2,46,48],['M52x1.5',1.5,50.5,52],['M52x2',2,50,52],['M56x2',2,54,56],['M60x2',2,58,60]],
+['M3x0.35',.35,2.65,3],['M4x0.5',.5,3.5,4],['M5x0.5',.5,4.5,5],['M6x0.5',.5,5.5,6],['M6x0.75',.75,5.25,6],['M7x0.75',.75,6.25,7],['M8x0.5',.5,7.5,8],['M8x0.75',.75,7.25,8],['M8x1',1,7,8],['M9x0.75',.75,8.25,9],['M9x1',1,8,9],['M10x0.5',.5,9.5,10],['M10x0.75',.75,9.25,10],['M10x1',1,9,10],['M10x1.25',1.25,8.8,10],['M11x1',1,10,11],['M12x1',1,11,12],['M12x1.25',1.25,10.8,12],['M12x1.5',1.5,10.5,12],['M14x1',1,13,14],['M14x1.25',1.25,12.8,14],['M14x1.5',1.5,12.5,14],['M16x1',1,15,16],['M16x1.5',1.5,14.5,16],['M18x1',1,17,18],['M18x1.5',1.5,16.5,18],['M18x2',2,16,18],['M20x1',1,19,20],['M20x1.5',1.5,18.5,20],['M20x2',2,18,20],['M22x1',1,21,22],['M22x1.5',1.5,20.5,22],['M22x2',2,20,22],['M24x1',1,23,24],['M24x1.5',1.5,22.5,24],['M24x2',2,22,24],['M27x1.5',1.5,25.5,27],['M27x2',2,25,27],['M30x1.5',1.5,28.5,30],['M30x2',2,28,30],['M33x1.5',1.5,31.5,33],['M33x2',2,31,33],['M36x1.5',1.5,34.5,36],['M36x2',2,34,36],['M39x1.5',1.5,37.5,39],['M39x2',2,37,39],['M42x1.5',1.5,40.5,42],['M42x2',2,40,42],['M45x1.5',1.5,43.5,45],['M45x2',2,43,45],['M48x1.5',1.5,46.5,48],['M48x2',2,46,48],['M52x1.5',1.5,50.5,52],['M52x2',2,50,52],['M56x2',2,54,56],['M60x2',2,58,60]],
 gas:[
 ['G1/8',28,8.8,9.728],['G1/4',19,11.8,13.157],['G3/8',19,15.25,16.662],['G1/2',14,18.75,20.955],['G5/8',14,20.75,22.911],['G3/4',14,24.25,26.441],['G7/8',14,28,30.201],['G1',11,30.75,33.249],['G1 1/8',11,35.5,37.897],['G1 1/4',11,39.5,41.91],['G1 1/2',11,45,47.803],['G1 3/4',11,51,53.746],['G2',11,57,59.614]],
 npt:[
@@ -381,7 +391,23 @@ function findMetric(n,pitch=null){
   const m=String(r[0]).match(/^M([\d.]+)x([\d.]+)$/i);return m&&Number(m[1])===n&&Math.abs(Number(m[2])-pitch)<1e-6;
  });
 }
-function findGas(size){const s=String(size).replace(/^g/i,'').replace(/\s+/g,' ');return THREADS.gas.find(r=>String(r[0]).replace(/^G/i,'').replace(/\s+/g,' ')===s)}
+function cleanInchSize(size){
+ return String(size||'').toLowerCase().replace(/\b(gas|bsp|npt)\b/g,'').replace(/^g/,'').replace(/\s+/g,' ').trim();
+}
+function findGas(size){
+ const s=cleanInchSize(size);
+ return THREADS.gas.find(r=>cleanInchSize(r[0])===s);
+}
+function findNpt(size){
+ const s=cleanInchSize(size);
+ return THREADS.npt.find(r=>cleanInchSize(r[0])===s);
+}
+function extractInchSize(s,rows){
+ const sizes=rows.map(r=>cleanInchSize(r[0])).sort((a,b)=>b.length-a.length);
+ return sizes.find(size=>new RegExp('(^|\\s)'+size.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'(?=\\s|$)').test(s))
+   ||sizes.find(size=>s.includes(size))
+   ||null;
+}
 function calcTurnThread(){
  const d=num('ttD'),p=num('ttP'),profile=$('ttProfile').value;
  if(bad([d,p])||d<=0||p<=0){$('resTT').innerHTML='<div class="err">Controlla i dati.</div>';return}
@@ -389,33 +415,137 @@ function calcTurnThread(){
  $('resTT').innerHTML=box('PROFONDITÀ RADIALE',fmt(depth))+box('X FONDO TEORICO',fmt(minor))+box('PASSO',fmt(p));
 }
 
-/* TOLLERANZE */
-const IT_TABLE=[
-[0,3,{5:4,6:6,7:10,8:14}],[3,6,{5:5,6:8,7:12,8:18}],[6,10,{5:6,6:9,7:15,8:22}],
-[10,18,{5:8,6:11,7:18,8:27}],[18,30,{5:9,6:13,7:21,8:33}],[30,50,{5:11,6:16,7:25,8:39}],
-[50,80,{5:13,6:19,7:30,8:46}],[80,120,{5:15,6:22,7:35,8:54}],[120,180,{5:18,6:25,7:40,8:63}],
-[180,250,{5:20,6:29,7:46,8:72}],[250,315,{5:23,6:32,7:52,8:81}],[315,400,{5:25,6:36,7:57,8:89}],[400,500,{5:27,6:40,7:63,8:97}]
+/* TOLLERANZE ISO 286 — v4.2 */
+const ISO_IT_TABLE=[
+[0,3,{5:4,6:6,7:10,8:14,9:25,10:40,11:60,12:100,13:140}],
+[3,6,{5:5,6:8,7:12,8:18,9:30,10:48,11:75,12:120,13:180}],
+[6,10,{5:6,6:9,7:15,8:22,9:36,10:58,11:90,12:150,13:220}],
+[10,18,{5:8,6:11,7:18,8:27,9:43,10:70,11:110,12:180,13:270}],
+[18,30,{5:9,6:13,7:21,8:33,9:52,10:84,11:130,12:210,13:330}],
+[30,50,{5:11,6:16,7:25,8:39,9:62,10:100,11:160,12:250,13:390}],
+[50,80,{5:13,6:19,7:30,8:46,9:74,10:120,11:190,12:300,13:460}],
+[80,120,{5:15,6:22,7:35,8:54,9:87,10:140,11:220,12:350,13:540}],
+[120,180,{5:18,6:25,7:40,8:63,9:100,10:160,11:250,12:400,13:630}],
+[180,250,{5:20,6:29,7:46,8:72,9:115,10:185,11:290,12:460,13:720}],
+[250,315,{5:23,6:32,7:52,8:81,9:130,10:210,11:320,12:520,13:810}],
+[315,400,{5:25,6:36,7:57,8:89,9:140,10:230,11:360,12:570,13:890}],
+[400,500,{5:27,6:40,7:63,8:97,9:155,10:250,11:400,12:630,13:970}]
 ];
+const ISO_FUND_TABLE=[
+[0,3,{f:-6,g:-2,j56:-2,j7:-4,k:0,m:2,J6:2,J7:4,J8:6}],
+[3,6,{f:-10,g:-4,j56:-2,j7:-4,k:1,m:4,J6:5,J7:6,J8:10}],
+[6,10,{f:-13,g:-5,j56:-2,j7:-5,k:1,m:6,J6:5,J7:8,J8:12}],
+[10,14,{f:-16,g:-6,j56:-3,j7:-6,k:1,m:7,J6:6,J7:10,J8:15}],
+[14,18,{f:-16,g:-6,j56:-3,j7:-6,k:1,m:7,J6:6,J7:10,J8:15}],
+[18,24,{f:-20,g:-7,j56:-4,j7:-8,k:2,m:8,J6:8,J7:12,J8:20}],
+[24,30,{f:-20,g:-7,j56:-4,j7:-8,k:2,m:8,J6:8,J7:12,J8:20}],
+[30,40,{f:-25,g:-9,j56:-5,j7:-10,k:2,m:9,J6:10,J7:14,J8:24}],
+[40,50,{f:-25,g:-9,j56:-5,j7:-10,k:2,m:9,J6:10,J7:14,J8:24}],
+[50,65,{f:-30,g:-10,j56:-7,j7:-12,k:2,m:11,J6:13,J7:18,J8:28}],
+[65,80,{f:-30,g:-10,j56:-7,j7:-12,k:2,m:11,J6:13,J7:18,J8:28}],
+[80,100,{f:-36,g:-12,j56:-9,j7:-15,k:3,m:13,J6:16,J7:22,J8:34}],
+[100,120,{f:-36,g:-12,j56:-9,j7:-15,k:3,m:13,J6:16,J7:22,J8:34}],
+[120,140,{f:-43,g:-14,j56:-11,j7:-18,k:3,m:15,J6:18,J7:26,J8:41}],
+[140,160,{f:-43,g:-14,j56:-11,j7:-18,k:3,m:15,J6:18,J7:26,J8:41}],
+[160,180,{f:-43,g:-14,j56:-11,j7:-18,k:3,m:15,J6:18,J7:26,J8:41}],
+[180,200,{f:-50,g:-15,j56:-13,j7:-21,k:4,m:17,J6:22,J7:30,J8:47}],
+[200,225,{f:-50,g:-15,j56:-13,j7:-21,k:4,m:17,J6:22,J7:30,J8:47}],
+[225,250,{f:-50,g:-15,j56:-13,j7:-21,k:4,m:17,J6:22,J7:30,J8:47}],
+[250,280,{f:-56,g:-17,j56:-16,j7:-26,k:4,m:20,J6:25,J7:36,J8:55}],
+[280,315,{f:-56,g:-17,j56:-16,j7:-26,k:4,m:20,J6:25,J7:36,J8:55}],
+[315,355,{f:-62,g:-18,j56:-18,j7:-28,k:4,m:21,J6:29,J7:39,J8:60}],
+[355,400,{f:-62,g:-18,j56:-18,j7:-28,k:4,m:21,J6:29,J7:39,J8:60}],
+[400,450,{f:-68,g:-20,j56:-20,j7:-32,k:5,m:23,J6:33,J7:43,J8:66}],
+[450,500,{f:-68,g:-20,j56:-20,j7:-32,k:5,m:23,J6:33,J7:43,J8:66}]
+];
+function isoStep(d,table){
+ return table.find(r=>d>r[0]&&d<=r[1])||null;
+}
+function isSupportedTolCode(code){
+ const m=String(code).match(/^([A-Za-z]{1,2})(\d{1,2})$/);if(!m)return false;
+ const L=m[1],g=Number(m[2]);
+ if((L==='H'||L==='h'||L==='JS'||L==='js')&&g>=5&&g<=13)return true;
+ if((L==='F'||L==='G'||L==='f'||L==='g')&&g>=5&&g<=8)return true;
+ if(L==='J'&&g>=6&&g<=8)return true;
+ if(L==='j'&&g>=5&&g<=7)return true;
+ if(L==='k'&&g>=5&&g<=7)return true;
+ if(L==='m'&&g>=5&&g<=8)return true;
+ return false;
+}
 function calcTolValues(d,code){
- const m=String(code).match(/^([A-Za-z]+)(\d+)$/);if(!m)return null;
- const letter=m[1],grade=Number(m[2]),step=IT_TABLE.find(r=>d>r[0]&&d<=r[1])||IT_TABLE.find(r=>d>=r[0]&&d<=r[1]);
- if(!step||!step[2][grade])return null;
- const IT=step[2][grade],D=Math.max(d,.1);let lower=0,upper=0;
+ const c=String(code).trim();
+ if(!isSupportedTolCode(c)||!Number.isFinite(d)||d<=0||d>500)return null;
+ const match=c.match(/^([A-Za-z]{1,2})(\d{1,2})$/);
+ const letter=match[1],grade=Number(match[2]);
+ const itRow=isoStep(d,ISO_IT_TABLE),fundRow=isoStep(d,ISO_FUND_TABLE);
+ if(!itRow||!fundRow)return null;
+ const IT=itRow[2][grade],fund=fundRow[2];
+ if(!Number.isFinite(IT))return null;
+ let lower,upper;
  if(letter==='H'){lower=0;upper=IT}
- else if(letter==='h'){upper=0;lower=-IT}
- else if(letter==='js'){lower=-IT/2;upper=IT/2}
- else if(letter==='g'){upper=-2.5*Math.pow(D,.34);lower=upper-IT}
- else if(letter==='f'){upper=-5.5*Math.pow(D,.41);lower=upper-IT}
- else if(letter==='k'){lower=2.5*Math.pow(D,.34);upper=lower+IT}
- else if(letter==='m'){lower=5.5*Math.pow(D,.34);upper=lower+IT}
+ else if(letter==='h'){lower=-IT;upper=0}
+ else if(letter==='JS'||letter==='js'){lower=-IT/2;upper=IT/2}
+ else if(letter==='F'){lower=-fund.f;upper=lower+IT}
+ else if(letter==='G'){lower=-fund.g;upper=lower+IT}
+ else if(letter==='f'){upper=fund.f;lower=upper-IT}
+ else if(letter==='g'){upper=fund.g;lower=upper-IT}
+ else if(letter==='J'){
+  upper=fund['J'+grade];
+  if(!Number.isFinite(upper))return null;
+  lower=upper-IT;
+ }
+ else if(letter==='j'){
+  lower=grade<=6?fund.j56:fund.j7;
+  if(!Number.isFinite(lower))return null;
+  upper=lower+IT;
+ }
+ else if(letter==='k'){lower=fund.k;upper=lower+IT}
+ else if(letter==='m'){lower=fund.m;upper=lower+IT}
  else return null;
  return {lower,upper,IT,min:d+lower/1000,max:d+upper/1000};
+}
+
+const TOL_HOLE_CODES=[
+ 'H5','H6','H7','H8','H9','H10','H11','H12','H13',
+ 'F5','F6','F7','F8','G5','G6','G7','G8',
+ 'J6','J7','J8','JS5','JS6','JS7','JS8','JS9','JS10','JS11','JS12','JS13'
+];
+const TOL_SHAFT_CODES=[
+ 'h5','h6','h7','h8','h9','h10','h11','h12','h13',
+ 'f5','f6','f7','f8','g5','g6','g7','g8',
+ 'j5','j6','j7','js5','js6','js7','js8','js9','js10','js11','js12','js13',
+ 'k5','k6','k7','m5','m6','m7','m8'
+];
+let tolKind='foro';
+function fillTolOptions(preferred=''){
+ const select=$('tolType');if(!select)return;
+ const list=tolKind==='foro'?TOL_HOLE_CODES:TOL_SHAFT_CODES;
+ select.innerHTML='';
+ list.forEach(code=>{
+  const option=document.createElement('option');
+  option.value=code;option.textContent=code;
+  select.appendChild(option);
+ });
+ const saved=preferred||localStorage.getItem('tol_code_'+tolKind);
+ if(saved&&list.includes(saved))select.value=saved;
+ else select.value=tolKind==='foro'?'H7':'h6';
+}
+function setTolKind(kind){
+ tolKind=kind==='albero'?'albero':'foro';
+ $('tolForo')?.classList.toggle('on',tolKind==='foro');
+ $('tolAlbero')?.classList.toggle('on',tolKind==='albero');
+ localStorage.setItem('tol_kind',tolKind);
+ fillTolOptions();
+ const out=$('resTol');if(out)out.innerHTML='';
 }
 function calcTol(){
  const d=num('tolD'),code=$('tolType').value;
  if(!Number.isFinite(d)||d<=0){$('resTol').innerHTML='<div class="err">Controlla il diametro.</div>';return}
- const v=calcTolValues(d,code);if(!v){$('resTol').innerHTML='<div class="err">Campo non disponibile.</div>';return}
- $('resTol').innerHTML=box('MINIMO',fmt(v.min))+box('MASSIMO',fmt(v.max))+box('SCOSTAMENTO INF.',fmt(v.lower,0),'µm')+box('SCOSTAMENTO SUP.',fmt(v.upper,0),'µm');
+ const v=calcTolValues(d,code);
+ if(!v){$('resTol').innerHTML='<div class="err">Classe non disponibile oppure diametro oltre 500 mm.</div>';return}
+ localStorage.setItem('tol_code_'+tolKind,code);
+ const part=tolKind==='foro'?'FORO':'ALBERO';
+ $('resTol').innerHTML=box(part+' '+code,'Ø '+fmt(d))+box('MINIMO',fmt(v.min))+box('MASSIMO',fmt(v.max))+box('SCOSTAMENTO INF.',fmtFlex(v.lower,1),'µm')+box('SCOSTAMENTO SUP.',fmtFlex(v.upper,1),'µm');
 }
 
 /* LINGUETTE */
@@ -475,7 +605,7 @@ async function torchOn(){
 }
 async function torchOff(){if(mediaStream){const track=mediaStream.getVideoTracks()[0];try{await track.applyConstraints({advanced:[{torch:false}]})}catch(e){}stopCamera()}$('torchMsg').textContent='Torcia spenta.'}
 
-/* ASSISTENTE VOCALE v3.9 */
+/* ASSISTENTE VOCALE v4.2 */
 const synth=window.speechSynthesis;
 let voices=[],rec=null,listening=false,finalHandled=false,lastDetail='',pendingFollow=null;
 let speechPending='',speechTimer=null,speechWatchdog=null,speechToken=0,activeUtterance=null,speechUnlocked=false,retryCount=0;
@@ -645,68 +775,145 @@ function showVA(text,isQuestion=false,detail=''){
 }
 function direct(shortText,detail){pendingFollow=null;showVA(shortText,false,detail||shortText)}
 function normalizeSpeech(input){
- let s=String(input||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[“”"]/g,'').replace(/,/g,'.').replace(/\s+/g,' ').trim();
+ let s=String(input||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+  .replace(/[“”"]/g,'').replace(/,/g,'.').replace(/\b(?:virgola|punto)\b/g,'.')
+  .replace(/\s+/g,' ').trim();
  const repl=[
- [/\b(curare|furare|ferrare|foraree|colorare)\b/g,'forare'],[/\b(bucare|buca|preforare|fare il foro|fare un foro)\b/g,'forare'],
- [/\buno pollice e mezzo\b|\bun pollice e mezzo\b|\buno e mezzo\b|\bun e mezzo\b/g,'1 1/2'],
- [/\buno pollice e un quarto\b|\bun pollice e un quarto\b|\buno e un quarto\b|\bun e un quarto\b/g,'1 1/4'],
- [/\btre quarti\b/g,'3/4'],[/\bmezzo pollice\b/g,'1/2 gas'],[/\bmezzo\b/g,'1/2'],[/\bun quarto\b/g,'1/4'],[/\btre ottavi\b/g,'3/8'],[/\bun ottavo\b/g,'1/8'],
- [/\bper\b(?=\s*\d)/g,'x'],[/\bg\s+as\b/g,'gas']
+  [/\b(curare|furare|ferrare|foraree|colorare)\b/g,'forare'],
+  [/\b(bucare|buca|preforare|fare il foro|fare un foro|foro da maschiare)\b/g,'forare'],
+  [/\b(?:uno|un|1)\s+pollice\s+e\s+mezzo\b/g,'1 1/2'],
+  [/\b(?:uno|un|1)\s+pollice\s+e\s+(?:un\s+)?quarto\b/g,'1 1/4'],
+  [/\b(?:uno|un)\s+e\s+mezzo\b/g,'1 1/2'],
+  [/\b(?:uno|un)\s+e\s+(?:un\s+)?quarto\b/g,'1 1/4'],
+  [/\btre\s+quarti\b/g,'3/4'],[/\bcinque\s+ottavi\b/g,'5/8'],[/\bsette\s+ottavi\b/g,'7/8'],
+  [/\bmezzo\s+pollice\b/g,'1/2'],[/\bmezzo\b/g,'1/2'],[/\bun\s+quarto\b/g,'1/4'],
+  [/\btre\s+ottavi\b/g,'3/8'],[/\bun\s+ottavo\b/g,'1/8'],
+  [/\b(?:uno|un)\s+pollice\b/g,'1'],
+  [/\bacca\b/g,'h'],[/\bi\s+lunga\b|\bjota\b/g,'j'],[/\bemme\b/g,'m'],
+  [/\bper\b(?=\s*\d)/g,'x'],[/\bg\s+as\b/g,'gas'],[/\bn\s+p\s+t\b/g,'npt']
  ];
  repl.forEach(([a,b])=>s=s.replace(a,b));
- const words={zero:'0',un:'1',uno:'1',una:'1',due:'2',tre:'3',quattro:'4',cinque:'5',sei:'6',sette:'7',otto:'8',nove:'9',dieci:'10',dodici:'12',quattordici:'14',sedici:'16',diciotto:'18',venti:'20',ventidue:'22',ventiquattro:'24',ventisette:'27',trenta:'30',trentatre:'33',trentasei:'36',trentanove:'39',quarantadue:'42',quarantacinque:'45',quarantotto:'48',cinquanta:'50',cinquantadue:'52',cinquantasei:'56',sessanta:'60'};
+ const words={
+  zero:'0',un:'1',uno:'1',una:'1',due:'2',tre:'3',quattro:'4',cinque:'5',
+  sei:'6',sette:'7',otto:'8',nove:'9',dieci:'10',undici:'11',dodici:'12',
+  tredici:'13',quattordici:'14',quindici:'15',sedici:'16',diciassette:'17',
+  diciotto:'18',diciannove:'19',venti:'20',ventidue:'22',ventiquattro:'24',
+  ventisette:'27',trenta:'30',trentatre:'33',trentasei:'36',trentanove:'39',
+  quarantadue:'42',quarantacinque:'45',quarantotto:'48',cinquanta:'50',
+  cinquantadue:'52',cinquantasei:'56',sessanta:'60'
+ };
  Object.entries(words).forEach(([w,n])=>s=s.replace(new RegExp('\\b'+w+'\\b','g'),n));
- return s.replace(/\s+/g,' ').trim()
+ return s.replace(/\s*\.\s*/g,'.').replace(/\s+/g,' ').trim();
+}
+function tolerancePartFromPhrase(phrase=''){
+ if(/\b(albero|perno|esterno|maschio)\b/.test(phrase))return 'albero';
+ if(/\b(foro|alesaggio|interno|sede|bozza)\b/.test(phrase))return 'foro';
+ return '';
+}
+function toleranceCodeForPart(code,part){
+ const compact=String(code||'').toLowerCase().replace(/\s+/g,'');
+ const m=compact.match(/^([a-z]{1,2})(\d{1,2})$/);if(!m)return compact;
+ const letter=m[1],grade=m[2];
+ if(part==='foro'){
+  const map={h:'H',f:'F',g:'G',j:'J',js:'JS'};
+  return (map[letter]||letter.toUpperCase())+grade;
+ }
+ return letter+grade;
+}
+function answerTolerancePair(d,holeCode,shaftCode){
+ const hole=calcTolValues(d,holeCode),shaft=calcTolValues(d,shaftCode);
+ if(hole&&shaft){
+  const shortText=`FORO ${holeCode}: ${fmtFlex(hole.min,3)} ÷ ${fmtFlex(hole.max,3)} mm. ALBERO ${shaftCode}: ${fmtFlex(shaft.min,3)} ÷ ${fmtFlex(shaft.max,3)} mm.`;
+  const detail=`Diametro nominale ${fmtFlex(d)} millimetri. Foro ${holeCode}: minimo ${fmtFlex(hole.min,3)} e massimo ${fmtFlex(hole.max,3)} millimetri. Albero ${shaftCode}: minimo ${fmtFlex(shaft.min,3)} e massimo ${fmtFlex(shaft.max,3)} millimetri.`;
+  direct(shortText,detail);return true;
+ }
+ if(hole){answerTolerance(d,holeCode);return true}
+ if(shaft){answerTolerance(d,shaftCode);return true}
+ return false;
+}
+function handleSpokenTolerance(d,rawCode,phrase){
+ const part=tolerancePartFromPhrase(phrase);
+ if(part){
+  const resolved=toleranceCodeForPart(rawCode,part);
+  if(isSupportedTolCode(resolved)){answerTolerance(d,resolved);return true}
+  showVA(`La classe ${resolved} per ${part} non è disponibile.`,true);return true
+ }
+ const holeCode=toleranceCodeForPart(rawCode,'foro');
+ const shaftCode=toleranceCodeForPart(rawCode,'albero');
+ const holeOk=isSupportedTolCode(holeCode),shaftOk=isSupportedTolCode(shaftCode);
+ if(holeOk&&shaftOk)return answerTolerancePair(d,holeCode,shaftCode);
+ if(holeOk){answerTolerance(d,holeCode);return true}
+ if(shaftOk){answerTolerance(d,shaftCode);return true}
+ if(/\b(tolleranza|foro|alesaggio|albero|perno|diametro|quota)\b/.test(phrase)){
+  showVA(`La classe ${rawCode} non è disponibile.`,true);return true
+ }
+ return false;
+}
+function toleranceFromSpeech(s){
+ const code='(?:js|h|j|f|g|k|m)\\s*\\d{1,2}';
+ let tm=s.match(new RegExp('(\\d+(?:\\.\\d+)?)\\s*('+code+')\\b','i'));
+ if(tm)return handleSpokenTolerance(Number(tm[1]),tm[2],s);
+ tm=s.match(new RegExp('\\b('+code+')\\s*(?:diametro\\s*)?(\\d+(?:\\.\\d+)?)','i'));
+ if(tm)return handleSpokenTolerance(Number(tm[2]),tm[1],s);
+ return false;
 }
 function askAssistant(raw){
  const s=normalizeSpeech(raw);if(!s)return;$('vaHeard').textContent=raw;
  if(/\b(spiegami|dettagli|approfondisci)\b/.test(s)){showVA(lastDetail||'Non ho ancora una risposta da spiegare.',!lastDetail);return}
- if(pendingFollow?.type==='pitch'){const p=Number((s.match(/\d+(?:\.\d+)?/)||[])[0]);if(Number.isFinite(p)){answerMetric(pendingFollow.n,p);return}}
+ if(pendingFollow?.type==='pitch'){
+  const p=Number((s.match(/\d+(?:\.\d+)?/)||[])[0]);
+  if(Number.isFinite(p)){answerMetric(pendingFollow.n,p);return}
+ }
+ if(toleranceFromSpeech(s))return;
 
- /* Tolleranza: 50 H7 / diametro 50 m6 */
- let tm=s.match(/(\d+(?:\.\d+)?)\s*(h7|h8|h6|g6|f7|js6|k6|m6)\b/i);
- if(tm){const d=Number(tm[1]),code=tm[2];answerTolerance(d,code);return}
- tm=s.match(/\b(h7|h8|h6|g6|f7|js6|k6|m6)\s*(?:diametro\s*)?(\d+(?:\.\d+)?)/i);
- if(tm){answerTolerance(Number(tm[2]),tm[1]);return}
+ /* NPT: controllato prima del GAS per non confondere i pollici. */
+ if(/\bnpt\b/.test(s)){
+  const size=extractInchSize(s,THREADS.npt);
+  if(size){answerNpt(size);return}
+  showVA('Quale misura NPT?',true);return
+ }
 
- /* GAS */
- if(/\b(gas|bsp|pollice)\b/.test(s)||/\bg\s*\d/.test(s)){
-  let size=null;const sizes=THREADS.gas.map(r=>String(r[0]).slice(1)).sort((a,b)=>b.length-a.length);
-  size=sizes.find(x=>s.includes(x));
-  if(!size){const gm=s.match(/\bg\s*(\d+(?:\s+\d+\/\d+|\/\d+)?)\b/);if(gm)size=gm[1].trim()}
+ /* GAS / BSP: G1, 1G, 1 GAS, un pollice GAS. */
+ if(/\b(gas|bsp|pollice)\b/.test(s)||/\bg\s*\d/.test(s)||/\d\s*g\b/.test(s)){
+  const size=extractInchSize(s,THREADS.gas);
   if(size){answerGas(size);return}
   showVA('Quale misura GAS?',true);return
  }
 
- /* Metrico fine o grosso */
- let mm=s.match(/\bm\s*(\d+(?:\.\d+)?)\s*(?:x|per)\s*(\d+(?:\.\d+)?)\b/i);
+ /* Metrico fine: M33x1.5, M33 per 1.5, M33 passo 1.5. */
+ let mm=s.match(/\bm\s*(\d+(?:\.\d+)?)\s*(?:x|passo)\s*(\d+(?:\.\d+)?)\b/i);
  if(mm){answerMetric(Number(mm[1]),Number(mm[2]));return}
  mm=s.match(/\bm\s*(\d+(?:\.\d+)?)\b/i);
  if(mm){answerMetric(Number(mm[1]),null);return}
 
- /* Linguetta */
  if(/\b(linguetta|cava)\b/.test(s)){
   const dm=(s.match(/(?:diametro|albero|d)\s*(\d+(?:\.\d+)?)/)||s.match(/(\d+(?:\.\d+)?)/));
   if(dm){answerKey(Number(dm[1]));return}
   showVA('Dimmi il diametro dell’albero.',true);return
  }
-
- /* Giri */
  if(/\b(giri|rpm)\b/.test(s)){
-  const d=(s.match(/(?:diametro|d)\s*(\d+(?:\.\d+)?)/)||[])[1],vc=(s.match(/(?:vc|velocita(?: di taglio)?)\s*(\d+(?:\.\d+)?)/)||[])[1];
-  if(d&&vc){const rpm=Number(vc)*1000/(Math.PI*Number(d));direct(`${Math.round(rpm)} giri al minuto.`,`Con diametro ${fmtFlex(d)} millimetri e V C ${fmtFlex(vc)} metri minuto: ${Math.round(rpm)} giri al minuto.`);return}
+  const d=(s.match(/(?:diametro|d)\s*(\d+(?:\.\d+)?)/)||[])[1];
+  const vc=(s.match(/(?:vc|velocita(?: di taglio)?)\s*(\d+(?:\.\d+)?)/)||[])[1];
+  if(d&&vc){
+   const rpm=Number(vc)*1000/(Math.PI*Number(d));
+   direct(`${Math.round(rpm)} giri al minuto.`,`Con diametro ${fmtFlex(d)} millimetri e V C ${fmtFlex(vc)} metri minuto: ${Math.round(rpm)} giri al minuto.`);
+   return
+  }
   showVA('Mi servono diametro e V C.',true);return
  }
-
- /* Esagono */
  if(/\b(chiave|esagono)\b/.test(s)){
-  const n=Number((s.match(/\d+(?:\.\d+)?/)||[])[0]);if(Number.isFinite(n)){const dia=n/Math.cos(Math.PI/6);direct(`Diametro sulle punte ${fmtFlex(dia,3)} millimetri.`,`Chiave ${fmtFlex(n)}: diametro circoscritto ${fmtFlex(dia,3)} millimetri.`);return}
+  const n=Number((s.match(/\d+(?:\.\d+)?/)||[])[0]);
+  if(Number.isFinite(n)){
+   const dia=n/Math.cos(Math.PI/6);
+   direct(`Diametro sulle punte ${fmtFlex(dia,3)} millimetri.`,`Chiave ${fmtFlex(n)}: diametro circoscritto ${fmtFlex(dia,3)} millimetri.`);
+   return
+  }
  }
-
- /* Conversioni */
- if(/\bpollici?\b/.test(s)&&/\bmm|millimetri?\b/.test(s)){
-  const n=Number((s.match(/\d+(?:\.\d+)?/)||[])[0]);if(Number.isFinite(n)){
-   if(s.indexOf('pollic')<s.indexOf('mm'))direct(`${fmtFlex(n*25.4,3)} millimetri.`,`${fmtFlex(n)} pollici corrispondono a ${fmtFlex(n*25.4,3)} millimetri.`);
+ if(/\bpollici?\b/.test(s)&&/\b(mm|millimetri?)\b/.test(s)){
+  const n=Number((s.match(/\d+(?:\.\d+)?/)||[])[0]);
+  if(Number.isFinite(n)){
+   if(s.indexOf('pollic')<s.search(/\b(mm|millimetri?)\b/))
+    direct(`${fmtFlex(n*25.4,3)} millimetri.`,`${fmtFlex(n)} pollici corrispondono a ${fmtFlex(n*25.4,3)} millimetri.`);
    else direct(`${fmtFlex(n/25.4,4)} pollici.`,`${fmtFlex(n)} millimetri corrispondono a ${fmtFlex(n/25.4,4)} pollici.`);
    return
   }
@@ -724,10 +931,15 @@ function answerGas(size){
  const r=findGas(size);if(!r){showVA(`GAS ${size} non presente.`,true);return}
  direct(`Punta da ${fmtFlex(r[2],2)} millimetri.`,`Filetto ${r[0]}, ${r[1]} filetti per pollice: preforo ${fmtFlex(r[2],2)} millimetri, diametro esterno ${fmtFlex(r[3],3)} millimetri.`)
 }
+function answerNpt(size){
+ const r=findNpt(size);if(!r){showVA(`NPT ${size} non presente.`,true);return}
+ direct(`Punta da ${fmtFlex(r[2],2)} millimetri.`,`Filetto ${r[0]}, ${r[1]} filetti per pollice: preforo pratico ${fmtFlex(r[2],2)} millimetri, diametro esterno nominale ${fmtFlex(r[3],3)} millimetri.`)
+}
 function answerTolerance(d,code){
- const low=String(code).toLowerCase(),c=(low==='h7'||low==='h8')?low.toUpperCase():low,v=calcTolValues(d,c);
+ const c=String(code).trim(),v=calcTolValues(d,c);
  if(!v){showVA('Tolleranza non disponibile.',true);return}
- direct(`${c}: da ${fmtFlex(v.min,3)} a ${fmtFlex(v.max,3)} millimetri.`,`Diametro nominale ${fmtFlex(d)} millimetri, zona ${c}: minimo ${fmtFlex(v.min,3)} e massimo ${fmtFlex(v.max,3)} millimetri.`)
+ const part=/^[A-Z]/.test(c)?'FORO':'ALBERO';
+ direct(`${part} ${c}: da ${fmtFlex(v.min,3)} a ${fmtFlex(v.max,3)} millimetri.`,`Diametro nominale ${fmtFlex(d)} millimetri, ${part.toLowerCase()} zona ${c}: minimo ${fmtFlex(v.min,3)} e massimo ${fmtFlex(v.max,3)} millimetri.`)
 }
 function answerKey(d){
  const r=KEYS.find(x=>d>x[0]&&d<=x[1])||KEYS.find(x=>d>=x[0]&&d<=x[1]);
@@ -760,6 +972,8 @@ function toggleListen(){
 function clearSettings(){if(confirm('Cancellare le impostazioni salvate?')){localStorage.clear();location.reload()}}
 function init(){
  renderThreads();
+ tolKind=localStorage.getItem('tol_kind')==='albero'?'albero':'foro';
+ setTolKind(tolKind);
  const pr=localStorage.getItem('probe');if(pr){$('probe3').value=pr;$('probe4').value=pr;$('probe2').value=pr}
  $('voiceRate').value=localStorage.getItem('voice_rate')||'1.12';$('voicePitch').value=localStorage.getItem('voice_pitch')||'1';$('voiceVolume').value=localStorage.getItem('voice_volume')||'1';
  $('audioEnabled').checked=localStorage.getItem('audio_enabled')!=='0';saveVoice();populateVoices();if(synth){synth.onvoiceschanged=populateVoices;setTimeout(populateVoices,250);setTimeout(populateVoices,1000)}
@@ -777,20 +991,25 @@ function init(){
  window.addEventListener('resize',()=>{if($('ruler')?.classList.contains('active'))updateRuler()});
  document.addEventListener('visibilitychange',()=>{if(document.hidden){try{rec?.stop()}catch(e){}stopSpeech(false);stopCamera()}});
 }
-async function registerV39ServiceWorker(){
- if(!('serviceWorker' in navigator)||location.protocol==='file:')return;
+async function removeOldAppCache(){
  try{
-  const reg=await navigator.serviceWorker.register('./service-worker.js?v=3.9',{updateViaCache:'none'});
-  await reg.update();
-  debugVoice(($('voiceDebug')?.textContent||'')+(($('voiceDebug')?.textContent||'')?'\n':'')+'Cache app: v3.9');
+  if('serviceWorker' in navigator){
+   const regs=await navigator.serviceWorker.getRegistrations();
+   await Promise.all(regs.map(reg=>reg.unregister()));
+  }
+  if('caches' in window){
+   const names=await caches.keys();
+   await Promise.all(names.map(name=>caches.delete(name)));
+  }
  }catch(e){
-  console.warn('Service worker v3.9 non registrato:',e);
+  console.warn('Pulizia vecchia cache non riuscita:',e);
  }
 }
 if(document.readyState==='loading'){
- document.addEventListener('DOMContentLoaded',()=>{init();registerV39ServiceWorker()});
+ document.addEventListener('DOMContentLoaded',()=>{init();removeOldAppCache()});
 }else{
- init();registerV39ServiceWorker();
+ init();
+ removeOldAppCache();
 }
 </script>
 </body>
