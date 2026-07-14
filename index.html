@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#050505">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>CNC Toolbox v4.6</title>
+<title>CNC Toolbox v4.7</title>
 <style>
 :root{--y:#ffc400;--y2:#dfa500;--b:#050505;--p:#141414;--p2:#0b0b0b;--l:#3e3e3e;--w:#fff;--g:#aaa;--ok:#68e36f;--err:#ff5b5b;--blue:#54baff}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -95,19 +95,35 @@ select{text-align:center;font-size:15px}
 .wallJohnsonA,.wallJohnsonB{position:absolute;background:#d9d9d9;border:2px solid #333;border-radius:5px;z-index:2;transition:all .2s ease}
 .wallLegend{font-size:13px;color:#ddd;line-height:1.4;margin-top:8px;text-align:center}
 
+
+/* v4.7 centro Johnson corretto */
+.johnsonToggleRow{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.johnsonToggleRow button{min-height:52px;border:2px solid #555;border-radius:9px;background:#111;color:#fff;font-weight:900}.johnsonToggleRow button.on{background:var(--yellow);color:#050505;border-color:var(--yellow)}
+.wallDiagramWrap{display:flex;justify-content:center;margin:8px 0 4px}
+.wallDiagram{width:min(100%,330px);height:auto;background:linear-gradient(145deg,#181818,#070707);border:2px solid var(--yellow);border-radius:15px;touch-action:manipulation}
+.wallShape{fill:rgba(255,196,0,.06);stroke:#fff;stroke-width:4;stroke-linejoin:round}
+.wallVertex{fill:var(--yellow);stroke:#050505;stroke-width:3;cursor:pointer}
+.wallVertex.selected{fill:#8ad3ff;stroke:#fff;stroke-width:4}
+.wallVertexText{font-size:19px;font-weight:900;fill:#050505;pointer-events:none;text-anchor:middle;dominant-baseline:middle}
+.wallProbeSvg{fill:#8ad3ff;stroke:#050505;stroke-width:3;pointer-events:none}
+.wallJohnsonSvg{fill:#d7d7d7;stroke:#333;stroke-width:2;pointer-events:none}
+.wallPointHint{text-align:center;color:#ddd;font-size:14px;line-height:1.4;margin-top:7px}
+.johnsonHidden{display:none!important}
+.simpleCenterResult .resBox{margin-top:14px}
+.simpleCenterResult .resVal{font-size:44px}
+
 </style>
 </head>
 <body>
 <div class="app">
 
 <section id="home" class="screen active">
- <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v4.6 · JOHNSON SEMPLIFICATO</div></div></div>
+ <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v4.7 · CENTRO 3 / 4 PUNTI</div></div></div>
  <div class="grid"><button class="tile primary wide" onclick="show('assistant')"><div class="icon">🎙️</div>ASSISTENTE VOCALE MECCANICO</button></div>
 
  <div class="sectionTitle">GEOMETRIA</div>
  <div class="grid">
   <button class="tile primary" onclick="show('three')"><div class="icon">◎</div>CENTRO 3 PUNTI</button>
-  <button class="tile" onclick="openJohnsonCenter()"><div class="icon">▣</div>CENTRO JOHNSON<br>4 PUNTI</button>
+  <button class="tile" onclick="openJohnsonCenter()"><div class="icon">▣</div>CENTRO JOHNSON<br>3 / 4 PUNTI</button>
   <button class="tile" onclick="show('two')"><div class="icon">⟍</div>CENTRO 2 PUNTI</button>
   <button class="tile" onclick="show('angle')"><div class="icon">∠</div>ANGOLO</button>
   <button class="tile primary" onclick="show('chamfer')"><div class="icon">45°</div>SMUSSI</button>
@@ -178,56 +194,57 @@ select{text-align:center;font-size:15px}
 <section id="four" class="screen">
  <div class="header">
   <button class="back" onclick="show('home')">‹</button>
-  <div class="title">CENTRO JOHNSON<small>SOLO 4 PUNTI · PARETI INCLINATE</small></div>
-  <button class="help" onclick="alert('Prima inserisci Ø tastatore e Johnson. Poi scegli INTERNO o ESTERNO. Tocca uno dei 4 lati del disegno per dire dove ti interessa il centro. Infine inserisci i 4 punti: 2 sulla parete A e 2 sulla parete B. L’app calcola il centro compensando tastatore e Johnson perpendicolarmente alle pareti.')">?</button>
+  <div class="title">CENTRO JOHNSON<small>3 O 4 PUNTI · RISULTATO SOLO CENTRO</small></div>
+  <button class="help" onclick="alert('3 PUNTI: P1 sulla parete fissa della morsa; P2 e P3 sulla parete opposta inclinata. 4 PUNTI: P1-P2 sulla parete A e P3-P4 sulla parete B. La direzione X o Y viene riconosciuta automaticamente. Non devi inserire nessuna quota di calcolo.')">?</button>
  </div>
 
  <div class="card">
-  <h2><span class="wallStep">1</span>SETUP INIZIALE</h2>
-  <div class="row"><div class="label">Ø tastatore / utensile</div><input id="wallToolD" class="inp" value="10" oninput="updateWallSketch()"></div>
-  <div class="row"><div class="label">Johnson parete A</div><input id="wallJohnsonA" class="inp" value="0" oninput="updateWallSketch()"></div>
-  <div class="row"><div class="label">Johnson parete B</div><input id="wallJohnsonB" class="inp" value="0" oninput="updateWallSketch()"></div>
-  <div class="label" style="margin:12px 0 8px">Contatto del tastatore</div>
+  <h2><span class="wallStep">1</span>SETUP</h2>
+  <div class="row"><div class="label">Ø tastatore / utensile</div><input id="wallToolD" class="inp" value="10" oninput="updateWallDiagram()"></div>
+  <div class="label" style="margin:12px 0 8px">Johnson</div>
+  <div class="johnsonToggleRow">
+   <button id="wallJohnsonOff" class="on" onclick="setWallJohnson(false)">DISABILITATI</button>
+   <button id="wallJohnsonOn" onclick="setWallJohnson(true)">ABILITATI</button>
+  </div>
+  <div id="wallJohnsonRows" class="johnsonHidden">
+   <div class="row"><div class="label">Johnson parete A</div><input id="wallJohnsonA" class="inp" value="20" oninput="updateWallDiagram()"></div>
+   <div class="row"><div class="label">Johnson parete B</div><input id="wallJohnsonB" class="inp" value="20" oninput="updateWallDiagram()"></div>
+  </div>
+  <div class="label" style="margin:12px 0 8px">Contatto tastatore</div>
   <div class="seg"><button id="wallExternal" class="on" onclick="setWallMeasure('external')">ESTERNO PEZZO</button><button id="wallInternal" onclick="setWallMeasure('internal')">INTERNO CAVA</button></div>
  </div>
 
  <div class="card">
-  <h2><span class="wallStep">2</span>DISEGNO INIZIALE</h2>
-  <div class="wallSketchWrap">
-   <div id="wallSketch" class="wallSketch">
-    <div class="wallPoly"></div>
-    <button type="button" class="wallHot top" onclick="setWallZone('top')">1</button>
-    <button type="button" class="wallHot right" onclick="setWallZone('right')">2</button>
-    <button type="button" class="wallHot bottom" onclick="setWallZone('bottom')">3</button>
-    <button type="button" class="wallHot left on" onclick="setWallZone('left')">4</button>
-    <div id="wallJohnsonAVis" class="wallJohnsonA"></div>
-    <div id="wallJohnsonBVis" class="wallJohnsonB"></div>
-    <div id="wallProbeVis" class="wallProbe"></div>
-   </div>
+  <h2><span class="wallStep">2</span>NUMERO DI PUNTI</h2>
+  <div class="seg"><button id="wallMode3" onclick="setWallMode(3)">3 PUNTI</button><button id="wallMode4" class="on" onclick="setWallMode(4)">4 PUNTI</button></div>
+  <div id="wallModeNote" class="hint">P1-P2 sulla parete A. P3-P4 sulla parete B.</div>
+ </div>
+
+ <div class="card">
+  <h2><span class="wallStep">3</span>TOCCA UN VERTICE</h2>
+  <div class="wallDiagramWrap">
+   <svg id="wallDiagram" class="wallDiagram" viewBox="0 0 300 300" aria-label="Poligono con punti sui vertici">
+    <polygon id="wallShape" class="wallShape" points="58,48 242,42 252,250 48,242"></polygon>
+    <rect id="wallJohnsonVis" class="wallJohnsonSvg" x="0" y="0" width="18" height="12" rx="3"></rect>
+    <circle id="wallProbeVis" class="wallProbeSvg" cx="0" cy="0" r="12"></circle>
+    <circle id="wallV1" class="wallVertex selected" cx="58" cy="48" r="20" onclick="selectWallPoint(1)"></circle><text id="wallT1" class="wallVertexText" x="58" y="48">1</text>
+    <circle id="wallV2" class="wallVertex" cx="48" cy="242" r="20" onclick="selectWallPoint(2)"></circle><text id="wallT2" class="wallVertexText" x="48" y="242">2</text>
+    <circle id="wallV3" class="wallVertex" cx="242" cy="42" r="20" onclick="selectWallPoint(3)"></circle><text id="wallT3" class="wallVertexText" x="242" y="42">3</text>
+    <circle id="wallV4" class="wallVertex" cx="252" cy="250" r="20" onclick="selectWallPoint(4)"></circle><text id="wallT4" class="wallVertexText" x="252" y="250">4</text>
+   </svg>
   </div>
-  <div id="wallChoiceText" class="wallChoiceText">Lato scelto: SINISTRA → verrà calcolato il CENTRO X</div>
-  <div class="wallLegend">Il cerchio azzurro rappresenta il tastatore. I rettangolini grigi dietro al cerchio rappresentano i Johnson A e B. Con ESTERNO il cerchio si sposta fuori dal profilo, con INTERNO si sposta dentro.</div>
+  <div id="wallSelectedText" class="wallChoiceText">Punto selezionato: P1</div>
+  <div class="wallPointHint">Le linee del poligono arrivano esattamente ai quattro punti dei vertici. Toccando un punto vai direttamente ai suoi valori.</div>
  </div>
 
  <div class="card">
-  <h2><span class="wallStep">3</span>QUOTA DEL PUNTO SCELTO</h2>
-  <div class="row"><div id="wallRefLabel" class="label">Quota Y di calcolo</div><input id="wallRef" class="inp" value="50"></div>
-  <div class="hint">Se scegli SINISTRA o DESTRA viene calcolato il centro X alla quota Y indicata. Se scegli ALTO o BASSO viene calcolato il centro Y alla quota X indicata.</div>
- </div>
-
- <div class="card">
-  <h2><span class="wallStep">4</span>INSERISCI I 4 PUNTI</h2>
-  <div class="hint" style="margin-bottom:8px">Parete A = primi 2 punti. Parete B = altri 2 punti. Inserisci le coordinate del centro tastatore durante il contatto.</div>
-  <div class="row"><div class="label">P1 X</div><input id="wAx1" class="inp" value="0"></div>
-  <div class="row"><div class="label">P1 Y</div><input id="wAy1" class="inp" value="0"></div>
-  <div class="row"><div class="label">P2 X</div><input id="wAx2" class="inp" value="0"></div>
-  <div class="row"><div class="label">P2 Y</div><input id="wAy2" class="inp" value="100"></div>
-  <div class="row"><div class="label">P3 X</div><input id="wBx1" class="inp" value="100"></div>
-  <div class="row"><div class="label">P3 Y</div><input id="wBy1" class="inp" value="0"></div>
-  <div class="row"><div class="label">P4 X</div><input id="wBx2" class="inp" value="110"></div>
-  <div class="row"><div class="label">P4 Y</div><input id="wBy2" class="inp" value="100"></div>
-  <button class="btn" onclick="calcJohnsonCenter()">CALCOLA CENTRO JOHNSON</button>
-  <div id="res4"></div>
+  <h2><span class="wallStep">4</span>COORDINATE</h2>
+  <div id="wallP1Group"><div id="wallP1Title" class="label" style="margin:8px 0">P1 · PARETE FISSA / A</div><div class="row"><div class="label">X</div><input id="wAx1" class="inp" value="0"></div><div class="row"><div class="label">Y</div><input id="wAy1" class="inp" value="50"></div></div>
+  <div id="wallP2Group"><div id="wallP2Title" class="label" style="margin:8px 0">P2 · PARETE A</div><div class="row"><div class="label">X</div><input id="wAx2" class="inp" value="0"></div><div class="row"><div class="label">Y</div><input id="wAy2" class="inp" value="150"></div></div>
+  <div id="wallP3Group"><div id="wallP3Title" class="label" style="margin:8px 0">P3 · PARETE OPPOSTA / B</div><div class="row"><div class="label">X</div><input id="wBx1" class="inp" value="100"></div><div class="row"><div class="label">Y</div><input id="wBy1" class="inp" value="0"></div></div>
+  <div id="wallP4Group"><div id="wallP4Title" class="label" style="margin:8px 0">P4 · PARETE B</div><div class="row"><div class="label">X</div><input id="wBx2" class="inp" value="110"></div><div class="row"><div class="label">Y</div><input id="wBy2" class="inp" value="100"></div></div>
+  <button class="btn" onclick="calcJohnsonCenter()">CALCOLA CENTRO</button>
+  <div id="res4" class="simpleCenterResult"></div>
  </div>
 </section>
 
@@ -331,12 +348,12 @@ select{text-align:center;font-size:15px}
 
 <section id="scanner" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">SCANNER 3D<small>PROGETTO SEPARATO</small></div><button class="help">?</button></div>
- <div class="card"><h2>LO RIPRENDEREMO SUCCESSIVAMENTE</h2><div class="note">Lo scanner 3D resta separato per non appesantire la Toolbox. Questa v4.6 contiene gli strumenti CNC e l’assistente vocale completo.</div></div>
+ <div class="card"><h2>LO RIPRENDEREMO SUCCESSIVAMENTE</h2><div class="note">Lo scanner 3D resta separato per non appesantire la Toolbox. Questa v4.7 contiene gli strumenti CNC e l’assistente vocale completo.</div></div>
 </section>
 
 <section id="settings" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">MENU</div><button class="help">▤</button></div>
- <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v4.6</div></div><div class="note">Versione a file unico. Centro Johnson con scelta grafica del punto, 3/4 punti e compensazione normale sulle pareti inclinate. Audio, tolleranze e filetti invariati.</div></div>
+ <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v4.7</div></div><div class="note">Versione a file unico. Centro Johnson con scelta grafica del punto, 3/4 punti e compensazione normale sulle pareti inclinate. Audio, tolleranze e filetti invariati.</div></div>
  <div class="card"><h2>AZIONI</h2><button class="btn2" onclick="clearSettings()">PULISCI IMPOSTAZIONI</button></div>
 </section>
 
@@ -385,86 +402,98 @@ function solve3(A,b){
  return [m[0][3],m[1][3],m[2][3]];
 }
 let wallMode=4;
-let wallAxis='x';
 let wallMeasure='external';
-let wallRefMode='manual';
-let wallZone='left';
-let wallTarget={u:.5,v:.5};
-let wallDragging=false;
+let wallUseJohnson=false;
+let wallSelectedPoint=1;
 
 function openJohnsonCenter(){
  show('four');
- wallMode=4;
  setWallMeasure(localStorage.getItem('wall_measure')==='internal'?'internal':'external');
- const savedZone=localStorage.getItem('wall_zone')||'left';
- setWallZone(savedZone);
- updateWallSketch();
+ setWallJohnson(localStorage.getItem('wall_johnson_enabled')==='1');
+ setWallMode(Number(localStorage.getItem('wall_mode'))===3?3:4);
+ selectWallPoint(1,false);
+ updateWallDiagram();
 }
-function setWallMode(mode){wallMode=4}
-function setWallAxis(axis){wallAxis=(axis==='y'?'y':'x'); updateWallSketch();}
-function setWallRefMode(mode){wallRefMode='manual'}
 function setWallMeasure(type){
  wallMeasure=type==='internal'?'internal':'external';
  localStorage.setItem('wall_measure',wallMeasure);
  $('wallExternal')?.classList.toggle('on',wallMeasure==='external');
  $('wallInternal')?.classList.toggle('on',wallMeasure==='internal');
- updateWallSketch();
+ updateWallDiagram();
 }
-function setWallZone(zone){
- wallZone=['left','right','top','bottom'].includes(zone)?zone:'left';
- localStorage.setItem('wall_zone',wallZone);
- wallAxis=(wallZone==='left'||wallZone==='right')?'x':'y';
- document.querySelectorAll('.wallHot').forEach(el=>el.classList.remove('on'));
- document.querySelector('.wallHot.'+wallZone)?.classList.add('on');
- const map={left:'SINISTRA',right:'DESTRA',top:'ALTO',bottom:'BASSO'};
- if($('wallChoiceText'))$('wallChoiceText').textContent=`Lato scelto: ${map[wallZone]} → verrà calcolato il CENTRO ${wallAxis.toUpperCase()}`;
- if($('wallRefLabel'))$('wallRefLabel').textContent=wallAxis==='x'?'Quota Y di calcolo':'Quota X di calcolo';
- updateWallSketch();
+function setWallJohnson(enabled){
+ wallUseJohnson=!!enabled;
+ localStorage.setItem('wall_johnson_enabled',wallUseJohnson?'1':'0');
+ $('wallJohnsonOff')?.classList.toggle('on',!wallUseJohnson);
+ $('wallJohnsonOn')?.classList.toggle('on',wallUseJohnson);
+ $('wallJohnsonRows')?.classList.toggle('johnsonHidden',!wallUseJohnson);
+ updateWallDiagram();
 }
-function setWallTargetFromEvent(){/* v4.6 semplificata: non usato */}
-function dragWallTarget(){/* v4.6 semplificata: non usato */}
-function endWallTargetDrag(){/* v4.6 semplificata: non usato */}
-function updateWallTargetUI(){updateWallSketch()}
-function updateWallSketch(){
- const probe=$('wallProbeVis'), ja=$('wallJohnsonAVis'), jb=$('wallJohnsonBVis');
- if(!probe||!ja||!jb)return;
- const tool=Math.max(0,Number($('wallToolD')?.value)||10);
- const jA=Math.max(0,Number($('wallJohnsonA')?.value)||0);
- const jB=Math.max(0,Number($('wallJohnsonB')?.value)||0);
- const p=Math.max(18,Math.min(58,tool*1.9));
- const jaSize=Math.max(0,Math.min(46,jA*1.4));
- const jbSize=Math.max(0,Math.min(46,jB*1.4));
- [probe,ja,jb].forEach(el=>{el.style.left='';el.style.right='';el.style.top='';el.style.bottom='';el.style.width='';el.style.height='';});
- probe.style.width=p+'px'; probe.style.height=p+'px';
- const half=p/2, strip=Math.max(12,p*0.72), out=wallMeasure==='external';
- if(wallZone==='left'){
-   probe.style.left=(out?10:44)+'px'; probe.style.top=`calc(50% - ${half}px)`;
-   ja.style.width=jaSize+'px'; ja.style.height=strip+'px'; ja.style.left=(out?10+p+4:44-jaSize-4)+'px'; ja.style.top=`calc(50% - ${strip/2}px)`;
-   jb.style.width=jbSize+'px'; jb.style.height=strip+'px'; jb.style.right=(out?10:44-jbSize-4)+'px'; jb.style.top=`calc(50% - ${strip/2}px)`;
+function setWallMode(mode){
+ wallMode=Number(mode)===3?3:4;
+ localStorage.setItem('wall_mode',String(wallMode));
+ $('wallMode3')?.classList.toggle('on',wallMode===3);
+ $('wallMode4')?.classList.toggle('on',wallMode===4);
+ if($('wallP2Group'))$('wallP2Group').style.display=wallMode===3?'none':'block';
+ // In modalità 3 punti: P1 fisso, i due punti a destra diventano P2 e P3.
+ if($('wallModeNote'))$('wallModeNote').textContent=wallMode===3?'P1 sulla parete fissa della morsa. P2-P3 sulla parete inclinata.':'P1-P2 sulla parete A. P3-P4 sulla parete B.';
+ if($('wallP1Title'))$('wallP1Title').textContent=wallMode===3?'P1 · PARETE FISSA MORSA':'P1 · PARETE A';
+ if($('wallP2Title'))$('wallP2Title').textContent='P2 · PARETE A';
+ if($('wallP3Title'))$('wallP3Title').textContent=wallMode===3?'P2 · PARETE INCLINATA':'P3 · PARETE B';
+ if($('wallP4Title'))$('wallP4Title').textContent=wallMode===3?'P3 · PARETE INCLINATA':'P4 · PARETE B';
+ if($('wallV2'))$('wallV2').style.display=wallMode===3?'none':'';
+ if($('wallT2'))$('wallT2').style.display=wallMode===3?'none':'';
+ if($('wallT3'))$('wallT3').textContent=wallMode===3?'2':'3';
+ if($('wallT4'))$('wallT4').textContent=wallMode===3?'3':'4';
+ if(wallMode===3&&wallSelectedPoint===2)wallSelectedPoint=1;
+ selectWallPoint(wallSelectedPoint,false);
+ updateWallDiagram();
+}
+function selectWallPoint(n,focus=true){
+ if(wallMode===3&&n===2)n=1;
+ wallSelectedPoint=Math.max(1,Math.min(4,Number(n)||1));
+ document.querySelectorAll('.wallVertex').forEach(el=>el.classList.remove('selected'));
+ $('wallV'+wallSelectedPoint)?.classList.add('selected');
+ const shownNumber=wallMode===3?(wallSelectedPoint===3?2:wallSelectedPoint===4?3:1):wallSelectedPoint;
+ if($('wallSelectedText'))$('wallSelectedText').textContent=`Punto selezionato: P${shownNumber}`;
+ updateWallDiagram();
+ if(focus){
+  const map={1:'wAx1',2:'wAx2',3:'wBx1',4:'wBx2'};
+  const el=$(map[wallSelectedPoint]);
+  el?.scrollIntoView({behavior:'smooth',block:'center'});
+  setTimeout(()=>el?.focus(),250);
  }
- if(wallZone==='right'){
-   probe.style.right=(out?10:44)+'px'; probe.style.top=`calc(50% - ${half}px)`;
-   ja.style.width=jaSize+'px'; ja.style.height=strip+'px'; ja.style.right=(out?10+p+4:44-jaSize-4)+'px'; ja.style.top=`calc(50% - ${strip/2}px)`;
-   jb.style.width=jbSize+'px'; jb.style.height=strip+'px'; jb.style.left=(out?10:44-jbSize-4)+'px'; jb.style.top=`calc(50% - ${strip/2}px)`;
- }
- if(wallZone==='top'){
-   probe.style.top=(out?10:44)+'px'; probe.style.left=`calc(50% - ${half}px)`;
-   ja.style.height=jaSize+'px'; ja.style.width=strip+'px'; ja.style.top=(out?10+p+4:44-jaSize-4)+'px'; ja.style.left=`calc(50% - ${strip/2}px)`;
-   jb.style.height=jbSize+'px'; jb.style.width=strip+'px'; jb.style.bottom=(out?10:44-jbSize-4)+'px'; jb.style.left=`calc(50% - ${strip/2}px)`;
- }
- if(wallZone==='bottom'){
-   probe.style.bottom=(out?10:44)+'px'; probe.style.left=`calc(50% - ${half}px)`;
-   ja.style.height=jaSize+'px'; ja.style.width=strip+'px'; ja.style.bottom=(out?10+p+4:44-jaSize-4)+'px'; ja.style.left=`calc(50% - ${strip/2}px)`;
-   jb.style.height=jbSize+'px'; jb.style.width=strip+'px'; jb.style.top=(out?10:44-jbSize-4)+'px'; jb.style.left=`calc(50% - ${strip/2}px)`;
- }
+}
+function updateWallDiagram(){
+ const probe=$('wallProbeVis'),block=$('wallJohnsonVis'); if(!probe||!block)return;
+ const points={1:{x:58,y:48,ox:-1,oy:-1},2:{x:48,y:242,ox:-1,oy:1},3:{x:242,y:42,ox:1,oy:-1},4:{x:252,y:250,ox:1,oy:1}};
+ const p=points[wallSelectedPoint]||points[1];
+ const dir=wallMeasure==='external'?1:-1;
+ const tool=Math.max(1,Number($('wallToolD')?.value)||10);
+ const jRaw=wallSelectedPoint<=2?Number($('wallJohnsonA')?.value):Number($('wallJohnsonB')?.value);
+ const j=wallUseJohnson?Math.max(0,jRaw||0):0;
+ const r=Math.max(9,Math.min(25,tool*1.3));
+ const norm=Math.hypot(p.ox,p.oy); const nx=p.ox/norm,ny=p.oy/norm;
+ const vertexGap=8;
+ const blockLen=Math.max(0,Math.min(45,j*1.3));
+ const bx=p.x+nx*dir*(vertexGap+blockLen/2), by=p.y+ny*dir*(vertexGap+blockLen/2);
+ const cx=p.x+nx*dir*(vertexGap+blockLen+r+4), cy=p.y+ny*dir*(vertexGap+blockLen+r+4);
+ probe.setAttribute('r',String(r)); probe.setAttribute('cx',String(cx)); probe.setAttribute('cy',String(cy));
+ if(wallUseJohnson&&j>0){
+  block.style.display='';
+  block.setAttribute('x',String(bx-blockLen/2)); block.setAttribute('y',String(by-7)); block.setAttribute('width',String(blockLen)); block.setAttribute('height','14');
+  block.setAttribute('transform',`rotate(${Math.atan2(ny,nx)*180/Math.PI} ${bx} ${by})`);
+ }else block.style.display='none';
 }
 function measuredLineFromPoints(p1,p2){
  const dx=p2.x-p1.x,dy=p2.y-p1.y,len=Math.hypot(dx,dy); if(len<1e-9)return null;
- const nx=-dy/len, ny=dx/len; return {nx,ny,c:nx*p1.x+ny*p1.y,dx,dy};
+ const nx=-dy/len,ny=dx/len; return {nx,ny,c:nx*p1.x+ny*p1.y,dx,dy};
 }
+function alignedMeasuredLine(p,axis){return axis==='x'?{nx:1,ny:0,c:p.x,dx:0,dy:1}:{nx:0,ny:1,c:p.y,dx:1,dy:0}}
+function dominantCenterAxis(line){return Math.abs(line.dy)>=Math.abs(line.dx)?'x':'y'}
 function lineCoordAtRef(line,ref,axis){
- if(axis==='x'){ if(Math.abs(line.nx)<1e-9)return null; return (line.c-line.ny*ref)/line.nx; }
- if(Math.abs(line.ny)<1e-9)return null; return (line.c-line.nx*ref)/line.ny;
+ if(axis==='x'){if(Math.abs(line.nx)<1e-9)return null;return (line.c-line.ny*ref)/line.nx}
+ if(Math.abs(line.ny)<1e-9)return null;return (line.c-line.nx*ref)/line.ny;
 }
 function orientLineToward(line,target){
  const signed=line.nx*target.x+line.ny*target.y-line.c;
@@ -476,39 +505,47 @@ function shiftedPhysicalLine(measured,target,distance,measure){
  const direction=measure==='external'?1:-1;
  return {...oriented,c:oriented.c+direction*distance};
 }
-function wallAngle(line){
- let a=Math.atan2(line.dy,line.dx)*180/Math.PI;
- while(a>90)a-=180; while(a<=-90)a+=180; return a;
+function automaticReference(a1,a2,b1,b2,axis){
+ const get=p=>axis==='x'?p.y:p.x;
+ const amin=Math.min(get(a1),get(a2)),amax=Math.max(get(a1),get(a2));
+ const bmin=Math.min(get(b1),get(b2)),bmax=Math.max(get(b1),get(b2));
+ const lo=Math.max(amin,bmin),hi=Math.min(amax,bmax);
+ if(lo<=hi)return (lo+hi)/2;
+ return (get(a1)+get(a2)+get(b1)+get(b2))/4;
 }
 function calcJohnsonCenter(){
- const toolD=num('wallToolD'), jA=num('wallJohnsonA'), jB=num('wallJohnsonB'), ref=num('wallRef');
- const a1={x:num('wAx1'),y:num('wAy1')}, a2={x:num('wAx2'),y:num('wAy2')}, b1={x:num('wBx1'),y:num('wBy1')}, b2={x:num('wBx2'),y:num('wBy2')};
- if(bad([toolD,jA,jB,ref,a1.x,a1.y,a2.x,a2.y,b1.x,b1.y,b2.x,b2.y])||toolD<0||jA<0||jB<0){ $('res4').innerHTML='<div class="err">Controlla Ø tastatore, Johnson e coordinate.</div>'; return; }
- const mA=measuredLineFromPoints(a1,a2), mB=measuredLineFromPoints(b1,b2);
- if(!mA||!mB){ $('res4').innerHTML='<div class="err">Due punti uguali: impossibile ricavare l’inclinazione.</div>'; return; }
- const rawA=lineCoordAtRef(mA,ref,wallAxis), rawB=lineCoordAtRef(mB,ref,wallAxis);
- if(rawA===null||rawB===null){ $('res4').innerHTML=`<div class="err">Una parete è parallela alla direzione del CENTRO ${wallAxis.toUpperCase()}. Scegli l’altro lato o altri punti.</div>`; return; }
+ const toolD=num('wallToolD');
+ const jA=wallUseJohnson?num('wallJohnsonA'):0, jB=wallUseJohnson?num('wallJohnsonB'):0;
+ const p1={x:num('wAx1'),y:num('wAy1')},p2={x:num('wAx2'),y:num('wAy2')},p3={x:num('wBx1'),y:num('wBy1')},p4={x:num('wBx2'),y:num('wBy2')};
+ const req=wallMode===3?[toolD,jA,jB,p1.x,p1.y,p3.x,p3.y,p4.x,p4.y]:[toolD,jA,jB,p1.x,p1.y,p2.x,p2.y,p3.x,p3.y,p4.x,p4.y];
+ if(bad(req)||toolD<0||jA<0||jB<0){$('res4').innerHTML='<div class="err">Controlla Ø tastatore, Johnson e coordinate.</div>';return}
+ let mA,mB,axis,ref;
+ if(wallMode===3){
+  mB=measuredLineFromPoints(p3,p4);
+  if(!mB){$('res4').innerHTML='<div class="err">P3 e P4 devono essere due punti diversi.</div>';return}
+  axis=dominantCenterAxis(mB);
+  mA=alignedMeasuredLine(p1,axis);
+  ref=axis==='x'?p1.y:p1.x;
+ }else{
+  mA=measuredLineFromPoints(p1,p2);mB=measuredLineFromPoints(p3,p4);
+  if(!mA||!mB){$('res4').innerHTML='<div class="err">Ogni parete deve avere due punti diversi.</div>';return}
+  const axisA=dominantCenterAxis(mA),axisB=dominantCenterAxis(mB);
+  if(axisA!==axisB){$('res4').innerHTML='<div class="err">Le due coppie di punti non rappresentano pareti opposte nella stessa direzione.</div>';return}
+  axis=axisA;ref=automaticReference(p1,p2,p3,p4,axis);
+ }
+ const rawA=lineCoordAtRef(mA,ref,axis),rawB=lineCoordAtRef(mB,ref,axis);
+ if(rawA===null||rawB===null){$('res4').innerHTML='<div class="err">Geometria non calcolabile con questi punti.</div>';return}
  const rawCenter=(rawA+rawB)/2;
- const target=wallAxis==='x'?{x:rawCenter,y:ref}:{x:ref,y:rawCenter};
- const dA=toolD/2+jA, dB=toolD/2+jB;
- const pA=shiftedPhysicalLine(mA,target,dA,wallMeasure), pB=shiftedPhysicalLine(mB,target,dB,wallMeasure);
- const realA=lineCoordAtRef(pA,ref,wallAxis), realB=lineCoordAtRef(pB,ref,wallAxis);
- if(realA===null||realB===null||!Number.isFinite(realA)||!Number.isFinite(realB)){ $('res4').innerHTML='<div class="err">Geometria non calcolabile alla quota scelta.</div>'; return; }
- const center=(realA+realB)/2, width=Math.abs(realB-realA), corrA=realA-rawA, corrB=realB-rawB;
- const centerX=wallAxis==='x'?center:ref, centerY=wallAxis==='x'?ref:center;
- if(!Number.isFinite(center)||width<=0){ $('res4').innerHTML='<div class="err">Risultato non valido. Controlla se hai scelto ESTERNO PEZZO o INTERNO CAVA.</div>'; return; }
- localStorage.setItem('probe',String(toolD)); localStorage.setItem('wall_tool_d',String(toolD)); localStorage.setItem('wall_j_a',String(jA)); localStorage.setItem('wall_j_b',String(jB));
- $('res4').innerHTML=
-   box('CENTRO X',fmt(centerX))+box('CENTRO Y',fmt(centerY))+
-   box(`CENTRO ${wallAxis.toUpperCase()} ALLA QUOTA`,fmt(center))+
-   box('QUOTA DI CALCOLO',fmt(ref))+
-   box('LARGHEZZA REALE',fmt(width))+
-   box('PARETE A REALE',fmt(realA))+box('PARETE B REALE',fmt(realB))+
-   box('CORREZIONE A',fmt(corrA))+box('CORREZIONE B',fmt(corrB))+
-   box('ANGOLO PARETE A',fmt(wallAngle(mA),4),'gradi')+box('ANGOLO PARETE B',fmt(wallAngle(mB),4),'gradi')+
-   `<div class="note"><strong>Lato scelto:</strong> ${wallZone.toUpperCase()} · <strong>Contatto:</strong> ${wallMeasure==='external'?'ESTERNO PEZZO':'INTERNO CAVA'}. Compensazioni applicate perpendicolarmente alle pareti: A ${fmt(dA)} mm, B ${fmt(dB)} mm.</div>`;
+ const target=axis==='x'?{x:rawCenter,y:ref}:{x:ref,y:rawCenter};
+ const dA=toolD/2+jA,dB=toolD/2+jB;
+ const realLineA=shiftedPhysicalLine(mA,target,dA,wallMeasure),realLineB=shiftedPhysicalLine(mB,target,dB,wallMeasure);
+ const realA=lineCoordAtRef(realLineA,ref,axis),realB=lineCoordAtRef(realLineB,ref,axis);
+ if(realA===null||realB===null||!Number.isFinite(realA)||!Number.isFinite(realB)){$('res4').innerHTML='<div class="err">Calcolo non riuscito. Controlla interno/esterno e i punti.</div>';return}
+ const center=(realA+realB)/2;
+ if(!Number.isFinite(center)){$('res4').innerHTML='<div class="err">Risultato non valido.</div>';return}
+ localStorage.setItem('probe',String(toolD));localStorage.setItem('wall_tool_d',String(toolD));localStorage.setItem('wall_j_a',String(jA));localStorage.setItem('wall_j_b',String(jB));
+ $('res4').innerHTML=box(`CENTRO ${axis.toUpperCase()}`,fmt(center));
 }
-
 function calc2(){
  const p=num('probe2'),a=num('q1'),b=num('q2');
  if(bad([p,a,b])){$('res2').innerHTML='<div class="err">Controlla i numeri.</div>';return}
@@ -1211,7 +1248,7 @@ function init(){
  renderThreads();
  tolKind=localStorage.getItem('tol_kind')==='albero'?'albero':'foro';
  setTolKind(tolKind);
- const pr=localStorage.getItem('probe');if(pr){if($('probe3'))$('probe3').value=pr;if($('probe2'))$('probe2').value=pr;if($('wallToolD'))$('wallToolD').value=localStorage.getItem('wall_tool_d')||pr}if($('wallJohnsonA'))$('wallJohnsonA').value=localStorage.getItem('wall_j_a')||'0';if($('wallJohnsonB'))$('wallJohnsonB').value=localStorage.getItem('wall_j_b')||'0'; if($('wallToolD'))$('wallToolD').value=localStorage.getItem('wall_tool_d')||$('wallToolD').value; updateWallTargetUI();
+ const pr=localStorage.getItem('probe');if(pr){if($('probe3'))$('probe3').value=pr;if($('probe2'))$('probe2').value=pr;if($('wallToolD'))$('wallToolD').value=localStorage.getItem('wall_tool_d')||pr}if($('wallJohnsonA'))$('wallJohnsonA').value=localStorage.getItem('wall_j_a')||'20';if($('wallJohnsonB'))$('wallJohnsonB').value=localStorage.getItem('wall_j_b')||'20';if($('wallToolD'))$('wallToolD').value=localStorage.getItem('wall_tool_d')||$('wallToolD').value;updateWallDiagram();
  $('voiceRate').value=localStorage.getItem('voice_rate')||'1.12';$('voicePitch').value=localStorage.getItem('voice_pitch')||'1';$('voiceVolume').value=localStorage.getItem('voice_volume')||'1';
  $('audioEnabled').checked=localStorage.getItem('audio_enabled')!=='0';saveVoice();populateVoices();if(synth){synth.onvoiceschanged=populateVoices;setTimeout(populateVoices,250);setTimeout(populateVoices,1000)}
  setupRecognition();
