@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#050505">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>CNC Toolbox v5.7</title>
+<title>CNC Toolbox v5.9</title>
 <style>
 :root{--y:#ffc400;--y2:#dfa500;--b:#050505;--p:#141414;--p2:#0b0b0b;--l:#3e3e3e;--w:#fff;--g:#aaa;--ok:#68e36f;--err:#ff5b5b;--blue:#54baff}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -137,10 +137,20 @@ select{text-align:center;font-size:15px}
 
 
 .measureSketchWrap{display:flex;justify-content:center;margin:4px 0 14px}
-.measureSketch{width:100%;max-width:340px;height:auto;background:#080808;border:2px solid #444;border-radius:12px;padding:6px}
-.measureWall{stroke:#fff;stroke-width:5;stroke-linecap:round}
-.measurePoint{fill:#ffc400;stroke:#050505;stroke-width:3}
-.measurePointText{fill:#050505;font-size:16px;font-weight:900;text-anchor:middle;dominant-baseline:middle}
+.measureSketch{width:100%;max-width:390px;height:auto;background:#080808;border:2px solid #444;border-radius:12px;touch-action:manipulation}
+.previewBackground{fill:#080808}
+.previewPhysicalWall{stroke:#fff;stroke-width:5;stroke-linecap:round}
+.previewMeasuredWall{stroke:#777;stroke-width:2;stroke-dasharray:7 6}
+.previewProbe{fill:#8ad3ff;fill-opacity:.88;stroke:#fff;stroke-width:2;cursor:pointer}
+.previewProbe.selected{stroke:#ffc400;stroke-width:5}
+.previewJohnson{fill:#cfcfcf;stroke:#555;stroke-width:2;cursor:pointer}
+.previewPointBadge{fill:#ffc400;stroke:#050505;stroke-width:2;cursor:pointer}
+.previewPointText{fill:#050505;font-size:13px;font-weight:900;text-anchor:middle;dominant-baseline:middle;pointer-events:none}
+.previewDimensionText{fill:#ffc400;font-size:12px;font-weight:900;paint-order:stroke;stroke:#050505;stroke-width:3px;stroke-linejoin:round;pointer-events:none}
+.previewCenterLine{stroke:#ffc400;stroke-width:2}
+.previewCenterText{fill:#ffc400;font-size:12px;font-weight:900}
+.previewInvalid{fill:#ddd;font-size:15px;font-weight:800;text-anchor:middle}
+.measurePointLink{cursor:pointer}
 
 </style>
 </head>
@@ -148,7 +158,7 @@ select{text-align:center;font-size:15px}
 <div class="app">
 
 <section id="home" class="screen active">
- <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v5.7 · VERTICE E TASTATE SEPARATI</div></div></div>
+ <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v5.9 · TASTIERA NUMERICA</div></div></div>
  <div class="grid"><button class="tile primary wide" onclick="show('assistant')"><div class="icon">🎙️</div>ASSISTENTE VOCALE MECCANICO</button></div>
 
  <div class="sectionTitle">GEOMETRIA</div>
@@ -293,24 +303,12 @@ select{text-align:center;font-size:15px}
   <h2><span class="wallStep">4</span>MISURE TASTATE</h2>
 
   <div class="measureSketchWrap">
-   <svg id="measureSketch" class="measureSketch" viewBox="0 0 320 220" aria-label="Schema tastate sulle due pareti adiacenti">
-    <line id="measureWall1" x1="60" y1="190" x2="60" y2="35" class="measureWall"></line>
-    <line id="measureWall2" x1="60" y1="35" x2="285" y2="55" class="measureWall"></line>
-
-    <circle id="measureP1" cx="60" cy="150" r="16" class="measurePoint"></circle>
-    <text id="measureP1Text" x="60" y="150" class="measurePointText">P1</text>
-
-    <circle id="measureP2" cx="60" cy="85" r="16" class="measurePoint"></circle>
-    <text id="measureP2Text" x="60" y="85" class="measurePointText">P2</text>
-
-    <circle id="measureP3" cx="155" cy="43" r="16" class="measurePoint"></circle>
-    <text id="measureP3Text" x="155" y="43" class="measurePointText">P3</text>
-
-    <circle id="measureP4" cx="245" cy="51" r="16" class="measurePoint"></circle>
-    <text id="measureP4Text" x="245" y="51" class="measurePointText">P4</text>
+   <svg id="measureSketch" class="measureSketch" viewBox="0 0 360 280" aria-label="Anteprima reale delle tastate">
+    <rect x="1" y="1" width="358" height="278" rx="12" class="previewBackground"></rect>
+    <g id="measureDynamic"></g>
    </svg>
   </div>
-  <div id="measureSketchNote" class="hint">P1–P2 sulla prima parete adiacente. P3–P4 sulla seconda parete adiacente.</div>
+  <div id="measureSketchNote" class="hint">Tocca P1, P2, P3 o P4 per andare direttamente alle relative coordinate.</div>
 
   <div id="corner3Inputs">
    <div class="wallSubTitle">P1 · INSERISCI SEMPRE X E Y</div>
@@ -481,12 +479,12 @@ select{text-align:center;font-size:15px}
 
 <section id="scanner" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">SCANNER 3D<small>PROGETTO SEPARATO</small></div><button class="help">?</button></div>
- <div class="card"><h2>LO RIPRENDEREMO SUCCESSIVAMENTE</h2><div class="note">Lo scanner 3D resta separato per non appesantire la Toolbox. Questa v5.7 contiene gli strumenti CNC e l’assistente vocale completo.</div></div>
+ <div class="card"><h2>LO RIPRENDEREMO SUCCESSIVAMENTE</h2><div class="note">Lo scanner 3D resta separato per non appesantire la Toolbox. Questa v5.9 contiene gli strumenti CNC e l’assistente vocale completo.</div></div>
 </section>
 
 <section id="settings" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">MENU</div><button class="help">▤</button></div>
- <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v5.7</div></div><div class="note">Versione a file unico. In modalità 3 punti P1 richiede sempre X e Y; la scelta indica soltanto se applicare la compensazione.</div></div>
+ <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v5.9</div></div><div class="note">Versione a file unico. In modalità 3 punti P1 richiede sempre X e Y; la scelta indica soltanto se applicare la compensazione.</div></div>
  <div class="card"><h2>AZIONI</h2><button class="btn2" onclick="clearSettings()">PULISCI IMPOSTAZIONI</button></div>
 </section>
 
@@ -563,6 +561,7 @@ function openJohnsonCenter(){
  setCornerP1Source(cornerP1Source,false);
  selectCorner(cornerSelected,false);
  setCornerMode(cornerMode);
+ setupMeasurePreviewListeners();
  updateMeasureSketch();
 }
 
@@ -588,6 +587,7 @@ function setCornerP1Source(source,save=true){
  }
 
  updateCornerJohnsonVisibility();
+ updateMeasurePreview();
 }
 
 function updateCornerJohnsonVisibility(){
@@ -624,6 +624,7 @@ function setCornerJohnson(which,enabled,save=true){
   isA?'corner_j_a_enabled':'corner_j_b_enabled',
   enabled?'1':'0'
  );
+ updateMeasurePreview();
 }
 
 function selectCorner(n,focus=true){
@@ -638,51 +639,270 @@ function selectCorner(n,focus=true){
   $('cornerSelectedText').textContent=`VERTICE ${data.name}`;
  }
 
+ updateMeasurePreview();
  if(focus)$('cornerMode3')?.scrollIntoView({behavior:'smooth',block:'center'});
 }
 
-function updateMeasureSketch(){
- const p1=$('measureP1'),p2=$('measureP2'),p3=$('measureP3'),p4=$('measureP4');
- const t1=$('measureP1Text'),t2=$('measureP2Text'),t3=$('measureP3Text'),t4=$('measureP4Text');
- const note=$('measureSketchNote');
- if(!p1||!p2||!p3||!p4)return;
+let measureSelectedPoint=1;
+let measurePreviewBound=false;
+
+function previewFinitePoint(xId,yId,n,lineName){
+ const x=num(xId),y=num(yId);
+ if(!Number.isFinite(x)||!Number.isFinite(y))return null;
+ return {x,y,n,lineName};
+}
+
+function previewLinePoint(line,origin,t){
+ const len=Math.hypot(line.dx,line.dy)||1;
+ return {
+  x:origin.x+(line.dx/len)*t,
+  y:origin.y+(line.dy/len)*t
+ };
+}
+
+function previewProjectOnLine(point,line){
+ const signed=line.nx*point.x+line.ny*point.y-line.c;
+ return {
+  x:point.x-line.nx*signed,
+  y:point.y-line.ny*signed
+ };
+}
+
+function previewBuildData(){
+ const toolD=num('wallToolD');
+ const jA=(cornerMode===4||cornerP1Source==='touch')&&cornerJohnsonA?num('wallJohnsonA'):0;
+ const jB=cornerJohnsonB?num('wallJohnsonB'):0;
+ if(!Number.isFinite(toolD)||toolD<=0||!Number.isFinite(jA)||!Number.isFinite(jB))return null;
+
+ let points=[],measuredA=null,measuredB=null,aPoints=[],bPoints=[];
 
  if(cornerMode===3){
-  p1.style.display='block';t1.style.display='block';
-  p2.style.display='block';t2.style.display='block';
-  p3.style.display='block';t3.style.display='block';
-  p4.style.display='none';t4.style.display='none';
+  const p1=previewFinitePoint('corner3P1X','corner3P1Y',1,'A');
+  const p2=previewFinitePoint('corner3P2X','corner3P2Y',2,'B');
+  const p3=previewFinitePoint('corner3P3X','corner3P3Y',3,'B');
+  if(!p1||!p2||!p3)return null;
 
-  p1.setAttribute('cx','60');p1.setAttribute('cy','120');
-  t1.setAttribute('x','60');t1.setAttribute('y','120');
+  measuredB=cornerLineFromPoints(p2,p3);
+  if(!measuredB)return null;
 
-  p2.setAttribute('cx','155');p2.setAttribute('cy','43');
-  t2.setAttribute('x','155');t2.setAttribute('y','43');
+  const alignedAxis=detectAlignedAxis(measuredB);
+  const alignedValue=alignedAxis==='x'?p1.x:p1.y;
+  measuredA=cornerAlignedLine(alignedAxis,alignedValue);
 
-  p3.setAttribute('cx','245');p3.setAttribute('cy','51');
-  t3.setAttribute('x','245');t3.setAttribute('y','51');
-
-  if(note)note.textContent='P1 sulla parete già allineata. P2–P3 sulla seconda parete adiacente.';
+  points=[p1,p2,p3];
+  aPoints=[p1];
+  bPoints=[p2,p3];
  }else{
-  p1.style.display='block';t1.style.display='block';
-  p2.style.display='block';t2.style.display='block';
-  p3.style.display='block';t3.style.display='block';
-  p4.style.display='block';t4.style.display='block';
+  const p1=previewFinitePoint('corner4P1X','corner4P1Y',1,'A');
+  const p2=previewFinitePoint('corner4P2X','corner4P2Y',2,'A');
+  const p3=previewFinitePoint('corner4P3X','corner4P3Y',3,'B');
+  const p4=previewFinitePoint('corner4P4X','corner4P4Y',4,'B');
+  if(!p1||!p2||!p3||!p4)return null;
 
-  p1.setAttribute('cx','60');p1.setAttribute('cy','150');
-  t1.setAttribute('x','60');t1.setAttribute('y','150');
+  measuredA=cornerLineFromPoints(p1,p2);
+  measuredB=cornerLineFromPoints(p3,p4);
+  if(!measuredA||!measuredB)return null;
 
-  p2.setAttribute('cx','60');p2.setAttribute('cy','85');
-  t2.setAttribute('x','60');t2.setAttribute('y','85');
-
-  p3.setAttribute('cx','155');p3.setAttribute('cy','43');
-  t3.setAttribute('x','155');t3.setAttribute('y','43');
-
-  p4.setAttribute('cx','245');p4.setAttribute('cy','51');
-  t4.setAttribute('x','245');t4.setAttribute('y','51');
-
-  if(note)note.textContent='P1–P2 sulla prima parete adiacente. P3–P4 sulla seconda parete adiacente.';
+  points=[p1,p2,p3,p4];
+  aPoints=[p1,p2];
+  bPoints=[p3,p4];
  }
+
+ const inward=CORNER_DATA[cornerSelected].inward;
+ const orientedA=cornerOrientInward(measuredA,inward);
+ const orientedB=cornerOrientInward(measuredB,inward);
+
+ const physicalA=(cornerMode===3&&cornerP1Source==='wall')
+  ?measuredA
+  :cornerPhysicalLine(measuredA,inward,toolD/2+jA);
+ const physicalB=cornerPhysicalLine(measuredB,inward,toolD/2+jB);
+
+ const center=cornerIntersection(physicalA,physicalB);
+ if(!center||!Number.isFinite(center.x)||!Number.isFinite(center.y))return null;
+
+ return {
+  toolD,jA,jB,points,aPoints,bPoints,
+  measuredA,measuredB,orientedA,orientedB,
+  physicalA,physicalB,center,inward
+ };
+}
+
+function previewPolygon(points){
+ return points.map(p=>`${p.x.toFixed(2)},${p.y.toFixed(2)}`).join(' ');
+}
+
+function updateMeasureSketch(){
+ updateMeasurePreview();
+}
+
+function updateMeasurePreview(){
+ const group=$('measureDynamic');
+ const note=$('measureSketchNote');
+ if(!group)return;
+
+ const data=previewBuildData();
+ if(!data){
+  group.innerHTML='<text x="180" y="140" class="previewInvalid">Inserisci coordinate valide per vedere l’anteprima.</text>';
+  if(note)note.textContent='L’anteprima si aggiorna automaticamente mentre inserisci le quote.';
+  return;
+ }
+
+ const W=360,H=280,margin=30;
+ const maxJ=Math.max(data.jA,data.jB);
+ const realPad=Math.max(data.toolD/2+maxJ,1);
+
+ const all=[...data.points,data.center];
+ for(const point of data.points){
+  all.push(
+   {x:point.x-realPad,y:point.y-realPad},
+   {x:point.x+realPad,y:point.y+realPad}
+  );
+ }
+
+ let minX=Math.min(...all.map(p=>p.x));
+ let maxX=Math.max(...all.map(p=>p.x));
+ let minY=Math.min(...all.map(p=>p.y));
+ let maxY=Math.max(...all.map(p=>p.y));
+
+ let rangeX=Math.max(maxX-minX,1);
+ let rangeY=Math.max(maxY-minY,1);
+ const extra=Math.max(rangeX,rangeY)*.12+realPad*.2;
+ minX-=extra;maxX+=extra;minY-=extra;maxY+=extra;
+ rangeX=maxX-minX;rangeY=maxY-minY;
+
+ const scale=Math.min((W-2*margin)/rangeX,(H-2*margin)/rangeY);
+ const usedW=rangeX*scale,usedH=rangeY*scale;
+ const offX=(W-usedW)/2,offY=(H-usedH)/2;
+
+ const map=p=>({
+  x:offX+(p.x-minX)*scale,
+  y:H-(offY+(p.y-minY)*scale)
+ });
+
+ const svgLine=(a,b,cls)=> {
+  const A=map(a),B=map(b);
+  return `<line x1="${A.x.toFixed(2)}" y1="${A.y.toFixed(2)}" x2="${B.x.toFixed(2)}" y2="${B.y.toFixed(2)}" class="${cls}"></line>`;
+ };
+
+ function wallSegment(line,wallPoints){
+  const len=Math.hypot(line.dx,line.dy)||1;
+  let ux=line.dx/len,uy=line.dy/len;
+  const mid={
+   x:wallPoints.reduce((s,p)=>s+p.x,0)/wallPoints.length,
+   y:wallPoints.reduce((s,p)=>s+p.y,0)/wallPoints.length
+  };
+  if((mid.x-data.center.x)*ux+(mid.y-data.center.y)*uy<0){ux=-ux;uy=-uy}
+  const far=Math.max(...wallPoints.map(p=>Math.hypot(p.x-data.center.x,p.y-data.center.y)))+realPad*2+10/scale;
+  return [
+   data.center,
+   {x:data.center.x+ux*far,y:data.center.y+uy*far}
+  ];
+ }
+
+ const segA=wallSegment(data.physicalA,data.aPoints);
+ const segB=wallSegment(data.physicalB,data.bPoints);
+ const measSegA=wallSegment(data.measuredA,data.aPoints);
+ const measSegB=wallSegment(data.measuredB,data.bPoints);
+
+ let out='';
+ out+=svgLine(measSegA[0],measSegA[1],'previewMeasuredWall');
+ out+=svgLine(measSegB[0],measSegB[1],'previewMeasuredWall');
+ out+=svgLine(segA[0],segA[1],'previewPhysicalWall');
+ out+=svgLine(segB[0],segB[1],'previewPhysicalWall');
+
+ const C=map(data.center);
+ out+=`<line x1="${(C.x-10).toFixed(2)}" y1="${C.y.toFixed(2)}" x2="${(C.x+10).toFixed(2)}" y2="${C.y.toFixed(2)}" class="previewCenterLine"></line>`;
+ out+=`<line x1="${C.x.toFixed(2)}" y1="${(C.y-10).toFixed(2)}" x2="${C.x.toFixed(2)}" y2="${(C.y+10).toFixed(2)}" class="previewCenterLine"></line>`;
+ out+=`<text x="${(C.x+12).toFixed(2)}" y="${(C.y-9).toFixed(2)}" class="previewCenterText">CENTRO</text>`;
+
+ function pointGraphics(point,measuredLine,orientedLine,johnson,showProbe){
+  const P=map(point);
+  const selected=measureSelectedPoint===point.n?' selected':'';
+  const radius=Math.max(5,data.toolD*scale/2);
+  const tangentLen=Math.max(data.toolD*.7,8/scale);
+  let s='';
+
+  if(showProbe){
+   if(johnson>0){
+    const n={x:orientedLine.nx,y:orientedLine.ny};
+    const tLen=Math.hypot(measuredLine.dx,measuredLine.dy)||1;
+    const t={x:measuredLine.dx/tLen,y:measuredLine.dy/tLen};
+    const centerJ={
+     x:point.x+n.x*(data.toolD/2+johnson/2),
+     y:point.y+n.y*(data.toolD/2+johnson/2)
+    };
+    const halfT=tangentLen/2,halfN=johnson/2;
+    const poly=[
+     {x:centerJ.x+t.x*halfT+n.x*halfN,y:centerJ.y+t.y*halfT+n.y*halfN},
+     {x:centerJ.x-t.x*halfT+n.x*halfN,y:centerJ.y-t.y*halfT+n.y*halfN},
+     {x:centerJ.x-t.x*halfT-n.x*halfN,y:centerJ.y-t.y*halfT-n.y*halfN},
+     {x:centerJ.x+t.x*halfT-n.x*halfN,y:centerJ.y+t.y*halfT-n.y*halfN},
+    ].map(map);
+    const J=map(centerJ);
+    s+=`<polygon points="${previewPolygon(poly)}" class="previewJohnson measurePointLink" onclick="focusMeasurePoint(${point.n})"></polygon>`;
+    s+=`<text x="${J.x.toFixed(2)}" y="${(J.y+4).toFixed(2)}" class="previewDimensionText" text-anchor="middle">J${fmt(johnson)}</text>`;
+   }
+
+   s+=`<circle cx="${P.x.toFixed(2)}" cy="${P.y.toFixed(2)}" r="${radius.toFixed(2)}" class="previewProbe${selected} measurePointLink" onclick="focusMeasurePoint(${point.n})"></circle>`;
+   s+=`<text x="${P.x.toFixed(2)}" y="${P.y.toFixed(2)}" class="previewPointText">P${point.n}</text>`;
+   s+=`<text x="${(P.x+radius+4).toFixed(2)}" y="${(P.y-radius-2).toFixed(2)}" class="previewDimensionText">Ø${fmt(data.toolD)}</text>`;
+  }else{
+   s+=`<circle cx="${P.x.toFixed(2)}" cy="${P.y.toFixed(2)}" r="12" class="previewPointBadge${selected} measurePointLink" onclick="focusMeasurePoint(${point.n})"></circle>`;
+   s+=`<text x="${P.x.toFixed(2)}" y="${P.y.toFixed(2)}" class="previewPointText">P${point.n}</text>`;
+   s+=`<text x="${(P.x+16).toFixed(2)}" y="${(P.y-10).toFixed(2)}" class="previewDimensionText">PARETE REALE</text>`;
+  }
+  return s;
+ }
+
+ for(const point of data.points){
+  const isA=point.lineName==='A';
+  const measured=isA?data.measuredA:data.measuredB;
+  const oriented=isA?data.orientedA:data.orientedB;
+  const johnson=isA?data.jA:data.jB;
+  const showProbe=!(cornerMode===3&&point.n===1&&cornerP1Source==='wall');
+  out+=pointGraphics(point,measured,oriented,johnson,showProbe);
+ }
+
+ group.innerHTML=out;
+
+ if(note){
+  const modeText=cornerMode===3
+   ?'P1 sulla prima parete; P2–P3 sulla seconda.'
+   :'P1–P2 sulla prima parete; P3–P4 sulla seconda.';
+  const jText=`Ø tastatore ${fmt(data.toolD)} mm · Johnson ${data.jA>0?'A '+fmt(data.jA):'A OFF'} · ${data.jB>0?'B '+fmt(data.jB):'B OFF'}.`;
+  note.textContent=`${modeText} ${jText} Tocca un punto per modificare le sue coordinate.`;
+ }
+}
+
+function focusMeasurePoint(n){
+ measureSelectedPoint=Number(n)||1;
+ updateMeasurePreview();
+
+ let id='';
+ if(cornerMode===3){
+  id=measureSelectedPoint===1?'corner3P1X':
+     measureSelectedPoint===2?'corner3P2X':
+     measureSelectedPoint===3?'corner3P3X':'corner3P3X';
+ }else{
+  id=`corner4P${Math.max(1,Math.min(4,measureSelectedPoint))}X`;
+ }
+
+ const input=$(id);
+ if(!input)return;
+ input.scrollIntoView({behavior:'smooth',block:'center'});
+ setTimeout(()=>{
+  input.focus();
+  try{input.select()}catch(e){}
+ },350);
+}
+
+function setupMeasurePreviewListeners(){
+ const screen=$('four');
+ if(!screen||measurePreviewBound)return;
+ measurePreviewBound=true;
+ screen.addEventListener('input',event=>{
+  if(event.target instanceof HTMLInputElement)updateMeasurePreview();
+ });
 }
 
 function setCornerMode(mode){
@@ -712,6 +932,7 @@ function setCornerMode(mode){
   $('cornerP1SourceNote').style.display=cornerMode===3?'block':'none';
  }
  updateCornerJohnsonVisibility();
+ if(cornerMode===3&&measureSelectedPoint>3)measureSelectedPoint=3;
  updateMeasureSketch();
 }
 
@@ -859,6 +1080,7 @@ function calcCornerCenter(){
  $('res4').innerHTML=
   box('CENTRO X',fmt(center.x))+
   box('CENTRO Y',fmt(center.y));
+ updateMeasurePreview();
 }
 
 function calc2(){
@@ -1704,7 +1926,59 @@ function toggleListen(){
  try{rec.start()}catch(e){setVA('Microfono già in avvio. Riprova.','bad');debugVoice(e.message||String(e))}
 }
 function clearSettings(){if(confirm('Cancellare le impostazioni salvate?')){localStorage.clear();location.reload()}}
+
+const GEOMETRY_SCREEN_IDS=['three','four','two','angle','chamfer','inter','hex'];
+
+function setupGeometryNumericKeyboards(){
+ GEOMETRY_SCREEN_IDS.forEach(screenId=>{
+  const screen=$(screenId);
+  if(!screen)return;
+
+  screen.querySelectorAll('input.inp:not([type="checkbox"])').forEach(input=>{
+   /*
+    inputmode="decimal" apre il tastierino numerico del telefono.
+    Manteniamo type="text" per accettare sia virgola sia punto,
+    oltre al segno meno necessario per le coordinate CNC.
+   */
+   input.type='text';
+   input.inputMode='decimal';
+   input.setAttribute('inputmode','decimal');
+   input.setAttribute('pattern','-?[0-9]*[\\.,]?[0-9]*');
+   input.setAttribute('autocomplete','off');
+   input.setAttribute('autocapitalize','off');
+   input.setAttribute('spellcheck','false');
+   input.setAttribute('enterkeyhint','done');
+
+   if(input.dataset.numericKeyboardReady==='1')return;
+   input.dataset.numericKeyboardReady='1';
+
+   input.addEventListener('input',()=>{
+    let value=input.value;
+
+    // Elimina lettere o simboli non numerici, mantenendo segno meno e separatore decimale.
+    value=value.replace(/[^0-9,.\-]/g,'');
+
+    // Il segno meno è consentito soltanto all'inizio.
+    const negative=value.includes('-');
+    value=value.replace(/-/g,'');
+    if(negative)value='-'+value;
+
+    // Consente un solo separatore decimale.
+    const sign=value.startsWith('-')?'-':'';
+    const unsigned=sign?value.slice(1):value;
+    const parts=unsigned.split(/[,.]/);
+    if(parts.length>1){
+     value=sign+parts.shift()+','+parts.join('');
+    }
+
+    if(input.value!==value)input.value=value;
+   });
+  });
+ });
+}
+
 function init(){
+ setupGeometryNumericKeyboards();
  renderThreads();
  tolKind=localStorage.getItem('tol_kind')==='albero'?'albero':'foro';
  setTolKind(tolKind);
