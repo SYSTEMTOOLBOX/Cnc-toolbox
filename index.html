@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#050505">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>CNC Toolbox v5.4</title>
+<title>CNC Toolbox v5.7</title>
 <style>
 :root{--y:#ffc400;--y2:#dfa500;--b:#050505;--p:#141414;--p2:#0b0b0b;--l:#3e3e3e;--w:#fff;--g:#aaa;--ok:#68e36f;--err:#ff5b5b;--blue:#54baff}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -135,13 +135,20 @@ select{text-align:center;font-size:15px}
 .wallResultOnly .resultBox{margin:0}
 @media(max-width:390px){.wallCoordinateGrid{grid-template-columns:1fr}.wallResultOnly{grid-template-columns:1fr}}
 
+
+.measureSketchWrap{display:flex;justify-content:center;margin:4px 0 14px}
+.measureSketch{width:100%;max-width:340px;height:auto;background:#080808;border:2px solid #444;border-radius:12px;padding:6px}
+.measureWall{stroke:#fff;stroke-width:5;stroke-linecap:round}
+.measurePoint{fill:#ffc400;stroke:#050505;stroke-width:3}
+.measurePointText{fill:#050505;font-size:16px;font-weight:900;text-anchor:middle;dominant-baseline:middle}
+
 </style>
 </head>
 <body>
 <div class="app">
 
 <section id="home" class="screen active">
- <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v5.4 · P1 X/Y OBBLIGATORI</div></div></div>
+ <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v5.7 · VERTICE E TASTATE SEPARATI</div></div></div>
  <div class="grid"><button class="tile primary wide" onclick="show('assistant')"><div class="icon">🎙️</div>ASSISTENTE VOCALE MECCANICO</button></div>
 
  <div class="sectionTitle">GEOMETRIA</div>
@@ -177,16 +184,24 @@ select{text-align:center;font-size:15px}
 </section>
 
 <section id="assistant" class="screen">
- <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">ASSISTENTE VOCALE<small>PREMI · PARLA · ASCOLTA</small></div><button class="help" onclick="alert('Premi il microfono e fai la domanda. La risposta viene letta automaticamente dopo che il microfono si è chiuso. Esempi: Che punta per M16? Quanto foro per un pollice GAS? Foro 40 H7. Albero 40 h6.')">?</button></div>
+ <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">ASSISTENTE VOCALE<small>PREMI · PARLA · ASCOLTA</small></div><button class="help" onclick="alert('Puoi fare la stessa domanda in molti modi. Esempi: Quanto devo forare per un foro da M18 passo grosso? Che diametro ha il foro da M18? Quanto devo forare per M18 per uno e mezzo? Quanto devo forare per mezzo pollice GAS? Che punta serve per un quarto NPT? Funziona con tutte le misure presenti nelle tabelle.')">?</button></div>
  <div class="assistantHero">
   <div class="status"><span id="vaDot" class="dot"></span><span id="vaStatus">Pronto. Premi il microfono.</span></div>
   <button id="vaMic" class="mic" onclick="toggleListen()">🎤</button>
-  <div id="vaHeard" class="heard">Esempio: “Quanto devo forare per un pollice GAS?”</div>
+  <div id="vaHeard" class="heard">Esempio: “Quanto devo forare per un foro da M18 per uno e mezzo?”</div>
  </div>
  <div class="card"><h2>RISPOSTA</h2><div id="vaAnswer" class="answer q">In attesa della domanda</div><div class="note" style="text-align:center">La risposta parte da sola. Per i dettagli pronuncia: “spiegami”.</div></div>
  <div class="card"><h2>PROVA SCRIVENDO</h2>
-  <div class="writeRow"><input id="vaText" placeholder="Che punta per M16?"><button onclick="sendTyped()">INVIA</button></div>
-  <div class="actions"><button class="btn2" onclick="askAssistant('Che punta per M16?')">M16?</button><button class="btn2" onclick="askAssistant('Quanto devo forare per un pollice GAS?')">GAS 1"</button><button class="btn2" onclick="askAssistant('M33 per 1.5')">M33×1,5</button><button class="btn2" onclick="askAssistant('50 H7')">50 H7</button></div>
+  <div class="writeRow"><input id="vaText" placeholder="Quanto devo forare per M18 passo grosso?"><button onclick="sendTyped()">INVIA</button></div>
+  <div class="actions">
+   <button class="btn2" onclick="askAssistant('Quanto devo forare per un foro da M18 passo grosso?')">M GROSSO</button>
+   <button class="btn2" onclick="askAssistant('Quanto devo forare per un foro da M18 per uno e mezzo?')">M FINE</button>
+   <button class="btn2" onclick="askAssistant('Che diametro ha il foro da M18?')">DIAMETRO FORO</button>
+   <button class="btn2" onclick="askAssistant('Quanto devo forare per mezzo pollice GAS?')">GAS</button>
+   <button class="btn2" onclick="askAssistant('Che punta serve per un quarto NPT?')">NPT</button>
+   <button class="btn2" onclick="askAssistant('Foro 40 H7')">H7</button>
+  </div>
+  <div class="note">Le frasi sono esempi: puoi sostituire M18, il passo o la misura in pollici con qualsiasi filetto presente nelle tabelle.</div>
  </div>
  <div class="card"><h2>AUDIO AUTOMATICO</h2>
   <div class="switchRow"><span>Leggi ogni risposta</span><input id="audioEnabled" type="checkbox" checked></div>
@@ -250,19 +265,20 @@ select{text-align:center;font-size:15px}
     <polygon class="cornerShape" points="58,48 242,42 252,250 48,242"></polygon>
 
     <circle id="cornerV1" class="cornerVertex selected" cx="58" cy="48" r="22" onclick="selectCorner(1)"></circle>
-    <text class="cornerVertexText" x="58" y="48" onclick="selectCorner(1)">1</text>
+    <text class="cornerVertexText" x="58" y="48" onclick="selectCorner(1)">↖</text>
 
     <circle id="cornerV2" class="cornerVertex" cx="242" cy="42" r="22" onclick="selectCorner(2)"></circle>
-    <text class="cornerVertexText" x="242" y="42" onclick="selectCorner(2)">2</text>
+    <text class="cornerVertexText" x="242" y="42" onclick="selectCorner(2)">↗</text>
 
     <circle id="cornerV3" class="cornerVertex" cx="252" cy="250" r="22" onclick="selectCorner(3)"></circle>
-    <text class="cornerVertexText" x="252" y="250" onclick="selectCorner(3)">3</text>
+    <text class="cornerVertexText" x="252" y="250" onclick="selectCorner(3)">↘</text>
 
     <circle id="cornerV4" class="cornerVertex" cx="48" cy="242" r="22" onclick="selectCorner(4)"></circle>
-    <text class="cornerVertexText" x="48" y="242" onclick="selectCorner(4)">4</text>
+    <text class="cornerVertexText" x="48" y="242" onclick="selectCorner(4)">↙</text>
    </svg>
   </div>
-  <div id="cornerSelectedText" class="cornerChoice">VERTICE 1 · ALTO SINISTRA</div>
+  <div id="cornerSelectedText" class="cornerChoice">VERTICE ALTO SINISTRA</div>
+  <div class="hint">Questo disegno serve soltanto a scegliere il vertice. Non rappresenta P1, P2, P3 e P4.</div>
  </div>
 
  <div class="card">
@@ -275,6 +291,26 @@ select{text-align:center;font-size:15px}
 
  <div class="card">
   <h2><span class="wallStep">4</span>MISURE TASTATE</h2>
+
+  <div class="measureSketchWrap">
+   <svg id="measureSketch" class="measureSketch" viewBox="0 0 320 220" aria-label="Schema tastate sulle due pareti adiacenti">
+    <line id="measureWall1" x1="60" y1="190" x2="60" y2="35" class="measureWall"></line>
+    <line id="measureWall2" x1="60" y1="35" x2="285" y2="55" class="measureWall"></line>
+
+    <circle id="measureP1" cx="60" cy="150" r="16" class="measurePoint"></circle>
+    <text id="measureP1Text" x="60" y="150" class="measurePointText">P1</text>
+
+    <circle id="measureP2" cx="60" cy="85" r="16" class="measurePoint"></circle>
+    <text id="measureP2Text" x="60" y="85" class="measurePointText">P2</text>
+
+    <circle id="measureP3" cx="155" cy="43" r="16" class="measurePoint"></circle>
+    <text id="measureP3Text" x="155" y="43" class="measurePointText">P3</text>
+
+    <circle id="measureP4" cx="245" cy="51" r="16" class="measurePoint"></circle>
+    <text id="measureP4Text" x="245" y="51" class="measurePointText">P4</text>
+   </svg>
+  </div>
+  <div id="measureSketchNote" class="hint">P1–P2 sulla prima parete adiacente. P3–P4 sulla seconda parete adiacente.</div>
 
   <div id="corner3Inputs">
    <div class="wallSubTitle">P1 · INSERISCI SEMPRE X E Y</div>
@@ -445,12 +481,12 @@ select{text-align:center;font-size:15px}
 
 <section id="scanner" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">SCANNER 3D<small>PROGETTO SEPARATO</small></div><button class="help">?</button></div>
- <div class="card"><h2>LO RIPRENDEREMO SUCCESSIVAMENTE</h2><div class="note">Lo scanner 3D resta separato per non appesantire la Toolbox. Questa v5.4 contiene gli strumenti CNC e l’assistente vocale completo.</div></div>
+ <div class="card"><h2>LO RIPRENDEREMO SUCCESSIVAMENTE</h2><div class="note">Lo scanner 3D resta separato per non appesantire la Toolbox. Questa v5.7 contiene gli strumenti CNC e l’assistente vocale completo.</div></div>
 </section>
 
 <section id="settings" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">MENU</div><button class="help">▤</button></div>
- <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v5.4</div></div><div class="note">Versione a file unico. In modalità 3 punti P1 richiede sempre X e Y; la scelta indica soltanto se applicare la compensazione.</div></div>
+ <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v5.7</div></div><div class="note">Versione a file unico. In modalità 3 punti P1 richiede sempre X e Y; la scelta indica soltanto se applicare la compensazione.</div></div>
  <div class="card"><h2>AZIONI</h2><button class="btn2" onclick="clearSettings()">PULISCI IMPOSTAZIONI</button></div>
 </section>
 
@@ -527,6 +563,7 @@ function openJohnsonCenter(){
  setCornerP1Source(cornerP1Source,false);
  selectCorner(cornerSelected,false);
  setCornerMode(cornerMode);
+ updateMeasureSketch();
 }
 
 function setWallMode(mode){setCornerMode(mode)}
@@ -598,10 +635,54 @@ function selectCorner(n,focus=true){
 
  const data=CORNER_DATA[cornerSelected];
  if($('cornerSelectedText')){
-  $('cornerSelectedText').textContent=`VERTICE ${cornerSelected} · ${data.name}`;
+  $('cornerSelectedText').textContent=`VERTICE ${data.name}`;
  }
 
  if(focus)$('cornerMode3')?.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+function updateMeasureSketch(){
+ const p1=$('measureP1'),p2=$('measureP2'),p3=$('measureP3'),p4=$('measureP4');
+ const t1=$('measureP1Text'),t2=$('measureP2Text'),t3=$('measureP3Text'),t4=$('measureP4Text');
+ const note=$('measureSketchNote');
+ if(!p1||!p2||!p3||!p4)return;
+
+ if(cornerMode===3){
+  p1.style.display='block';t1.style.display='block';
+  p2.style.display='block';t2.style.display='block';
+  p3.style.display='block';t3.style.display='block';
+  p4.style.display='none';t4.style.display='none';
+
+  p1.setAttribute('cx','60');p1.setAttribute('cy','120');
+  t1.setAttribute('x','60');t1.setAttribute('y','120');
+
+  p2.setAttribute('cx','155');p2.setAttribute('cy','43');
+  t2.setAttribute('x','155');t2.setAttribute('y','43');
+
+  p3.setAttribute('cx','245');p3.setAttribute('cy','51');
+  t3.setAttribute('x','245');t3.setAttribute('y','51');
+
+  if(note)note.textContent='P1 sulla parete già allineata. P2–P3 sulla seconda parete adiacente.';
+ }else{
+  p1.style.display='block';t1.style.display='block';
+  p2.style.display='block';t2.style.display='block';
+  p3.style.display='block';t3.style.display='block';
+  p4.style.display='block';t4.style.display='block';
+
+  p1.setAttribute('cx','60');p1.setAttribute('cy','150');
+  t1.setAttribute('x','60');t1.setAttribute('y','150');
+
+  p2.setAttribute('cx','60');p2.setAttribute('cy','85');
+  t2.setAttribute('x','60');t2.setAttribute('y','85');
+
+  p3.setAttribute('cx','155');p3.setAttribute('cy','43');
+  t3.setAttribute('x','155');t3.setAttribute('y','43');
+
+  p4.setAttribute('cx','245');p4.setAttribute('cy','51');
+  t4.setAttribute('x','245');t4.setAttribute('y','51');
+
+  if(note)note.textContent='P1–P2 sulla prima parete adiacente. P3–P4 sulla seconda parete adiacente.';
+ }
 }
 
 function setCornerMode(mode){
@@ -631,6 +712,7 @@ function setCornerMode(mode){
   $('cornerP1SourceNote').style.display=cornerMode===3?'block':'none';
  }
  updateCornerJohnsonVisibility();
+ updateMeasureSketch();
 }
 
 function cornerLineFromPoints(p1,p2){
@@ -842,7 +924,11 @@ function findMetric(n,pitch=null){
  });
 }
 function cleanInchSize(size){
- return String(size||'').toLowerCase().replace(/\b(gas|bsp|npt)\b/g,'').replace(/^g/,'').replace(/\s+/g,' ').trim();
+ return String(size||'').toLowerCase()
+  .replace(/\b(?:gas|bsp|bspp|npt)\b/g,'')
+  .replace(/^\s*g\s*/,'').replace(/\s*g\s*$/,'')
+  .replace(/\s*\/\s*/g,'/')
+  .replace(/\s+/g,' ').trim();
 }
 function findGas(size){
  const s=cleanInchSize(size);
@@ -853,10 +939,18 @@ function findNpt(size){
  return THREADS.npt.find(r=>cleanInchSize(r[0])===s);
 }
 function extractInchSize(s,rows){
- const sizes=rows.map(r=>cleanInchSize(r[0])).sort((a,b)=>b.length-a.length);
- return sizes.find(size=>new RegExp('(^|\\s)'+size.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'(?=\\s|$)').test(s))
-   ||sizes.find(size=>s.includes(size))
-   ||null;
+ const allowed=new Set(rows.map(r=>cleanInchSize(r[0])));
+ const source=String(s||'').toLowerCase().replace(/\s*\/\s*/g,'/').replace(/\s+/g,' ').trim();
+ const found=[];
+ const rx=/(?:^|[^\d])(\d+\s+\d+\/\d+|\d+\/\d+|\d+)(?=$|[^\d])/g;
+ let m;
+ while((m=rx.exec(source))){
+  const token=cleanInchSize(m[1]);
+  if(allowed.has(token))found.push({token,index:m.index});
+ }
+ if(found.length)return found.sort((a,b)=>b.token.length-a.token.length||b.index-a.index)[0].token;
+ const sizes=[...allowed].sort((a,b)=>b.length-a.length);
+ return sizes.find(size=>new RegExp('(^|[^\\d])'+size.replace(/[.*+?^${}()|[\\]\\]/g,'\\$&')+'(?=$|[^\\d])').test(source))||null;
 }
 function calcTurnThread(){
  const d=num('ttD'),p=num('ttP'),profile=$('ttProfile').value;
@@ -1267,36 +1361,82 @@ function showVA(text,isQuestion=false,detail=''){
 function direct(shortText,detail){pendingFollow=null;showVA(shortText,false,detail||shortText)}
 function normalizeSpeech(input){
  let s=String(input||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')
-  .replace(/[“”"]/g,'').replace(/,/g,'.').replace(/\b(?:virgola|punto)\b/g,'.')
-  .replace(/\s+/g,' ').trim();
+  .replace(/[“”\"'’]/g,' ').replace(/,/g,'.').replace(/\b(?:virgola|punto)\b/g,'.')
+  .replace(/[;:!?]/g,' ').replace(/\s+/g,' ').trim();
+
+ /* I passi decimali vanno riconosciuti prima delle frazioni in pollici. */
+ const pitchPhrases=[
+  [/\b(?:passo|per|x)\s+(?:un|uno|1)\s+e\s+mezzo\b(?!\s*(?:pollic(?:e|i)|gas|bsp|npt))/g,' passo 1.5'],
+  [/\b(?:passo|per|x)\s+(?:due|2)\s+e\s+mezzo\b(?!\s*(?:pollic(?:e|i)|gas|bsp|npt))/g,' passo 2.5'],
+  [/\b(?:passo|per|x)\s+(?:tre|3)\s+e\s+mezzo\b(?!\s*(?:pollic(?:e|i)|gas|bsp|npt))/g,' passo 3.5'],
+  [/\b(?:passo|per|x)\s+(?:quattro|4)\s+e\s+mezzo\b(?!\s*(?:pollic(?:e|i)|gas|bsp|npt))/g,' passo 4.5'],
+  [/\b(?:passo|per|x)\s+(?:cinque|5)\s+e\s+mezzo\b(?!\s*(?:pollic(?:e|i)|gas|bsp|npt))/g,' passo 5.5'],
+  [/\b(?:passo|per|x)\s+(?:un|uno|1)\s+e\s+(?:un\s+)?quarto\b(?!\s*(?:pollic(?:e|i)|gas|bsp|npt))/g,' passo 1.25'],
+  [/\b(?:passo|per|x)\s+(?:tre|3)\s+quarti\b(?!\s*(?:pollic(?:e|i)|gas|bsp|npt))/g,' passo 0.75'],
+  [/\b(?:passo|per|x)\s+(?:un|uno|1)\s+quarto\b(?!\s*(?:pollic(?:e|i)|gas|bsp|npt))/g,' passo 0.25'],
+  [/\b(?:passo|per|x)\s+mezzo\b(?!\s*(?:pollic(?:e|i)|gas|bsp|npt))/g,' passo 0.5']
+ ];
+ pitchPhrases.forEach(([a,b])=>s=s.replace(a,b));
+
  const repl=[
-  [/\b(curare|furare|ferrare|foraree|colorare)\b/g,'forare'],
-  [/\b(bucare|buca|preforare|fare il foro|fare un foro|foro da maschiare)\b/g,'forare'],
-  [/\b(?:uno|un|1)\s+pollice\s+e\s+mezzo\b/g,'1 1/2'],
-  [/\b(?:uno|un|1)\s+pollice\s+e\s+(?:un\s+)?quarto\b/g,'1 1/4'],
-  [/\b(?:uno|un)\s+e\s+mezzo\b/g,'1 1/2'],
-  [/\b(?:uno|un)\s+e\s+(?:un\s+)?quarto\b/g,'1 1/4'],
+  /* Modi ed errori frequenti con cui viene trascritto “forare”. */
+  [/\b(?:curare|furare|ferrare|foraree|fuorare|colorare|vorare|forrare)\b/g,'forare'],
+  [/\b(?:bucare|buca|bucatura|pre\s*foro|preforare|fare\s+il\s+foro|fare\s+un\s+foro|foro\s+da\s+maschiare)\b/g,'forare'],
+  [/\b(?:forro|fuoro)\b/g,'foro'],
+  [/\b(?:fileto|filletto|filetto|filetto)\b/g,'filetto'],
+  [/\b(?:masco|mashio|mascio|maschio)\b/g,'maschio'],
+  [/\b(?:di\s+ametro|diametro)\b/g,'diametro'],
+
+  /* Passo grosso/fine spesso viene trascritto male in officina. */
+  [/\b(?:passa|pazzo|basso)\s+(?=(?:grosso|grasso|rosso|fine|fino|\d))/g,'passo '],
+  [/\b(?:passo\s+grasso|passo\s+grassa|passo\s+rosso|passo\s+rossa|passo\s+grossose|passo\s+grossa)\b/g,'passo grosso'],
+  [/\bpasso\s+(?:fino|fina)\b/g,'passo fine'],
+  [/\b(?:standard|normale)\b/g,'grosso'],
+
+  /* Sigle pronunciate lettera per lettera. */
+  [/\b(?:emme|em)\b/g,'m'],
+  [/\b(?:gi|ge)\s*(?=(?:\d|un\b|uno\b|due\b))/g,'g '],
+  [/\b(?:gass|gasse|gaz|gias|gas)\b/g,'gas'],
+  [/\b(?:b\s*s\s*p\s*p|bsp\s*p|bspp|bsp)\b/g,'bsp'],
+  [/\b(?:enne\s+pi\s+ti|enne\s+p\s+t|n\s*p\s*t|np\s*t|npt)\b/g,'npt'],
+
+  /* Frazioni e misure in pollici. */
+  [/\b(?:uno|un|1)\s+(?:pollic(?:e|i)\s+)?e\s+(?:un\s+)?ottavo\b/g,'1 1/8'],
+  [/\b(?:uno|un|1)\s+(?:pollic(?:e|i)\s+)?e\s+(?:un\s+)?quarto\b/g,'1 1/4'],
+  [/\b(?:uno|un|1)\s+(?:pollic(?:e|i)\s+)?e\s+mezzo\b/g,'1 1/2'],
+  [/\b(?:uno|un|1)\s+(?:pollic(?:e|i)\s+)?e\s+tre\s+quarti\b/g,'1 3/4'],
   [/\btre\s+quarti\b/g,'3/4'],[/\bcinque\s+ottavi\b/g,'5/8'],[/\bsette\s+ottavi\b/g,'7/8'],
-  [/\bmezzo\s+pollice\b/g,'1/2'],[/\bmezzo\b/g,'1/2'],[/\bun\s+quarto\b/g,'1/4'],
-  [/\btre\s+ottavi\b/g,'3/8'],[/\bun\s+ottavo\b/g,'1/8'],
-  [/\b(?:uno|un)\s+pollice\b/g,'1'],
-  /* Errori frequenti del riconoscimento vocale in officina: H7/h7 viene scritto “cassette”. */
+  [/\bmezzo\s+(?:pollic(?:e|i))?\b/g,'1/2'],[/\b(?:un|uno)\s+quarto\b/g,'1/4'],
+  [/\btre\s+ottavi\b/g,'3/8'],[/\b(?:un|uno)\s+ottavo\b/g,'1/8'],
+  [/\b(?:uno|un)\s+pollic(?:e|i)\b/g,'1'],[/\bdue\s+pollic(?:e|i)\b/g,'2'],
+
+  /* Errori già noti sulle tolleranze. */
   [/\b(?:cassette|casette|cassetta|accasette|hassetta|ha\s*sette)\b/g,'h7'],
-  [/\bacca\b/g,'h'],[/\bi\s+lunga\b|\bjota\b/g,'j'],[/\bemme\b/g,'m'],
-  [/\bper\b(?=\s*\d)/g,'x'],[/\bg\s+as\b/g,'gas'],[/\bn\s+p\s+t\b/g,'npt']
+  [/\bacca\b/g,'h'],[/\bi\s+lunga\b|\bjota\b/g,'j']
  ];
  repl.forEach(([a,b])=>s=s.replace(a,b));
+
  const words={
   zero:'0',un:'1',uno:'1',una:'1',due:'2',tre:'3',quattro:'4',cinque:'5',
   sei:'6',sette:'7',otto:'8',nove:'9',dieci:'10',undici:'11',dodici:'12',
   tredici:'13',quattordici:'14',quindici:'15',sedici:'16',diciassette:'17',
-  diciotto:'18',diciannove:'19',venti:'20',ventidue:'22',ventiquattro:'24',
-  ventisette:'27',trenta:'30',trentatre:'33',trentasei:'36',trentanove:'39',
-  quarantadue:'42',quarantacinque:'45',quarantotto:'48',cinquanta:'50',
-  cinquantadue:'52',cinquantasei:'56',sessanta:'60'
+  diciotto:'18',diciannove:'19',venti:'20',ventuno:'21',ventidue:'22',ventitre:'23',
+  ventiquattro:'24',venticinque:'25',ventisei:'26',ventisette:'27',ventotto:'28',
+  ventinove:'29',trenta:'30',trentuno:'31',trentadue:'32',trentatre:'33',
+  trentaquattro:'34',trentacinque:'35',trentasei:'36',trentasette:'37',
+  trentotto:'38',trentanove:'39',quaranta:'40',quarantuno:'41',quarantadue:'42',
+  quarantatre:'43',quarantaquattro:'44',quarantacinque:'45',quarantasei:'46',
+  quarantasette:'47',quarantotto:'48',quarantanove:'49',cinquanta:'50',
+  cinquantuno:'51',cinquantadue:'52',cinquantatre:'53',cinquantaquattro:'54',
+  cinquantacinque:'55',cinquantasei:'56',cinquantasette:'57',cinquantotto:'58',
+  cinquantanove:'59',sessanta:'60'
  };
  Object.entries(words).forEach(([w,n])=>s=s.replace(new RegExp('\\b'+w+'\\b','g'),n));
- return s.replace(/\s*\.\s*/g,'.').replace(/\s+/g,' ').trim();
+
+ return s
+  .replace(/\s*\.\s*/g,'.').replace(/\s*\/\s*/g,'/')
+  .replace(/\bm\s+(?=\d)/g,'m').replace(/\bg\s+(?=\d)/g,'g')
+  .replace(/\s+/g,' ').trim();
 }
 function tolerancePartFromPhrase(phrase=''){
  if(/\b(albero|perno|esterno|maschio)\b/.test(phrase))return 'albero';
@@ -1350,34 +1490,118 @@ function toleranceFromSpeech(s){
  if(tm)return handleSpokenTolerance(Number(tm[2]),tm[1],s);
  return false;
 }
+function parseThreadRequest(input){
+ const s=normalizeSpeech(input);
+
+ /* NPT deve avere precedenza, perché contiene anch’esso una misura in pollici. */
+ const nptIntent=/\bnpt\b/.test(s)||/\b(?:americano\s+conico|conico\s+americano)\b/.test(s);
+ if(nptIntent){
+  const size=extractInchSize(s,THREADS.npt);
+  return size?{family:'npt',size,normalized:s}:{family:'npt',missingSize:true,normalized:s};
+ }
+
+ /* GAS/BSP, comprese le forme G1, G 1/2, 1G e 1/2 G. */
+ const gasIntent=/\b(?:gas|bsp|bspp|pollic(?:e|i))\b/.test(s)
+  ||/\bg\s*\d/.test(s)
+  ||/(?:\d+\s+\d+\/\d+|\d+\/\d+|\d+)\s*g\b/.test(s);
+ if(gasIntent){
+  const size=extractInchSize(s,THREADS.gas);
+  return size?{family:'gas',size,normalized:s}:{family:'gas',missingSize:true,normalized:s};
+ }
+
+ let n=null;
+ let metricEnd=-1;
+ const explicitM=s.match(/\bm\s*(\d+(?:\.\d+)?)/i);
+ if(explicitM){n=Number(explicitM[1]);metricEnd=(explicitM.index||0)+explicitM[0].length}
+
+ /* Senza la M: foro 18, filetto 18, maschio 18, preforo da 18. */
+ if(n===null){
+  const metricContext=s.match(/\b(?:foro|forare|preforo|filetto|maschio|maschiare|maschiatura)\s*(?:da|di|del|della|per)?\s*(\d+(?:\.\d+)?)/i);
+  if(metricContext){n=Number(metricContext[1]);metricEnd=(metricContext.index||0)+metricContext[0].length}
+ }
+
+ if(n===null)return null;
+ const afterSize=s.slice(Math.max(0,metricEnd));
+
+ /* Cerca il passo soltanto DOPO la misura M: evita di leggere “per un foro” come passo 1. */
+ const pitchMatch=afterSize.match(/\b(?:x|per|passo(?:\s+fine)?)\s*(\d+(?:\.\d+)?)/i);
+ if(pitchMatch)return {family:'metric',n,pitch:Number(pitchMatch[1]),normalized:s};
+
+ /* Se dice soltanto “passo fine”, non si può indovinare quale fine. */
+ if(/\b(?:passo\s+fine|filetto\s+fine)\b/.test(afterSize))return {family:'metric',n,needsFinePitch:true,normalized:s};
+
+ /* Passo grosso, standard, normale o nessun passo indicato = metrico grosso. */
+ return {family:'metric',n,pitch:null,normalized:s};
+}
+
+function availableFinePitches(n){
+ return THREADS.fine
+  .map(r=>{const m=String(r[0]).match(/^M([\d.]+)x([\d.]+)$/i);return m&&Number(m[1])===Number(n)?Number(m[2]):null})
+  .filter(v=>v!==null);
+}
+
+function speakFinePitchQuestion(n){
+ const pitches=availableFinePitches(n);
+ if(!pitches.length){showVA(`Non risultano passi fini per M${fmtFlex(n)}.`,true);return}
+ pendingFollow={type:'pitch',n};
+ const list=pitches.map(p=>fmtFlex(p)).join(', ');
+ showVA(`Per M${fmtFlex(n)} dimmi il passo fine: ${list} millimetri.`,true);
+}
+
+function dispatchThreadRequest(req){
+ if(!req)return false;
+ if(req.family==='npt'){
+  if(req.missingSize)showVA('Quale misura NPT?',true);else answerNpt(req.size);
+  return true;
+ }
+ if(req.family==='gas'){
+  if(req.missingSize)showVA('Quale misura GAS?',true);else answerGas(req.size);
+  return true;
+ }
+ if(req.family==='metric'){
+  if(req.needsFinePitch)speakFinePitchQuestion(req.n);else answerMetric(req.n,req.pitch);
+  return true;
+ }
+ return false;
+}
+
+function extractPendingPitch(raw){
+ const s=normalizeSpeech('passo '+String(raw||''));
+ const m=s.match(/\bpasso\s*(\d+(?:\.\d+)?)/);
+ return m?Number(m[1]):NaN;
+}
+
+function voiceTranscriptScore(text){
+ const s=normalizeSpeech(text);
+ let score=0;
+ if(parseThreadRequest(s))score+=100;
+ if(/\b(?:foro|forare|preforo|filetto|maschio|m\d|gas|bsp|npt|g\d)\b/.test(s))score+=20;
+ if(/\b(?:passo|grosso|fine|punta|diametro)\b/.test(s))score+=8;
+ return score;
+}
+
+function bestVoiceAlternative(result){
+ let best=result[0]?.transcript||'';
+ let bestScore=-Infinity;
+ for(let i=0;i<result.length;i++){
+  const alt=result[i];
+  const score=voiceTranscriptScore(alt.transcript)+(Number(alt.confidence)||0);
+  if(score>bestScore){bestScore=score;best=alt.transcript||best}
+ }
+ return best;
+}
+
 function askAssistant(raw){
  const s=normalizeSpeech(raw);if(!s)return;$('vaHeard').textContent=raw;
  if(/\b(spiegami|dettagli|approfondisci)\b/.test(s)){showVA(lastDetail||'Non ho ancora una risposta da spiegare.',!lastDetail);return}
  if(pendingFollow?.type==='pitch'){
-  const p=Number((s.match(/\d+(?:\.\d+)?/)||[])[0]);
+  const p=extractPendingPitch(raw);
   if(Number.isFinite(p)){answerMetric(pendingFollow.n,p);return}
  }
  if(toleranceFromSpeech(s))return;
 
- /* NPT: controllato prima del GAS per non confondere i pollici. */
- if(/\bnpt\b/.test(s)){
-  const size=extractInchSize(s,THREADS.npt);
-  if(size){answerNpt(size);return}
-  showVA('Quale misura NPT?',true);return
- }
-
- /* GAS / BSP: G1, 1G, 1 GAS, un pollice GAS. */
- if(/\b(gas|bsp|pollice)\b/.test(s)||/\bg\s*\d/.test(s)||/\d\s*g\b/.test(s)){
-  const size=extractInchSize(s,THREADS.gas);
-  if(size){answerGas(size);return}
-  showVA('Quale misura GAS?',true);return
- }
-
- /* Metrico fine: M33x1.5, M33 per 1.5, M33 passo 1.5. */
- let mm=s.match(/\bm\s*(\d+(?:\.\d+)?)\s*(?:x|passo)\s*(\d+(?:\.\d+)?)\b/i);
- if(mm){answerMetric(Number(mm[1]),Number(mm[2]));return}
- mm=s.match(/\bm\s*(\d+(?:\.\d+)?)\b/i);
- if(mm){answerMetric(Number(mm[1]),null);return}
+ /* Tutte le richieste di filettatura passano da un solo interprete generale. */
+ if(dispatchThreadRequest(parseThreadRequest(s)))return;
 
  if(/\b(linguetta|cava)\b/.test(s)){
   const dm=(s.match(/(?:diametro|albero|d)\s*(\d+(?:\.\d+)?)/)||s.match(/(\d+(?:\.\d+)?)/));
@@ -1411,7 +1635,7 @@ function askAssistant(raw){
    return
   }
  }
- showVA('Domanda non riconosciuta. Prova: “Che punta per M16?”',true)
+ showVA('Domanda non riconosciuta. Prova: “Quanto devo forare per M18 passo grosso?”',true)
 }
 function answerMetric(n,pitch){
  const r=findMetric(n,pitch);
@@ -1451,11 +1675,15 @@ function setupRecognition(){
  const SR=window.SpeechRecognition||window.webkitSpeechRecognition,secure=window.isSecureContext;
  $('voiceSupport').innerHTML=(secure?'<span class="ok">✓ Pagina sicura.</span>':'<span class="err">✗ Per il microfono apri l’app tramite HTTPS.</span>')+'<br>'+(SR?'<span class="ok">✓ Riconoscimento vocale disponibile.</span>':'<span class="err">✗ Riconoscimento vocale non disponibile.</span>')+'<br>'+(synth?'<span class="ok">✓ Risposta parlata disponibile.</span>':'<span class="err">✗ Sintesi vocale non disponibile.</span>');
  if(!SR){setVA('Microfono non supportato. Puoi scrivere.','bad');return}
- rec=new SR();rec.lang='it-IT';rec.interimResults=true;rec.continuous=false;rec.maxAlternatives=3;
+ rec=new SR();rec.lang='it-IT';rec.interimResults=true;rec.continuous=false;rec.maxAlternatives=5;
  rec.onstart=()=>{listening=true;finalHandled=false;speechPending='';setVA('Sto ascoltando…','listen');$('vaHeard').textContent='Parla adesso…'};
  rec.onresult=e=>{
   let fin='',tmp='';
-  for(let i=e.resultIndex;i<e.results.length;i++){const t=e.results[i][0]?.transcript||'';e.results[i].isFinal?fin+=(fin?' ':'')+t:tmp+=(tmp?' ':'')+t}
+  for(let i=e.resultIndex;i<e.results.length;i++){
+   const result=e.results[i];
+   const t=result.isFinal?bestVoiceAlternative(result):(result[0]?.transcript||'');
+   result.isFinal?fin+=(fin?' ':'')+t:tmp+=(tmp?' ':'')+t;
+  }
   $('vaHeard').textContent=fin||tmp||'Sto ascoltando…';
   if(fin&&!finalHandled){finalHandled=true;askAssistant(fin);try{rec.stop()}catch(err){}}
  };
@@ -1465,7 +1693,6 @@ function setupRecognition(){
   try{synth?.resume()}catch(e){}
   if(speechPending){
    setVA('Avvio la risposta audio…','talk');clearTimeout(speechTimer);
-   /* Tempo necessario a liberare l'audio del microfono su Android/Honor. */
    speechTimer=setTimeout(flushSpeech,780)
   }else if(!$('vaDot').classList.contains('bad'))setVA('Pronto. Premi il microfono.')
  };
