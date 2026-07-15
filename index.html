@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#050505">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>CNC Toolbox v5.9</title>
+<title>CNC Toolbox v6.1</title>
 <style>
 :root{--y:#ffc400;--y2:#dfa500;--b:#050505;--p:#141414;--p2:#0b0b0b;--l:#3e3e3e;--w:#fff;--g:#aaa;--ok:#68e36f;--err:#ff5b5b;--blue:#54baff}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -158,7 +158,7 @@ select{text-align:center;font-size:15px}
 <div class="app">
 
 <section id="home" class="screen active">
- <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v5.9 · TASTIERA NUMERICA</div></div></div>
+ <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v6.1 · DIVIDI A METÀ</div></div></div>
  <div class="grid"><button class="tile primary wide" onclick="show('assistant')"><div class="icon">🎙️</div>ASSISTENTE VOCALE MECCANICO</button></div>
 
  <div class="sectionTitle">GEOMETRIA</div>
@@ -166,6 +166,7 @@ select{text-align:center;font-size:15px}
   <button class="tile primary" onclick="show('three')"><div class="icon">◎</div>CENTRO 3 PUNTI</button>
   <button class="tile" onclick="openJohnsonCenter()"><div class="icon">▣</div>CENTRO DA VERTICE<br>3 / 4 PUNTI</button>
   <button class="tile" onclick="show('two')"><div class="icon">⟍</div>CENTRO 2 PUNTI</button>
+  <button class="tile primary" onclick="show('half')"><div class="icon">½</div>DIVIDI A METÀ</button>
   <button class="tile" onclick="show('angle')"><div class="icon">∠</div>ANGOLO</button>
   <button class="tile primary" onclick="show('chamfer')"><div class="icon">45°</div>SMUSSI</button>
   <button class="tile" onclick="show('inter')"><div class="icon">↔</div>INTERASSE</button>
@@ -384,6 +385,22 @@ select{text-align:center;font-size:15px}
  <div class="card"><div class="row"><div class="label">Ø sfera</div><input id="probe2" class="inp" value="10"></div><div class="seg"><button id="m2foro" class="on" onclick="setSeg('m2','foro')">FORO</button><button id="m2perno" onclick="setSeg('m2','perno')">PERNO</button></div><div class="row"><div class="label">Quota 1</div><input id="q1" class="inp" value="0"></div><div class="row"><div class="label">Quota 2</div><input id="q2" class="inp" value="100"></div><button class="btn" onclick="calc2()">CALCOLA</button><div id="res2"></div></div>
 </section>
 
+<section id="half" class="screen">
+ <div class="header">
+  <button class="back" onclick="show('home')">‹</button>
+  <div class="title">DIVIDI A METÀ<small>UNA SOLA MISURA</small></div>
+  <button class="help" onclick="alert('Inserisci la misura totale. L’app restituisce esattamente la metà. Esempio: 85 diventa 42,5.')">?</button>
+ </div>
+ <div class="card">
+  <div class="row">
+   <div class="label">Misura totale</div>
+   <input id="halfValue" class="inp" value="100">
+  </div>
+  <button class="btn" onclick="calcHalf()">CALCOLA METÀ</button>
+  <div id="resHalf"></div>
+ </div>
+</section>
+
 <section id="angle" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">ANGOLO<small>DA 2 PUNTI</small></div><button class="help">?</button></div>
  <div class="card"><div class="row"><div class="label">P1 X</div><input id="ax1" class="inp" value="0"></div><div class="row"><div class="label">P1 Y</div><input id="ay1" class="inp" value="0"></div><div class="row"><div class="label">P2 X</div><input id="ax2" class="inp" value="100"></div><div class="row"><div class="label">P2 Y</div><input id="ay2" class="inp" value="1"></div><button class="btn" onclick="calcAngle()">CALCOLA</button><div id="resAngle"></div></div>
@@ -479,12 +496,12 @@ select{text-align:center;font-size:15px}
 
 <section id="scanner" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">SCANNER 3D<small>PROGETTO SEPARATO</small></div><button class="help">?</button></div>
- <div class="card"><h2>LO RIPRENDEREMO SUCCESSIVAMENTE</h2><div class="note">Lo scanner 3D resta separato per non appesantire la Toolbox. Questa v5.9 contiene gli strumenti CNC e l’assistente vocale completo.</div></div>
+ <div class="card"><h2>LO RIPRENDEREMO SUCCESSIVAMENTE</h2><div class="note">Lo scanner 3D resta separato per non appesantire la Toolbox. Questa v6.1 contiene gli strumenti CNC e l’assistente vocale completo.</div></div>
 </section>
 
 <section id="settings" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">MENU</div><button class="help">▤</button></div>
- <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v5.9</div></div><div class="note">Versione a file unico. In modalità 3 punti P1 richiede sempre X e Y; la scelta indica soltanto se applicare la compensazione.</div></div>
+ <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v6.1</div></div><div class="note">Versione a file unico. In modalità 3 punti P1 richiede sempre X e Y; la scelta indica soltanto se applicare la compensazione.</div></div>
  <div class="card"><h2>AZIONI</h2><button class="btn2" onclick="clearSettings()">PULISCI IMPOSTAZIONI</button></div>
 </section>
 
@@ -1103,6 +1120,15 @@ function calcChamfer(){
  const normalOffset=r,diag=Math.hypot(c,radial);
  $('resChamfer').innerHTML=box('X PICCOLO',fmt(xSmall))+box('X SPIGOLO',fmt(d))+box('Z FINALE',fmt(z2))+box('Δ X DIAMETRALE',fmt(diaDelta))+box('LUNGHEZZA SMUSSO',fmt(diag))+box('OFFSET NORMALE R',fmt(normalOffset));
 }
+function calcHalf(){
+ const value=num('halfValue');
+ if(!Number.isFinite(value)){
+  $('resHalf').innerHTML='<div class="err">Inserisci una misura valida.</div>';
+  return;
+ }
+ $('resHalf').innerHTML=box('METÀ',fmt(value/2));
+}
+
 function calcInter(){
  const x1=num('ix1'),y1=num('iy1'),x2=num('ix2'),y2=num('iy2');
  if(bad([x1,y1,x2,y2])){$('resInter').innerHTML='<div class="err">Controlla i numeri.</div>';return}
@@ -1927,16 +1953,16 @@ function toggleListen(){
 }
 function clearSettings(){if(confirm('Cancellare le impostazioni salvate?')){localStorage.clear();location.reload()}}
 
-const GEOMETRY_SCREEN_IDS=['three','four','two','angle','chamfer','inter','hex'];
+const NUMERIC_SCREEN_IDS=['three','four','two','half','angle','chamfer','inter','hex','feeds'];
 
-function setupGeometryNumericKeyboards(){
- GEOMETRY_SCREEN_IDS.forEach(screenId=>{
+function setupNumericKeyboards(){
+ NUMERIC_SCREEN_IDS.forEach(screenId=>{
   const screen=$(screenId);
   if(!screen)return;
 
   screen.querySelectorAll('input.inp:not([type="checkbox"])').forEach(input=>{
    /*
-    inputmode="decimal" apre il tastierino numerico del telefono.
+    inputmode="decimal" apre il tastierino numerico del telefono sia in Geometria sia nei Parametri CNC.
     Manteniamo type="text" per accettare sia virgola sia punto,
     oltre al segno meno necessario per le coordinate CNC.
    */
@@ -1978,7 +2004,12 @@ function setupGeometryNumericKeyboards(){
 }
 
 function init(){
- setupGeometryNumericKeyboards();
+ setupNumericKeyboards();
+ if($('halfValue')){
+  $('halfValue').addEventListener('keydown',event=>{
+   if(event.key==='Enter')calcHalf();
+  });
+ }
  renderThreads();
  tolKind=localStorage.getItem('tol_kind')==='albero'?'albero':'foro';
  setTolKind(tolKind);
