@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#050505">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>CNC Toolbox v6.4</title>
+<title>CNC Toolbox v6.5</title>
 <style>
 :root{--y:#ffc400;--y2:#dfa500;--b:#050505;--p:#141414;--p2:#0b0b0b;--l:#3e3e3e;--w:#fff;--g:#aaa;--ok:#68e36f;--err:#ff5b5b;--blue:#54baff}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -155,7 +155,7 @@ select{text-align:center;font-size:15px}
 <div class="app">
 
 <section id="home" class="screen active">
- <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v6.4 · GRAFICO SENZA LEGENDA</div></div></div>
+ <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v6.5 · ANGOLO PEZZO</div></div></div>
  <div class="grid"><button class="tile primary wide" onclick="show('assistant')"><div class="icon">🎙️</div>ASSISTENTE VOCALE MECCANICO</button></div>
 
  <div class="sectionTitle">GEOMETRIA</div>
@@ -489,12 +489,12 @@ select{text-align:center;font-size:15px}
 
 <section id="scanner" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">SCANNER 3D<small>PROGETTO SEPARATO</small></div><button class="help">?</button></div>
- <div class="card"><h2>LO RIPRENDEREMO SUCCESSIVAMENTE</h2><div class="note">Lo scanner 3D resta separato per non appesantire la Toolbox. Questa v6.4 contiene gli strumenti CNC e l’assistente vocale completo.</div></div>
+ <div class="card"><h2>LO RIPRENDEREMO SUCCESSIVAMENTE</h2><div class="note">Lo scanner 3D resta separato per non appesantire la Toolbox. Questa v6.5 contiene gli strumenti CNC e l’assistente vocale completo.</div></div>
 </section>
 
 <section id="settings" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">MENU</div><button class="help">▤</button></div>
- <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v6.4</div></div><div class="note">Versione a file unico. In modalità 3 punti P1 richiede sempre X e Y; la scelta indica soltanto se applicare la compensazione.</div></div>
+ <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v6.5</div></div><div class="note">Versione a file unico. In modalità 3 punti P1 richiede sempre X e Y; la scelta indica soltanto se applicare la compensazione.</div></div>
  <div class="card"><h2>AZIONI</h2><button class="btn2" onclick="clearSettings()">PULISCI IMPOSTAZIONI</button></div>
 </section>
 
@@ -961,6 +961,34 @@ function cornerIntersection(a,b){
  };
 }
 
+function cornerPieceAngle(lineA,lineB,inward){
+ function inwardRay(line){
+  const len=Math.hypot(line.dx,line.dy);
+  if(len<1e-12)return null;
+
+  let x=line.dx/len;
+  let y=line.dy/len;
+
+  /*
+   La direzione della parete viene orientata dal vertice verso l'interno
+   del pezzo, usando il vertice scelto dall'operatore.
+  */
+  if(x*inward.x+y*inward.y<0){
+   x=-x;
+   y=-y;
+  }
+
+  return {x,y};
+ }
+
+ const rayA=inwardRay(lineA);
+ const rayB=inwardRay(lineB);
+ if(!rayA||!rayB)return NaN;
+
+ const dot=Math.max(-1,Math.min(1,rayA.x*rayB.x+rayA.y*rayB.y));
+ return Math.acos(dot)*180/Math.PI;
+}
+
 function calcCornerCenter(){
  const toolD=num('wallToolD');
  const jA=cornerJohnsonA?num('wallJohnsonA'):0;
@@ -1036,8 +1064,14 @@ function calcCornerCenter(){
  );
 
  const center=cornerIntersection(physicalA,physicalB);
+ const pieceAngle=cornerPieceAngle(physicalA,physicalB,inward);
 
- if(!center||!Number.isFinite(center.x)||!Number.isFinite(center.y)){
+ if(
+  !center||
+  !Number.isFinite(center.x)||
+  !Number.isFinite(center.y)||
+  !Number.isFinite(pieceAngle)
+ ){
   $('res4').innerHTML='<div class="err">Le due pareti risultano parallele.</div>';
   return;
  }
@@ -1049,7 +1083,8 @@ function calcCornerCenter(){
 
  $('res4').innerHTML=
   box('CENTRO X',fmt(center.x))+
-  box('CENTRO Y',fmt(center.y));
+  box('CENTRO Y',fmt(center.y))+
+  box('ANGOLO PEZZO',fmt(pieceAngle,3),'gradi');
  updateMeasurePreview();
 }
 
