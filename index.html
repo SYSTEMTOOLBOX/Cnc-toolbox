@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#050505">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>CNC Toolbox v6.6</title>
+<title>CNC Toolbox v6.8</title>
 <style>
 :root{--y:#ffc400;--y2:#dfa500;--b:#050505;--p:#141414;--p2:#0b0b0b;--l:#3e3e3e;--w:#fff;--g:#aaa;--ok:#68e36f;--err:#ff5b5b;--blue:#54baff}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -149,13 +149,50 @@ select{text-align:center;font-size:15px}
 .previewInvalid{fill:#ddd;font-size:15px;font-weight:800;text-anchor:middle}
 .measurePointLink{cursor:pointer}
 
+
+/* v6.8 · Gestione utensili */
+.toolAddLine{display:grid;grid-template-columns:1fr 118px;gap:8px;align-items:center}
+.toolTextInput{width:100%;min-width:0;height:52px;border-radius:9px;border:2px solid #ddd;background:#fff;color:#050505;padding:0 10px;font-size:17px;font-weight:900}
+.toolMachineList,.toolList{display:grid;gap:9px;margin-top:11px}
+.toolMachineRow{display:grid;grid-template-columns:1fr 92px;gap:8px;padding:9px;border:1px solid #444;border-radius:10px;background:#0b0b0b}
+.toolMachineRow .toolTextInput{height:46px}
+.toolMiniBtn{min-height:44px;border:2px solid var(--y);border-radius:8px;background:#090909;color:var(--y);font-weight:900;padding:7px}
+.toolMiniBtn.primary{background:var(--y);color:#050505}
+.toolMiniBtn.danger{border-color:var(--err);color:var(--err)}
+.toolEmpty{border:1px dashed #555;border-radius:10px;padding:17px;text-align:center;color:#aaa;font-weight:800;line-height:1.45}
+.toolFormGrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.toolField{display:grid;gap:6px}
+.toolField.full{grid-column:1/-1}
+.toolField label{font-size:13px;color:#ccc;font-weight:900}
+.toolField .inp,.toolField select,.toolField .toolTextInput{height:49px}
+.toolCard{border:1.5px solid #444;border-radius:12px;background:linear-gradient(145deg,#161616,#080808);padding:12px}
+.toolCardHead{display:flex;align-items:flex-start;justify-content:space-between;gap:9px;margin-bottom:8px}
+.toolCardTitle{color:var(--y);font-size:18px;font-weight:900;line-height:1.2}
+.toolCardLocation{text-align:right;color:#fff;font-size:13px;font-weight:900;line-height:1.35}
+.toolCardMeta{color:#aaa;font-size:12px;line-height:1.45;margin:7px 0}
+.toolEditGrid{display:grid;grid-template-columns:1fr 112px;gap:8px;margin-top:9px}
+.toolEditGrid select,.toolEditGrid input{height:47px}
+.toolCardActions{display:grid;grid-template-columns:1fr 92px;gap:8px;margin-top:8px}
+.toolSummary{display:flex;justify-content:space-between;gap:10px;border:1px solid #444;border-radius:9px;padding:10px;margin-top:9px;color:#ddd;font-weight:900}
+.toolSummary strong{color:var(--y)}
+.toolBackupGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.toolToast{position:fixed;left:50%;bottom:95px;transform:translateX(-50%) translateY(20px);background:var(--y);color:#050505;border:3px solid #050505;border-radius:11px;padding:12px 18px;font-weight:900;z-index:2000;opacity:0;pointer-events:none;transition:.2s;max-width:calc(100% - 30px);text-align:center}
+.toolToast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(max-width:430px){
+ .toolFormGrid{grid-template-columns:1fr}
+ .toolField.full{grid-column:auto}
+ .toolEditGrid{grid-template-columns:1fr}
+ .toolCardActions{grid-template-columns:1fr 86px}
+ .toolAddLine{grid-template-columns:1fr 105px}
+}
+
 </style>
 </head>
 <body>
 <div class="app">
 
 <section id="home" class="screen active">
- <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v6.6 · CALCOLATORE MATERIALI</div></div></div>
+ <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v6.8 · GESTIONE UTENSILI</div></div></div>
  <div class="grid"><button class="tile primary wide" onclick="show('assistant')"><div class="icon">🎙️</div>ASSISTENTE VOCALE MECCANICO</button></div>
 
  <div class="sectionTitle">GEOMETRIA</div>
@@ -182,6 +219,7 @@ select{text-align:center;font-size:15px}
 
  <div class="sectionTitle">STRUMENTI</div>
  <div class="grid">
+  <button class="tile primary wide" onclick="openToolManager()"><div class="icon">🧰</div>GESTIONE UTENSILI<br><small>TROVA DOVE SONO MONTATI</small></button>
   <button class="tile primary" onclick="show('materials');updateMaterialForm()"><div class="icon">⚖</div>CALCOLATORE MATERIALI</button>
   <button class="tile" onclick="show('calculator')"><div class="icon">🧮</div>CALCOLATRICE</button>
   <button class="tile" onclick="show('ruler');updateRuler()"><div class="icon">📏</div>RIGHELLO / CALIBRO</button>
@@ -460,11 +498,97 @@ select{text-align:center;font-size:15px}
  <div class="card"><div class="row"><div class="label">Pollici</div><input id="convIn" class="inp" value="1"></div><button class="btn" onclick="inMm()">POLLICI → MM</button><div id="resConv2"></div></div>
 </section>
 
+<section id="toolmanager" class="screen">
+ <div class="header">
+  <button class="back" onclick="show('home')">‹</button>
+  <div class="title">GESTIONE UTENSILI<small>TROVA SUBITO DOVE SONO</small></div>
+  <button class="help" onclick="alert('Crea le macchine della tua officina. Poi registra ogni utensile indicando diametro, descrizione, macchina e posizione T o cassetto. Tutto resta memorizzato sul dispositivo.')">?</button>
+ </div>
+
+ <div class="card">
+  <h2>1 · LE MIE MACCHINE</h2>
+  <div class="toolAddLine">
+   <input id="toolMachineName" class="toolTextInput" placeholder="Nome macchina, es. CME">
+   <button class="toolMiniBtn primary" onclick="addToolMachine()">AGGIUNGI</button>
+  </div>
+  <div id="toolMachineList" class="toolMachineList"></div>
+  <button class="btn" onclick="memorizeWorkshop()">MEMORIZZA OFFICINA</button>
+  <div class="hint">Puoi aggiungere tutte le macchine che vuoi. I nomi rimangono salvati anche quando chiudi l’app.</div>
+ </div>
+
+ <div class="card">
+  <h2>2 · AGGIUNGI UTENSILE</h2>
+  <div class="toolFormGrid">
+   <div class="toolField">
+    <label>Tipo utensile</label>
+    <select id="toolNewType">
+     <option>PUNTA</option>
+     <option>FRESA</option>
+     <option>MASCHIO</option>
+     <option>ALESATORE</option>
+     <option>CENTRINO</option>
+     <option>BARENO</option>
+     <option>SVASATORE</option>
+     <option>ALTRO</option>
+    </select>
+   </div>
+
+   <div class="toolField">
+    <label>Diametro mm</label>
+    <input id="toolNewDiameter" class="inp" inputmode="decimal" placeholder="5,5">
+   </div>
+
+   <div class="toolField full">
+    <label>Descrizione facoltativa</label>
+    <input id="toolNewDescription" class="toolTextInput" placeholder="Es. metallo duro, 4 taglienti">
+   </div>
+
+   <div class="toolField">
+    <label>Dove si trova</label>
+    <select id="toolNewLocation"></select>
+   </div>
+
+   <div class="toolField">
+    <label>Posizione T / cassetto</label>
+    <input id="toolNewPosition" class="toolTextInput" placeholder="Es. T18 oppure Cassetto 4">
+   </div>
+  </div>
+
+  <button class="btn" onclick="addWorkshopTool()">AGGIUNGI E MEMORIZZA</button>
+  <div class="hint">Ogni riga rappresenta un utensile fisico. Se possiedi tre punte Ø5,5, registrale tre volte: così ognuna può trovarsi in un posto diverso.</div>
+ </div>
+
+ <div class="card">
+  <h2>3 · CERCA E SPOSTA</h2>
+  <input id="toolSearch" class="search" placeholder="Cerca 5,5 · fresa · CME · T18" oninput="renderWorkshopTools()">
+
+  <div class="row">
+   <div class="label">Mostra</div>
+   <select id="toolLocationFilter" onchange="renderWorkshopTools()"></select>
+  </div>
+
+  <div id="toolSummary" class="toolSummary"></div>
+  <div id="toolList" class="toolList"></div>
+ </div>
+
+ <div class="card">
+  <h2>4 · BACKUP</h2>
+  <div class="toolBackupGrid">
+   <button class="btn2" onclick="exportToolBackup()">ESPORTA BACKUP</button>
+   <button class="btn2" onclick="$('toolBackupFile').click()">IMPORTA BACKUP</button>
+  </div>
+  <input id="toolBackupFile" type="file" accept=".json,application/json" hidden onchange="importToolBackup(this.files?.[0])">
+  <div class="hint">Il salvataggio normale resta sul dispositivo. Il backup serve se cambi telefono, cancelli i dati dell’app o reinstalli la futura versione Play Store.</div>
+ </div>
+</section>
+
+<div id="toolToast" class="toolToast"></div>
+
 <section id="materials" class="screen">
  <div class="header">
   <button class="back" onclick="show('home')">‹</button>
   <div class="title">CALCOLATORE MATERIALI<small>PESO METALLI E PROFILI</small></div>
-  <button class="help" onclick="alert('Scegli materiale e forma, inserisci le misure in millimetri, la lunghezza e la quantità. La densità è modificabile per adattarla alla lega reale.')">?</button>
+  <button class="help" onclick="alert('Scegli materiale e forma, poi inserisci misure, lunghezza e quantità. Puoi usare prezzo al kg, al metro oppure il prezzo totale di una barra.')">?</button>
  </div>
 
  <div class="card">
@@ -533,8 +657,22 @@ select{text-align:center;font-size:15px}
   </div>
 
   <div class="row">
-   <div class="label">Prezzo €/kg</div>
+   <div class="label">Tipo di prezzo</div>
+   <select id="matPriceMode" onchange="updateMaterialPriceMode();calcMaterial()">
+    <option value="kg">PREZZO AL KG</option>
+    <option value="meter">PREZZO AL METRO</option>
+    <option value="bar">PREZZO DELLA BARRA</option>
+   </select>
+  </div>
+
+  <div class="row">
+   <div id="matPriceLabel" class="label">Prezzo €/kg</div>
    <input id="matPrice" class="inp" value="0">
+  </div>
+
+  <div id="matBarLengthRow" class="row" style="display:none">
+   <div class="label">Lunghezza barra mm</div>
+   <input id="matBarLength" class="inp" value="6000">
   </div>
 
   <button class="btn" onclick="calcMaterial()">CALCOLA PESO</button>
@@ -573,12 +711,12 @@ select{text-align:center;font-size:15px}
 
 <section id="scanner" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">SCANNER 3D<small>PROGETTO SEPARATO</small></div><button class="help">?</button></div>
- <div class="card"><h2>LO RIPRENDEREMO SUCCESSIVAMENTE</h2><div class="note">Lo scanner 3D resta separato per non appesantire la Toolbox. Questa v6.6 contiene gli strumenti CNC e l’assistente vocale completo.</div></div>
+ <div class="card"><h2>LO RIPRENDEREMO SUCCESSIVAMENTE</h2><div class="note">Lo scanner 3D resta separato per non appesantire la Toolbox. Questa v6.8 contiene gli strumenti CNC, il magazzino utensili e l’assistente vocale completo.</div></div>
 </section>
 
 <section id="settings" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">MENU</div><button class="help">▤</button></div>
- <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v6.6</div></div><div class="note">Versione a file unico. In modalità 3 punti P1 richiede sempre X e Y; la scelta indica soltanto se applicare la compensazione.</div></div>
+ <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v6.8</div></div><div class="note">Versione a file unico. In modalità 3 punti P1 richiede sempre X e Y; la scelta indica soltanto se applicare la compensazione.</div></div>
  <div class="card"><h2>AZIONI</h2><button class="btn2" onclick="clearSettings()">PULISCI IMPOSTAZIONI</button></div>
 </section>
 
@@ -1432,6 +1570,527 @@ function calcAdd(x){$('calcDisplay').value+=x}
 function calcClear(){$('calcDisplay').value=''}
 function calcDel(){$('calcDisplay').value=$('calcDisplay').value.slice(0,-1)}
 function calcEq(){try{const s=$('calcDisplay').value;if(!/^[0-9+\-*/().\s]+$/.test(s))throw 0;$('calcDisplay').value=Function('"use strict";return ('+s+')')()}catch(e){$('calcDisplay').value='ERRORE'}}
+const TOOL_MANAGER_KEY='cnc_toolbox_tool_manager_v1';
+
+let toolManagerState={
+ machines:[],
+ tools:[]
+};
+
+function toolMakeId(prefix){
+ return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2,8)}`;
+}
+
+function toolEscape(value){
+ return String(value??'')
+  .replaceAll('&','&amp;')
+  .replaceAll('<','&lt;')
+  .replaceAll('>','&gt;')
+  .replaceAll('"','&quot;')
+  .replaceAll("'",'&#039;');
+}
+
+function toolNormalizeNumber(value){
+ return String(value??'').trim().replace(',','.');
+}
+
+function toolFormatDiameter(value){
+ const number=Number(value);
+ if(!Number.isFinite(number))return String(value??'');
+ return fmt(number,3);
+}
+
+function loadToolManager(){
+ try{
+  const saved=JSON.parse(localStorage.getItem(TOOL_MANAGER_KEY)||'null');
+
+  if(saved&&Array.isArray(saved.machines)&&Array.isArray(saved.tools)){
+   toolManagerState={
+    machines:saved.machines
+     .filter(machine=>machine&&machine.id&&String(machine.name||'').trim())
+     .map(machine=>({
+      id:String(machine.id),
+      name:String(machine.name).trim()
+     })),
+    tools:saved.tools
+     .filter(tool=>tool&&tool.id)
+     .map(tool=>({
+      id:String(tool.id),
+      type:String(tool.type||'ALTRO').toUpperCase(),
+      diameter:String(tool.diameter??''),
+      description:String(tool.description||''),
+      location:String(tool.location||'storage'),
+      position:String(tool.position||''),
+      updatedAt:String(tool.updatedAt||new Date().toISOString())
+     }))
+   };
+  }
+ }catch(error){
+  console.warn('Impossibile leggere Gestione utensili',error);
+  toolManagerState={machines:[],tools:[]};
+ }
+
+ const validMachineIds=new Set(toolManagerState.machines.map(machine=>machine.id));
+ toolManagerState.tools.forEach(tool=>{
+  if(
+   tool.location.startsWith('machine:')&&
+   !validMachineIds.has(tool.location.slice(8))
+  ){
+   tool.location='storage';
+   tool.position='';
+  }
+ });
+}
+
+function saveToolManager(showMessage=false){
+ try{
+  localStorage.setItem(TOOL_MANAGER_KEY,JSON.stringify(toolManagerState));
+  if(showMessage)showToolToast('Officina memorizzata');
+  return true;
+ }catch(error){
+  console.error(error);
+  showToolToast('Errore durante il salvataggio');
+  return false;
+ }
+}
+
+function showToolToast(message){
+ const toast=$('toolToast');
+ if(!toast)return;
+ toast.textContent=message;
+ toast.classList.add('show');
+ clearTimeout(showToolToast.timer);
+ showToolToast.timer=setTimeout(()=>toast.classList.remove('show'),1800);
+}
+
+function openToolManager(){
+ show('toolmanager');
+ loadToolManager();
+ renderToolMachineList();
+ renderToolLocationOptions();
+ renderWorkshopTools();
+
+ setTimeout(()=>{
+  const input=$('toolMachineName');
+  if(input&&!toolManagerState.machines.length)input.focus();
+ },120);
+}
+
+function toolLocationOptions(selected='storage',includeAll=false){
+ const options=[];
+
+ if(includeAll){
+  options.push(`<option value="all"${selected==='all'?' selected':''}>TUTTI I POSTI</option>`);
+ }
+
+ options.push(
+  `<option value="storage"${selected==='storage'?' selected':''}>ARMADIO / POSTO UTENSILI</option>`
+ );
+
+ toolManagerState.machines.forEach(machine=>{
+  const value=`machine:${machine.id}`;
+  options.push(
+   `<option value="${toolEscape(value)}"${selected===value?' selected':''}>${toolEscape(machine.name)}</option>`
+  );
+ });
+
+ options.push(
+  `<option value="sharpening"${selected==='sharpening'?' selected':''}>IN AFFILATURA</option>`,
+  `<option value="replace"${selected==='replace'?' selected':''}>DA SOSTITUIRE / ROTTO</option>`
+ );
+
+ return options.join('');
+}
+
+function toolLocationName(location){
+ if(location==='storage')return 'ARMADIO / POSTO UTENSILI';
+ if(location==='sharpening')return 'IN AFFILATURA';
+ if(location==='replace')return 'DA SOSTITUIRE / ROTTO';
+
+ if(location.startsWith('machine:')){
+  const id=location.slice(8);
+  return toolManagerState.machines.find(machine=>machine.id===id)?.name||'MACCHINA NON TROVATA';
+ }
+
+ return 'POSIZIONE NON DEFINITA';
+}
+
+function renderToolLocationOptions(){
+ const newLocation=$('toolNewLocation');
+ const filter=$('toolLocationFilter');
+
+ if(newLocation){
+  const selected=newLocation.value||'storage';
+  newLocation.innerHTML=toolLocationOptions(selected,false);
+ }
+
+ if(filter){
+  const selected=filter.value||'all';
+  filter.innerHTML=toolLocationOptions(selected,true);
+ }
+}
+
+function addToolMachine(){
+ const input=$('toolMachineName');
+ const name=String(input?.value||'').trim();
+
+ if(!name){
+  showToolToast('Scrivi il nome della macchina');
+  input?.focus();
+  return;
+ }
+
+ const duplicate=toolManagerState.machines.some(
+  machine=>machine.name.toLocaleLowerCase('it')===name.toLocaleLowerCase('it')
+ );
+
+ if(duplicate){
+  showToolToast('Questa macchina esiste già');
+  input?.select();
+  return;
+ }
+
+ toolManagerState.machines.push({
+  id:toolMakeId('machine'),
+  name
+ });
+
+ if(input)input.value='';
+ saveToolManager();
+ renderToolMachineList();
+ renderToolLocationOptions();
+ renderWorkshopTools();
+ showToolToast(`${name} aggiunta`);
+ input?.focus();
+}
+
+function renderToolMachineList(){
+ const container=$('toolMachineList');
+ if(!container)return;
+
+ if(!toolManagerState.machines.length){
+  container.innerHTML='<div class="toolEmpty">Non hai ancora inserito macchine.<br>Aggiungi la prima qui sopra.</div>';
+  return;
+ }
+
+ container.innerHTML=toolManagerState.machines.map(machine=>`
+  <div class="toolMachineRow">
+   <input
+    class="toolTextInput"
+    value="${toolEscape(machine.name)}"
+    data-machine-input="${toolEscape(machine.id)}"
+    aria-label="Nome macchina"
+   >
+   <button
+    class="toolMiniBtn danger"
+    onclick="deleteToolMachine('${toolEscape(machine.id)}')"
+   >ELIMINA</button>
+  </div>
+ `).join('');
+}
+
+function memorizeWorkshop(){
+ const inputs=document.querySelectorAll('[data-machine-input]');
+ const names=[];
+ let invalid=false;
+
+ inputs.forEach(input=>{
+  const id=input.dataset.machineInput;
+  const name=input.value.trim();
+  const machine=toolManagerState.machines.find(item=>item.id===id);
+
+  if(!machine)return;
+
+  if(!name){
+   invalid=true;
+   input.focus();
+   return;
+  }
+
+  if(names.some(existing=>existing.toLocaleLowerCase('it')===name.toLocaleLowerCase('it'))){
+   invalid=true;
+   input.select();
+   return;
+  }
+
+  names.push(name);
+  machine.name=name;
+ });
+
+ if(invalid){
+  showToolToast('Controlla i nomi delle macchine');
+  return;
+ }
+
+ saveToolManager(true);
+ renderToolLocationOptions();
+ renderWorkshopTools();
+}
+
+function deleteToolMachine(id){
+ const machine=toolManagerState.machines.find(item=>item.id===id);
+ if(!machine)return;
+
+ const assigned=toolManagerState.tools.filter(
+  tool=>tool.location===`machine:${id}`
+ ).length;
+
+ const message=assigned
+  ?`Eliminare ${machine.name}? ${assigned} utensili verranno spostati in ARMADIO.`
+  :`Eliminare ${machine.name}?`;
+
+ if(!confirm(message))return;
+
+ toolManagerState.machines=toolManagerState.machines.filter(item=>item.id!==id);
+
+ toolManagerState.tools.forEach(tool=>{
+  if(tool.location===`machine:${id}`){
+   tool.location='storage';
+   tool.position='';
+   tool.updatedAt=new Date().toISOString();
+  }
+ });
+
+ saveToolManager();
+ renderToolMachineList();
+ renderToolLocationOptions();
+ renderWorkshopTools();
+ showToolToast('Macchina eliminata');
+}
+
+function addWorkshopTool(){
+ const type=String($('toolNewType')?.value||'ALTRO').trim().toUpperCase();
+ const diameterText=toolNormalizeNumber($('toolNewDiameter')?.value);
+ const diameter=Number(diameterText);
+ const description=String($('toolNewDescription')?.value||'').trim();
+ const location=String($('toolNewLocation')?.value||'storage');
+ const position=String($('toolNewPosition')?.value||'').trim();
+
+ if(!Number.isFinite(diameter)||diameter<=0){
+  showToolToast('Inserisci il diametro');
+  $('toolNewDiameter')?.focus();
+  return;
+ }
+
+ toolManagerState.tools.push({
+  id:toolMakeId('tool'),
+  type,
+  diameter:String(diameter),
+  description,
+  location,
+  position,
+  updatedAt:new Date().toISOString()
+ });
+
+ saveToolManager();
+
+ if($('toolNewDiameter'))$('toolNewDiameter').value='';
+ if($('toolNewDescription'))$('toolNewDescription').value='';
+ if($('toolNewPosition'))$('toolNewPosition').value='';
+
+ renderWorkshopTools();
+ showToolToast(`${type} Ø${toolFormatDiameter(diameter)} memorizzata`);
+ $('toolNewDiameter')?.focus();
+}
+
+function toolMatchesSearch(tool,search){
+ if(!search)return true;
+
+ const normalized=search
+  .toLocaleLowerCase('it')
+  .replaceAll(',','.')
+  .replace(/\s+/g,' ')
+  .trim();
+
+ const haystack=[
+  tool.type,
+  tool.diameter,
+  toolFormatDiameter(tool.diameter),
+  tool.description,
+  toolLocationName(tool.location),
+  tool.position
+ ].join(' ')
+  .toLocaleLowerCase('it')
+  .replaceAll(',','.');
+
+ return haystack.includes(normalized);
+}
+
+function renderWorkshopTools(){
+ const container=$('toolList');
+ const summary=$('toolSummary');
+ if(!container||!summary)return;
+
+ const search=String($('toolSearch')?.value||'');
+ const filter=String($('toolLocationFilter')?.value||'all');
+
+ const visible=toolManagerState.tools
+  .filter(tool=>filter==='all'||tool.location===filter)
+  .filter(tool=>toolMatchesSearch(tool,search))
+  .sort((a,b)=>{
+   const typeCompare=a.type.localeCompare(b.type,'it');
+   if(typeCompare)return typeCompare;
+   return Number(a.diameter)-Number(b.diameter);
+  });
+
+ summary.innerHTML=`
+  <span>VISIBILI <strong>${visible.length}</strong></span>
+  <span>TOTALI <strong>${toolManagerState.tools.length}</strong></span>
+ `;
+
+ if(!visible.length){
+  container.innerHTML=toolManagerState.tools.length
+   ?'<div class="toolEmpty">Nessun utensile corrisponde alla ricerca.</div>'
+   :'<div class="toolEmpty">Non hai ancora registrato utensili.<br>Aggiungi il primo nella sezione precedente.</div>';
+  return;
+ }
+
+ container.innerHTML=visible.map(tool=>{
+  const title=`${tool.type} Ø${toolFormatDiameter(tool.diameter)}`;
+  const location=toolLocationName(tool.location);
+  const updated=new Date(tool.updatedAt);
+  const updatedText=Number.isNaN(updated.getTime())
+   ?''
+   :updated.toLocaleString('it-IT',{
+    day:'2-digit',
+    month:'2-digit',
+    year:'2-digit',
+    hour:'2-digit',
+    minute:'2-digit'
+   });
+
+  return `
+   <div class="toolCard" data-tool-card="${toolEscape(tool.id)}">
+    <div class="toolCardHead">
+     <div class="toolCardTitle">${toolEscape(title)}</div>
+     <div class="toolCardLocation">
+      ${toolEscape(location)}
+      ${tool.position?`<br><span class="blue">${toolEscape(tool.position)}</span>`:''}
+     </div>
+    </div>
+
+    ${tool.description?`<div class="toolCardMeta">${toolEscape(tool.description)}</div>`:''}
+    ${updatedText?`<div class="toolCardMeta">Ultimo spostamento: ${toolEscape(updatedText)}</div>`:''}
+
+    <div class="toolEditGrid">
+     <select data-tool-location="${toolEscape(tool.id)}">
+      ${toolLocationOptions(tool.location,false)}
+     </select>
+     <input
+      class="toolTextInput"
+      data-tool-position="${toolEscape(tool.id)}"
+      value="${toolEscape(tool.position)}"
+      placeholder="T / cassetto"
+     >
+    </div>
+
+    <div class="toolCardActions">
+     <button class="toolMiniBtn primary" onclick="updateWorkshopTool('${toolEscape(tool.id)}')">MEMORIZZA POSIZIONE</button>
+     <button class="toolMiniBtn danger" onclick="deleteWorkshopTool('${toolEscape(tool.id)}')">ELIMINA</button>
+    </div>
+   </div>
+  `;
+ }).join('');
+}
+
+function updateWorkshopTool(id){
+ const tool=toolManagerState.tools.find(item=>item.id===id);
+ if(!tool)return;
+
+ const card=document.querySelector(`[data-tool-card="${id}"]`);
+ const location=card?.querySelector('[data-tool-location]');
+ const position=card?.querySelector('[data-tool-position]');
+
+ tool.location=String(location?.value||'storage');
+ tool.position=String(position?.value||'').trim();
+ tool.updatedAt=new Date().toISOString();
+
+ saveToolManager();
+ renderWorkshopTools();
+ showToolToast('Posizione utensile memorizzata');
+}
+
+function deleteWorkshopTool(id){
+ const tool=toolManagerState.tools.find(item=>item.id===id);
+ if(!tool)return;
+
+ if(!confirm(`Eliminare ${tool.type} Ø${toolFormatDiameter(tool.diameter)}?`))return;
+
+ toolManagerState.tools=toolManagerState.tools.filter(item=>item.id!==id);
+ saveToolManager();
+ renderWorkshopTools();
+ showToolToast('Utensile eliminato');
+}
+
+function exportToolBackup(){
+ const backup={
+  app:'CNC Toolbox',
+  type:'tool-manager-backup',
+  version:1,
+  exportedAt:new Date().toISOString(),
+  data:toolManagerState
+ };
+
+ const blob=new Blob(
+  [JSON.stringify(backup,null,2)],
+  {type:'application/json'}
+ );
+
+ const url=URL.createObjectURL(blob);
+ const link=document.createElement('a');
+ const date=new Date().toISOString().slice(0,10);
+ link.href=url;
+ link.download=`CNC_Toolbox_utensili_${date}.json`;
+ document.body.appendChild(link);
+ link.click();
+ link.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),1000);
+ showToolToast('Backup esportato');
+}
+
+function importToolBackup(file){
+ if(!file)return;
+
+ const reader=new FileReader();
+
+ reader.onload=()=>{
+  try{
+   const parsed=JSON.parse(String(reader.result||''));
+   const data=parsed?.data||parsed;
+
+   if(!data||!Array.isArray(data.machines)||!Array.isArray(data.tools)){
+    throw new Error('Formato backup non valido');
+   }
+
+   if(!confirm('Importare il backup? I dati utensili attuali verranno sostituiti.'))return;
+
+   toolManagerState={
+    machines:data.machines,
+    tools:data.tools
+   };
+
+   saveToolManager();
+   loadToolManager();
+   renderToolMachineList();
+   renderToolLocationOptions();
+   renderWorkshopTools();
+   showToolToast('Backup importato');
+  }catch(error){
+   console.error(error);
+   alert('Il file scelto non è un backup valido della Gestione utensili.');
+  }finally{
+   if($('toolBackupFile'))$('toolBackupFile').value='';
+  }
+ };
+
+ reader.onerror=()=>{
+  alert('Impossibile leggere il file di backup.');
+  if($('toolBackupFile'))$('toolBackupFile').value='';
+ };
+
+ reader.readAsText(file);
+}
+
 const MATERIAL_FORM_CONFIG={
  round:{labels:['Ø tondo',null,null],defaults:[50,0,0]},
  roundTube:{labels:['Ø esterno','Spessore',null],defaults:[50,5,0]},
@@ -1473,6 +2132,23 @@ function updateMaterialForm(){
    input.dataset.shape=shape;
   }
  });
+
+ if($('resMaterial'))$('resMaterial').innerHTML='';
+}
+
+function updateMaterialPriceMode(){
+ const mode=$('matPriceMode')?.value||'kg';
+ const label=$('matPriceLabel');
+ const barRow=$('matBarLengthRow');
+
+ if(label){
+  label.textContent=
+   mode==='meter'?'Prezzo €/metro':
+   mode==='bar'?'Prezzo barra €':
+   'Prezzo €/kg';
+ }
+
+ if(barRow)barRow.style.display=mode==='bar'?'grid':'none';
 
  if($('resMaterial'))$('resMaterial').innerHTML='';
 }
@@ -1525,7 +2201,9 @@ function calcMaterial(){
  const c=num('matC');
  const length=num('matLength');
  const qty=num('matQty');
+ const priceMode=$('matPriceMode')?.value||'kg';
  const price=num('matPrice');
+ const barLength=num('matBarLength');
 
  if(
   !Number.isFinite(density)||
@@ -1547,15 +2225,61 @@ function calcMaterial(){
  }
 
  const kgPerMeter=area*density/1e6;
- const pieceKg=kgPerMeter*(length/1000);
+ const pieceMeters=length/1000;
+ const pieceKg=kgPerMeter*pieceMeters;
+ const totalMeters=pieceMeters*qty;
  const totalKg=pieceKg*qty;
- const totalCost=Number.isFinite(price)&&price>0?totalKg*price:0;
+
+ let euroPerKg=0;
+ let euroPerMeter=0;
+ let pieceCost=0;
+ let totalCost=0;
+ let barKg=0;
+
+ if(Number.isFinite(price)&&price>0){
+  if(priceMode==='kg'){
+   euroPerKg=price;
+   euroPerMeter=euroPerKg*kgPerMeter;
+  }else if(priceMode==='meter'){
+   euroPerMeter=price;
+   euroPerKg=kgPerMeter>0?euroPerMeter/kgPerMeter:0;
+  }else if(priceMode==='bar'){
+   if(!Number.isFinite(barLength)||barLength<=0){
+    $('resMaterial').innerHTML='<div class="err">Inserisci la lunghezza della barra.</div>';
+    return;
+   }
+
+   const barMeters=barLength/1000;
+   barKg=kgPerMeter*barMeters;
+   euroPerMeter=price/barMeters;
+   euroPerKg=barKg>0?price/barKg:0;
+  }
+
+  pieceCost=euroPerMeter*pieceMeters;
+  totalCost=pieceCost*qty;
+ }
 
  let result=
   box('SEZIONE',fmt(area,2),'mm²')+
   box('PESO AL METRO',fmt(kgPerMeter,3),'kg/m')+
   box('PESO PEZZO',fmt(pieceKg,3),'kg')+
   box('PESO TOTALE',fmt(totalKg,3),'kg');
+
+ if(priceMode==='bar'&&barKg>0){
+  result+=box('PESO BARRA',fmt(barKg,3),'kg');
+ }
+
+ if(euroPerMeter>0){
+  result+=box('PREZZO EQUIVALENTE',fmt(euroPerMeter,2),'€/m');
+ }
+
+ if(euroPerKg>0){
+  result+=box('PREZZO EQUIVALENTE',fmt(euroPerKg,2),'€/kg');
+ }
+
+ if(pieceCost>0){
+  result+=box('COSTO PEZZO',fmt(pieceCost,2),'€');
+ }
 
  if(totalCost>0){
   result+=box('COSTO TOTALE',fmt(totalCost,2),'€');
@@ -2208,8 +2932,26 @@ function setupNumericKeyboards(){
 }
 
 function init(){
+ loadToolManager();
  setupNumericKeyboards();
+
+ const machineNameInput=$('toolMachineName');
+ if(machineNameInput){
+  machineNameInput.addEventListener('keydown',event=>{
+   if(event.key==='Enter')addToolMachine();
+  });
+ }
+
+ const diameterInput=$('toolNewDiameter');
+ if(diameterInput){
+  diameterInput.addEventListener('keydown',event=>{
+   if(event.key==='Enter')addWorkshopTool();
+  });
+ }
+
+
  updateMaterialForm();
+ updateMaterialPriceMode();
  if($('halfValue')){
   $('halfValue').addEventListener('keydown',event=>{
    if(event.key==='Enter')calcHalf();
