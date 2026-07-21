@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#050505">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>CNC Toolbox v6.5</title>
+<title>CNC Toolbox v6.6</title>
 <style>
 :root{--y:#ffc400;--y2:#dfa500;--b:#050505;--p:#141414;--p2:#0b0b0b;--l:#3e3e3e;--w:#fff;--g:#aaa;--ok:#68e36f;--err:#ff5b5b;--blue:#54baff}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -155,7 +155,7 @@ select{text-align:center;font-size:15px}
 <div class="app">
 
 <section id="home" class="screen active">
- <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v6.5 · ANGOLO PEZZO</div></div></div>
+ <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v6.6 · CALCOLATORE MATERIALI</div></div></div>
  <div class="grid"><button class="tile primary wide" onclick="show('assistant')"><div class="icon">🎙️</div>ASSISTENTE VOCALE MECCANICO</button></div>
 
  <div class="sectionTitle">GEOMETRIA</div>
@@ -182,6 +182,7 @@ select{text-align:center;font-size:15px}
 
  <div class="sectionTitle">STRUMENTI</div>
  <div class="grid">
+  <button class="tile primary" onclick="show('materials');updateMaterialForm()"><div class="icon">⚖</div>CALCOLATORE MATERIALI</button>
   <button class="tile" onclick="show('calculator')"><div class="icon">🧮</div>CALCOLATRICE</button>
   <button class="tile" onclick="show('ruler');updateRuler()"><div class="icon">📏</div>RIGHELLO / CALIBRO</button>
   <button class="tile" onclick="show('goniometer')"><div class="icon">📐</div>GONIOMETRO</button>
@@ -459,6 +460,89 @@ select{text-align:center;font-size:15px}
  <div class="card"><div class="row"><div class="label">Pollici</div><input id="convIn" class="inp" value="1"></div><button class="btn" onclick="inMm()">POLLICI → MM</button><div id="resConv2"></div></div>
 </section>
 
+<section id="materials" class="screen">
+ <div class="header">
+  <button class="back" onclick="show('home')">‹</button>
+  <div class="title">CALCOLATORE MATERIALI<small>PESO METALLI E PROFILI</small></div>
+  <button class="help" onclick="alert('Scegli materiale e forma, inserisci le misure in millimetri, la lunghezza e la quantità. La densità è modificabile per adattarla alla lega reale.')">?</button>
+ </div>
+
+ <div class="card">
+  <h2>1 · MATERIALE E FORMA</h2>
+
+  <div class="row">
+   <div class="label">Materiale</div>
+   <select id="matMaterial" onchange="updateMaterialDensity();calcMaterial()">
+    <option value="7850">ACCIAIO</option>
+    <option value="8000">INOX</option>
+    <option value="2700">ALLUMINIO</option>
+    <option value="8500">OTTONE</option>
+    <option value="8960">RAME</option>
+    <option value="7200">GHISA</option>
+    <option value="8800">BRONZO</option>
+    <option value="4500">TITANIO</option>
+    <option value="custom">PERSONALIZZATO</option>
+   </select>
+  </div>
+
+  <div class="row">
+   <div class="label">Densità kg/m³</div>
+   <input id="matDensity" class="inp" value="7850">
+  </div>
+
+  <div class="row">
+   <div class="label">Forma</div>
+   <select id="matShape" onchange="updateMaterialForm();calcMaterial()">
+    <option value="round">TONDO PIENO</option>
+    <option value="roundTube">TUBO TONDO</option>
+    <option value="square">QUADRO PIENO</option>
+    <option value="squareTube">TUBOLARE QUADRO</option>
+    <option value="flat">PIATTO / LAMIERA</option>
+    <option value="rectTube">TUBOLARE RETTANGOLARE</option>
+    <option value="hex">ESAGONO PIENO</option>
+   </select>
+  </div>
+ </div>
+
+ <div class="card">
+  <h2>2 · MISURE</h2>
+
+  <div id="matRowA" class="row">
+   <div id="matLabelA" class="label">Ø tondo</div>
+   <input id="matA" class="inp" value="50">
+  </div>
+
+  <div id="matRowB" class="row">
+   <div id="matLabelB" class="label">Spessore</div>
+   <input id="matB" class="inp" value="5">
+  </div>
+
+  <div id="matRowC" class="row">
+   <div id="matLabelC" class="label">Altezza</div>
+   <input id="matC" class="inp" value="40">
+  </div>
+
+  <div class="row">
+   <div class="label">Lunghezza mm</div>
+   <input id="matLength" class="inp" value="1000">
+  </div>
+
+  <div class="row">
+   <div class="label">Quantità</div>
+   <input id="matQty" class="inp" value="1">
+  </div>
+
+  <div class="row">
+   <div class="label">Prezzo €/kg</div>
+   <input id="matPrice" class="inp" value="0">
+  </div>
+
+  <button class="btn" onclick="calcMaterial()">CALCOLA PESO</button>
+  <div id="resMaterial"></div>
+  <div class="hint">Le densità sono indicative e puoi modificarle in base alla lega reale.</div>
+ </div>
+</section>
+
 <section id="calculator" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">CALCOLATRICE<small>OFFICINA</small></div><button class="help">?</button></div>
  <div class="card"><input id="calcDisplay" value=""><div class="calcGrid">
@@ -489,12 +573,12 @@ select{text-align:center;font-size:15px}
 
 <section id="scanner" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">SCANNER 3D<small>PROGETTO SEPARATO</small></div><button class="help">?</button></div>
- <div class="card"><h2>LO RIPRENDEREMO SUCCESSIVAMENTE</h2><div class="note">Lo scanner 3D resta separato per non appesantire la Toolbox. Questa v6.5 contiene gli strumenti CNC e l’assistente vocale completo.</div></div>
+ <div class="card"><h2>LO RIPRENDEREMO SUCCESSIVAMENTE</h2><div class="note">Lo scanner 3D resta separato per non appesantire la Toolbox. Questa v6.6 contiene gli strumenti CNC e l’assistente vocale completo.</div></div>
 </section>
 
 <section id="settings" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">MENU</div><button class="help">▤</button></div>
- <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v6.5</div></div><div class="note">Versione a file unico. In modalità 3 punti P1 richiede sempre X e Y; la scelta indica soltanto se applicare la compensazione.</div></div>
+ <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v6.6</div></div><div class="note">Versione a file unico. In modalità 3 punti P1 richiede sempre X e Y; la scelta indica soltanto se applicare la compensazione.</div></div>
  <div class="card"><h2>AZIONI</h2><button class="btn2" onclick="clearSettings()">PULISCI IMPOSTAZIONI</button></div>
 </section>
 
@@ -1348,6 +1432,138 @@ function calcAdd(x){$('calcDisplay').value+=x}
 function calcClear(){$('calcDisplay').value=''}
 function calcDel(){$('calcDisplay').value=$('calcDisplay').value.slice(0,-1)}
 function calcEq(){try{const s=$('calcDisplay').value;if(!/^[0-9+\-*/().\s]+$/.test(s))throw 0;$('calcDisplay').value=Function('"use strict";return ('+s+')')()}catch(e){$('calcDisplay').value='ERRORE'}}
+const MATERIAL_FORM_CONFIG={
+ round:{labels:['Ø tondo',null,null],defaults:[50,0,0]},
+ roundTube:{labels:['Ø esterno','Spessore',null],defaults:[50,5,0]},
+ square:{labels:['Lato',null,null],defaults:[50,0,0]},
+ squareTube:{labels:['Lato esterno','Spessore',null],defaults:[50,5,0]},
+ flat:{labels:['Larghezza','Spessore',null],defaults:[100,10,0]},
+ rectTube:{labels:['Larghezza esterna','Altezza esterna','Spessore'],defaults:[100,50,5]},
+ hex:{labels:['Chiave esagono',null,null],defaults:[30,0,0]}
+};
+
+function updateMaterialDensity(){
+ const select=$('matMaterial');
+ const density=$('matDensity');
+ if(!select||!density)return;
+
+ if(select.value==='custom'){
+  density.focus();
+  return;
+ }
+
+ density.value=select.value;
+}
+
+function updateMaterialForm(){
+ const shape=$('matShape')?.value||'round';
+ const cfg=MATERIAL_FORM_CONFIG[shape]||MATERIAL_FORM_CONFIG.round;
+
+ ['A','B','C'].forEach((key,index)=>{
+  const row=$(`matRow${key}`);
+  const label=$(`matLabel${key}`);
+  const input=$(`mat${key}`);
+  const text=cfg.labels[index];
+
+  if(row)row.style.display=text?'grid':'none';
+  if(label&&text)label.textContent=text;
+
+  if(input&&input.dataset.shape!==shape){
+   input.value=String(cfg.defaults[index]);
+   input.dataset.shape=shape;
+  }
+ });
+
+ if($('resMaterial'))$('resMaterial').innerHTML='';
+}
+
+function materialSectionArea(shape,a,b,c){
+ switch(shape){
+  case 'round':
+   if(a<=0)return NaN;
+   return Math.PI*a*a/4;
+
+  case 'roundTube':{
+   if(a<=0||b<=0||2*b>=a)return NaN;
+   const inner=a-2*b;
+   return Math.PI*(a*a-inner*inner)/4;
+  }
+
+  case 'square':
+   if(a<=0)return NaN;
+   return a*a;
+
+  case 'squareTube':{
+   if(a<=0||b<=0||2*b>=a)return NaN;
+   const inner=a-2*b;
+   return a*a-inner*inner;
+  }
+
+  case 'flat':
+   if(a<=0||b<=0)return NaN;
+   return a*b;
+
+  case 'rectTube':{
+   if(a<=0||b<=0||c<=0||2*c>=a||2*c>=b)return NaN;
+   return a*b-(a-2*c)*(b-2*c);
+  }
+
+  case 'hex':
+   if(a<=0)return NaN;
+   return Math.sqrt(3)*a*a/2;
+
+  default:
+   return NaN;
+ }
+}
+
+function calcMaterial(){
+ const shape=$('matShape')?.value||'round';
+ const density=num('matDensity');
+ const a=num('matA');
+ const b=num('matB');
+ const c=num('matC');
+ const length=num('matLength');
+ const qty=num('matQty');
+ const price=num('matPrice');
+
+ if(
+  !Number.isFinite(density)||
+  !Number.isFinite(a)||
+  !Number.isFinite(length)||
+  !Number.isFinite(qty)||
+  density<=0||
+  length<=0||
+  qty<=0
+ ){
+  $('resMaterial').innerHTML='<div class="err">Controlla materiale, misure, lunghezza e quantità.</div>';
+  return;
+ }
+
+ const area=materialSectionArea(shape,a,b,c);
+ if(!Number.isFinite(area)||area<=0){
+  $('resMaterial').innerHTML='<div class="err">Le dimensioni del profilo non sono valide.</div>';
+  return;
+ }
+
+ const kgPerMeter=area*density/1e6;
+ const pieceKg=kgPerMeter*(length/1000);
+ const totalKg=pieceKg*qty;
+ const totalCost=Number.isFinite(price)&&price>0?totalKg*price:0;
+
+ let result=
+  box('SEZIONE',fmt(area,2),'mm²')+
+  box('PESO AL METRO',fmt(kgPerMeter,3),'kg/m')+
+  box('PESO PEZZO',fmt(pieceKg,3),'kg')+
+  box('PESO TOTALE',fmt(totalKg,3),'kg');
+
+ if(totalCost>0){
+  result+=box('COSTO TOTALE',fmt(totalCost,2),'€');
+ }
+
+ $('resMaterial').innerHTML=result;
+}
+
 function calcQuickRpm(){const d=num('cfD'),vc=num('cfVc');if(bad([d,vc])||d<=0){$('resQuick').innerHTML='<div class="err">Controlla i dati.</div>';return}$('resQuick').innerHTML=box('GIRI',fmt(vc*1000/(Math.PI*d),0),'rpm')}
 
 /* RIGHELLO */
@@ -1941,7 +2157,7 @@ function toggleListen(){
 }
 function clearSettings(){if(confirm('Cancellare le impostazioni salvate?')){localStorage.clear();location.reload()}}
 
-const NUMERIC_SCREEN_IDS=['three','four','two','half','angle','chamfer','inter','hex','feeds'];
+const NUMERIC_SCREEN_IDS=['three','four','two','half','angle','chamfer','inter','hex','feeds','materials'];
 
 function setupNumericKeyboards(){
  NUMERIC_SCREEN_IDS.forEach(screenId=>{
@@ -1993,6 +2209,7 @@ function setupNumericKeyboards(){
 
 function init(){
  setupNumericKeyboards();
+ updateMaterialForm();
  if($('halfValue')){
   $('halfValue').addEventListener('keydown',event=>{
    if(event.key==='Enter')calcHalf();
