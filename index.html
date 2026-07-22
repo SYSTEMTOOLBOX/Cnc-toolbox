@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#050505">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>CNC Toolbox v7.0</title>
+<title>CNC Toolbox v7.2</title>
 <style>
 :root{--y:#ffc400;--y2:#dfa500;--b:#050505;--p:#141414;--p2:#0b0b0b;--l:#3e3e3e;--w:#fff;--g:#aaa;--ok:#68e36f;--err:#ff5b5b;--blue:#54baff}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -192,7 +192,7 @@ select{text-align:center;font-size:15px}
 <div class="app">
 
 <section id="home" class="screen active">
- <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v7.0 · PDF E BACKUP SICURO</div></div></div>
+ <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v7.2 · PULSANTE PDF VISIBILE</div></div></div>
  <div class="grid"><button class="tile primary wide" onclick="show('assistant')"><div class="icon">🎙️</div>ASSISTENTE VOCALE MECCANICO</button></div>
 
  <div class="sectionTitle">GEOMETRIA</div>
@@ -506,6 +506,13 @@ select{text-align:center;font-size:15px}
  </div>
 
  <div class="card">
+  <h2>SCARICA LA TABELLA UTENSILI</h2>
+  <button class="btn" onclick="exportToolPdf()">SCARICA TABELLA PDF</button>
+  <button class="btn2" onclick="shareToolPdf()">CONDIVIDI PDF</button>
+  <div class="hint">Crea una tabella leggibile e stampabile con macchine, posizioni T, utensili, diametri e descrizioni.</div>
+ </div>
+
+ <div class="card">
   <h2>1 · LE MIE MACCHINE</h2>
   <div class="toolAddLine">
    <input id="toolMachineName" class="toolTextInput" placeholder="Nome macchina, es. CME">
@@ -572,27 +579,18 @@ select{text-align:center;font-size:15px}
  </div>
 
  <div class="card">
-  <h2>4 · TABELLA CARTACEA PDF</h2>
-  <div class="toolBackupGrid">
-   <button class="btn" onclick="exportToolPdf()">SCARICA PDF</button>
-   <button class="btn2" onclick="shareToolPdf()">CONDIVIDI PDF</button>
-  </div>
-  <div class="hint">Tabella semplice e stampabile, ordinata per macchina: posizione T, utensile, diametro e descrizione.</div>
- </div>
-
- <div class="card">
-  <h2>5 · BACKUP COMPLETO</h2>
+  <h2>4 · BACKUP COMPLETO</h2>
 
   <div class="toolBackupGrid">
-   <button class="btn2" onclick="exportToolBackup()">SCARICA BACKUP</button>
-   <button class="btn2" onclick="shareToolBackup()">SALVA / DRIVE</button>
+   <button class="btn2" onclick="exportToolBackup()">SALVA FILE BACKUP</button>
+   <button class="btn2" onclick="shareToolBackup()">SALVA SU DRIVE</button>
   </div>
 
-  <button class="btn" onclick="$('toolBackupFile').click()">IMPORTA E RIPRISTINA BACKUP</button>
-  <input id="toolBackupFile" type="file" accept=".json,application/json" hidden onchange="importToolBackup(this.files?.[0])">
+  <button class="btn" onclick="$('toolBackupFile').click()">RIPRISTINA DA BACKUP</button>
+  <input id="toolBackupFile" type="file" accept=".cnctoolbox,.json,application/json,application/octet-stream" hidden onchange="importToolBackup(this.files?.[0])">
 
   <div id="toolLastBackup" class="hint">Ultimo backup: mai eseguito.</div>
-  <div class="hint">Il backup contiene macchine, utensili, posizioni T, descrizioni e collocazioni. Con “Salva / Drive” si apre il menu Android: scegli Google Drive oppure un’altra destinazione.</div>
+  <div class="hint"><strong>Questo file non è un PDF e non va aperto.</strong> Conservalo sul telefono o su Google Drive: serve soltanto al pulsante “Ripristina da backup”. Contiene macchine, utensili, posizioni T e descrizioni.</div>
  </div>
 </section>
 
@@ -730,7 +728,7 @@ select{text-align:center;font-size:15px}
 
 <section id="settings" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">MENU</div><button class="help">▤</button></div>
- <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v7.0</div></div><div class="note">Versione a file unico. In modalità 3 punti P1 richiede sempre X e Y; la scelta indica soltanto se applicare la compensazione.</div></div>
+ <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v7.2</div></div><div class="note">Versione a file unico. In modalità 3 punti P1 richiede sempre X e Y; la scelta indica soltanto se applicare la compensazione.</div></div>
  <div class="card"><h2>AZIONI</h2><button class="btn2" onclick="clearSettings()">PULISCI IMPOSTAZIONI</button></div>
 </section>
 
@@ -2335,10 +2333,10 @@ function toolBackupFile(){
  };
 
  const date=exportedAt.slice(0,10);
- const name=`CNC_Toolbox_backup_utensili_${date}.json`;
+ const name=`CNC_Toolbox_FILE_RIPRISTINO_${date}.cnctoolbox`;
  const blob=new Blob(
   [JSON.stringify(backup,null,2)],
-  {type:'application/json'}
+  {type:'application/octet-stream'}
  );
 
  return {blob,name,exportedAt};
@@ -2375,7 +2373,7 @@ function exportToolBackup(){
  const generated=toolBackupFile();
  toolDownloadBlob(generated.blob,generated.name);
  rememberToolBackup(generated.exportedAt);
- showToolToast('Backup scaricato sul telefono');
+ showToolToast('File di ripristino salvato: non aprirlo');
 }
 
 async function shareToolBackup(){
@@ -2383,7 +2381,7 @@ async function shareToolBackup(){
  const file=new File(
   [generated.blob],
   generated.name,
-  {type:'application/json'}
+  {type:'application/octet-stream'}
  );
 
  try{
@@ -2391,10 +2389,10 @@ async function shareToolBackup(){
    await navigator.share({
     files:[file],
     title:'Backup CNC Toolbox',
-    text:'Backup completo della Gestione utensili. Scegli Google Drive per conservarlo online.'
+    text:'File di ripristino CNC Toolbox. Non aprirlo: salvalo su Google Drive e usalo in Ripristina da backup.'
    });
    rememberToolBackup(generated.exportedAt);
-   showToolToast('Backup condiviso');
+   showToolToast('File di ripristino salvato/condiviso');
    return;
   }
  }catch(error){
@@ -2404,7 +2402,7 @@ async function shareToolBackup(){
 
  toolDownloadBlob(generated.blob,generated.name);
  rememberToolBackup(generated.exportedAt);
- showToolToast('Menu Drive non disponibile: backup scaricato');
+ showToolToast('Drive non disponibile: file di ripristino scaricato');
 }
 
 function importToolBackup(file){
@@ -2438,7 +2436,7 @@ function importToolBackup(file){
    showToolToast('Backup importato e ripristinato');
   }catch(error){
    console.error(error);
-   alert('Il file scelto non è un backup valido della Gestione utensili.');
+   alert('Il file scelto non è un backup valido di CNC Toolbox. Seleziona un file .cnctoolbox oppure un vecchio backup .json.');
   }finally{
    if($('toolBackupFile'))$('toolBackupFile').value='';
   }
