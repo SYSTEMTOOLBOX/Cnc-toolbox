@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#050505">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>CNC Toolbox v6.8</title>
+<title>CNC Toolbox v7.0</title>
 <style>
 :root{--y:#ffc400;--y2:#dfa500;--b:#050505;--p:#141414;--p2:#0b0b0b;--l:#3e3e3e;--w:#fff;--g:#aaa;--ok:#68e36f;--err:#ff5b5b;--blue:#54baff}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -192,7 +192,7 @@ select{text-align:center;font-size:15px}
 <div class="app">
 
 <section id="home" class="screen active">
- <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v6.8 · GESTIONE UTENSILI</div></div></div>
+ <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v7.0 · PDF E BACKUP SICURO</div></div></div>
  <div class="grid"><button class="tile primary wide" onclick="show('assistant')"><div class="icon">🎙️</div>ASSISTENTE VOCALE MECCANICO</button></div>
 
  <div class="sectionTitle">GEOMETRIA</div>
@@ -572,13 +572,27 @@ select{text-align:center;font-size:15px}
  </div>
 
  <div class="card">
-  <h2>4 · BACKUP</h2>
+  <h2>4 · TABELLA CARTACEA PDF</h2>
   <div class="toolBackupGrid">
-   <button class="btn2" onclick="exportToolBackup()">ESPORTA BACKUP</button>
-   <button class="btn2" onclick="$('toolBackupFile').click()">IMPORTA BACKUP</button>
+   <button class="btn" onclick="exportToolPdf()">SCARICA PDF</button>
+   <button class="btn2" onclick="shareToolPdf()">CONDIVIDI PDF</button>
   </div>
+  <div class="hint">Tabella semplice e stampabile, ordinata per macchina: posizione T, utensile, diametro e descrizione.</div>
+ </div>
+
+ <div class="card">
+  <h2>5 · BACKUP COMPLETO</h2>
+
+  <div class="toolBackupGrid">
+   <button class="btn2" onclick="exportToolBackup()">SCARICA BACKUP</button>
+   <button class="btn2" onclick="shareToolBackup()">SALVA / DRIVE</button>
+  </div>
+
+  <button class="btn" onclick="$('toolBackupFile').click()">IMPORTA E RIPRISTINA BACKUP</button>
   <input id="toolBackupFile" type="file" accept=".json,application/json" hidden onchange="importToolBackup(this.files?.[0])">
-  <div class="hint">Il salvataggio normale resta sul dispositivo. Il backup serve se cambi telefono, cancelli i dati dell’app o reinstalli la futura versione Play Store.</div>
+
+  <div id="toolLastBackup" class="hint">Ultimo backup: mai eseguito.</div>
+  <div class="hint">Il backup contiene macchine, utensili, posizioni T, descrizioni e collocazioni. Con “Salva / Drive” si apre il menu Android: scegli Google Drive oppure un’altra destinazione.</div>
  </div>
 </section>
 
@@ -711,12 +725,12 @@ select{text-align:center;font-size:15px}
 
 <section id="scanner" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">SCANNER 3D<small>PROGETTO SEPARATO</small></div><button class="help">?</button></div>
- <div class="card"><h2>LO RIPRENDEREMO SUCCESSIVAMENTE</h2><div class="note">Lo scanner 3D resta separato per non appesantire la Toolbox. Questa v6.8 contiene gli strumenti CNC, il magazzino utensili e l’assistente vocale completo.</div></div>
+ <div class="card"><h2>LO RIPRENDEREMO SUCCESSIVAMENTE</h2><div class="note">Lo scanner 3D resta separato per non appesantire la Toolbox. Questa v6.9 contiene gli strumenti CNC, il magazzino utensili con tabella PDF e l’assistente vocale completo.</div></div>
 </section>
 
 <section id="settings" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">MENU</div><button class="help">▤</button></div>
- <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v6.8</div></div><div class="note">Versione a file unico. In modalità 3 punti P1 richiede sempre X e Y; la scelta indica soltanto se applicare la compensazione.</div></div>
+ <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v7.0</div></div><div class="note">Versione a file unico. In modalità 3 punti P1 richiede sempre X e Y; la scelta indica soltanto se applicare la compensazione.</div></div>
  <div class="card"><h2>AZIONI</h2><button class="btn2" onclick="clearSettings()">PULISCI IMPOSTAZIONI</button></div>
 </section>
 
@@ -1669,6 +1683,7 @@ function openToolManager(){
  renderToolMachineList();
  renderToolLocationOptions();
  renderWorkshopTools();
+ updateToolLastBackup();
 
  setTimeout(()=>{
   const input=$('toolMachineName');
@@ -2022,30 +2037,374 @@ function deleteWorkshopTool(id){
  showToolToast('Utensile eliminato');
 }
 
-function exportToolBackup(){
+
+function pdfWinAnsiByte(char){
+ const code=char.codePointAt(0);
+ const special={
+  '€':128,'‚':130,'ƒ':131,'„':132,'…':133,'†':134,'‡':135,
+  'ˆ':136,'‰':137,'Š':138,'‹':139,'Œ':140,'Ž':142,
+  '‘':145,'’':146,'“':147,'”':148,'•':149,'–':150,'—':151,
+  '˜':152,'™':153,'š':154,'›':155,'œ':156,'ž':158,'Ÿ':159
+ };
+ if(Object.prototype.hasOwnProperty.call(special,char))return special[char];
+ if(code>=32&&code<=255)return code;
+ const replacements={
+  '−':'-','×':'x','÷':'/','→':'>','←':'<','Δ':'D','π':'p',
+  'µ':'u','Ω':'O','²':'2','³':'3'
+ };
+ const replacement=replacements[char];
+ return replacement?replacement.charCodeAt(0):63;
+}
+
+function pdfHexText(value){
+ let hex='';
+ for(const char of String(value??'')){
+  hex+=pdfWinAnsiByte(char).toString(16).padStart(2,'0').toUpperCase();
+ }
+ return `<${hex}>`;
+}
+
+function pdfCleanText(value){
+ return String(value??'')
+  .replace(/\r?\n/g,' ')
+  .replace(/\s+/g,' ')
+  .trim();
+}
+
+function pdfWrapText(value,maxChars){
+ const text=pdfCleanText(value)||'-';
+ const words=text.split(' ');
+ const lines=[];
+ let line='';
+ for(const word of words){
+  if(word.length>maxChars){
+   if(line){lines.push(line);line=''}
+   for(let i=0;i<word.length;i+=maxChars)lines.push(word.slice(i,i+maxChars));
+   continue;
+  }
+  const candidate=line?`${line} ${word}`:word;
+  if(candidate.length<=maxChars)line=candidate;
+  else{if(line)lines.push(line);line=word}
+ }
+ if(line)lines.push(line);
+ return lines.length?lines:['-'];
+}
+
+function pdfNaturalPosition(value){
+ const text=pdfCleanText(value).toUpperCase();
+ const match=text.match(/^T\s*(\d+)/);
+ return match?Number(match[1]):999999;
+}
+
+function pdfToolGroups(state){
+ const groups=state.machines.map(machine=>({
+  key:`machine:${machine.id}`,
+  title:machine.name
+ }));
+ groups.push(
+  {key:'storage',title:'ARMADIO / POSTO UTENSILI'},
+  {key:'sharpening',title:'IN AFFILATURA'},
+  {key:'replace',title:'DA SOSTITUIRE / ROTTO'}
+ );
+
+ const known=new Set(groups.map(group=>group.key));
+ if(state.tools.some(tool=>!known.has(tool.location))){
+  groups.push({key:'unknown',title:'POSIZIONE NON DEFINITA'});
+ }
+
+ return groups.map(group=>({
+  ...group,
+  tools:state.tools
+   .filter(tool=>group.key==='unknown'?!known.has(tool.location):tool.location===group.key)
+   .slice()
+   .sort((a,b)=>{
+    const position=pdfNaturalPosition(a.position)-pdfNaturalPosition(b.position);
+    if(position)return position;
+    const posText=String(a.position||'').localeCompare(String(b.position||''),'it');
+    if(posText)return posText;
+    const type=String(a.type||'').localeCompare(String(b.type||''),'it');
+    if(type)return type;
+    return Number(a.diameter)-Number(b.diameter);
+   })
+ }));
+}
+
+function pdfTextCommand(x,y,text,size=9,bold=false){
+ return `BT /${bold?'F2':'F1'} ${size} Tf 1 0 0 1 ${x.toFixed(2)} ${y.toFixed(2)} Tm ${pdfHexText(text)} Tj ET\n`;
+}
+
+function pdfLine(x1,y1,x2,y2,width=.5){
+ return `${width} w ${x1.toFixed(2)} ${y1.toFixed(2)} m ${x2.toFixed(2)} ${y2.toFixed(2)} l S\n`;
+}
+
+function pdfFillRect(x,y,w,h,gray=.92){
+ return `${gray} g ${x.toFixed(2)} ${y.toFixed(2)} ${w.toFixed(2)} ${h.toFixed(2)} re f 0 g\n`;
+}
+
+function buildToolTablePdf(state){
+ const pageW=842;
+ const pageH=595;
+ const margin=30;
+ const tableX=30;
+ const tableW=782;
+ const col=[tableX,112,252,330,812];
+ const top=510;
+ const bottom=44;
+ const rowBase=19;
+ const groups=pdfToolGroups(state);
+ const pages=[];
+ let stream='';
+ let y=top;
+ let pageNumber=1;
+ const generated=new Date().toLocaleString('it-IT',{
+  day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'
+ });
+
+ function beginPage(){
+  stream='0 g 0 G\n';
+  stream+=pdfTextCommand(margin,563,'CNC TOOLBOX - TABELLA UTENSILI',17,true);
+  stream+=pdfTextCommand(margin,543,`Generato: ${generated}   Macchine: ${state.machines.length}   Utensili: ${state.tools.length}`,8,false);
+  stream+=pdfLine(margin,532,pageW-margin,532,1);
+  stream+=pdfTextCommand(pageW-margin-65,18,`Pagina ${pageNumber}`,8,false);
+  y=top;
+ }
+
+ function finishPage(){
+  pages.push(stream);
+  pageNumber+=1;
+ }
+
+ function need(height){
+  if(y-height<bottom){
+   finishPage();
+   beginPage();
+  }
+ }
+
+ function drawTableHeader(){
+  const h=21;
+  need(h+4);
+  stream+=pdfFillRect(tableX,y-h,tableW,h,.86);
+  stream+=pdfLine(tableX,y,tableX+tableW,y,.7);
+  stream+=pdfLine(tableX,y-h,tableX+tableW,y-h,.7);
+  for(const x of col)stream+=pdfLine(x,y,x,y-h,.5);
+  stream+=pdfTextCommand(col[0]+5,y-14,'POSIZIONE T',8,true);
+  stream+=pdfTextCommand(col[1]+5,y-14,'UTENSILE',8,true);
+  stream+=pdfTextCommand(col[2]+5,y-14,'DIAMETRO',8,true);
+  stream+=pdfTextCommand(col[3]+5,y-14,'DESCRIZIONE',8,true);
+  y-=h;
+ }
+
+ function drawGroupTitle(title,count){
+  need(29);
+  stream+=pdfFillRect(tableX,y-24,tableW,24,.76);
+  stream+=pdfLine(tableX,y,tableX+tableW,y,.8);
+  stream+=pdfLine(tableX,y-24,tableX+tableW,y-24,.8);
+  stream+=pdfTextCommand(tableX+7,y-16,`${title}  -  ${count} UTENSILI`,11,true);
+  y-=24;
+  drawTableHeader();
+ }
+
+ beginPage();
+
+ for(const group of groups){
+  drawGroupTitle(group.title,group.tools.length);
+
+  if(!group.tools.length){
+   need(rowBase);
+   stream+=pdfTextCommand(col[0]+6,y-13,'Nessun utensile registrato',8,false);
+   stream+=pdfLine(tableX,y-rowBase,tableX+tableW,y-rowBase,.4);
+   for(const x of col)stream+=pdfLine(x,y,x,y-rowBase,.35);
+   y-=rowBase+8;
+   continue;
+  }
+
+  for(const tool of group.tools){
+   const descriptionLines=pdfWrapText(tool.description||'-',66);
+   const lines=Math.max(1,descriptionLines.length);
+   const rowH=Math.max(rowBase,lines*11+8);
+   need(rowH+2);
+
+   stream+=pdfTextCommand(col[0]+5,y-13,pdfCleanText(tool.position)||'-',8,true);
+   stream+=pdfTextCommand(col[1]+5,y-13,pdfCleanText(tool.type||'ALTRO'),8,false);
+   stream+=pdfTextCommand(col[2]+5,y-13,`Ø ${toolFormatDiameter(tool.diameter)} mm`,8,false);
+   descriptionLines.forEach((line,index)=>{
+    stream+=pdfTextCommand(col[3]+5,y-13-index*11,line,8,false);
+   });
+
+   stream+=pdfLine(tableX,y-rowH,tableX+tableW,y-rowH,.4);
+   for(const x of col)stream+=pdfLine(x,y,x,y-rowH,.35);
+   y-=rowH;
+  }
+
+  y-=10;
+ }
+
+ finishPage();
+
+ const objects=[];
+ objects[1]='<< /Type /Catalog /Pages 2 0 R >>';
+ objects[3]='<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>';
+ objects[4]='<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>';
+ const kids=[];
+
+ pages.forEach((page,index)=>{
+  const pageObj=5+index*2;
+  const contentObj=pageObj+1;
+  kids.push(`${pageObj} 0 R`);
+  objects[pageObj]=`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pageW} ${pageH}] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents ${contentObj} 0 R >>`;
+  objects[contentObj]=`<< /Length ${page.length} >>\nstream\n${page}endstream`;
+ });
+ objects[2]=`<< /Type /Pages /Kids [${kids.join(' ')}] /Count ${pages.length} >>`;
+
+ let pdf='%PDF-1.4\n% CNC Toolbox\n';
+ const offsets=[0];
+ for(let i=1;i<objects.length;i++){
+  offsets[i]=pdf.length;
+  pdf+=`${i} 0 obj\n${objects[i]}\nendobj\n`;
+ }
+ const xref=pdf.length;
+ pdf+=`xref\n0 ${objects.length}\n0000000000 65535 f \n`;
+ for(let i=1;i<objects.length;i++)pdf+=`${String(offsets[i]).padStart(10,'0')} 00000 n \n`;
+ pdf+=`trailer\n<< /Size ${objects.length} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF`;
+
+ return new Uint8Array([...pdf].map(char=>char.charCodeAt(0)));
+}
+
+function toolDownloadBlob(blob,fileName){
+ const url=URL.createObjectURL(blob);
+ const link=document.createElement('a');
+ link.href=url;
+ link.download=fileName;
+ document.body.appendChild(link);
+ link.click();
+ link.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),1500);
+}
+
+function toolPdfFile(){
+ loadToolManager();
+ const bytes=buildToolTablePdf(toolManagerState);
+ const date=new Date().toISOString().slice(0,10);
+ const name=`CNC_Toolbox_tabella_utensili_${date}.pdf`;
+ const blob=new Blob([bytes],{type:'application/pdf'});
+ return {blob,name};
+}
+
+function exportToolPdf(){
+ const file=toolPdfFile();
+ toolDownloadBlob(file.blob,file.name);
+ showToolToast('Tabella PDF scaricata');
+}
+
+async function shareToolPdf(){
+ const generated=toolPdfFile();
+ const file=new File([generated.blob],generated.name,{type:'application/pdf'});
+
+ try{
+  if(navigator.canShare&&navigator.canShare({files:[file]})){
+   await navigator.share({
+    files:[file],
+    title:'Tabella utensili CNC Toolbox',
+    text:'Tabella utensili esportata da CNC Toolbox'
+   });
+   showToolToast('PDF condiviso');
+   return;
+  }
+ }catch(error){
+  if(error?.name==='AbortError')return;
+  console.warn('Condivisione PDF non disponibile',error);
+ }
+
+ toolDownloadBlob(generated.blob,generated.name);
+ showToolToast('Condivisione non disponibile: PDF scaricato');
+}
+
+const TOOL_LAST_BACKUP_KEY='cnc_toolbox_tool_last_backup';
+
+function toolBackupFile(){
+ loadToolManager();
+
+ const exportedAt=new Date().toISOString();
  const backup={
   app:'CNC Toolbox',
   type:'tool-manager-backup',
   version:1,
-  exportedAt:new Date().toISOString(),
+  exportedAt,
   data:toolManagerState
  };
 
+ const date=exportedAt.slice(0,10);
+ const name=`CNC_Toolbox_backup_utensili_${date}.json`;
  const blob=new Blob(
   [JSON.stringify(backup,null,2)],
   {type:'application/json'}
  );
 
- const url=URL.createObjectURL(blob);
- const link=document.createElement('a');
- const date=new Date().toISOString().slice(0,10);
- link.href=url;
- link.download=`CNC_Toolbox_utensili_${date}.json`;
- document.body.appendChild(link);
- link.click();
- link.remove();
- setTimeout(()=>URL.revokeObjectURL(url),1000);
- showToolToast('Backup esportato');
+ return {blob,name,exportedAt};
+}
+
+function rememberToolBackup(dateIso){
+ localStorage.setItem(TOOL_LAST_BACKUP_KEY,dateIso||new Date().toISOString());
+ updateToolLastBackup();
+}
+
+function updateToolLastBackup(){
+ const target=$('toolLastBackup');
+ if(!target)return;
+
+ const saved=localStorage.getItem(TOOL_LAST_BACKUP_KEY);
+ if(!saved){
+  target.textContent='Ultimo backup: mai eseguito.';
+  return;
+ }
+
+ const date=new Date(saved);
+ target.textContent=Number.isNaN(date.getTime())
+  ?'Ultimo backup: data non disponibile.'
+  :`Ultimo backup: ${date.toLocaleString('it-IT',{
+    day:'2-digit',
+    month:'2-digit',
+    year:'numeric',
+    hour:'2-digit',
+    minute:'2-digit'
+   })}`;
+}
+
+function exportToolBackup(){
+ const generated=toolBackupFile();
+ toolDownloadBlob(generated.blob,generated.name);
+ rememberToolBackup(generated.exportedAt);
+ showToolToast('Backup scaricato sul telefono');
+}
+
+async function shareToolBackup(){
+ const generated=toolBackupFile();
+ const file=new File(
+  [generated.blob],
+  generated.name,
+  {type:'application/json'}
+ );
+
+ try{
+  if(navigator.canShare&&navigator.canShare({files:[file]})){
+   await navigator.share({
+    files:[file],
+    title:'Backup CNC Toolbox',
+    text:'Backup completo della Gestione utensili. Scegli Google Drive per conservarlo online.'
+   });
+   rememberToolBackup(generated.exportedAt);
+   showToolToast('Backup condiviso');
+   return;
+  }
+ }catch(error){
+  if(error?.name==='AbortError')return;
+  console.warn('Condivisione backup non disponibile',error);
+ }
+
+ toolDownloadBlob(generated.blob,generated.name);
+ rememberToolBackup(generated.exportedAt);
+ showToolToast('Menu Drive non disponibile: backup scaricato');
 }
 
 function importToolBackup(file){
@@ -2074,7 +2433,9 @@ function importToolBackup(file){
    renderToolMachineList();
    renderToolLocationOptions();
    renderWorkshopTools();
-   showToolToast('Backup importato');
+   localStorage.setItem(TOOL_LAST_BACKUP_KEY,new Date().toISOString());
+   updateToolLastBackup();
+   showToolToast('Backup importato e ripristinato');
   }catch(error){
    console.error(error);
    alert('Il file scelto non è un backup valido della Gestione utensili.');
@@ -2933,6 +3294,7 @@ function setupNumericKeyboards(){
 
 function init(){
  loadToolManager();
+ updateToolLastBackup();
  setupNumericKeyboards();
 
  const machineNameInput=$('toolMachineName');
