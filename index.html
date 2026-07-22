@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#050505">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>CNC Toolbox v7.4</title>
+<title>CNC Toolbox v7.5</title>
 <style>
 :root{--y:#ffc400;--y2:#dfa500;--b:#050505;--p:#141414;--p2:#0b0b0b;--l:#3e3e3e;--w:#fff;--g:#aaa;--ok:#68e36f;--err:#ff5b5b;--blue:#54baff}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -244,13 +244,27 @@ select{text-align:center;font-size:15px}
  .machineToolMain{font-size:21px}.machineToolDescription{font-size:13px}
 }
 
+
+.toolQuickCard{border:2px solid var(--y);box-shadow:0 0 0 1px #111 inset}
+.toolQuickTitle{font-size:18px;color:var(--y);font-weight:1000;margin-bottom:9px}
+.toolQuickSearch{height:60px;font-size:20px;border:3px solid var(--y);margin-bottom:10px}
+.toolTypeFilters{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0 12px}
+.toolTypeChip{border:2px solid #666;background:#0a0a0a;color:#ddd;border-radius:999px;min-height:42px;padding:7px 13px;font-size:13px;font-weight:1000}
+.toolTypeChip.on{background:var(--y);border-color:var(--y);color:#050505}
+.toolQuickActions{display:grid;grid-template-columns:1fr 92px;gap:8px;align-items:center}
+.toolClearSearch{height:48px;border:2px solid #777;border-radius:9px;background:#111;color:#ddd;font-weight:900}
+@media(max-width:430px){
+ .toolTypeChip{padding:6px 10px;font-size:12px;min-height:39px}
+ .toolQuickSearch{height:58px;font-size:19px}
+}
+
 </style>
 </head>
 <body>
 <div class="app">
 
 <section id="home" class="screen active">
- <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v7.4 · DESCRIZIONE UTENSILI</div></div></div>
+ <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v7.5 · RICERCA UTENSILI IMMEDIATA</div></div></div>
  <div class="grid"><button class="tile primary wide" onclick="show('assistant')"><div class="icon">🎙️</div>ASSISTENTE VOCALE MECCANICO</button></div>
 
  <div class="sectionTitle">GEOMETRIA</div>
@@ -277,7 +291,7 @@ select{text-align:center;font-size:15px}
 
  <div class="sectionTitle">STRUMENTI</div>
  <div class="grid">
-  <button class="tile primary wide" onclick="openToolManager()"><div class="icon">🧰</div>GESTIONE UTENSILI<br><small>TROVA DOVE SONO MONTATI</small></button>
+  <button class="tile primary wide" onclick="openToolManager(true)"><div class="icon">🔎</div>CERCA / GESTIONE UTENSILI<br><small>TROVA SUBITO PUNTE E FRESE</small></button>
   <button class="tile primary" onclick="show('materials');updateMaterialForm()"><div class="icon">⚖</div>CALCOLATORE MATERIALI</button>
   <button class="tile" onclick="show('calculator')"><div class="icon">🧮</div>CALCOLATRICE</button>
   <button class="tile" onclick="show('ruler');updateRuler()"><div class="icon">📏</div>RIGHELLO / CALIBRO</button>
@@ -563,6 +577,31 @@ select{text-align:center;font-size:15px}
   <button class="help" onclick="alert('Crea le macchine della tua officina. Poi registra ogni utensile indicando diametro, descrizione, macchina e posizione T o cassetto. Tutto resta memorizzato sul dispositivo.')">?</button>
  </div>
 
+ <div id="toolQuickSearchCard" class="card toolQuickCard">
+  <div class="toolQuickTitle">CERCA SUBITO UTENSILE</div>
+  <input id="toolSearch" class="search toolQuickSearch" placeholder="Scrivi 5,5 · Ø12 · T18 · Vesta" oninput="renderWorkshopTools()">
+
+  <div id="toolTypeFilters" class="toolTypeFilters">
+   <button class="toolTypeChip on" data-tool-type="all" onclick="setToolTypeFilter('all')">TUTTI</button>
+   <button class="toolTypeChip" data-tool-type="PUNTA" onclick="setToolTypeFilter('PUNTA')">PUNTE</button>
+   <button class="toolTypeChip" data-tool-type="FRESA" onclick="setToolTypeFilter('FRESA')">FRESE</button>
+   <button class="toolTypeChip" data-tool-type="MASCHIO" onclick="setToolTypeFilter('MASCHIO')">MASCHI</button>
+   <button class="toolTypeChip" data-tool-type="ALESATORE" onclick="setToolTypeFilter('ALESATORE')">ALESATORI</button>
+   <button class="toolTypeChip" data-tool-type="CENTRINO" onclick="setToolTypeFilter('CENTRINO')">CENTRINI</button>
+   <button class="toolTypeChip" data-tool-type="BARENO" onclick="setToolTypeFilter('BARENO')">BARENI</button>
+   <button class="toolTypeChip" data-tool-type="SVASATORE" onclick="setToolTypeFilter('SVASATORE')">SVASATORI</button>
+   <button class="toolTypeChip" data-tool-type="ALTRO" onclick="setToolTypeFilter('ALTRO')">ALTRI</button>
+  </div>
+
+  <div class="toolQuickActions">
+   <select id="toolLocationFilter" onchange="renderWorkshopTools()"></select>
+   <button class="toolClearSearch" onclick="clearToolSearch()">AZZERA</button>
+  </div>
+
+  <div id="toolSummary" class="toolSummary"></div>
+  <div id="toolList" class="toolList"></div>
+ </div>
+
  <div class="card">
   <h2>SCARICA LA TABELLA UTENSILI</h2>
   <button class="btn" onclick="exportToolPdf()">SCARICA TABELLA PDF</button>
@@ -624,20 +663,7 @@ select{text-align:center;font-size:15px}
  </div>
 
  <div class="card">
-  <h2>3 · CERCA E SPOSTA</h2>
-  <input id="toolSearch" class="search" placeholder="Cerca 5,5 · fresa · CME · T18" oninput="renderWorkshopTools()">
-
-  <div class="row">
-   <div class="label">Mostra</div>
-   <select id="toolLocationFilter" onchange="renderWorkshopTools()"></select>
-  </div>
-
-  <div id="toolSummary" class="toolSummary"></div>
-  <div id="toolList" class="toolList"></div>
- </div>
-
- <div class="card">
-  <h2>4 · BACKUP COMPLETO</h2>
+  <h2>3 · BACKUP COMPLETO</h2>
 
   <div class="toolBackupGrid">
    <button class="btn2" onclick="exportToolBackup()">SALVA FILE BACKUP</button>
@@ -654,7 +680,7 @@ select{text-align:center;font-size:15px}
 
 <section id="toolmachineview" class="screen">
  <div class="header">
-  <button class="back" onclick="show('toolmanager')">‹</button>
+  <button class="back" onclick="show('toolmanager');renderWorkshopTools()">‹</button>
   <div class="title" id="machineViewTitle">TABELLA MACCHINA<small>UTENSILI MONTATI</small></div>
   <button class="help" onclick="alert('Questa pagina mostra posizione T, tipo, diametro e descrizione dell’utensile montato. Puoi lasciarla aperta mentre lavori a bordo macchina.')">?</button>
  </div>
@@ -807,7 +833,7 @@ select{text-align:center;font-size:15px}
 
 <section id="settings" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">MENU</div><button class="help">▤</button></div>
- <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v7.4</div></div><div class="note">Versione a file unico. In modalità 3 punti P1 richiede sempre X e Y; la scelta indica soltanto se applicare la compensazione.</div></div>
+ <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v7.5</div></div><div class="note">Versione a file unico. In modalità 3 punti P1 richiede sempre X e Y; la scelta indica soltanto se applicare la compensazione.</div></div>
  <div class="card"><h2>AZIONI</h2><button class="btn2" onclick="clearSettings()">PULISCI IMPOSTAZIONI</button></div>
 </section>
 
@@ -1668,6 +1694,8 @@ let toolManagerState={
  tools:[]
 };
 
+let toolTypeFilter='all';
+
 function toolMakeId(prefix){
  return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2,8)}`;
 }
@@ -1754,7 +1782,7 @@ function showToolToast(message){
  showToolToast.timer=setTimeout(()=>toast.classList.remove('show'),1800);
 }
 
-function openToolManager(){
+function openToolManager(focusSearch=false){
  show('toolmanager');
  loadToolManager();
  renderToolMachineList();
@@ -1762,7 +1790,15 @@ function openToolManager(){
  renderWorkshopTools();
  updateToolLastBackup();
 
+ updateToolTypeButtons();
+
  setTimeout(()=>{
+  if(focusSearch){
+   $('toolQuickSearchCard')?.scrollIntoView({behavior:'smooth',block:'start'});
+   $('toolSearch')?.focus();
+   return;
+  }
+
   const input=$('toolMachineName');
   if(input&&!toolManagerState.machines.length)input.focus();
  },120);
@@ -2068,6 +2104,34 @@ function addWorkshopTool(){
  $('toolNewDiameter')?.focus();
 }
 
+function updateToolTypeButtons(){
+ document.querySelectorAll('[data-tool-type]').forEach(button=>{
+  button.classList.toggle('on',button.dataset.toolType===toolTypeFilter);
+ });
+}
+
+function setToolTypeFilter(type){
+ toolTypeFilter=String(type||'all').toUpperCase();
+ if(toolTypeFilter==='ALL')toolTypeFilter='all';
+ updateToolTypeButtons();
+ renderWorkshopTools();
+
+ const search=$('toolSearch');
+ if(search){
+  search.focus();
+  try{search.select()}catch(error){}
+ }
+}
+
+function clearToolSearch(){
+ toolTypeFilter='all';
+ if($('toolSearch'))$('toolSearch').value='';
+ if($('toolLocationFilter'))$('toolLocationFilter').value='all';
+ updateToolTypeButtons();
+ renderWorkshopTools();
+ $('toolSearch')?.focus();
+}
+
 function toolMatchesSearch(tool,search){
  if(!search)return true;
 
@@ -2101,6 +2165,7 @@ function renderWorkshopTools(){
 
  const visible=toolManagerState.tools
   .filter(tool=>filter==='all'||tool.location===filter)
+  .filter(tool=>toolTypeFilter==='all'||String(tool.type||'').toUpperCase()===toolTypeFilter)
   .filter(tool=>toolMatchesSearch(tool,search))
   .sort((a,b)=>{
    const typeCompare=a.type.localeCompare(b.type,'it');
