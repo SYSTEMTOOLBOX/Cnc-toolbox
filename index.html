@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#050505">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>CNC Toolbox v7.2</title>
+<title>CNC Toolbox v7.3</title>
 <style>
 :root{--y:#ffc400;--y2:#dfa500;--b:#050505;--p:#141414;--p2:#0b0b0b;--l:#3e3e3e;--w:#fff;--g:#aaa;--ok:#68e36f;--err:#ff5b5b;--blue:#54baff}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -154,7 +154,7 @@ select{text-align:center;font-size:15px}
 .toolAddLine{display:grid;grid-template-columns:1fr 118px;gap:8px;align-items:center}
 .toolTextInput{width:100%;min-width:0;height:52px;border-radius:9px;border:2px solid #ddd;background:#fff;color:#050505;padding:0 10px;font-size:17px;font-weight:900}
 .toolMachineList,.toolList{display:grid;gap:9px;margin-top:11px}
-.toolMachineRow{display:grid;grid-template-columns:1fr 92px;gap:8px;padding:9px;border:1px solid #444;border-radius:10px;background:#0b0b0b}
+.toolMachineRow{display:grid;grid-template-columns:minmax(0,1fr) 82px 78px;gap:7px;padding:9px;border:1px solid #444;border-radius:10px;background:#0b0b0b}
 .toolMachineRow .toolTextInput{height:46px}
 .toolMiniBtn{min-height:44px;border:2px solid var(--y);border-radius:8px;background:#090909;color:var(--y);font-weight:900;padding:7px}
 .toolMiniBtn.primary{background:var(--y);color:#050505}
@@ -186,13 +186,74 @@ select{text-align:center;font-size:15px}
  .toolAddLine{grid-template-columns:1fr 105px}
 }
 
+
+.machineViewIntro{text-align:center;color:#aaa;font-size:15px;line-height:1.45;margin:5px 0 14px}
+.machineViewCount{text-align:center;color:var(--y);font-size:20px;font-weight:900;margin-bottom:12px}
+.machineToolTable{display:grid;gap:8px}
+.machineToolHead,.machineToolRow{
+ display:grid;
+ grid-template-columns:100px 1fr;
+ align-items:center;
+ min-height:58px;
+ border-radius:10px;
+ overflow:hidden
+}
+.machineToolHead{
+ min-height:44px;
+ background:#252525;
+ border:1px solid #555;
+ color:#ddd;
+ font-size:13px;
+ font-weight:900
+}
+.machineToolRow{
+ background:#080808;
+ border:2px solid #444
+}
+.machineToolPosition{
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ height:100%;
+ padding:8px;
+ background:var(--y);
+ color:#050505;
+ font-size:25px;
+ font-weight:1000;
+ text-align:center
+}
+.machineToolType{
+ padding:10px 16px;
+ color:#fff;
+ font-size:23px;
+ font-weight:1000
+}
+.machineToolHead > div{padding:8px 12px;text-align:center}
+.machineToolEmpty{
+ border:2px dashed #555;
+ border-radius:12px;
+ padding:30px 16px;
+ color:#aaa;
+ text-align:center;
+ font-size:18px;
+ font-weight:900;
+ line-height:1.5
+}
+@media(max-width:430px){
+ .toolMachineRow{grid-template-columns:minmax(0,1fr) 76px 70px}
+ .toolMachineRow .toolMiniBtn{padding:5px 3px;font-size:11px}
+ .machineToolHead,.machineToolRow{grid-template-columns:88px 1fr}
+ .machineToolPosition{font-size:22px}
+ .machineToolType{font-size:21px}
+}
+
 </style>
 </head>
 <body>
 <div class="app">
 
 <section id="home" class="screen active">
- <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v7.2 · PULSANTE PDF VISIBILE</div></div></div>
+ <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v7.3 · TABELLA SINGOLA MACCHINA</div></div></div>
  <div class="grid"><button class="tile primary wide" onclick="show('assistant')"><div class="icon">🎙️</div>ASSISTENTE VOCALE MECCANICO</button></div>
 
  <div class="sectionTitle">GEOMETRIA</div>
@@ -594,6 +655,27 @@ select{text-align:center;font-size:15px}
  </div>
 </section>
 
+<section id="toolmachineview" class="screen">
+ <div class="header">
+  <button class="back" onclick="show('toolmanager')">‹</button>
+  <div class="title" id="machineViewTitle">TABELLA MACCHINA<small>UTENSILI MONTATI</small></div>
+  <button class="help" onclick="alert('Questa pagina mostra soltanto posizione T e tipo di utensile della macchina selezionata. Puoi lasciarla aperta mentre lavori a bordo macchina.')">?</button>
+ </div>
+
+ <div class="card">
+  <div class="machineViewIntro">Vista rapida da lasciare aperta mentre lavori.</div>
+  <div id="machineViewCount" class="machineViewCount"></div>
+
+  <div class="machineToolTable">
+   <div class="machineToolHead">
+    <div>POSIZIONE</div>
+    <div>TIPO UTENSILE</div>
+   </div>
+   <div id="machineViewRows"></div>
+  </div>
+ </div>
+</section>
+
 <div id="toolToast" class="toolToast"></div>
 
 <section id="materials" class="screen">
@@ -728,7 +810,7 @@ select{text-align:center;font-size:15px}
 
 <section id="settings" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">MENU</div><button class="help">▤</button></div>
- <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v7.2</div></div><div class="note">Versione a file unico. In modalità 3 punti P1 richiede sempre X e Y; la scelta indica soltanto se applicare la compensazione.</div></div>
+ <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v7.3</div></div><div class="note">Versione a file unico. In modalità 3 punti P1 richiede sempre X e Y; la scelta indica soltanto se applicare la compensazione.</div></div>
  <div class="card"><h2>AZIONI</h2><button class="btn2" onclick="clearSettings()">PULISCI IMPOSTAZIONI</button></div>
 </section>
 
@@ -1795,9 +1877,79 @@ function renderToolMachineList(){
     aria-label="Nome macchina"
    >
    <button
+    class="toolMiniBtn primary"
+    onclick="openMachineToolView('${toolEscape(machine.id)}')"
+   >TABELLA</button>
+   <button
     class="toolMiniBtn danger"
     onclick="deleteToolMachine('${toolEscape(machine.id)}')"
    >ELIMINA</button>
+  </div>
+ `).join('');
+}
+
+let activeToolMachineId='';
+
+function toolPositionSortValue(position){
+ const value=String(position||'').trim().toUpperCase();
+ const match=value.match(/T\s*0*(\d+)/);
+ if(match)return Number(match[1]);
+
+ const number=value.match(/\d+/);
+ return number?100000+Number(number[0]):999999;
+}
+
+function openMachineToolView(machineId){
+ loadToolManager();
+
+ const machine=toolManagerState.machines.find(item=>item.id===machineId);
+ if(!machine){
+  showToolToast('Macchina non trovata');
+  return;
+ }
+
+ activeToolMachineId=machineId;
+ renderMachineToolView();
+ show('toolmachineview');
+}
+
+function renderMachineToolView(){
+ const title=$('machineViewTitle');
+ const count=$('machineViewCount');
+ const rows=$('machineViewRows');
+ if(!title||!count||!rows)return;
+
+ const machine=toolManagerState.machines.find(item=>item.id===activeToolMachineId);
+
+ if(!machine){
+  title.innerHTML='TABELLA MACCHINA<small>MACCHINA NON TROVATA</small>';
+  count.textContent='';
+  rows.innerHTML='<div class="machineToolEmpty">La macchina non è più disponibile.</div>';
+  return;
+ }
+
+ title.innerHTML=`${toolEscape(machine.name)}<small>UTENSILI MONTATI</small>`;
+
+ const tools=toolManagerState.tools
+  .filter(tool=>tool.location===`machine:${machine.id}`)
+  .slice()
+  .sort((a,b)=>{
+   const positionCompare=toolPositionSortValue(a.position)-toolPositionSortValue(b.position);
+   if(positionCompare)return positionCompare;
+   return String(a.type||'').localeCompare(String(b.type||''),'it');
+  });
+
+ count.textContent=`${tools.length} UTENSIL${tools.length===1?'E':'I'} MONTAT${tools.length===1?'O':'I'}`;
+
+ if(!tools.length){
+  rows.innerHTML='<div class="machineToolEmpty">Nessun utensile risulta montato su questa macchina.</div>';
+  return;
+ }
+
+ rows.innerHTML=tools.map(tool=>`
+  <div class="machineToolRow">
+   <div class="machineToolPosition">${toolEscape(tool.position||'—')}</div>
+   <div class="machineToolType">${toolEscape(tool.type||'ALTRO')}</div>
   </div>
  `).join('');
 }
@@ -1855,6 +2007,7 @@ function deleteToolMachine(id){
  if(!confirm(message))return;
 
  toolManagerState.machines=toolManagerState.machines.filter(item=>item.id!==id);
+ if(activeToolMachineId===id)activeToolMachineId='';
 
  toolManagerState.tools.forEach(tool=>{
   if(tool.location===`machine:${id}`){
@@ -1902,6 +2055,7 @@ function addWorkshopTool(){
  if($('toolNewPosition'))$('toolNewPosition').value='';
 
  renderWorkshopTools();
+ if(activeToolMachineId)renderMachineToolView();
  showToolToast(`${type} Ø${toolFormatDiameter(diameter)} memorizzata`);
  $('toolNewDiameter')?.focus();
 }
@@ -2020,6 +2174,7 @@ function updateWorkshopTool(id){
 
  saveToolManager();
  renderWorkshopTools();
+ if(activeToolMachineId)renderMachineToolView();
  showToolToast('Posizione utensile memorizzata');
 }
 
@@ -2032,6 +2187,7 @@ function deleteWorkshopTool(id){
  toolManagerState.tools=toolManagerState.tools.filter(item=>item.id!==id);
  saveToolManager();
  renderWorkshopTools();
+ if(activeToolMachineId)renderMachineToolView();
  showToolToast('Utensile eliminato');
 }
 
