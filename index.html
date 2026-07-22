@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#050505">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>CNC Toolbox v7.5</title>
+<title>CNC Toolbox v7.6</title>
 <style>
 :root{--y:#ffc400;--y2:#dfa500;--b:#050505;--p:#141414;--p2:#0b0b0b;--l:#3e3e3e;--w:#fff;--g:#aaa;--ok:#68e36f;--err:#ff5b5b;--blue:#54baff}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -247,7 +247,38 @@ select{text-align:center;font-size:15px}
 
 .toolQuickCard{border:2px solid var(--y);box-shadow:0 0 0 1px #111 inset}
 .toolQuickTitle{font-size:18px;color:var(--y);font-weight:1000;margin-bottom:9px}
-.toolQuickSearch{height:60px;font-size:20px;border:3px solid var(--y);margin-bottom:10px}
+.toolSearchSubmitRow{
+ display:grid;
+ grid-template-columns:minmax(0,1fr) 112px;
+ gap:8px;
+ align-items:stretch;
+ margin-bottom:10px
+}
+.toolQuickSearch{
+ width:100%;
+ min-width:0;
+ height:62px;
+ font-size:21px;
+ border:3px solid var(--y);
+ margin:0;
+ padding:0 14px;
+ border-radius:10px
+}
+.toolSearchSubmit{
+ min-height:62px;
+ border:3px solid #050505;
+ border-radius:10px;
+ background:var(--y);
+ color:#050505;
+ font-size:18px;
+ font-weight:1000;
+ box-shadow:0 3px 0 #8c6e00;
+ touch-action:manipulation
+}
+.toolSearchSubmit:active{
+ transform:translateY(2px);
+ box-shadow:0 1px 0 #8c6e00
+}
 .toolTypeFilters{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0 12px}
 .toolTypeChip{border:2px solid #666;background:#0a0a0a;color:#ddd;border-radius:999px;min-height:42px;padding:7px 13px;font-size:13px;font-weight:1000}
 .toolTypeChip.on{background:var(--y);border-color:var(--y);color:#050505}
@@ -255,7 +286,9 @@ select{text-align:center;font-size:15px}
 .toolClearSearch{height:48px;border:2px solid #777;border-radius:9px;background:#111;color:#ddd;font-weight:900}
 @media(max-width:430px){
  .toolTypeChip{padding:6px 10px;font-size:12px;min-height:39px}
- .toolQuickSearch{height:58px;font-size:19px}
+ .toolSearchSubmitRow{grid-template-columns:minmax(0,1fr) 98px;gap:6px}
+ .toolQuickSearch{height:60px;font-size:20px;padding:0 10px}
+ .toolSearchSubmit{min-height:60px;font-size:17px}
 }
 
 </style>
@@ -264,7 +297,7 @@ select{text-align:center;font-size:15px}
 <div class="app">
 
 <section id="home" class="screen active">
- <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v7.5 · RICERCA UTENSILI IMMEDIATA</div></div></div>
+ <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v7.6 · INVIA RICERCA</div></div></div>
  <div class="grid"><button class="tile primary wide" onclick="show('assistant')"><div class="icon">🎙️</div>ASSISTENTE VOCALE MECCANICO</button></div>
 
  <div class="sectionTitle">GEOMETRIA</div>
@@ -579,7 +612,21 @@ select{text-align:center;font-size:15px}
 
  <div id="toolQuickSearchCard" class="card toolQuickCard">
   <div class="toolQuickTitle">CERCA SUBITO UTENSILE</div>
-  <input id="toolSearch" class="search toolQuickSearch" placeholder="Scrivi 5,5 · Ø12 · T18 · Vesta" oninput="renderWorkshopTools()">
+  <div class="toolSearchSubmitRow">
+   <input
+    id="toolSearch"
+    type="search"
+    class="search toolQuickSearch"
+    placeholder="Scrivi 5,5 · Ø12 · T18 · Vesta"
+    enterkeyhint="search"
+    autocomplete="off"
+    autocapitalize="off"
+    spellcheck="false"
+    oninput="renderWorkshopTools()"
+    onkeydown="if(event.key==='Enter'){event.preventDefault();submitToolSearch()}"
+   >
+   <button class="toolSearchSubmit" onclick="submitToolSearch()">INVIA</button>
+  </div>
 
   <div id="toolTypeFilters" class="toolTypeFilters">
    <button class="toolTypeChip on" data-tool-type="all" onclick="setToolTypeFilter('all')">TUTTI</button>
@@ -833,7 +880,7 @@ select{text-align:center;font-size:15px}
 
 <section id="settings" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">MENU</div><button class="help">▤</button></div>
- <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v7.5</div></div><div class="note">Versione a file unico. In modalità 3 punti P1 richiede sempre X e Y; la scelta indica soltanto se applicare la compensazione.</div></div>
+ <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v7.6</div></div><div class="note">Versione a file unico. In modalità 3 punti P1 richiede sempre X e Y; la scelta indica soltanto se applicare la compensazione.</div></div>
  <div class="card"><h2>AZIONI</h2><button class="btn2" onclick="clearSettings()">PULISCI IMPOSTAZIONI</button></div>
 </section>
 
@@ -2119,8 +2166,31 @@ function setToolTypeFilter(type){
  const search=$('toolSearch');
  if(search){
   search.focus();
-  try{search.select()}catch(error){}
+  const length=search.value.length;
+  try{search.setSelectionRange(length,length)}catch(error){}
  }
+}
+
+function submitToolSearch(){
+ renderWorkshopTools();
+
+ const search=$('toolSearch');
+ if(search)search.blur();
+
+ if(
+  document.activeElement&&
+  typeof document.activeElement.blur==='function'
+ ){
+  document.activeElement.blur();
+ }
+
+ setTimeout(()=>{
+  const target=$('toolSummary')||$('toolList');
+  target?.scrollIntoView({
+   behavior:'smooth',
+   block:'start'
+  });
+ },120);
 }
 
 function clearToolSearch(){
