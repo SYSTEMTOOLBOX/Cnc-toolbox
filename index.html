@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#050505">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>CNC Toolbox v7.6</title>
+<title>CNC Toolbox v7.7</title>
 <style>
 :root{--y:#ffc400;--y2:#dfa500;--b:#050505;--p:#141414;--p2:#0b0b0b;--l:#3e3e3e;--w:#fff;--g:#aaa;--ok:#68e36f;--err:#ff5b5b;--blue:#54baff}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -297,7 +297,7 @@ select{text-align:center;font-size:15px}
 <div class="app">
 
 <section id="home" class="screen active">
- <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v7.6 · INVIA RICERCA</div></div></div>
+ <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v7.7 · RICERCA NUMERICA</div></div></div>
  <div class="grid"><button class="tile primary wide" onclick="show('assistant')"><div class="icon">🎙️</div>ASSISTENTE VOCALE MECCANICO</button></div>
 
  <div class="sectionTitle">GEOMETRIA</div>
@@ -615,14 +615,16 @@ select{text-align:center;font-size:15px}
   <div class="toolSearchSubmitRow">
    <input
     id="toolSearch"
-    type="search"
+    type="text"
+    inputmode="decimal"
+    pattern="[0-9]*[\.,]?[0-9]*"
     class="search toolQuickSearch"
-    placeholder="Scrivi 5,5 · Ø12 · T18 · Vesta"
+    placeholder="Diametro, es. 7 oppure 5,5"
     enterkeyhint="search"
     autocomplete="off"
     autocapitalize="off"
     spellcheck="false"
-    oninput="renderWorkshopTools()"
+    oninput="sanitizeToolDiameterSearch(this);renderWorkshopTools()"
     onkeydown="if(event.key==='Enter'){event.preventDefault();submitToolSearch()}"
    >
    <button class="toolSearchSubmit" onclick="submitToolSearch()">INVIA</button>
@@ -880,7 +882,7 @@ select{text-align:center;font-size:15px}
 
 <section id="settings" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">MENU</div><button class="help">▤</button></div>
- <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v7.6</div></div><div class="note">Versione a file unico. In modalità 3 punti P1 richiede sempre X e Y; la scelta indica soltanto se applicare la compensazione.</div></div>
+ <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v7.7</div></div><div class="note">Versione a file unico. In modalità 3 punti P1 richiede sempre X e Y; la scelta indica soltanto se applicare la compensazione.</div></div>
  <div class="card"><h2>AZIONI</h2><button class="btn2" onclick="clearSettings()">PULISCI IMPOSTAZIONI</button></div>
 </section>
 
@@ -2171,6 +2173,20 @@ function setToolTypeFilter(type){
  }
 }
 
+function sanitizeToolDiameterSearch(input){
+ if(!input)return;
+
+ let value=String(input.value||'')
+  .replace(/[^0-9,\.]/g,'');
+
+ const parts=value.split(/[,.]/);
+ if(parts.length>1){
+  value=parts.shift()+','+parts.join('');
+ }
+
+ if(input.value!==value)input.value=value;
+}
+
 function submitToolSearch(){
  renderWorkshopTools();
 
@@ -2204,6 +2220,13 @@ function clearToolSearch(){
 
 function toolMatchesSearch(tool,search){
  if(!search)return true;
+
+ const numericSearch=Number(String(search).replace(',','.'));
+ if(Number.isFinite(numericSearch)){
+  const toolDiameter=Number(tool.diameter);
+  return Number.isFinite(toolDiameter)&&
+   String(toolDiameter).includes(String(numericSearch));
+ }
 
  const normalized=search
   .toLocaleLowerCase('it')
