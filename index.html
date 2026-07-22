@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#050505">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>CNC Toolbox v7.3</title>
+<title>CNC Toolbox v7.4</title>
 <style>
 :root{--y:#ffc400;--y2:#dfa500;--b:#050505;--p:#141414;--p2:#0b0b0b;--l:#3e3e3e;--w:#fff;--g:#aaa;--ok:#68e36f;--err:#ff5b5b;--blue:#54baff}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -222,12 +222,9 @@ select{text-align:center;font-size:15px}
  font-weight:1000;
  text-align:center
 }
-.machineToolType{
- padding:10px 16px;
- color:#fff;
- font-size:23px;
- font-weight:1000
-}
+.machineToolType{padding:10px 16px;color:#fff;min-width:0}
+.machineToolMain{font-size:23px;font-weight:1000;line-height:1.15}
+.machineToolDescription{margin-top:5px;color:#bdbdbd;font-size:14px;font-weight:800;line-height:1.25;overflow-wrap:anywhere}
 .machineToolHead > div{padding:8px 12px;text-align:center}
 .machineToolEmpty{
  border:2px dashed #555;
@@ -244,7 +241,7 @@ select{text-align:center;font-size:15px}
  .toolMachineRow .toolMiniBtn{padding:5px 3px;font-size:11px}
  .machineToolHead,.machineToolRow{grid-template-columns:88px 1fr}
  .machineToolPosition{font-size:22px}
- .machineToolType{font-size:21px}
+ .machineToolMain{font-size:21px}.machineToolDescription{font-size:13px}
 }
 
 </style>
@@ -253,7 +250,7 @@ select{text-align:center;font-size:15px}
 <div class="app">
 
 <section id="home" class="screen active">
- <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v7.3 · TABELLA SINGOLA MACCHINA</div></div></div>
+ <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v7.4 · DESCRIZIONE UTENSILI</div></div></div>
  <div class="grid"><button class="tile primary wide" onclick="show('assistant')"><div class="icon">🎙️</div>ASSISTENTE VOCALE MECCANICO</button></div>
 
  <div class="sectionTitle">GEOMETRIA</div>
@@ -659,17 +656,17 @@ select{text-align:center;font-size:15px}
  <div class="header">
   <button class="back" onclick="show('toolmanager')">‹</button>
   <div class="title" id="machineViewTitle">TABELLA MACCHINA<small>UTENSILI MONTATI</small></div>
-  <button class="help" onclick="alert('Questa pagina mostra soltanto posizione T e tipo di utensile della macchina selezionata. Puoi lasciarla aperta mentre lavori a bordo macchina.')">?</button>
+  <button class="help" onclick="alert('Questa pagina mostra posizione T, tipo, diametro e descrizione dell’utensile montato. Puoi lasciarla aperta mentre lavori a bordo macchina.')">?</button>
  </div>
 
  <div class="card">
-  <div class="machineViewIntro">Vista rapida da lasciare aperta mentre lavori.</div>
+  <div class="machineViewIntro">Vista rapida completa da lasciare aperta mentre lavori.</div>
   <div id="machineViewCount" class="machineViewCount"></div>
 
   <div class="machineToolTable">
    <div class="machineToolHead">
     <div>POSIZIONE</div>
-    <div>TIPO UTENSILE</div>
+    <div>UTENSILE E DESCRIZIONE</div>
    </div>
    <div id="machineViewRows"></div>
   </div>
@@ -810,7 +807,7 @@ select{text-align:center;font-size:15px}
 
 <section id="settings" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">MENU</div><button class="help">▤</button></div>
- <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v7.3</div></div><div class="note">Versione a file unico. In modalità 3 punti P1 richiede sempre X e Y; la scelta indica soltanto se applicare la compensazione.</div></div>
+ <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v7.4</div></div><div class="note">Versione a file unico. In modalità 3 punti P1 richiede sempre X e Y; la scelta indica soltanto se applicare la compensazione.</div></div>
  <div class="card"><h2>AZIONI</h2><button class="btn2" onclick="clearSettings()">PULISCI IMPOSTAZIONI</button></div>
 </section>
 
@@ -1946,12 +1943,23 @@ function renderMachineToolView(){
   return;
  }
 
- rows.innerHTML=tools.map(tool=>`
-  <div class="machineToolRow">
-   <div class="machineToolPosition">${toolEscape(tool.position||'—')}</div>
-   <div class="machineToolType">${toolEscape(tool.type||'ALTRO')}</div>
-  </div>
- `).join('');
+ rows.innerHTML=tools.map(tool=>{
+  const diameter=Number(tool.diameter);
+  const diameterText=Number.isFinite(diameter)&&diameter>0
+   ?` Ø${toolFormatDiameter(diameter)}`
+   :'';
+  const description=String(tool.description||'').trim();
+
+  return `
+   <div class="machineToolRow">
+    <div class="machineToolPosition">${toolEscape(tool.position||'—')}</div>
+    <div class="machineToolType">
+     <div class="machineToolMain">${toolEscape(tool.type||'ALTRO')}${toolEscape(diameterText)}</div>
+     ${description?`<div class="machineToolDescription">${toolEscape(description)}</div>`:''}
+    </div>
+   </div>
+  `;
+ }).join('');
 }
 
 function memorizeWorkshop(){
