@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#050505">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>CNC Toolbox v8.0 Beta Condivisa</title>
+<title>CNC Toolbox v8.1 Beta Magazzino</title>
 <style>
 :root{--y:#ffc400;--y2:#dfa500;--b:#050505;--p:#141414;--p2:#0b0b0b;--l:#3e3e3e;--w:#fff;--g:#aaa;--ok:#68e36f;--err:#ff5b5b;--blue:#54baff}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -311,6 +311,25 @@ select{text-align:center;font-size:15px}
 .betaUpdatedBy{color:var(--blue)!important;font-weight:900}
 @media(max-width:430px){.authPanel{padding:16px}.betaOperatorChips{grid-template-columns:1fr 1fr}.betaOperatorChip{font-size:16px;min-height:56px}.betaAccount{align-items:flex-start;flex-direction:column}.betaLogout{width:100%}}
 
+
+
+/* v8.1 · MAGAZZINO CONDIVISO */
+.inventoryTile{position:relative}
+.inventoryBadge{position:absolute;right:9px;top:9px;min-width:34px;height:34px;border-radius:999px;background:var(--err);color:#fff;border:3px solid #050505;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:1000;padding:0 8px;box-shadow:0 3px 12px rgba(0,0,0,.55)}
+.inventorySummaryGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.inventorySummaryBox{border:1px solid #49616d;border-radius:10px;background:#09131a;padding:10px;text-align:center}
+.inventorySummaryBox strong{display:block;color:var(--blue);font-size:26px;line-height:1.1}.inventorySummaryBox span{display:block;color:#ddd;font-size:11px;font-weight:900;margin-top:4px}
+.inventoryOperatorHint{color:#aaa;font-size:12px;line-height:1.45;margin-top:8px}
+.inventoryLowPanel{border:2px solid var(--err);border-radius:12px;background:#240909;padding:12px;margin:11px 0}
+.inventoryLowPanel.ok{border-color:var(--ok);background:#071b09}
+.inventoryLowTitle{font-weight:1000;color:#fff;margin-bottom:7px}.inventoryLowItem{border-top:1px solid rgba(255,255,255,.16);padding:8px 0;font-size:13px;line-height:1.4}.inventoryLowItem:first-child{border-top:0}.inventoryLowItem strong{color:#fff}.inventoryLowItem span{color:var(--err);font-weight:1000}.inventoryLowPanel.ok .inventoryLowTitle{color:var(--ok)}
+.inventorySearchRow{display:grid;grid-template-columns:minmax(0,1fr) 155px;gap:8px}.inventorySearchRow select{height:58px}
+.inventoryFormGrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.inventoryField{display:grid;gap:6px}.inventoryField.full{grid-column:1/-1}.inventoryField label{color:#ccc;font-size:13px;font-weight:900}.inventoryField input,.inventoryField select{height:52px;border:2px solid #ddd;border-radius:9px;background:#fff;color:#050505;padding:0 10px;font-size:17px;font-weight:900;width:100%;min-width:0}.inventoryFormActions{display:grid;grid-template-columns:1fr 118px;gap:8px}.inventoryCancel{display:none}.inventoryCancel.show{display:block}
+.inventoryList{display:grid;gap:10px;margin-top:12px}.inventoryCard{border:1.5px solid #454545;border-radius:13px;background:linear-gradient(145deg,#181818,#080808);padding:12px}.inventoryCard.low{border-color:var(--err);box-shadow:0 0 0 1px rgba(255,91,91,.18) inset}.inventoryCardHead{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.inventoryCardTitle{color:var(--y);font-size:19px;font-weight:1000;line-height:1.2}.inventoryCardMeta{color:#aaa;font-size:12px;line-height:1.45;margin-top:5px}.inventoryQuantity{min-width:92px;text-align:center;border:2px solid var(--y);border-radius:10px;padding:7px;background:#080808}.inventoryQuantity strong{display:block;color:var(--y);font-size:31px;line-height:1}.inventoryQuantity span{display:block;color:#ddd;font-size:11px;font-weight:900;margin-top:4px}.inventoryCard.low .inventoryQuantity{border-color:var(--err)}.inventoryCard.low .inventoryQuantity strong{color:var(--err)}
+.inventoryWarning{margin-top:9px;border-radius:8px;background:#351010;color:#fff;padding:9px;font-size:13px;font-weight:1000}.inventoryMoveGrid{display:grid;grid-template-columns:120px 1fr;gap:8px;margin-top:11px}.inventoryMoveGrid .full{grid-column:1/-1}.inventoryMoveGrid label{display:block;color:#ccc;font-size:11px;font-weight:900;margin-bottom:5px}.inventoryMoveGrid input,.inventoryMoveGrid select{width:100%;height:49px;border:2px solid #ddd;border-radius:8px;background:#fff;color:#050505;padding:0 8px;font-size:15px;font-weight:900}.inventoryActionGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.inventoryActionGrid button{min-height:53px;border-radius:9px;font-weight:1000;padding:8px}.inventoryLoadBtn{border:2px solid var(--ok);background:#09220b;color:var(--ok)}.inventoryTakeBtn{border:0;background:var(--y);color:#050505}.inventoryEditBtn{border:2px solid var(--blue);background:#071923;color:var(--blue)}.inventoryDeleteBtn{border:2px solid var(--err);background:#1c0808;color:var(--err)}
+.inventoryHistory{margin-top:10px}.inventoryHistoryItem{border-top:1px solid #333;padding:9px 0;color:#ccc;font-size:12px;line-height:1.45}.inventoryHistoryItem:first-child{border-top:0}.inventoryHistoryItem strong{color:#fff}.inventoryHistoryDelta.plus{color:var(--ok);font-weight:1000}.inventoryHistoryDelta.minus{color:var(--err);font-weight:1000}.inventoryEmpty{border:1px dashed #555;border-radius:10px;padding:18px;text-align:center;color:#aaa;font-weight:900;line-height:1.45}
+@media(max-width:430px){.inventorySearchRow{grid-template-columns:1fr}.inventoryFormGrid{grid-template-columns:1fr}.inventoryField.full{grid-column:auto}.inventorySummaryGrid{gap:5px}.inventorySummaryBox{padding:8px 4px}.inventorySummaryBox strong{font-size:23px}.inventoryMoveGrid{grid-template-columns:105px 1fr}.inventoryFormActions{grid-template-columns:1fr 100px}.inventoryCardTitle{font-size:17px}.inventoryQuantity{min-width:82px}.inventoryQuantity strong{font-size:28px}}
+
 </style>
 </head>
 <body>
@@ -352,7 +371,7 @@ select{text-align:center;font-size:15px}
 <div class="app">
 
 <section id="home" class="screen active">
- <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v8.0 · BETA CONDIVISA</div><div class="betaSyncPill"><span id="betaHomeDot" class="betaSyncDot loading"></span><span id="betaHomeStatus">COLLEGAMENTO…</span></div></div></div>
+ <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v8.1 · BETA MAGAZZINO</div><div class="betaSyncPill"><span id="betaHomeDot" class="betaSyncDot loading"></span><span id="betaHomeStatus">COLLEGAMENTO…</span></div></div></div>
  <div class="grid"><button class="tile primary wide" onclick="show('assistant')"><div class="icon">🎙️</div>ASSISTENTE VOCALE MECCANICO</button></div>
 
  <div class="sectionTitle">GEOMETRIA</div>
@@ -379,6 +398,7 @@ select{text-align:center;font-size:15px}
 
  <div class="sectionTitle">STRUMENTI</div>
  <div class="grid">
+  <button class="tile primary wide inventoryTile" onclick="show('inventory');window.renderInventory?.()"><span id="inventoryAlertBadge" class="inventoryBadge" hidden>0</span><div class="icon">📦</div>MAGAZZINO CONDIVISO<br><small>SCORTE · PRELIEVI · INSERTI TORNIO</small></button>
   <button class="tile primary wide" onclick="openToolManager(true)"><div class="icon">🔎</div>CERCA / GESTIONE UTENSILI<br><small>TROVA SUBITO PUNTE E FRESE</small></button>
   <button class="tile primary" onclick="show('materials');updateMaterialForm()"><div class="icon">⚖</div>CALCOLATORE MATERIALI</button>
   <button class="tile" onclick="show('calculator')"><div class="icon">🧮</div>CALCOLATRICE</button>
@@ -658,6 +678,103 @@ select{text-align:center;font-size:15px}
  <div class="card"><div class="row"><div class="label">Pollici</div><input id="convIn" class="inp" value="1"></div><button class="btn" onclick="inMm()">POLLICI → MM</button><div id="resConv2"></div></div>
 </section>
 
+
+<section id="inventory" class="screen">
+ <div class="header">
+  <button class="back" onclick="show('home')">‹</button>
+  <div class="title">MAGAZZINO CONDIVISO<small>SCORTE AGGIORNATE IN TEMPO REALE</small></div>
+  <button class="help" onclick="alert('Carica frese, punte, alesatori e inserti. Quando premi PRELEVA / MONTA la quantità scende e viene registrato il nome dell’operatore. La scorta minima predefinita è 2 pezzi.')">?</button>
+ </div>
+
+ <div class="card betaSharedCard">
+  <h2>OFFICINA E OPERATORE</h2>
+  <div class="betaSyncPill"><span id="betaInventoryDot" class="betaSyncDot loading"></span><span id="betaInventoryStatus">SINCRONIZZAZIONE…</span></div>
+  <div class="betaOperatorTitle">CHI STA PRELEVANDO O CARICANDO?</div>
+  <div id="betaInventoryOperatorChips" class="betaOperatorChips"><div class="betaActivityEmpty">Caricamento nomi…</div></div>
+  <div class="inventoryOperatorHint">Tocca una volta il nome. Rimane selezionato e viene scritto automaticamente in ogni movimento.</div>
+  <div class="inventorySummaryGrid">
+   <div class="inventorySummaryBox"><strong id="inventorySummaryItems">0</strong><span>ARTICOLI</span></div>
+   <div class="inventorySummaryBox"><strong id="inventorySummaryQty">0</strong><span>PEZZI / UNITÀ</span></div>
+   <div class="inventorySummaryBox"><strong id="inventorySummaryLow">0</strong><span>DA ORDINARE</span></div>
+  </div>
+  <button id="inventoryNotifyButton" class="btn2" onclick="requestInventoryNotifications()">ATTIVA AVVISI SCORTA</button>
+  <div class="hint">L’avviso rosso funziona sempre dentro l’app. La notifica di sistema funziona quando il browser consente le notifiche.</div>
+ </div>
+
+ <div id="inventoryLowPanel" class="inventoryLowPanel ok">
+  <div class="inventoryLowTitle">SCORTE REGOLARI</div>
+  <div>Nessun articolo è sotto la scorta minima.</div>
+ </div>
+
+ <div class="card">
+  <h2>CERCA NEL MAGAZZINO</h2>
+  <div class="inventorySearchRow">
+   <input id="inventorySearch" class="search" type="search" placeholder="KNUX · CNMG · fresa Ø12 · codice" oninput="renderInventory()" autocomplete="off">
+   <select id="inventoryFilter" onchange="renderInventory()">
+    <option value="all">TUTTE LE CATEGORIE</option>
+    <option value="UTENSILI">UTENSILI CENTRI</option>
+    <option value="INSERTO TORNIO">INSERTI TORNIO</option>
+    <option value="ALTRO">ALTRO</option>
+   </select>
+  </div>
+ </div>
+
+ <div id="inventoryFormCard" class="card">
+  <h2 id="inventoryFormTitle">AGGIUNGI ARTICOLO</h2>
+  <div class="inventoryFormGrid">
+   <div class="inventoryField">
+    <label>Categoria</label>
+    <select id="inventoryNewCategory">
+     <option>FRESA</option><option>PUNTA</option><option>ALESATORE</option><option>MASCHIO</option><option>CENTRINO</option><option>SVASATORE</option><option>BARENO</option><option>INSERTO TORNIO</option><option>PORTAINSERTI</option><option>ALTRO</option>
+    </select>
+   </div>
+   <div class="inventoryField">
+    <label>Codice / sigla</label>
+    <input id="inventoryNewCode" type="text" placeholder="Es. KNUX 160405R" autocapitalize="characters">
+   </div>
+   <div class="inventoryField">
+    <label>Diametro mm facoltativo</label>
+    <input id="inventoryNewDiameter" type="text" inputmode="decimal" placeholder="Es. 12 oppure 5,5">
+   </div>
+   <div class="inventoryField">
+    <label>Quantità disponibile</label>
+    <input id="inventoryNewQty" type="number" inputmode="numeric" min="0" step="1" value="0">
+   </div>
+   <div class="inventoryField">
+    <label>Scorta minima</label>
+    <input id="inventoryNewMin" type="number" inputmode="numeric" min="0" step="1" value="2">
+   </div>
+   <div class="inventoryField">
+    <label>Unità</label>
+    <select id="inventoryNewUnit"><option>PEZZI</option><option>SCATOLE</option><option>CONFEZIONI</option></select>
+   </div>
+   <div class="inventoryField full">
+    <label>Descrizione</label>
+    <input id="inventoryNewDescription" type="text" placeholder="Es. metallo duro, 4 taglienti / qualità inserto">
+   </div>
+   <div class="inventoryField full">
+    <label>Posizione magazzino</label>
+    <input id="inventoryNewLocation" type="text" placeholder="Es. Armadio 2 · Cassetto 4">
+   </div>
+  </div>
+  <div class="inventoryFormActions">
+   <button id="inventorySaveButton" class="btn" onclick="saveInventoryItem()">AGGIUNGI AL MAGAZZINO</button>
+   <button id="inventoryCancelButton" class="btn2 inventoryCancel" onclick="clearInventoryForm()">ANNULLA</button>
+  </div>
+  <div class="hint">Per gli inserti puoi scrivere KNUX, CNMG, DNMG, VNMG, CCMT o qualsiasi codice completo.</div>
+ </div>
+
+ <div class="card">
+  <h2>ARTICOLI E MOVIMENTI</h2>
+  <div id="inventoryList" class="inventoryList"><div class="inventoryEmpty">Il magazzino è ancora vuoto.</div></div>
+ </div>
+
+ <div class="card">
+  <h2>ULTIMI MOVIMENTI MAGAZZINO</h2>
+  <div id="inventoryHistory" class="inventoryHistory"><div class="inventoryEmpty">Nessun movimento registrato.</div></div>
+ </div>
+</section>
+
 <section id="toolmanager" class="screen">
  <div class="header">
   <button class="back" onclick="show('home')">‹</button>
@@ -785,7 +902,7 @@ select{text-align:center;font-size:15px}
   </div>
 
   <button class="btn" onclick="addWorkshopTool()">AGGIUNGI E MEMORIZZA</button>
-  <div class="hint">Ogni riga rappresenta un utensile fisico condiviso. Il nome dell’operatore selezionato viene registrato automaticamente.</div>
+  <div class="hint">Ogni riga rappresenta un utensile fisico condiviso. Per diminuire automaticamente le scorte, usa PRELEVA / MONTA dalla schermata MAGAZZINO CONDIVISO.</div>
  </div>
 
  <div class="card">
@@ -954,12 +1071,12 @@ select{text-align:center;font-size:15px}
 
 <section id="scanner" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">SCANNER 3D<small>PROGETTO SEPARATO</small></div><button class="help">?</button></div>
- <div class="card"><h2>LO RIPRENDEREMO SUCCESSIVAMENTE</h2><div class="note">Lo scanner 3D resta separato per non appesantire la Toolbox. Questa v6.9 contiene gli strumenti CNC, il magazzino utensili con tabella PDF e l’assistente vocale completo.</div></div>
+ <div class="card"><h2>LO RIPRENDEREMO SUCCESSIVAMENTE</h2><div class="note">Lo scanner 3D resta separato per non appesantire la Toolbox. Questa Beta contiene strumenti CNC, officina condivisa e magazzino sincronizzato.</div></div>
 </section>
 
 <section id="settings" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">MENU</div><button class="help">▤</button></div>
- <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v8.0 BETA</div></div><div class="note">Beta online: macchine, utensili e operatori vengono sincronizzati tra i telefoni autorizzati. La versione stabile v7.7 rimane separata.</div></div>
+ <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v8.1 BETA</div></div><div class="note">Beta online: macchine, utensili, operatori e magazzino vengono sincronizzati tra i telefoni autorizzati. La versione stabile v7.7 rimane separata.</div></div>
  <div class="card"><h2>AZIONI</h2><button class="btn2" onclick="clearSettings()">PULISCI IMPOSTAZIONI</button></div>
 </section>
 
@@ -975,6 +1092,7 @@ function show(id){
  window.scrollTo(0,0);
  if(id!=='goniometer'&&id!=='torch')stopCamera();
  if(id==='assistant')setTimeout(populateVoices,80);
+ if(id==='inventory')window.renderInventory?.();
 }
 function num(id){return parseFloat(String($(id).value).replace(',','.'))}
 function fmt(n,d=3){return Number(n).toLocaleString('it-IT',{minimumFractionDigits:d,maximumFractionDigits:d})}
@@ -1869,7 +1987,8 @@ function loadToolManager(){
       position:String(tool.position||''),
       updatedAt:String(tool.updatedAt||new Date().toISOString()),
       updatedByName:String(tool.updatedByName||''),
-      updatedByUid:String(tool.updatedByUid||'')
+      updatedByUid:String(tool.updatedByUid||''),
+      inventoryItemId:String(tool.inventoryItemId||'')
      }))
    };
    window.toolManagerState=toolManagerState;
@@ -3795,7 +3914,7 @@ import {
 import {
  initializeFirestore,persistentLocalCache,persistentMultipleTabManager,
  collection,doc,getDoc,setDoc,deleteDoc,onSnapshot,serverTimestamp,
- writeBatch,query,orderBy,limit,addDoc
+ writeBatch,query,orderBy,limit,addDoc,runTransaction
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
 const firebaseConfig={
@@ -3832,6 +3951,11 @@ try{
 }catch(error){console.warn(error)}
 let machineReady=false,toolReady=false;
 let cloudMachineCount=0,cloudToolCount=0;
+let inventoryItems=[];
+let inventoryMovements=[];
+let inventoryEditingId='';
+let inventoryInitialized=false;
+let inventoryPrevious=new Map();
 let unsubs=[];
 
 const el=id=>document.getElementById(id);
@@ -3849,9 +3973,10 @@ function setMessage(id,message,type=''){
  target.className='authMessage'+(type?' '+type:'');
 }
 function setSyncStatus(text,state='loading'){
- ['betaHomeDot','betaToolDot'].forEach(id=>{const dot=el(id);if(dot)dot.className='betaSyncDot '+state});
+ ['betaHomeDot','betaToolDot','betaInventoryDot'].forEach(id=>{const dot=el(id);if(dot)dot.className='betaSyncDot '+state});
  if(el('betaHomeStatus'))el('betaHomeStatus').textContent=text;
  if(el('betaToolStatus'))el('betaToolStatus').textContent=text;
+ if(el('betaInventoryStatus'))el('betaInventoryStatus').textContent=text;
 }
 function firebaseErrorItalian(error){
  const code=String(error?.code||'');
@@ -3862,11 +3987,13 @@ function firebaseErrorItalian(error){
  return 'Operazione non riuscita. Controlla la connessione e riprova.';
 }
 function renderMembers(){
- const box=el('betaOperatorChips');if(!box)return;
- if(!members.length){box.innerHTML='<div class="betaActivityEmpty">Nessun nome registrato.</div>';return}
+ const boxes=['betaOperatorChips','betaInventoryOperatorChips'].map(id=>el(id)).filter(Boolean);
+ if(!boxes.length)return;
+ if(!members.length){boxes.forEach(box=>box.innerHTML='<div class="betaActivityEmpty">Nessun nome registrato.</div>');return}
  const valid=members.some(item=>item.uid===activeOperatorUid);
  if(!valid&&currentUser){activeOperatorUid=currentUser.uid;localStorage.setItem(ACTIVE_OPERATOR_KEY,activeOperatorUid)}
- box.innerHTML=members.map(member=>`<button class="betaOperatorChip ${member.uid===activeOperatorUid?'on':''}" onclick="selectBetaOperator('${safeText(member.uid)}')">${safeText(member.name||member.email||'UTENTE')}</button>`).join('');
+ const content=members.map(member=>`<button class="betaOperatorChip ${member.uid===activeOperatorUid?'on':''}" onclick="selectBetaOperator('${safeText(member.uid)}')">${safeText(member.name||member.email||'UTENTE')}</button>`).join('');
+ boxes.forEach(box=>box.innerHTML=content);
 }
 function getOperator(){
  return members.find(item=>item.uid===activeOperatorUid)||currentProfile||{uid:currentUser?.uid||'',name:currentUser?.email||'Utente'};
@@ -3889,12 +4016,207 @@ async function logActivity(action,detail=''){
   });
  }catch(error){console.warn('Storico non salvato',error)}
 }
+
+function makeInventoryId(prefix='stock'){
+ try{return `${prefix}_${crypto.randomUUID()}`}catch(error){return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2,10)}`}
+}
+function inventoryNum(value){
+ const number=Number(String(value??'').trim().replace(',','.'));
+ return Number.isFinite(number)?number:0;
+}
+function inventoryWhole(value,minimum=0){return Math.max(minimum,Math.floor(inventoryNum(value)))}
+function inventoryDiameter(value){
+ const number=inventoryNum(value);
+ return number>0?number.toLocaleString('it-IT',{maximumFractionDigits:3}):'';
+}
+function inventoryTitle(item){
+ const parts=[String(item.category||'ALTRO').toUpperCase()];
+ if(String(item.code||'').trim())parts.push(String(item.code).trim());
+ const diameter=inventoryDiameter(item.diameter);
+ if(diameter)parts.push(`Ø${diameter}`);
+ return parts.join(' · ');
+}
+function inventoryIsInsert(item){return String(item.category||'').toUpperCase().includes('INSERTO')}
+function inventoryToolType(item){
+ const category=String(item.category||'ALTRO').toUpperCase();
+ return ['FRESA','PUNTA','ALESATORE','MASCHIO','CENTRINO','SVASATORE','BARENO'].includes(category)?category:'ALTRO';
+}
+function inventoryMachineOptions(selected=''){
+ const machines=window.toolManagerState?.machines||[];
+ return [`<option value="">SOLO PRELIEVO / CONSUMO</option>`,...machines.map(machine=>`<option value="${safeText(machine.id)}"${selected===machine.id?' selected':''}>MONTA SU ${safeText(machine.name)}</option>`)].join('');
+}
+function inventoryFilterMatch(item,filter){
+ if(filter==='all')return true;
+ if(filter==='UTENSILI')return !inventoryIsInsert(item)&&String(item.category||'')!=='ALTRO'&&String(item.category||'')!=='PORTAINSERTI';
+ if(filter==='INSERTO TORNIO')return inventoryIsInsert(item)||String(item.category||'')==='PORTAINSERTI';
+ return String(item.category||'')===filter;
+}
+function inventorySearchMatch(item,search){
+ if(!search)return true;
+ const normalized=String(search).toLocaleLowerCase('it').replaceAll(',','.').trim();
+ const haystack=[item.category,item.code,item.diameter,inventoryDiameter(item.diameter),item.description,item.location].join(' ').toLocaleLowerCase('it').replaceAll(',','.');
+ return haystack.includes(normalized);
+}
+function renderInventoryHistory(){
+ const box=el('inventoryHistory');if(!box)return;
+ if(!inventoryMovements.length){box.innerHTML='<div class="inventoryEmpty">Nessun movimento registrato.</div>';return}
+ box.innerHTML=inventoryMovements.map(move=>{
+  const stamp=move.createdAt?.toDate?.()||new Date(move.createdAtIso||Date.now());
+  const when=stamp.toLocaleString('it-IT',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+  const delta=Number(move.delta||0);const sign=delta>0?'+':'';const cls=delta>0?'plus':delta<0?'minus':'';
+  return `<div class="inventoryHistoryItem"><strong>${safeText(move.operatorName||'Utente')}</strong> · ${safeText(move.action||'Movimento')} <span class="inventoryHistoryDelta ${cls}">${safeText(sign+delta)}</span><br>${safeText(move.itemTitle||'Articolo')} · rimasti ${safeText(move.quantityAfter??'—')} · ${safeText(move.destination||'MAGAZZINO')}<br>${safeText(when)}</div>`;
+ }).join('');
+}
+function renderInventory(){
+ const list=el('inventoryList');if(!list)return;
+ const search=String(el('inventorySearch')?.value||'');
+ const filter=String(el('inventoryFilter')?.value||'all');
+ const low=inventoryItems.filter(item=>Number(item.quantity||0)<=Number(item.minStock??2));
+ const totalQty=inventoryItems.reduce((sum,item)=>sum+Number(item.quantity||0),0);
+ if(el('inventorySummaryItems'))el('inventorySummaryItems').textContent=String(inventoryItems.length);
+ if(el('inventorySummaryQty'))el('inventorySummaryQty').textContent=String(totalQty);
+ if(el('inventorySummaryLow'))el('inventorySummaryLow').textContent=String(low.length);
+ const badge=el('inventoryAlertBadge');if(badge){badge.hidden=!low.length;badge.textContent=String(low.length)}
+ const lowPanel=el('inventoryLowPanel');
+ if(lowPanel){
+  lowPanel.classList.toggle('ok',!low.length);
+  lowPanel.innerHTML=low.length
+   ?`<div class="inventoryLowTitle">⚠ DA ORDINARE / RICARICARE</div>${low.map(item=>`<div class="inventoryLowItem"><strong>${safeText(inventoryTitle(item))}</strong><br><span>RIMASTI ${safeText(item.quantity)} ${safeText(item.unit||'PEZZI')}</span> · minimo ${safeText(item.minStock??2)}</div>`).join('')}`
+   :'<div class="inventoryLowTitle">SCORTE REGOLARI</div><div>Nessun articolo è sotto la scorta minima.</div>';
+ }
+ const visible=inventoryItems.filter(item=>inventoryFilterMatch(item,filter)).filter(item=>inventorySearchMatch(item,search)).slice().sort((a,b)=>{
+  const lowA=Number(a.quantity||0)<=Number(a.minStock??2)?0:1;const lowB=Number(b.quantity||0)<=Number(b.minStock??2)?0:1;
+  if(lowA!==lowB)return lowA-lowB;
+  return inventoryTitle(a).localeCompare(inventoryTitle(b),'it');
+ });
+ if(!visible.length){list.innerHTML=inventoryItems.length?'<div class="inventoryEmpty">Nessun articolo corrisponde alla ricerca.</div>':'<div class="inventoryEmpty">Il magazzino è ancora vuoto.<br>Aggiungi la prima fresa, punta o scatola di inserti.</div>';renderInventoryHistory();return}
+ list.innerHTML=visible.map(item=>{
+  const qty=Number(item.quantity||0);const min=Number(item.minStock??2);const isLow=qty<=min;
+  const updated=new Date(item.updatedAtIso||Date.now());const when=Number.isNaN(updated.getTime())?'':updated.toLocaleString('it-IT',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+  return `<div class="inventoryCard ${isLow?'low':''}" data-inventory-card="${safeText(item.id)}">
+   <div class="inventoryCardHead">
+    <div><div class="inventoryCardTitle">${safeText(inventoryTitle(item))}</div>${item.description?`<div class="inventoryCardMeta">${safeText(item.description)}</div>`:''}${item.location?`<div class="inventoryCardMeta">📍 ${safeText(item.location)}</div>`:''}${item.updatedByName?`<div class="inventoryCardMeta betaUpdatedBy">Ultimo movimento: ${safeText(item.updatedByName)}${when?' · '+safeText(when):''}</div>`:''}</div>
+    <div class="inventoryQuantity"><strong>${safeText(qty)}</strong><span>${safeText(item.unit||'PEZZI')}</span></div>
+   </div>
+   ${isLow?`<div class="inventoryWarning">⚠ SCORTA BASSA · minimo impostato ${safeText(min)}</div>`:''}
+   <div class="inventoryMoveGrid">
+    <div><label>QUANTITÀ</label><input data-inventory-amount="${safeText(item.id)}" type="number" inputmode="numeric" min="1" step="1" value="1"></div>
+    <div><label>DESTINAZIONE</label><select data-inventory-machine="${safeText(item.id)}">${inventoryMachineOptions('')}</select></div>
+    <div class="full"><label>POSIZIONE T / NOTA</label><input data-inventory-position="${safeText(item.id)}" type="text" placeholder="Es. T18 oppure reparto tornio"></div>
+   </div>
+   <div class="inventoryActionGrid"><button class="inventoryLoadBtn" onclick="inventoryLoadStock('${safeText(item.id)}')">+ CARICA SCORTA</button><button class="inventoryTakeBtn" onclick="inventoryTakeStock('${safeText(item.id)}')">PRELEVA / MONTA</button></div>
+   <div class="inventoryActionGrid"><button class="inventoryEditBtn" onclick="editInventoryItem('${safeText(item.id)}')">MODIFICA DATI</button><button class="inventoryDeleteBtn" onclick="deleteInventoryItem('${safeText(item.id)}')">ELIMINA</button></div>
+  </div>`;
+ }).join('');
+ renderInventoryHistory();
+}
+window.renderInventory=renderInventory;
+function clearInventoryForm(){
+ inventoryEditingId='';
+ const values={inventoryNewCategory:'FRESA',inventoryNewCode:'',inventoryNewDiameter:'',inventoryNewQty:'0',inventoryNewMin:'2',inventoryNewUnit:'PEZZI',inventoryNewDescription:'',inventoryNewLocation:''};
+ Object.entries(values).forEach(([id,value])=>{if(el(id))el(id).value=value});
+ if(el('inventoryFormTitle'))el('inventoryFormTitle').textContent='AGGIUNGI ARTICOLO';
+ if(el('inventorySaveButton'))el('inventorySaveButton').textContent='AGGIUNGI AL MAGAZZINO';
+ el('inventoryCancelButton')?.classList.remove('show');
+}
+window.clearInventoryForm=clearInventoryForm;
+window.editInventoryItem=id=>{
+ const item=inventoryItems.find(row=>row.id===id);if(!item)return;
+ inventoryEditingId=id;
+ const values={inventoryNewCategory:item.category||'ALTRO',inventoryNewCode:item.code||'',inventoryNewDiameter:item.diameter||'',inventoryNewQty:item.quantity??0,inventoryNewMin:item.minStock??2,inventoryNewUnit:item.unit||'PEZZI',inventoryNewDescription:item.description||'',inventoryNewLocation:item.location||''};
+ Object.entries(values).forEach(([key,value])=>{if(el(key))el(key).value=String(value)});
+ if(el('inventoryFormTitle'))el('inventoryFormTitle').textContent='MODIFICA ARTICOLO';
+ if(el('inventorySaveButton'))el('inventorySaveButton').textContent='SALVA MODIFICHE';
+ el('inventoryCancelButton')?.classList.add('show');
+ el('inventoryFormCard')?.scrollIntoView({behavior:'smooth',block:'start'});
+};
+async function logInventoryMovement(item,action,delta,quantityAfter,destination='MAGAZZINO'){
+ if(!currentUser)return;
+ const operator=getOperator();
+ try{await addDoc(officeCollection('inventoryMovements'),{itemId:item.id,itemTitle:inventoryTitle(item),action,delta:Number(delta||0),quantityAfter:Number(quantityAfter||0),destination:String(destination||'MAGAZZINO'),operatorUid:operator.uid||'',operatorName:operator.name||operator.email||'Utente',accountUid:currentUser.uid,accountEmail:currentUser.email||'',createdAt:serverTimestamp(),createdAtIso:nowIso()})}catch(error){console.warn('Movimento magazzino non salvato',error)}
+}
+window.saveInventoryItem=async()=>{
+ if(!currentUser)return;
+ const category=String(el('inventoryNewCategory')?.value||'ALTRO').trim().toUpperCase();
+ const code=String(el('inventoryNewCode')?.value||'').trim().toUpperCase();
+ const diameterText=String(el('inventoryNewDiameter')?.value||'').trim().replace(',','.');
+ const diameter=inventoryNum(diameterText)>0?String(inventoryNum(diameterText)):'';
+ const quantity=inventoryWhole(el('inventoryNewQty')?.value,0);const minStock=inventoryWhole(el('inventoryNewMin')?.value,0);
+ const unit=String(el('inventoryNewUnit')?.value||'PEZZI').trim().toUpperCase();const description=String(el('inventoryNewDescription')?.value||'').trim();const location=String(el('inventoryNewLocation')?.value||'').trim();
+ if(!code&&!diameter&&!description){window.showToolToast?.('Scrivi codice, diametro o descrizione');el('inventoryNewCode')?.focus();return}
+ const operator=getOperator();const id=inventoryEditingId||makeInventoryId('stock');
+ const payload={category,code,diameter,description,quantity,minStock,unit,location,updatedAt:serverTimestamp(),updatedAtIso:nowIso(),updatedByUid:operator.uid||'',updatedByName:operator.name||operator.email||'Utente'};
+ try{
+  await setDoc(officeDoc('inventory',id),payload,{merge:true});
+  const item={id,...payload,updatedAt:null};
+  await logInventoryMovement(item,inventoryEditingId?'DATI MODIFICATI':'ARTICOLO CREATO',0,quantity,'MAGAZZINO');
+  await logActivity(inventoryEditingId?'Magazzino aggiornato':'Articolo magazzino aggiunto',`${inventoryTitle(item)} · quantità ${quantity}`);
+  const wasEditing=Boolean(inventoryEditingId);clearInventoryForm();window.showToolToast?.(wasEditing?'Articolo aggiornato':'Articolo aggiunto al magazzino');
+ }catch(error){console.error(error);window.showToolToast?.(firebaseErrorItalian(error))}
+};
+function inventoryCardValues(id){
+ const card=document.querySelector(`[data-inventory-card="${id}"]`);
+ const amount=inventoryWhole(card?.querySelector(`[data-inventory-amount="${id}"]`)?.value,1);
+ const machineId=String(card?.querySelector(`[data-inventory-machine="${id}"]`)?.value||'');
+ const position=String(card?.querySelector(`[data-inventory-position="${id}"]`)?.value||'').trim();
+ return {amount,machineId,position};
+}
+window.inventoryLoadStock=async id=>{
+ const original=inventoryItems.find(item=>item.id===id);if(!original)return;
+ const {amount}=inventoryCardValues(id);const ref=officeDoc('inventory',id);const operator=getOperator();
+ try{
+  const result=await runTransaction(db,async transaction=>{const snap=await transaction.get(ref);if(!snap.exists())throw new Error('ARTICOLO_NON_TROVATO');const data=snap.data();const current=Number(data.quantity||0);const next=current+amount;transaction.set(ref,{quantity:next,updatedAt:serverTimestamp(),updatedAtIso:nowIso(),updatedByUid:operator.uid||'',updatedByName:operator.name||operator.email||'Utente'},{merge:true});return {item:{id,...data},next}});
+  await logInventoryMovement(result.item,'CARICO',amount,result.next,'MAGAZZINO');await logActivity('Carico magazzino',`${inventoryTitle(result.item)} · +${amount} · totale ${result.next}`);window.showToolToast?.(`Caricati ${amount} · totale ${result.next}`);
+ }catch(error){console.error(error);window.showToolToast?.(firebaseErrorItalian(error))}
+};
+function notifyInventoryLow(item){
+ const message=`${inventoryTitle(item)}: rimasti ${item.quantity} ${item.unit||'PEZZI'}`;
+ window.showToolToast?.(`SCORTA BASSA · ${message}`);
+ try{if('Notification' in window&&Notification.permission==='granted')new Notification('CNC Toolbox · Scorta bassa',{body:message})}catch(error){console.warn(error)}
+}
+window.requestInventoryNotifications=async()=>{
+ if(!('Notification' in window)){window.showToolToast?.('Il telefono non supporta queste notifiche');return}
+ try{const permission=await Notification.requestPermission();if(el('inventoryNotifyButton'))el('inventoryNotifyButton').textContent=permission==='granted'?'AVVISI SCORTA ATTIVI':'AVVISI NON AUTORIZZATI';window.showToolToast?.(permission==='granted'?'Avvisi scorta attivati':'Permesso notifiche non concesso')}catch(error){window.showToolToast?.('Impossibile attivare le notifiche')}
+};
+window.inventoryTakeStock=async id=>{
+ const original=inventoryItems.find(item=>item.id===id);if(!original)return;
+ const {amount,machineId,position}=inventoryCardValues(id);const machine=(window.toolManagerState?.machines||[]).find(row=>row.id===machineId);const insert=inventoryIsInsert(original);
+ if(machineId&&!insert&&amount!==1){window.showToolToast?.('Per montare su macchina usa quantità 1');return}
+ const ref=officeDoc('inventory',id);const operator=getOperator();
+ try{
+  const result=await runTransaction(db,async transaction=>{
+   const snap=await transaction.get(ref);if(!snap.exists())throw new Error('ARTICOLO_NON_TROVATO');const data=snap.data();const current=Number(data.quantity||0);if(current<amount)throw new Error('SCORTA_INSUFFICIENTE');const next=current-amount;
+   transaction.set(ref,{quantity:next,updatedAt:serverTimestamp(),updatedAtIso:nowIso(),updatedByUid:operator.uid||'',updatedByName:operator.name||operator.email||'Utente'},{merge:true});
+   if(machineId&&!inventoryIsInsert(data)){
+    const toolId=makeInventoryId('tool');const description=[String(data.code||''),String(data.description||'')].filter(Boolean).join(' · ');
+    transaction.set(officeDoc('tools',toolId),{type:inventoryToolType(data),diameter:String(data.diameter||''),description,location:`machine:${machineId}`,position,inventoryItemId:id,updatedAt:nowIso(),updatedAtServer:serverTimestamp(),updatedByUid:operator.uid||'',updatedByName:operator.name||operator.email||'Utente'});
+   }
+   return {item:{id,...data},next};
+  });
+  const destination=machine?`${machine.name}${position?' · '+position:''}`:'SOLO PRELIEVO';
+  await logInventoryMovement(result.item,machine?'PRELIEVO E MONTAGGIO':'PRELIEVO',-amount,result.next,destination);await logActivity(machine?'Utensile prelevato e montato':'Prelievo magazzino',`${inventoryTitle(result.item)} · -${amount} · ${destination} · rimasti ${result.next}`);
+  window.showToolToast?.(machine?`Montato su ${machine.name} · rimasti ${result.next}`:`Prelevati ${amount} · rimasti ${result.next}`);
+  if(result.next<=Number(result.item.minStock??2))notifyInventoryLow({...result.item,quantity:result.next});
+ }catch(error){console.error(error);if(String(error?.message||'').includes('SCORTA_INSUFFICIENTE'))window.showToolToast?.('Scorta insufficiente');else window.showToolToast?.(firebaseErrorItalian(error))}
+};
+window.deleteInventoryItem=async id=>{
+ const item=inventoryItems.find(row=>row.id===id);if(!item)return;
+ if(!confirm(`Eliminare ${inventoryTitle(item)} dal magazzino?`))return;
+ try{await deleteDoc(officeDoc('inventory',id));await logInventoryMovement(item,'ARTICOLO ELIMINATO',0,Number(item.quantity||0),'MAGAZZINO');await logActivity('Articolo magazzino eliminato',inventoryTitle(item));window.showToolToast?.('Articolo eliminato')}catch(error){console.error(error);window.showToolToast?.(firebaseErrorItalian(error))}
+};
+function checkInventoryThresholds(nextItems){
+ const nextMap=new Map(nextItems.map(item=>[item.id,Number(item.quantity||0)]));
+ if(inventoryInitialized){nextItems.forEach(item=>{const previous=inventoryPrevious.get(item.id);const minimum=Number(item.minStock??2);const quantity=Number(item.quantity||0);if((previous===undefined&&quantity<=minimum)||(previous!==undefined&&previous>minimum&&quantity<=minimum))notifyInventoryLow(item)})}
+ inventoryPrevious=nextMap;inventoryInitialized=true;
+}
+
 function refreshWorkshopViews(){
  window.saveToolManager?.();
  window.renderToolMachineList?.();
  window.renderToolLocationOptions?.();
  window.renderWorkshopTools?.();
  if(window.activeToolMachineId)window.renderMachineToolView?.();
+ window.renderInventory?.();
 }
 function updateImportOffer(){
  const box=el('betaImportBox');if(!box)return;
@@ -3913,10 +4235,16 @@ function startListeners(){
  unsubs.push(onSnapshot(officeCollection('tools'),snapshot=>{
   toolReady=true;cloudToolCount=snapshot.size;
   window.toolManagerState.tools=snapshot.docs.map(item=>{
-   const data=item.data();return {id:item.id,type:String(data.type||'ALTRO').toUpperCase(),diameter:String(data.diameter??''),description:String(data.description||''),location:String(data.location||'storage'),position:String(data.position||''),updatedAt:String(data.updatedAt||data.updatedAtIso||nowIso()),updatedByName:String(data.updatedByName||''),updatedByUid:String(data.updatedByUid||'')};
+   const data=item.data();return {id:item.id,type:String(data.type||'ALTRO').toUpperCase(),diameter:String(data.diameter??''),description:String(data.description||''),location:String(data.location||'storage'),position:String(data.position||''),updatedAt:String(data.updatedAt||data.updatedAtIso||nowIso()),updatedByName:String(data.updatedByName||''),updatedByUid:String(data.updatedByUid||''),inventoryItemId:String(data.inventoryItemId||'')};
   });
   refreshWorkshopViews();updateImportOffer();setSyncStatus(navigator.onLine?'ONLINE · DATI CONDIVISI':'OFFLINE · MODIFICHE IN ATTESA',navigator.onLine?'online':'offline');
  },error=>{console.error(error);setSyncStatus('ERRORE SINCRONIZZAZIONE','offline');window.showToolToast?.(firebaseErrorItalian(error))}));
+ unsubs.push(onSnapshot(officeCollection('inventory'),snapshot=>{
+  const nextItems=snapshot.docs.map(item=>{const data=item.data();return {id:item.id,category:String(data.category||'ALTRO').toUpperCase(),code:String(data.code||''),diameter:String(data.diameter||''),description:String(data.description||''),quantity:Number(data.quantity||0),minStock:Number(data.minStock??2),unit:String(data.unit||'PEZZI').toUpperCase(),location:String(data.location||''),updatedAtIso:String(data.updatedAtIso||nowIso()),updatedByUid:String(data.updatedByUid||''),updatedByName:String(data.updatedByName||'')}});
+  checkInventoryThresholds(nextItems);inventoryItems=nextItems;renderInventory();setSyncStatus(navigator.onLine?'ONLINE · DATI CONDIVISI':'OFFLINE · MODIFICHE IN ATTESA',navigator.onLine?'online':'offline');
+ },error=>{console.error(error);setSyncStatus('ERRORE MAGAZZINO','offline');window.showToolToast?.(firebaseErrorItalian(error))}));
+ const inventoryMovementQuery=query(officeCollection('inventoryMovements'),orderBy('createdAt','desc'),limit(15));
+ unsubs.push(onSnapshot(inventoryMovementQuery,snapshot=>{inventoryMovements=snapshot.docs.map(item=>({id:item.id,...item.data()}));renderInventoryHistory()},error=>console.warn('Storico magazzino non disponibile',error)));
  unsubs.push(onSnapshot(officeCollection('members'),snapshot=>{
   members=snapshot.docs.map(item=>({uid:item.id,...item.data()})).filter(item=>item.name).sort((a,b)=>String(a.name).localeCompare(String(b.name),'it'));
   renderMembers();
@@ -3970,7 +4298,7 @@ async function deleteMachine(id,machine,movedTools=[]){
  if(!currentUser)return;
  try{const batch=writeBatch(db);batch.delete(officeDoc('machines',id));movedTools.forEach(tool=>batch.set(officeDoc('tools',tool.id),cloudTool(tool),{merge:true}));await batch.commit();await logActivity('Macchina eliminata',`${machine?.name||id} · ${movedTools.length} utensili spostati in armadio`)}catch(error){console.error(error);window.showToolToast?.(firebaseErrorItalian(error))}
 }
-function cloudTool(tool){decorateTool(tool);return {type:String(tool.type||'ALTRO'),diameter:String(tool.diameter??''),description:String(tool.description||''),location:String(tool.location||'storage'),position:String(tool.position||''),updatedAt:String(tool.updatedAt||nowIso()),updatedAtServer:serverTimestamp(),updatedByUid:String(tool.updatedByUid||''),updatedByName:String(tool.updatedByName||'')}}
+function cloudTool(tool){decorateTool(tool);return {type:String(tool.type||'ALTRO'),diameter:String(tool.diameter??''),description:String(tool.description||''),location:String(tool.location||'storage'),position:String(tool.position||''),updatedAt:String(tool.updatedAt||nowIso()),updatedAtServer:serverTimestamp(),updatedByUid:String(tool.updatedByUid||''),updatedByName:String(tool.updatedByName||''),inventoryItemId:String(tool.inventoryItemId||'')}}
 async function upsertTool(tool,action='Utensile aggiornato'){
  if(!currentUser)return;
  try{await setDoc(officeDoc('tools',tool.id),cloudTool(tool),{merge:true});await logActivity(action,`${tool.type||'UTENSILE'} Ø${tool.diameter||''} · ${window.toolLocationName?.(tool.location)||tool.location}${tool.position?' · '+tool.position:''}`)}catch(error){console.error(error);window.showToolToast?.(firebaseErrorItalian(error))}
