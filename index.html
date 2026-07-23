@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#050505">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>CNC Toolbox v8.1 Beta Magazzino</title>
+<title>CNC Toolbox v8.2 Beta Ordinata</title>
 <style>
 :root{--y:#ffc400;--y2:#dfa500;--b:#050505;--p:#141414;--p2:#0b0b0b;--l:#3e3e3e;--w:#fff;--g:#aaa;--ok:#68e36f;--err:#ff5b5b;--blue:#54baff}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -25,6 +25,50 @@ h1{margin:0;color:var(--y);font-size:32px;letter-spacing:.4px}h1 span{color:#fff
 .tile{min-height:111px;border:1.5px solid #555;border-radius:13px;background:linear-gradient(145deg,#1b1b1b,#080808);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-weight:900;padding:10px}
 .tile.primary{background:linear-gradient(#ffd526,#e5aa00);color:#050505;border-color:var(--y)}
 .tile.wide{grid-column:1/-1;min-height:96px}.icon{font-size:37px;margin-bottom:8px}
+.folderTile{
+ position:relative;
+ min-height:132px;
+ align-items:flex-start;
+ justify-content:flex-end;
+ text-align:left;
+ padding:15px;
+ overflow:hidden
+}
+.folderTile:before{
+ content:"";
+ position:absolute;
+ top:0;
+ left:15px;
+ width:70px;
+ height:11px;
+ border-radius:0 0 7px 7px;
+ background:var(--y)
+}
+.folderTile .icon{
+ margin:0 0 auto;
+ font-size:40px
+}
+.folderTile small{
+ display:block;
+ margin-top:6px;
+ color:#aaa;
+ font-size:11px;
+ line-height:1.3
+}
+.folderTile.primary small{color:#3b3000}
+.folderHeaderNote{
+ color:#aaa;
+ font-size:13px;
+ line-height:1.45;
+ margin:0 2px 12px;
+ text-align:center
+}
+.quickTile small{
+ display:block;
+ margin-top:5px;
+ font-size:11px;
+ line-height:1.3
+}
 .info{border:2px solid var(--y);border-radius:10px;margin-top:20px;padding:14px;text-align:center;color:var(--y);font-weight:900}
 .header{display:flex;align-items:center;justify-content:space-between;margin:4px 0 13px;position:sticky;top:0;background:rgba(5,5,5,.96);z-index:30;padding:5px 0}
 .back,.help{min-width:48px;height:48px;border:0;background:none;color:var(--y);font-size:38px;font-weight:900}
@@ -64,9 +108,6 @@ select{text-align:center;font-size:15px}
 .switchRow{display:flex;align-items:center;justify-content:space-between;gap:15px;margin:13px 0;font-weight:900}.switchRow input{width:24px;height:24px;accent-color:var(--y)}
 .support{font-size:13px;line-height:1.6}
 .videoBox{width:100%;aspect-ratio:4/3;background:#000;border:1px solid #444;border-radius:10px;overflow:hidden;position:relative}.videoBox video{width:100%;height:100%;object-fit:cover}.angleLine{position:absolute;left:50%;top:50%;width:43%;height:3px;background:var(--y);transform-origin:left center}
-.rulerVisual{height:82px;border:1px solid #555;border-radius:8px;position:relative;overflow:hidden;margin-top:12px;background-color:#101010}
-.rulerTicks{position:absolute;left:8px;top:7px;height:54px;border-left:2px solid var(--y)}
-.rulerText{position:absolute;left:8px;bottom:5px;color:var(--y);font-size:12px;font-weight:900;white-space:pre}
 .debug{font-family:monospace;font-size:11px;color:#aaa;white-space:pre-wrap;word-break:break-word;max-height:120px;overflow:auto}
 .fab{position:fixed;right:15px;bottom:16px;width:70px;height:70px;border-radius:50%;border:4px solid #050505;background:var(--y);font-size:33px;z-index:900;box-shadow:0 5px 22px rgba(0,0,0,.7)}
 
@@ -371,10 +412,75 @@ select{text-align:center;font-size:15px}
 <div class="app">
 
 <section id="home" class="screen active">
- <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v8.1 · BETA MAGAZZINO</div><div class="betaSyncPill"><span id="betaHomeDot" class="betaSyncDot loading"></span><span id="betaHomeStatus">COLLEGAMENTO…</span></div></div></div>
- <div class="grid"><button class="tile primary wide" onclick="show('assistant')"><div class="icon">🎙️</div>ASSISTENTE VOCALE MECCANICO</button></div>
+ <div class="top">
+  <button class="menu" onclick="show('settings')">☰</button>
+  <div>
+   <h1>CNC <span>TOOLBOX</span></h1>
+   <div class="sub">STRUMENTI PER L'OFFICINA CNC</div>
+   <div class="version">v8.2 · BETA ORDINATA</div>
+   <div class="betaSyncPill">
+    <span id="betaHomeDot" class="betaSyncDot loading"></span>
+    <span id="betaHomeStatus">COLLEGAMENTO…</span>
+   </div>
+  </div>
+ </div>
 
- <div class="sectionTitle">GEOMETRIA</div>
+ <div class="sectionTitle">AZIONI RAPIDE</div>
+ <div class="grid">
+  <button class="tile primary wide quickTile" onclick="openToolManager(true)">
+   <div class="icon">🔎</div>
+   CERCA SUBITO UTENSILE
+   <small>PUNTE · FRESE · ALESATORI · POSIZIONE T</small>
+  </button>
+
+  <button class="tile wide inventoryTile quickTile" onclick="show('inventory');window.renderInventory?.()">
+   <span id="inventoryAlertBadge" class="inventoryBadge" hidden>0</span>
+   <div class="icon">📦</div>
+   MAGAZZINO CONDIVISO
+   <small>SCORTE · PRELIEVI · INSERTI TORNIO</small>
+  </button>
+ </div>
+
+ <div class="sectionTitle">CARTELLE</div>
+ <div class="grid">
+  <button class="tile primary folderTile" onclick="show('folderGeometry')">
+   <div class="icon">📐</div>
+   CENTRAGGI E GEOMETRIA
+   <small>CENTRI · ANGOLI · SMUSSI · INTERASSI</small>
+  </button>
+
+  <button class="tile folderTile" onclick="show('folderTables')">
+   <div class="icon">📚</div>
+   TABELLE TECNICHE
+   <small>FILETTI · TOLLERANZE · LINGUETTE</small>
+  </button>
+
+  <button class="tile folderTile" onclick="show('folderCalculations')">
+   <div class="icon">🧮</div>
+   CALCOLI E PARAMETRI
+   <small>RPM · AVANZAMENTI · MATERIALI</small>
+  </button>
+
+  <button class="tile primary folderTile" onclick="show('folderQuickTools')">
+   <div class="icon">🧰</div>
+   STRUMENTI RAPIDI
+   <small>GONIOMETRO · TORCIA · ASSISTENTE</small>
+  </button>
+ </div>
+
+ <div class="info">
+  HOME PULITA · FUNZIONI RACCOLTE IN CARTELLE<br>
+  IL MICROFONO GIALLO RESTA SEMPRE DISPONIBILE
+ </div>
+</section>
+
+<section id="folderGeometry" class="screen">
+ <div class="header">
+  <button class="back" onclick="goBack()">‹</button>
+  <div class="title">CENTRAGGI E GEOMETRIA<small>SCEGLI IL TIPO DI LAVORO</small></div>
+  <button class="help" onclick="alert('Qui trovi tutti i calcoli di centraggio e geometria.')">?</button>
+ </div>
+ <div class="folderHeaderNote">Tocca il calcolo che ti serve. Il tasto indietro ti riporta sempre in questa cartella.</div>
  <div class="grid">
   <button class="tile primary" onclick="show('three')"><div class="icon">◎</div>CENTRO 3 PUNTI</button>
   <button class="tile" onclick="openJohnsonCenter()"><div class="icon">▣</div>CENTRO DA VERTICE<br>3 / 4 PUNTI</button>
@@ -385,33 +491,54 @@ select{text-align:center;font-size:15px}
   <button class="tile" onclick="show('inter')"><div class="icon">↔</div>INTERASSE</button>
   <button class="tile" onclick="show('hex')"><div class="icon">⬢</div>ESAGONO</button>
  </div>
+</section>
 
- <div class="sectionTitle">FILETTATURE E LAVORAZIONI</div>
+<section id="folderTables" class="screen">
+ <div class="header">
+  <button class="back" onclick="goBack()">‹</button>
+  <div class="title">TABELLE TECNICHE<small>FILETTATURE E RIFERIMENTI</small></div>
+  <button class="help" onclick="alert('Qui trovi le principali tabelle tecniche da officina.')">?</button>
+ </div>
+ <div class="folderHeaderNote">Filettature, tolleranze, linguette e conversioni raccolte in un solo punto.</div>
  <div class="grid">
   <button class="tile primary" onclick="show('threads');renderThreads()"><div class="icon">⚙</div>TABELLE FILETTI</button>
   <button class="tile" onclick="show('turnthread')"><div class="icon">🔩</div>FILETTO TORNIO</button>
-  <button class="tile primary" onclick="show('feeds')"><div class="icon">⚡</div>PARAMETRI CNC</button>
-  <button class="tile" onclick="show('tol')"><div class="icon">H7</div>TOLLERANZE</button>
+  <button class="tile primary" onclick="show('tol')"><div class="icon">H7</div>TOLLERANZE</button>
   <button class="tile" onclick="show('keys')"><div class="icon">▰</div>LINGUETTE</button>
-  <button class="tile" onclick="show('conv')"><div class="icon">↻</div>CONVERSIONI</button>
+  <button class="tile wide" onclick="show('conv')"><div class="icon">↻</div>CONVERSIONI MM / POLLICI</button>
  </div>
+</section>
 
- <div class="sectionTitle">STRUMENTI</div>
+<section id="folderCalculations" class="screen">
+ <div class="header">
+  <button class="back" onclick="goBack()">‹</button>
+  <div class="title">CALCOLI E PARAMETRI<small>LAVORAZIONI E MATERIALI</small></div>
+  <button class="help" onclick="alert('Qui trovi parametri CNC e calcolatori da officina.')">?</button>
+ </div>
+ <div class="folderHeaderNote">Parametri di taglio, peso e costo dei materiali, calcolatrice rapida.</div>
  <div class="grid">
-  <button class="tile primary wide inventoryTile" onclick="show('inventory');window.renderInventory?.()"><span id="inventoryAlertBadge" class="inventoryBadge" hidden>0</span><div class="icon">📦</div>MAGAZZINO CONDIVISO<br><small>SCORTE · PRELIEVI · INSERTI TORNIO</small></button>
-  <button class="tile primary wide" onclick="openToolManager(true)"><div class="icon">🔎</div>CERCA / GESTIONE UTENSILI<br><small>TROVA SUBITO PUNTE E FRESE</small></button>
+  <button class="tile primary wide" onclick="show('feeds')"><div class="icon">⚡</div>PARAMETRI CNC<br><small>PUNTE · FRESE · TORNIO</small></button>
   <button class="tile primary" onclick="show('materials');updateMaterialForm()"><div class="icon">⚖</div>CALCOLATORE MATERIALI</button>
   <button class="tile" onclick="show('calculator')"><div class="icon">🧮</div>CALCOLATRICE</button>
-  <button class="tile" onclick="show('ruler');updateRuler()"><div class="icon">📏</div>RIGHELLO / CALIBRO</button>
-  <button class="tile" onclick="show('goniometer')"><div class="icon">📐</div>GONIOMETRO</button>
-  <button class="tile" onclick="show('torch')"><div class="icon">🔦</div>TORCIA</button>
-  <button class="tile wide" onclick="show('scanner')"><div class="icon">🧊</div>SCANNER 3D · PROGETTO SEPARATO</button>
  </div>
- <div class="info">ⓘ CASSETTA DEGLI ATTREZZI DIGITALE<br>PER OFFICINA CNC</div>
+</section>
+
+<section id="folderQuickTools" class="screen">
+ <div class="header">
+  <button class="back" onclick="goBack()">‹</button>
+  <div class="title">STRUMENTI RAPIDI<small>UTILITÀ DA OFFICINA</small></div>
+  <button class="help" onclick="alert('Strumenti rapidi disponibili sul telefono.')">?</button>
+ </div>
+ <div class="folderHeaderNote">Solo strumenti realmente utili. Scanner 3D e calibro sono stati rimossi.</div>
+ <div class="grid">
+  <button class="tile primary wide" onclick="show('assistant')"><div class="icon">🎙️</div>ASSISTENTE VOCALE MECCANICO</button>
+  <button class="tile primary" onclick="show('goniometer')"><div class="icon">📐</div>GONIOMETRO</button>
+  <button class="tile" onclick="show('torch')"><div class="icon">🔦</div>TORCIA</button>
+ </div>
 </section>
 
 <section id="assistant" class="screen">
- <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">ASSISTENTE VOCALE<small>PREMI · PARLA · ASCOLTA</small></div><button class="help" onclick="alert('Puoi fare la stessa domanda in molti modi. Esempi: Quanto devo forare per un foro da M18 passo grosso? Che diametro ha il foro da M18? Quanto devo forare per M18 per uno e mezzo? Quanto devo forare per mezzo pollice GAS? Che punta serve per un quarto NPT? Funziona con tutte le misure presenti nelle tabelle.')">?</button></div>
+ <div class="header"><button class="back" onclick="goBack()">‹</button><div class="title">ASSISTENTE VOCALE<small>PREMI · PARLA · ASCOLTA</small></div><button class="help" onclick="alert('Puoi fare la stessa domanda in molti modi. Esempi: Quanto devo forare per un foro da M18 passo grosso? Che diametro ha il foro da M18? Quanto devo forare per M18 per uno e mezzo? Quanto devo forare per mezzo pollice GAS? Che punta serve per un quarto NPT? Funziona con tutte le misure presenti nelle tabelle.')">?</button></div>
  <div class="assistantHero">
   <div class="status"><span id="vaDot" class="dot"></span><span id="vaStatus">Pronto. Premi il microfono.</span></div>
   <button id="vaMic" class="mic" onclick="toggleListen()">🎤</button>
@@ -447,7 +574,7 @@ select{text-align:center;font-size:15px}
 </section>
 
 <section id="three" class="screen">
- <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">CENTRO FORO / PERNO<small>3 PUNTI</small></div><button class="help" onclick="alert('Inserisci le tre coordinate X/Y lette battendo sul diametro. Il diametro finale viene compensato con la sfera.')">?</button></div>
+ <div class="header"><button class="back" onclick="goBack()">‹</button><div class="title">CENTRO FORO / PERNO<small>3 PUNTI</small></div><button class="help" onclick="alert('Inserisci le tre coordinate X/Y lette battendo sul diametro. Il diametro finale viene compensato con la sfera.')">?</button></div>
  <div class="card"><h2>SETUP</h2><div class="row"><div class="label">Ø sfera</div><input id="probe3" class="inp" value="10"></div><div class="seg"><button id="m3foro" class="on" onclick="setSeg('m3','foro')">FORO</button><button id="m3perno" onclick="setSeg('m3','perno')">PERNO</button></div></div>
  <div class="card"><h2>COORDINATE</h2>
   <div class="row"><div class="label">P1 X</div><input id="x1" class="inp" value="0"></div><div class="row"><div class="label">P1 Y</div><input id="y1" class="inp" value="0"></div>
@@ -459,7 +586,7 @@ select{text-align:center;font-size:15px}
 
 <section id="four" class="screen">
  <div class="header">
-  <button class="back" onclick="show('home')">‹</button>
+  <button class="back" onclick="goBack()">‹</button>
   <div class="title">CENTRO DA VERTICE<small>3 O 4 PUNTI · JOHNSON FACOLTATIVI</small></div>
   <button class="help" onclick="alert('Scegli il vertice. Con 3 PUNTI inserisci P1 X e P1 Y letti dal centro del tastatore, poi P2 X/Y e P3 X/Y sull’altra parete. Raggio del tastatore ed eventuali Johnson vengono compensati automaticamente. Con 4 PUNTI inserisci due tastate complete su ciascuna parete.')">?</button>
  </div>
@@ -593,13 +720,13 @@ select{text-align:center;font-size:15px}
 </section>
 
 <section id="two" class="screen">
- <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">CENTRO 2 PUNTI<small>BATTUTE OPPOSTE</small></div><button class="help">?</button></div>
+ <div class="header"><button class="back" onclick="goBack()">‹</button><div class="title">CENTRO 2 PUNTI<small>BATTUTE OPPOSTE</small></div><button class="help">?</button></div>
  <div class="card"><div class="row"><div class="label">Ø sfera</div><input id="probe2" class="inp" value="10"></div><div class="seg"><button id="m2foro" class="on" onclick="setSeg('m2','foro')">FORO</button><button id="m2perno" onclick="setSeg('m2','perno')">PERNO</button></div><div class="row"><div class="label">Quota 1</div><input id="q1" class="inp" value="0"></div><div class="row"><div class="label">Quota 2</div><input id="q2" class="inp" value="100"></div><button class="btn" onclick="calc2()">CALCOLA</button><div id="res2"></div></div>
 </section>
 
 <section id="half" class="screen">
  <div class="header">
-  <button class="back" onclick="show('home')">‹</button>
+  <button class="back" onclick="goBack()">‹</button>
   <div class="title">DIVIDI A METÀ<small>UNA SOLA MISURA</small></div>
   <button class="help" onclick="alert('Inserisci la misura totale. L’app restituisce esattamente la metà. Esempio: 85 diventa 42,5.')">?</button>
  </div>
@@ -614,38 +741,38 @@ select{text-align:center;font-size:15px}
 </section>
 
 <section id="angle" class="screen">
- <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">ANGOLO<small>DA 2 PUNTI</small></div><button class="help">?</button></div>
+ <div class="header"><button class="back" onclick="goBack()">‹</button><div class="title">ANGOLO<small>DA 2 PUNTI</small></div><button class="help">?</button></div>
  <div class="card"><div class="row"><div class="label">P1 X</div><input id="ax1" class="inp" value="0"></div><div class="row"><div class="label">P1 Y</div><input id="ay1" class="inp" value="0"></div><div class="row"><div class="label">P2 X</div><input id="ax2" class="inp" value="100"></div><div class="row"><div class="label">P2 Y</div><input id="ay2" class="inp" value="1"></div><button class="btn" onclick="calcAngle()">CALCOLA</button><div id="resAngle"></div></div>
 </section>
 
 <section id="chamfer" class="screen">
- <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">SMUSSI ISO<small>15° · 30° · 45° · 60° · LIBERO</small></div><button class="help">?</button></div>
+ <div class="header"><button class="back" onclick="goBack()">‹</button><div class="title">SMUSSI ISO<small>15° · 30° · 45° · 60° · LIBERO</small></div><button class="help">?</button></div>
  <div class="card"><div class="row"><div class="label">Ø pezzo</div><input id="chD" class="inp" value="50"></div><div class="row"><div class="label">C in Z</div><input id="chC" class="inp" value="1"></div><div class="row"><div class="label">Angolo</div><select id="chA"><option>45</option><option>30</option><option>15</option><option>60</option><option value="other">ALTRO</option></select></div><div class="row"><div class="label">Angolo libero</div><input id="chCustom" class="inp" value="17.5"></div><div class="row"><div class="label">Z spigolo</div><input id="chZ" class="inp" value="0"></div><div class="row"><div class="label">R utensile</div><input id="chR" class="inp" value="0.8"></div><div class="row"><div class="label">Tipo</div><select id="chType"><option value="ext">ESTERNO / ALBERO</option><option value="int">INTERNO / FORO</option></select></div><div class="row"><div class="label">Verso Z</div><select id="chSide"><option value="-1">NEGATIVO</option><option value="1">POSITIVO</option></select></div><button class="btn" onclick="calcChamfer()">CALCOLA</button><div id="resChamfer"></div><div class="hint">C è la quota assiale in Z. La compensazione del raggio utensile dipende dal controllo/CAM: qui viene mostrata anche la distanza normale teorica.</div></div>
 </section>
 
 <section id="inter" class="screen">
- <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">INTERASSE<small>TRA CENTRI</small></div><button class="help">?</button></div>
+ <div class="header"><button class="back" onclick="goBack()">‹</button><div class="title">INTERASSE<small>TRA CENTRI</small></div><button class="help">?</button></div>
  <div class="card"><div class="row"><div class="label">C1 X</div><input id="ix1" class="inp" value="0"></div><div class="row"><div class="label">C1 Y</div><input id="iy1" class="inp" value="0"></div><div class="row"><div class="label">C2 X</div><input id="ix2" class="inp" value="100"></div><div class="row"><div class="label">C2 Y</div><input id="iy2" class="inp" value="50"></div><button class="btn" onclick="calcInter()">CALCOLA</button><div id="resInter"></div></div>
 </section>
 
 <section id="hex" class="screen">
- <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">ESAGONO<small>CHIAVE ↔ Ø TONDO</small></div><button class="help">?</button></div>
+ <div class="header"><button class="back" onclick="goBack()">‹</button><div class="title">ESAGONO<small>CHIAVE ↔ Ø TONDO</small></div><button class="help">?</button></div>
  <div class="card"><h2>DA CHIAVE</h2><div class="row"><div class="label">Chiave S</div><input id="hexS" class="inp" value="30"></div><button class="btn" onclick="calcHexS()">CALCOLA Ø</button><div id="resHexS"></div></div>
  <div class="card"><h2>DA Ø TONDO</h2><div class="row"><div class="label">Ø tondo</div><input id="hexD" class="inp" value="35"></div><button class="btn" onclick="calcHexD()">CALCOLA CHIAVE</button><div id="resHexD"></div></div>
 </section>
 
 <section id="threads" class="screen">
- <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">TABELLE FILETTATURE<small>PUNTA E DIAMETRO</small></div><button class="help">?</button></div>
+ <div class="header"><button class="back" onclick="goBack()">‹</button><div class="title">TABELLE FILETTATURE<small>PUNTA E DIAMETRO</small></div><button class="help">?</button></div>
  <div class="card"><input id="threadSearch" class="search" placeholder="M16, M16x1.5, G1, 1/2 NPT" oninput="renderThreads()"><div class="tabs"><button id="tMet" class="on" onclick="setThreadTab('met')">METRICO</button><button id="tFine" onclick="setThreadTab('fine')">FINE</button><button id="tGas" onclick="setThreadTab('gas')">GAS/BSP</button><button id="tNpt" onclick="setThreadTab('npt')">NPT</button></div><div class="tableWrap"><table class="tbl"><thead><tr><th>Filetto</th><th>Passo/TPI</th><th>Punta</th><th>Esterno</th></tr></thead><tbody id="threadBody"></tbody></table></div><div class="hint">Metrici grossi e fini, GAS/BSP e NPT. Per filetti con percentuale d’impegno particolare o materiali critici verifica la tabella utensile.</div></div>
 </section>
 
 <section id="turnthread" class="screen">
- <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">FILETTO TORNIO<small>CRESTA / PROFONDITÀ RADIALE</small></div><button class="help">?</button></div>
+ <div class="header"><button class="back" onclick="goBack()">‹</button><div class="title">FILETTO TORNIO<small>CRESTA / PROFONDITÀ RADIALE</small></div><button class="help">?</button></div>
  <div class="card"><div class="row"><div class="label">Ø esterno</div><input id="ttD" class="inp" value="33.249"></div><div class="row"><div class="label">Passo mm</div><input id="ttP" class="inp" value="2.309"></div><div class="row"><div class="label">Profilo</div><select id="ttProfile"><option value="55">GAS 55°</option><option value="60">METRICO 60°</option></select></div><button class="btn" onclick="calcTurnThread()">CALCOLA</button><div id="resTT"></div><div class="hint">Profondità teorica: partire sempre più prudenti e controllare con tampone, anello o filetto campione.</div></div>
 </section>
 
 <section id="tol" class="screen">
- <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">TOLLERANZE ISO<small>FORI E ALBERI · FINO A 500 mm</small></div><button class="help" onclick="alert('Scegli FORO o ALBERO, poi la zona di tolleranza. Nell’assistente puoi dire: foro 40 H7 oppure albero 40 h6. Se non dici foro o albero, l’app mostra entrambi quando la sigla è ambigua.')">?</button></div>
+ <div class="header"><button class="back" onclick="goBack()">‹</button><div class="title">TOLLERANZE ISO<small>FORI E ALBERI · FINO A 500 mm</small></div><button class="help" onclick="alert('Scegli FORO o ALBERO, poi la zona di tolleranza. Nell’assistente puoi dire: foro 40 H7 oppure albero 40 h6. Se non dici foro o albero, l’app mostra entrambi quando la sigla è ambigua.')">?</button></div>
  <div class="card">
   <div class="row"><div class="label">Ø nominale</div><input id="tolD" class="inp" value="20"></div>
   <div class="label" style="margin-bottom:8px">Tipo pezzo</div>
@@ -661,19 +788,19 @@ select{text-align:center;font-size:15px}
 </section>
 
 <section id="keys" class="screen">
- <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">LINGUETTE<small>ALBERO / MOZZO</small></div><button class="help">?</button></div>
+ <div class="header"><button class="back" onclick="goBack()">‹</button><div class="title">LINGUETTE<small>ALBERO / MOZZO</small></div><button class="help">?</button></div>
  <div class="card"><div class="row"><div class="label">Ø albero</div><input id="keyD" class="inp" value="30"></div><button class="btn" onclick="calcKey()">TROVA</button><div id="resKey"></div><div class="hint">Dimensioni DIN 6885 orientative. Verifica sempre il disegno e la tolleranza della cava.</div></div>
 </section>
 
 <section id="feeds" class="screen">
- <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">PARAMETRI CNC<small>PUNTE · FRESE · TORNIO</small></div><button class="help">?</button></div>
+ <div class="header"><button class="back" onclick="goBack()">‹</button><div class="title">PARAMETRI CNC<small>PUNTE · FRESE · TORNIO</small></div><button class="help">?</button></div>
  <div class="card"><h2>FRESA</h2><div class="row"><div class="label">Ø fresa</div><input id="fD" class="inp" value="20"></div><div class="row"><div class="label">Vc m/min</div><input id="fVc" class="inp" value="120"></div><div class="row"><div class="label">N. tagli</div><input id="fZ" class="inp" value="4"></div><div class="row"><div class="label">fz mm/dente</div><input id="fFz" class="inp" value="0.08"></div><button class="btn" onclick="calcMill()">CALCOLA FRESA</button><div id="resMill"></div></div>
  <div class="card"><h2>PUNTA</h2><div class="row"><div class="label">Ø punta</div><input id="pD" class="inp" value="10"></div><div class="row"><div class="label">Vc</div><input id="pVc" class="inp" value="25"></div><div class="row"><div class="label">mm/giro</div><input id="pF" class="inp" value="0.15"></div><button class="btn" onclick="calcDrill()">CALCOLA PUNTA</button><div id="resDrill"></div></div>
  <div class="card"><h2>TORNIO</h2><div class="row"><div class="label">Ø pezzo</div><input id="latD" class="inp" value="50"></div><div class="row"><div class="label">Vc</div><input id="latVc" class="inp" value="160"></div><div class="row"><div class="label">mm/giro</div><input id="latF" class="inp" value="0.2"></div><button class="btn" onclick="calcLathe()">CALCOLA TORNIO</button><div id="resLathe"></div></div>
 </section>
 
 <section id="conv" class="screen">
- <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">CONVERSIONI<small>MM ↔ POLLICI</small></div><button class="help">?</button></div>
+ <div class="header"><button class="back" onclick="goBack()">‹</button><div class="title">CONVERSIONI<small>MM ↔ POLLICI</small></div><button class="help">?</button></div>
  <div class="card"><div class="row"><div class="label">Millimetri</div><input id="convMm" class="inp" value="25.4"></div><button class="btn" onclick="mmIn()">MM → POLLICI</button><div id="resConv1"></div></div>
  <div class="card"><div class="row"><div class="label">Pollici</div><input id="convIn" class="inp" value="1"></div><button class="btn" onclick="inMm()">POLLICI → MM</button><div id="resConv2"></div></div>
 </section>
@@ -681,7 +808,7 @@ select{text-align:center;font-size:15px}
 
 <section id="inventory" class="screen">
  <div class="header">
-  <button class="back" onclick="show('home')">‹</button>
+  <button class="back" onclick="goBack()">‹</button>
   <div class="title">MAGAZZINO CONDIVISO<small>SCORTE AGGIORNATE IN TEMPO REALE</small></div>
   <button class="help" onclick="alert('Carica frese, punte, alesatori e inserti. Quando premi PRELEVA / MONTA la quantità scende e viene registrato il nome dell’operatore. La scorta minima predefinita è 2 pezzi.')">?</button>
  </div>
@@ -777,7 +904,7 @@ select{text-align:center;font-size:15px}
 
 <section id="toolmanager" class="screen">
  <div class="header">
-  <button class="back" onclick="show('home')">‹</button>
+  <button class="back" onclick="goBack()">‹</button>
   <div class="title">GESTIONE UTENSILI<small>TROVA SUBITO DOVE SONO</small></div>
   <button class="help" onclick="alert('Crea le macchine della tua officina. Poi registra ogni utensile indicando diametro, descrizione, macchina e posizione T o cassetto. Macchine e utensili vengono condivisi in tempo reale con gli utenti autorizzati dell’officina.')">?</button>
  </div>
@@ -923,7 +1050,7 @@ select{text-align:center;font-size:15px}
 
 <section id="toolmachineview" class="screen">
  <div class="header">
-  <button class="back" onclick="show('toolmanager');renderWorkshopTools()">‹</button>
+  <button class="back" onclick="goBack();renderWorkshopTools()">‹</button>
   <div class="title" id="machineViewTitle">TABELLA MACCHINA<small>UTENSILI MONTATI</small></div>
   <button class="help" onclick="alert('Questa pagina mostra posizione T, tipo, diametro e descrizione dell’utensile montato. Puoi lasciarla aperta mentre lavori a bordo macchina.')">?</button>
  </div>
@@ -946,7 +1073,7 @@ select{text-align:center;font-size:15px}
 
 <section id="materials" class="screen">
  <div class="header">
-  <button class="back" onclick="show('home')">‹</button>
+  <button class="back" onclick="goBack()">‹</button>
   <div class="title">CALCOLATORE MATERIALI<small>PESO METALLI E PROFILI</small></div>
   <button class="help" onclick="alert('Scegli materiale e forma, poi inserisci misure, lunghezza e quantità. Puoi usare prezzo al kg, al metro oppure il prezzo totale di una barra.')">?</button>
  </div>
@@ -1042,7 +1169,7 @@ select{text-align:center;font-size:15px}
 </section>
 
 <section id="calculator" class="screen">
- <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">CALCOLATRICE<small>OFFICINA</small></div><button class="help">?</button></div>
+ <div class="header"><button class="back" onclick="goBack()">‹</button><div class="title">CALCOLATRICE<small>OFFICINA</small></div><button class="help">?</button></div>
  <div class="card"><input id="calcDisplay" value=""><div class="calcGrid">
   <button onclick="calcClear()">C</button><button onclick="calcDel()">⌫</button><button onclick="calcAdd('(')">(</button><button onclick="calcAdd(')')">)</button>
   <button onclick="calcAdd('7')">7</button><button onclick="calcAdd('8')">8</button><button onclick="calcAdd('9')">9</button><button class="op" onclick="calcAdd('/')">÷</button>
@@ -1053,30 +1180,21 @@ select{text-align:center;font-size:15px}
  <div class="card"><h2>FORMULE RAPIDE</h2><div class="row"><div class="label">Ø</div><input id="cfD" class="inp" value="20"></div><div class="row"><div class="label">Vc</div><input id="cfVc" class="inp" value="120"></div><button class="btn" onclick="calcQuickRpm()">CALCOLA RPM</button><div id="resQuick"></div></div>
 </section>
 
-<section id="ruler" class="screen">
- <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">RIGHELLO / CALIBRO<small>CALIBRAZIONE SCHERMO</small></div><button class="help">?</button></div>
- <div class="card"><div class="row"><div class="label">Larghezza schermo mm</div><input id="rulerMm" class="inp" value="68"></div><button class="btn" onclick="saveRuler()">SALVA CALIBRAZIONE</button><div id="rulerVisual" class="rulerVisual"><div id="rulerTicks" class="rulerTicks"></div><div id="rulerText" class="rulerText"></div></div><div class="hint">Calibra con una carta da 85,60 mm o un righello vero. È una stima, non sostituisce il calibro.</div></div>
- <div class="card"><h2>CALIBRO A CURSORI</h2><div class="rangeRow"><div class="label">Cursore A</div><input id="calA" type="range" min="0" max="100" value="20" oninput="calcCaliper()"><div id="calAV" class="rangeVal">20%</div></div><div class="rangeRow"><div class="label">Cursore B</div><input id="calB" type="range" min="0" max="100" value="70" oninput="calcCaliper()"><div id="calBV" class="rangeVal">70%</div></div><div id="resCaliper"></div></div>
-</section>
 
 <section id="goniometer" class="screen">
- <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">GONIOMETRO<small>FOTOCAMERA</small></div><button class="help">?</button></div>
+ <div class="header"><button class="back" onclick="goBack()">‹</button><div class="title">GONIOMETRO<small>FOTOCAMERA</small></div><button class="help">?</button></div>
  <div class="card"><div class="videoBox"><video id="gonVideo" autoplay playsinline muted></video><div id="gonLine" class="angleLine"></div></div><div class="rangeRow"><div class="label">Angolo</div><input id="gonAngle" type="range" min="-90" max="90" value="0" oninput="setGonAngle()"><div id="gonVal" class="rangeVal">0°</div></div><div class="actions"><button class="btn2" onclick="startCamera('gonVideo')">AVVIA CAMERA</button><button class="btn2" onclick="stopCamera()">SPEGNI CAMERA</button></div></div>
 </section>
 
 <section id="torch" class="screen">
- <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">TORCIA<small>LUCE OFFICINA</small></div><button class="help">?</button></div>
+ <div class="header"><button class="back" onclick="goBack()">‹</button><div class="title">TORCIA<small>LUCE OFFICINA</small></div><button class="help">?</button></div>
  <div class="card"><div class="videoBox"><video id="torchVideo" autoplay playsinline muted></video></div><div class="actions"><button class="btn2" onclick="torchOn()">ACCENDI</button><button class="btn2" onclick="torchOff()">SPEGNI</button></div><div id="torchMsg" class="note">La disponibilità del flash dipende dal telefono e dal browser.</div></div>
 </section>
 
-<section id="scanner" class="screen">
- <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">SCANNER 3D<small>PROGETTO SEPARATO</small></div><button class="help">?</button></div>
- <div class="card"><h2>LO RIPRENDEREMO SUCCESSIVAMENTE</h2><div class="note">Lo scanner 3D resta separato per non appesantire la Toolbox. Questa Beta contiene strumenti CNC, officina condivisa e magazzino sincronizzato.</div></div>
-</section>
 
 <section id="settings" class="screen">
- <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">MENU</div><button class="help">▤</button></div>
- <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v8.1 BETA</div></div><div class="note">Beta online: macchine, utensili, operatori e magazzino vengono sincronizzati tra i telefoni autorizzati. La versione stabile v7.7 rimane separata.</div></div>
+ <div class="header"><button class="back" onclick="goBack()">‹</button><div class="title">MENU</div><button class="help">▤</button></div>
+ <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v8.2 BETA</div></div><div class="note">Beta online: macchine, utensili, operatori e magazzino vengono sincronizzati tra i telefoni autorizzati. La Home è organizzata in cartelle; Scanner 3D e Righello/Calibro sono stati rimossi, mentre il Goniometro resta disponibile. La versione stabile v7.7 rimane separata.</div></div>
  <div class="card"><h2>AZIONI</h2><button class="btn2" onclick="clearSettings()">PULISCI IMPOSTAZIONI</button></div>
 </section>
 
@@ -1086,13 +1204,31 @@ select{text-align:center;font-size:15px}
 <script>
 'use strict';
 const $=id=>document.getElementById(id);
-function show(id){
+const screenHistory=[];
+function show(id,options={}){
+ const current=document.querySelector('.screen.active')?.id||'';
+ const addHistory=options.addHistory!==false;
+
+ if(addHistory&&current&&current!==id){
+  const last=screenHistory[screenHistory.length-1];
+  if(last!==current)screenHistory.push(current);
+  if(screenHistory.length>30)screenHistory.shift();
+ }
+
  document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
- const el=$(id); if(el)el.classList.add('active');
+ const el=$(id);
+ if(el)el.classList.add('active');
+
  window.scrollTo(0,0);
+
  if(id!=='goniometer'&&id!=='torch')stopCamera();
  if(id==='assistant')setTimeout(populateVoices,80);
  if(id==='inventory')window.renderInventory?.();
+}
+
+function goBack(){
+ const previous=screenHistory.pop()||'home';
+ show(previous,{addHistory:false});
 }
 function num(id){return parseFloat(String($(id).value).replace(',','.'))}
 function fmt(n,d=3){return Number(n).toLocaleString('it-IT',{minimumFractionDigits:d,maximumFractionDigits:d})}
@@ -3191,24 +3327,6 @@ function calcMaterial(){
 
 function calcQuickRpm(){const d=num('cfD'),vc=num('cfVc');if(bad([d,vc])||d<=0){$('resQuick').innerHTML='<div class="err">Controlla i dati.</div>';return}$('resQuick').innerHTML=box('GIRI',fmt(vc*1000/(Math.PI*d),0),'rpm')}
 
-/* RIGHELLO */
-function saveRuler(){localStorage.setItem('ruler_mm',$('rulerMm').value);updateRuler()}
-function updateRuler(){
- const saved=localStorage.getItem('ruler_mm');if(saved)$('rulerMm').value=saved;
- const mm=Math.max(20,num('rulerMm')||68),el=$('rulerVisual');if(!el)return;
- const width=Math.max(100,el.clientWidth-16),pxPerMm=width/mm;
- let bg=[];
- for(let i=0;i<=Math.floor(mm);i++){const x=8+i*pxPerMm,h=i%10===0?42:i%5===0?29:17;bg.push(`linear-gradient(90deg,transparent ${x}px,var(--y) ${x}px,var(--y) ${x+1}px,transparent ${x+1}px) 0 0/100% ${h}px no-repeat`)}
- el.style.backgroundImage=bg.join(',');
- let labels='';for(let i=0;i<=Math.floor(mm/10)*10;i+=10)labels+=String(i).padEnd(5,' ');
- $('rulerText').textContent=labels+' mm';calcCaliper();
-}
-function calcCaliper(){
- const a=Number($('calA')?.value||0),b=Number($('calB')?.value||0),mm=Math.max(20,num('rulerMm')||68),dist=Math.abs(b-a)/100*mm;
- if($('calAV'))$('calAV').textContent=a+'%';if($('calBV'))$('calBV').textContent=b+'%';
- if($('resCaliper'))$('resCaliper').innerHTML=box('DISTANZA STIMATA',fmt(dist));
-}
-
 /* CAMERA */
 let mediaStream=null;
 async function startCamera(id){
@@ -3881,7 +3999,6 @@ function init(){
  $('voiceSelect').addEventListener('change',saveVoice);$('audioEnabled').addEventListener('change',saveVoice);
  ['Rate','Pitch','Volume'].forEach(x=>$('voice'+x).addEventListener('input',()=>{document.querySelectorAll('.preset').forEach(b=>b.classList.toggle('on',b.dataset.p==='custom'));saveVoice()}));
  document.querySelectorAll('.preset').forEach(b=>b.addEventListener('click',()=>preset(b.dataset.p)));
- window.addEventListener('resize',()=>{if($('ruler')?.classList.contains('active'))updateRuler()});
  document.addEventListener('visibilitychange',()=>{if(document.hidden){try{rec?.stop()}catch(e){}stopSpeech(false);stopCamera()}});
 }
 async function removeOldAppCache(){
