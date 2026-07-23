@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#050505">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>CNC Toolbox v7.7</title>
+<title>CNC Toolbox v8.0 Beta Condivisa</title>
 <style>
 :root{--y:#ffc400;--y2:#dfa500;--b:#050505;--p:#141414;--p2:#0b0b0b;--l:#3e3e3e;--w:#fff;--g:#aaa;--ok:#68e36f;--err:#ff5b5b;--blue:#54baff}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -291,13 +291,68 @@ select{text-align:center;font-size:15px}
  .toolSearchSubmit{min-height:60px;font-size:17px}
 }
 
+
+/* BETA CONDIVISA FIREBASE */
+.authGate{position:fixed;inset:0;z-index:5000;background:radial-gradient(circle at 50% 5%,#332800,#050505 60%);display:flex;align-items:center;justify-content:center;padding:18px;overflow:auto}
+.authGate.hidden{display:none}
+.authPanel{width:min(100%,470px);border:2px solid var(--y);border-radius:18px;background:linear-gradient(145deg,#191919,#070707);padding:20px;box-shadow:0 20px 80px #000}
+.authLogo{font-size:30px;color:var(--y);font-weight:1000;text-align:center}.authLogo span{color:#fff}.authSub{text-align:center;color:#ddd;font-size:13px;font-weight:900;margin:6px 0 18px}
+.authBlock{display:none}.authBlock.active{display:block}
+.authField{margin:12px 0}.authField label{display:block;color:var(--y);font-weight:900;margin-bottom:6px}.authField input{width:100%;height:58px;border:3px solid #ddd;border-radius:10px;background:#fff;color:#050505;padding:0 12px;font-size:18px;font-weight:900}
+.authMessage{min-height:24px;margin-top:10px;text-align:center;color:#aaa;font-size:14px;font-weight:800;line-height:1.4}.authMessage.bad{color:var(--err)}.authMessage.ok{color:var(--ok)}
+.authNote{color:#aaa;font-size:12px;line-height:1.5;text-align:center;margin-top:12px}
+.betaSyncPill{display:flex;align-items:center;gap:7px;border:1px solid #555;border-radius:999px;padding:6px 10px;margin-top:7px;width:max-content;max-width:100%;font-size:11px;font-weight:1000;color:#ddd}
+.betaSyncDot{width:10px;height:10px;border-radius:50%;background:#888;flex:0 0 auto}.betaSyncDot.online{background:var(--ok);box-shadow:0 0 0 4px rgba(104,227,111,.12)}.betaSyncDot.offline{background:var(--err)}.betaSyncDot.loading{background:var(--y);animation:pulse .9s infinite}
+.betaSharedCard{border:2px solid var(--blue);background:linear-gradient(145deg,#071a25,#080808)}
+.betaAccount{display:flex;justify-content:space-between;align-items:center;gap:8px;border:1px solid #3d5c6e;border-radius:10px;padding:10px;margin:8px 0;color:#ddd;font-size:13px;font-weight:900}.betaAccount strong{color:var(--blue);overflow-wrap:anywhere}.betaLogout{border:1px solid #777;background:#111;color:#ddd;border-radius:8px;min-height:38px;padding:6px 10px;font-weight:900}
+.betaOperatorTitle{color:#fff;font-size:15px;font-weight:1000;margin:14px 0 8px}.betaOperatorChips{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.betaOperatorChip{min-height:58px;border:2px solid #666;border-radius:11px;background:#0c0c0c;color:#fff;font-size:17px;font-weight:1000;padding:8px;overflow-wrap:anywhere}.betaOperatorChip.on{background:var(--y);color:#050505;border-color:var(--y);box-shadow:0 0 0 3px rgba(255,196,0,.14)}
+.betaImportBox{display:none;border:2px dashed var(--y);border-radius:12px;padding:12px;margin-top:14px;background:#191500}.betaImportBox.show{display:block}.betaImportBox strong{color:var(--y)}
+.betaActivity{margin-top:14px}.betaActivityTitle{color:var(--blue);font-weight:1000;margin-bottom:7px}.betaActivityItem{border-top:1px solid #34434b;padding:8px 0;color:#ddd;font-size:12px;line-height:1.4}.betaActivityItem strong{color:#fff}.betaActivityEmpty{color:#888;font-size:12px;padding:5px 0}
+.betaUpdatedBy{color:var(--blue)!important;font-weight:900}
+@media(max-width:430px){.authPanel{padding:16px}.betaOperatorChips{grid-template-columns:1fr 1fr}.betaOperatorChip{font-size:16px;min-height:56px}.betaAccount{align-items:flex-start;flex-direction:column}.betaLogout{width:100%}}
+
 </style>
 </head>
 <body>
+
+<div id="firebaseGate" class="authGate">
+ <div class="authPanel">
+  <div class="authLogo">CNC <span>TOOLBOX</span></div>
+  <div class="authSub">BETA · OFFICINA CONDIVISA</div>
+
+  <div id="betaAuthLoading" class="authBlock active">
+   <div class="authMessage">Collegamento all’officina condivisa…</div>
+  </div>
+
+  <div id="betaLoginBlock" class="authBlock">
+   <div class="authField">
+    <label>Email</label>
+    <input id="betaEmail" type="email" value="cncsystem.mec@gmail.com" autocomplete="username" autocapitalize="off" spellcheck="false">
+   </div>
+   <div class="authField">
+    <label>Password</label>
+    <input id="betaPassword" type="password" autocomplete="current-password" enterkeyhint="go">
+   </div>
+   <button class="btn" onclick="betaLogin()">ACCEDI ALL’OFFICINA</button>
+   <div id="betaLoginMessage" class="authMessage"></div>
+   <div class="authNote">Entrano soltanto gli utenti creati dall’amministratore. La password non viene salvata dentro il file.</div>
+  </div>
+
+  <div id="betaProfileBlock" class="authBlock">
+   <div class="authMessage ok">Accesso riuscito. Registra il nome una sola volta.</div>
+   <div class="authField">
+    <label>Nome visibile in officina</label>
+    <input id="betaProfileName" type="text" placeholder="Es. Marco" maxlength="32" autocomplete="name" enterkeyhint="done">
+   </div>
+   <button class="btn" onclick="betaSaveProfile()">SALVA IL MIO NOME</button>
+   <div id="betaProfileMessage" class="authMessage"></div>
+  </div>
+ </div>
+</div>
 <div class="app">
 
 <section id="home" class="screen active">
- <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v7.7 · RICERCA NUMERICA</div></div></div>
+ <div class="top"><button class="menu" onclick="show('settings')">☰</button><div><h1>CNC <span>TOOLBOX</span></h1><div class="sub">STRUMENTI PER L'OFFICINA CNC</div><div class="version">v8.0 · BETA CONDIVISA</div><div class="betaSyncPill"><span id="betaHomeDot" class="betaSyncDot loading"></span><span id="betaHomeStatus">COLLEGAMENTO…</span></div></div></div>
  <div class="grid"><button class="tile primary wide" onclick="show('assistant')"><div class="icon">🎙️</div>ASSISTENTE VOCALE MECCANICO</button></div>
 
  <div class="sectionTitle">GEOMETRIA</div>
@@ -607,7 +662,29 @@ select{text-align:center;font-size:15px}
  <div class="header">
   <button class="back" onclick="show('home')">‹</button>
   <div class="title">GESTIONE UTENSILI<small>TROVA SUBITO DOVE SONO</small></div>
-  <button class="help" onclick="alert('Crea le macchine della tua officina. Poi registra ogni utensile indicando diametro, descrizione, macchina e posizione T o cassetto. Tutto resta memorizzato sul dispositivo.')">?</button>
+  <button class="help" onclick="alert('Crea le macchine della tua officina. Poi registra ogni utensile indicando diametro, descrizione, macchina e posizione T o cassetto. Macchine e utensili vengono condivisi in tempo reale con gli utenti autorizzati dell’officina.')">?</button>
+ </div>
+
+
+ <div class="card betaSharedCard">
+  <h2>OFFICINA CONDIVISA</h2>
+  <div class="betaAccount">
+   <div>ACCOUNT<br><strong id="betaAccountEmail">—</strong></div>
+   <button class="betaLogout" onclick="betaLogout()">ESCI</button>
+  </div>
+  <div class="betaSyncPill"><span id="betaToolDot" class="betaSyncDot loading"></span><span id="betaToolStatus">SINCRONIZZAZIONE…</span></div>
+  <div class="betaOperatorTitle">CHI STA PRELEVANDO O SPOSTANDO?</div>
+  <div id="betaOperatorChips" class="betaOperatorChips"><div class="betaActivityEmpty">Caricamento nomi…</div></div>
+  <div class="hint">Su un telefono personale il tuo nome viene scelto automaticamente. Su un tablet comune basta toccare il nome: resterà evidenziato e verrà registrato nei movimenti.</div>
+  <div id="betaImportBox" class="betaImportBox">
+   <strong>HO TROVATO I DATI DELLA VERSIONE STABILE</strong>
+   <div class="hint">Il database condiviso è ancora vuoto. Premi qui una sola volta per caricare nella Beta le macchine e gli utensili già presenti su questo telefono.</div>
+   <button class="btn" onclick="betaImportLocalWorkshop()">CARICA NELL’OFFICINA CONDIVISA</button>
+  </div>
+  <div class="betaActivity">
+   <div class="betaActivityTitle">ULTIMI MOVIMENTI</div>
+   <div id="betaActivityList"><div class="betaActivityEmpty">Nessun movimento registrato.</div></div>
+  </div>
  </div>
 
  <div id="toolQuickSearchCard" class="card toolQuickCard">
@@ -666,7 +743,7 @@ select{text-align:center;font-size:15px}
   </div>
   <div id="toolMachineList" class="toolMachineList"></div>
   <button class="btn" onclick="memorizeWorkshop()">MEMORIZZA OFFICINA</button>
-  <div class="hint">Puoi aggiungere tutte le macchine che vuoi. I nomi rimangono salvati anche quando chiudi l’app.</div>
+  <div class="hint">Le macchine sono uniche per tutta l’officina: una modifica fatta da un utente compare sugli altri telefoni.</div>
  </div>
 
  <div class="card">
@@ -708,11 +785,11 @@ select{text-align:center;font-size:15px}
   </div>
 
   <button class="btn" onclick="addWorkshopTool()">AGGIUNGI E MEMORIZZA</button>
-  <div class="hint">Ogni riga rappresenta un utensile fisico. Se possiedi tre punte Ø5,5, registrale tre volte: così ognuna può trovarsi in un posto diverso.</div>
+  <div class="hint">Ogni riga rappresenta un utensile fisico condiviso. Il nome dell’operatore selezionato viene registrato automaticamente.</div>
  </div>
 
  <div class="card">
-  <h2>3 · BACKUP COMPLETO</h2>
+  <h2>3 · BACKUP DI SICUREZZA</h2>
 
   <div class="toolBackupGrid">
    <button class="btn2" onclick="exportToolBackup()">SALVA FILE BACKUP</button>
@@ -882,7 +959,7 @@ select{text-align:center;font-size:15px}
 
 <section id="settings" class="screen">
  <div class="header"><button class="back" onclick="show('home')">‹</button><div class="title">MENU</div><button class="help">▤</button></div>
- <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v7.7</div></div><div class="note">Versione a file unico. In modalità 3 punti P1 richiede sempre X e Y; la scelta indica soltanto se applicare la compensazione.</div></div>
+ <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v8.0 BETA</div></div><div class="note">Beta online: macchine, utensili e operatori vengono sincronizzati tra i telefoni autorizzati. La versione stabile v7.7 rimane separata.</div></div>
  <div class="card"><h2>AZIONI</h2><button class="btn2" onclick="clearSettings()">PULISCI IMPOSTAZIONI</button></div>
 </section>
 
@@ -1738,10 +1815,11 @@ function calcDel(){$('calcDisplay').value=$('calcDisplay').value.slice(0,-1)}
 function calcEq(){try{const s=$('calcDisplay').value;if(!/^[0-9+\-*/().\s]+$/.test(s))throw 0;$('calcDisplay').value=Function('"use strict";return ('+s+')')()}catch(e){$('calcDisplay').value='ERRORE'}}
 const TOOL_MANAGER_KEY='cnc_toolbox_tool_manager_v1';
 
-let toolManagerState={
+window.toolManagerState={
  machines:[],
  tools:[]
 };
+let toolManagerState=window.toolManagerState;
 
 let toolTypeFilter='all';
 
@@ -1789,13 +1867,17 @@ function loadToolManager(){
       description:String(tool.description||''),
       location:String(tool.location||'storage'),
       position:String(tool.position||''),
-      updatedAt:String(tool.updatedAt||new Date().toISOString())
+      updatedAt:String(tool.updatedAt||new Date().toISOString()),
+      updatedByName:String(tool.updatedByName||''),
+      updatedByUid:String(tool.updatedByUid||'')
      }))
    };
+   window.toolManagerState=toolManagerState;
   }
  }catch(error){
   console.warn('Impossibile leggere Gestione utensili',error);
   toolManagerState={machines:[],tools:[]};
+  window.toolManagerState=toolManagerState;
  }
 
  const validMachineIds=new Set(toolManagerState.machines.map(machine=>machine.id));
@@ -1927,13 +2009,15 @@ function addToolMachine(){
   return;
  }
 
- toolManagerState.machines.push({
+ const machine={
   id:toolMakeId('machine'),
   name
- });
+ };
+ toolManagerState.machines.push(machine);
 
  if(input)input.value='';
  saveToolManager();
+ window.betaCloud?.upsertMachine(machine,'Macchina aggiunta');
  renderToolMachineList();
  renderToolLocationOptions();
  renderWorkshopTools();
@@ -1970,7 +2054,8 @@ function renderToolMachineList(){
  `).join('');
 }
 
-let activeToolMachineId='';
+window.activeToolMachineId='';
+let activeToolMachineId=window.activeToolMachineId;
 
 function toolPositionSortValue(position){
  const value=String(position||'').trim().toUpperCase();
@@ -1990,7 +2075,7 @@ function openMachineToolView(machineId){
   return;
  }
 
- activeToolMachineId=machineId;
+ activeToolMachineId=machineId;window.activeToolMachineId=activeToolMachineId;
  renderMachineToolView();
  show('toolmachineview');
 }
@@ -2081,6 +2166,7 @@ function memorizeWorkshop(){
  }
 
  saveToolManager(true);
+ window.betaCloud?.syncMachines(toolManagerState.machines,'Nomi macchine aggiornati');
  renderToolLocationOptions();
  renderWorkshopTools();
 }
@@ -2100,17 +2186,21 @@ function deleteToolMachine(id){
  if(!confirm(message))return;
 
  toolManagerState.machines=toolManagerState.machines.filter(item=>item.id!==id);
- if(activeToolMachineId===id)activeToolMachineId='';
+ if(activeToolMachineId===id){activeToolMachineId='';window.activeToolMachineId=''}
 
+ const movedTools=[];
  toolManagerState.tools.forEach(tool=>{
   if(tool.location===`machine:${id}`){
    tool.location='storage';
    tool.position='';
    tool.updatedAt=new Date().toISOString();
+   window.betaCloud?.decorateTool(tool);
+   movedTools.push(tool);
   }
  });
 
  saveToolManager();
+ window.betaCloud?.deleteMachine(id,machine,movedTools);
  renderToolMachineList();
  renderToolLocationOptions();
  renderWorkshopTools();
@@ -2131,17 +2221,22 @@ function addWorkshopTool(){
   return;
  }
 
- toolManagerState.tools.push({
+ const tool={
   id:toolMakeId('tool'),
   type,
   diameter:String(diameter),
   description,
   location,
   position,
-  updatedAt:new Date().toISOString()
- });
+  updatedAt:new Date().toISOString(),
+  updatedByName:'',
+  updatedByUid:''
+ };
+ window.betaCloud?.decorateTool(tool);
+ toolManagerState.tools.push(tool);
 
  saveToolManager();
+ window.betaCloud?.upsertTool(tool,'Utensile aggiunto');
 
  if($('toolNewDiameter'))$('toolNewDiameter').value='';
  if($('toolNewDescription'))$('toolNewDescription').value='';
@@ -2304,6 +2399,7 @@ function renderWorkshopTools(){
 
     ${tool.description?`<div class="toolCardMeta">${toolEscape(tool.description)}</div>`:''}
     ${updatedText?`<div class="toolCardMeta">Ultimo spostamento: ${toolEscape(updatedText)}</div>`:''}
+    ${tool.updatedByName?`<div class="toolCardMeta betaUpdatedBy">Operatore: ${toolEscape(tool.updatedByName)}</div>`:''}
 
     <div class="toolEditGrid">
      <select data-tool-location="${toolEscape(tool.id)}">
@@ -2337,8 +2433,10 @@ function updateWorkshopTool(id){
  tool.location=String(location?.value||'storage');
  tool.position=String(position?.value||'').trim();
  tool.updatedAt=new Date().toISOString();
+ window.betaCloud?.decorateTool(tool);
 
  saveToolManager();
+ window.betaCloud?.upsertTool(tool,'Posizione utensile aggiornata');
  renderWorkshopTools();
  if(activeToolMachineId)renderMachineToolView();
  showToolToast('Posizione utensile memorizzata');
@@ -2352,6 +2450,7 @@ function deleteWorkshopTool(id){
 
  toolManagerState.tools=toolManagerState.tools.filter(item=>item.id!==id);
  saveToolManager();
+ window.betaCloud?.deleteTool(tool,'Utensile eliminato');
  renderWorkshopTools();
  if(activeToolMachineId)renderMachineToolView();
  showToolToast('Utensile eliminato');
@@ -2747,9 +2846,11 @@ function importToolBackup(file){
     machines:data.machines,
     tools:data.tools
    };
+   window.toolManagerState=toolManagerState;
 
    saveToolManager();
    loadToolManager();
+   window.betaCloud?.replaceWorkshop(toolManagerState,'Backup caricato nell’officina condivisa');
    renderToolMachineList();
    renderToolLocationOptions();
    renderWorkshopTools();
@@ -3617,6 +3718,11 @@ function init(){
  updateToolLastBackup();
  setupNumericKeyboards();
 
+ const betaPassword=$('betaPassword');
+ if(betaPassword)betaPassword.addEventListener('keydown',event=>{if(event.key==='Enter')window.betaLogin?.()});
+ const betaProfileName=$('betaProfileName');
+ if(betaProfileName)betaProfileName.addEventListener('keydown',event=>{if(event.key==='Enter')window.betaSaveProfile?.()});
+
  const machineNameInput=$('toolMachineName');
  if(machineNameInput){
   machineNameInput.addEventListener('keydown',event=>{
@@ -3680,5 +3786,231 @@ if(document.readyState==='loading'){
  removeOldAppCache();
 }
 </script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+import {
+ getAuth,onAuthStateChanged,signInWithEmailAndPassword,signOut
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+import {
+ initializeFirestore,persistentLocalCache,persistentMultipleTabManager,
+ collection,doc,getDoc,setDoc,deleteDoc,onSnapshot,serverTimestamp,
+ writeBatch,query,orderBy,limit,addDoc
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+const firebaseConfig={
+ apiKey:"AIzaSyDYZk_WYyRwCd1iZQzAMtWDRNJcZMfFmsc",
+ authDomain:"cnc-toolbox-beta.firebaseapp.com",
+ projectId:"cnc-toolbox-beta",
+ storageBucket:"cnc-toolbox-beta.firebasestorage.app",
+ messagingSenderId:"184929247246",
+ appId:"1:184929247246:web:6067b7b5a17fc2762a9c5f"
+};
+const OFFICE_ID='main';
+const OWNER_EMAIL='cncsystem.mec@gmail.com';
+const ACTIVE_OPERATOR_KEY='cnc_toolbox_beta_operator_uid';
+const app=initializeApp(firebaseConfig);
+let db;
+try{
+ db=initializeFirestore(app,{localCache:persistentLocalCache({tabManager:persistentMultipleTabManager()})});
+}catch(error){
+ console.warn('Cache persistente non disponibile, uso cache memoria',error);
+ db=initializeFirestore(app);
+}
+const auth=getAuth(app);
+
+let currentUser=null;
+let currentProfile=null;
+let members=[];
+let activeOperatorUid=localStorage.getItem(ACTIVE_OPERATOR_KEY)||'';
+let localSeed={machines:[],tools:[]};
+try{
+ const saved=JSON.parse(localStorage.getItem('cnc_toolbox_tool_manager_v1')||'null');
+ if(saved&&Array.isArray(saved.machines)&&Array.isArray(saved.tools)){
+  localSeed=JSON.parse(JSON.stringify(saved));
+ }
+}catch(error){console.warn(error)}
+let machineReady=false,toolReady=false;
+let cloudMachineCount=0,cloudToolCount=0;
+let unsubs=[];
+
+const el=id=>document.getElementById(id);
+const officeCollection=name=>collection(db,'offices',OFFICE_ID,name);
+const officeDoc=(name,id)=>doc(db,'offices',OFFICE_ID,name,id);
+const safeText=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[char]));
+const nowIso=()=>new Date().toISOString();
+
+function showAuthBlock(id){
+ ['betaAuthLoading','betaLoginBlock','betaProfileBlock'].forEach(name=>el(name)?.classList.toggle('active',name===id));
+}
+function setMessage(id,message,type=''){
+ const target=el(id);if(!target)return;
+ target.textContent=message||'';
+ target.className='authMessage'+(type?' '+type:'');
+}
+function setSyncStatus(text,state='loading'){
+ ['betaHomeDot','betaToolDot'].forEach(id=>{const dot=el(id);if(dot)dot.className='betaSyncDot '+state});
+ if(el('betaHomeStatus'))el('betaHomeStatus').textContent=text;
+ if(el('betaToolStatus'))el('betaToolStatus').textContent=text;
+}
+function firebaseErrorItalian(error){
+ const code=String(error?.code||'');
+ if(code.includes('invalid-credential')||code.includes('wrong-password')||code.includes('user-not-found'))return 'Email o password non corretti.';
+ if(code.includes('too-many-requests'))return 'Troppi tentativi. Attendi qualche minuto.';
+ if(code.includes('network-request-failed'))return 'Connessione assente o instabile.';
+ if(code.includes('permission-denied'))return 'Utente non autorizzato a questa officina.';
+ return 'Operazione non riuscita. Controlla la connessione e riprova.';
+}
+function renderMembers(){
+ const box=el('betaOperatorChips');if(!box)return;
+ if(!members.length){box.innerHTML='<div class="betaActivityEmpty">Nessun nome registrato.</div>';return}
+ const valid=members.some(item=>item.uid===activeOperatorUid);
+ if(!valid&&currentUser){activeOperatorUid=currentUser.uid;localStorage.setItem(ACTIVE_OPERATOR_KEY,activeOperatorUid)}
+ box.innerHTML=members.map(member=>`<button class="betaOperatorChip ${member.uid===activeOperatorUid?'on':''}" onclick="selectBetaOperator('${safeText(member.uid)}')">${safeText(member.name||member.email||'UTENTE')}</button>`).join('');
+}
+function getOperator(){
+ return members.find(item=>item.uid===activeOperatorUid)||currentProfile||{uid:currentUser?.uid||'',name:currentUser?.email||'Utente'};
+}
+function decorateTool(tool){
+ const operator=getOperator();
+ tool.updatedByUid=operator.uid||'';
+ tool.updatedByName=operator.name||operator.email||'Utente';
+ tool.updatedAt=tool.updatedAt||nowIso();
+ return tool;
+}
+async function logActivity(action,detail=''){
+ if(!currentUser)return;
+ const operator=getOperator();
+ try{
+  await addDoc(officeCollection('activity'),{
+   action:String(action||'Movimento'),detail:String(detail||''),
+   operatorUid:operator.uid||'',operatorName:operator.name||operator.email||'Utente',
+   accountUid:currentUser.uid,accountEmail:currentUser.email||'',createdAt:serverTimestamp(),createdAtIso:nowIso()
+  });
+ }catch(error){console.warn('Storico non salvato',error)}
+}
+function refreshWorkshopViews(){
+ window.saveToolManager?.();
+ window.renderToolMachineList?.();
+ window.renderToolLocationOptions?.();
+ window.renderWorkshopTools?.();
+ if(window.activeToolMachineId)window.renderMachineToolView?.();
+}
+function updateImportOffer(){
+ const box=el('betaImportBox');if(!box)return;
+ const localHas=localSeed.machines.length||localSeed.tools.length;
+ box.classList.toggle('show',Boolean(machineReady&&toolReady&&cloudMachineCount===0&&cloudToolCount===0&&localHas));
+}
+function stopListeners(){unsubs.forEach(fn=>{try{fn()}catch(e){}});unsubs=[];machineReady=false;toolReady=false}
+function startListeners(){
+ stopListeners();
+ setSyncStatus(navigator.onLine?'SINCRONIZZAZIONE…':'OFFLINE · DATI IN CACHE',navigator.onLine?'loading':'offline');
+ unsubs.push(onSnapshot(officeCollection('machines'),snapshot=>{
+  machineReady=true;cloudMachineCount=snapshot.size;
+  window.toolManagerState.machines=snapshot.docs.map(item=>({id:item.id,name:String(item.data().name||'')})).filter(item=>item.name).sort((a,b)=>a.name.localeCompare(b.name,'it'));
+  refreshWorkshopViews();updateImportOffer();setSyncStatus(navigator.onLine?'ONLINE · DATI CONDIVISI':'OFFLINE · MODIFICHE IN ATTESA',navigator.onLine?'online':'offline');
+ },error=>{console.error(error);setSyncStatus('ERRORE SINCRONIZZAZIONE','offline');window.showToolToast?.(firebaseErrorItalian(error))}));
+ unsubs.push(onSnapshot(officeCollection('tools'),snapshot=>{
+  toolReady=true;cloudToolCount=snapshot.size;
+  window.toolManagerState.tools=snapshot.docs.map(item=>{
+   const data=item.data();return {id:item.id,type:String(data.type||'ALTRO').toUpperCase(),diameter:String(data.diameter??''),description:String(data.description||''),location:String(data.location||'storage'),position:String(data.position||''),updatedAt:String(data.updatedAt||data.updatedAtIso||nowIso()),updatedByName:String(data.updatedByName||''),updatedByUid:String(data.updatedByUid||'')};
+  });
+  refreshWorkshopViews();updateImportOffer();setSyncStatus(navigator.onLine?'ONLINE · DATI CONDIVISI':'OFFLINE · MODIFICHE IN ATTESA',navigator.onLine?'online':'offline');
+ },error=>{console.error(error);setSyncStatus('ERRORE SINCRONIZZAZIONE','offline');window.showToolToast?.(firebaseErrorItalian(error))}));
+ unsubs.push(onSnapshot(officeCollection('members'),snapshot=>{
+  members=snapshot.docs.map(item=>({uid:item.id,...item.data()})).filter(item=>item.name).sort((a,b)=>String(a.name).localeCompare(String(b.name),'it'));
+  renderMembers();
+ }));
+ const activityQuery=query(officeCollection('activity'),orderBy('createdAt','desc'),limit(8));
+ unsubs.push(onSnapshot(activityQuery,snapshot=>{
+  const list=el('betaActivityList');if(!list)return;
+  if(snapshot.empty){list.innerHTML='<div class="betaActivityEmpty">Nessun movimento registrato.</div>';return}
+  list.innerHTML=snapshot.docs.map(item=>{
+   const data=item.data();const stamp=data.createdAt?.toDate?.()||new Date(data.createdAtIso||Date.now());
+   const when=stamp.toLocaleString('it-IT',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+   return `<div class="betaActivityItem"><strong>${safeText(data.operatorName||'Utente')}</strong> · ${safeText(data.action||'Movimento')}<br>${safeText(data.detail||'')} · ${safeText(when)}</div>`;
+  }).join('');
+ }));
+}
+
+window.betaLogin=async()=>{
+ const email=String(el('betaEmail')?.value||'').trim();const password=String(el('betaPassword')?.value||'');
+ if(!email||!password){setMessage('betaLoginMessage','Inserisci email e password.','bad');return}
+ setMessage('betaLoginMessage','Accesso in corso…');
+ try{await signInWithEmailAndPassword(auth,email,password);if(el('betaPassword'))el('betaPassword').value=''}catch(error){setMessage('betaLoginMessage',firebaseErrorItalian(error),'bad')}
+};
+window.betaLogout=async()=>{if(confirm('Uscire dall’officina condivisa su questo dispositivo?'))await signOut(auth)};
+window.betaSaveProfile=async()=>{
+ const name=String(el('betaProfileName')?.value||'').trim();
+ if(name.length<2){setMessage('betaProfileMessage','Scrivi un nome di almeno 2 caratteri.','bad');return}
+ try{
+  const role=(currentUser?.email||'').toLowerCase()===OWNER_EMAIL?'owner':'member';
+  const profile={uid:currentUser.uid,name,email:currentUser.email||'',role,updatedAt:serverTimestamp(),updatedAtIso:nowIso()};
+  await setDoc(officeDoc('members',currentUser.uid),profile,{merge:true});
+  currentProfile={...profile,updatedAt:null};activeOperatorUid=currentUser.uid;localStorage.setItem(ACTIVE_OPERATOR_KEY,activeOperatorUid);
+  el('firebaseGate')?.classList.add('hidden');if(el('betaAccountEmail'))el('betaAccountEmail').textContent=currentUser.email||'';startListeners();
+ }catch(error){setMessage('betaProfileMessage',firebaseErrorItalian(error),'bad')}
+};
+window.selectBetaOperator=uid=>{activeOperatorUid=uid;localStorage.setItem(ACTIVE_OPERATOR_KEY,uid);renderMembers();const op=getOperator();window.showToolToast?.(`Operatore: ${op.name||op.email}`)};
+window.betaImportLocalWorkshop=async()=>{
+ if(!currentUser||!(localSeed.machines.length||localSeed.tools.length))return;
+ if(!confirm(`Caricare ${localSeed.machines.length} macchine e ${localSeed.tools.length} utensili nell’officina condivisa?`))return;
+ try{await replaceWorkshop(localSeed,'Dati della versione stabile caricati');el('betaImportBox')?.classList.remove('show');window.showToolToast?.('Dati caricati nella Beta condivisa')}catch(error){console.error(error);window.showToolToast?.(firebaseErrorItalian(error))}
+};
+
+async function upsertMachine(machine,action='Macchina aggiornata'){
+ if(!currentUser)return;
+ try{await setDoc(officeDoc('machines',machine.id),{name:String(machine.name||''),updatedAt:serverTimestamp(),updatedAtIso:nowIso(),updatedByUid:getOperator().uid||'',updatedByName:getOperator().name||''},{merge:true});await logActivity(action,String(machine.name||''))}catch(error){console.error(error);window.showToolToast?.(firebaseErrorItalian(error))}
+}
+async function syncMachines(machines,action='Macchine aggiornate'){
+ if(!currentUser)return;
+ try{const batch=writeBatch(db);machines.forEach(machine=>batch.set(officeDoc('machines',machine.id),{name:String(machine.name||''),updatedAt:serverTimestamp(),updatedAtIso:nowIso(),updatedByUid:getOperator().uid||'',updatedByName:getOperator().name||''},{merge:true}));await batch.commit();await logActivity(action,`${machines.length} macchine`)}catch(error){console.error(error);window.showToolToast?.(firebaseErrorItalian(error))}
+}
+async function deleteMachine(id,machine,movedTools=[]){
+ if(!currentUser)return;
+ try{const batch=writeBatch(db);batch.delete(officeDoc('machines',id));movedTools.forEach(tool=>batch.set(officeDoc('tools',tool.id),cloudTool(tool),{merge:true}));await batch.commit();await logActivity('Macchina eliminata',`${machine?.name||id} · ${movedTools.length} utensili spostati in armadio`)}catch(error){console.error(error);window.showToolToast?.(firebaseErrorItalian(error))}
+}
+function cloudTool(tool){decorateTool(tool);return {type:String(tool.type||'ALTRO'),diameter:String(tool.diameter??''),description:String(tool.description||''),location:String(tool.location||'storage'),position:String(tool.position||''),updatedAt:String(tool.updatedAt||nowIso()),updatedAtServer:serverTimestamp(),updatedByUid:String(tool.updatedByUid||''),updatedByName:String(tool.updatedByName||'')}}
+async function upsertTool(tool,action='Utensile aggiornato'){
+ if(!currentUser)return;
+ try{await setDoc(officeDoc('tools',tool.id),cloudTool(tool),{merge:true});await logActivity(action,`${tool.type||'UTENSILE'} Ø${tool.diameter||''} · ${window.toolLocationName?.(tool.location)||tool.location}${tool.position?' · '+tool.position:''}`)}catch(error){console.error(error);window.showToolToast?.(firebaseErrorItalian(error))}
+}
+async function deleteTool(tool,action='Utensile eliminato'){
+ if(!currentUser)return;
+ try{await deleteDoc(officeDoc('tools',tool.id));await logActivity(action,`${tool.type||'UTENSILE'} Ø${tool.diameter||''}`)}catch(error){console.error(error);window.showToolToast?.(firebaseErrorItalian(error))}
+}
+async function replaceWorkshop(state,action='Officina aggiornata'){
+ if(!currentUser)return;
+ const existingMachines=window.toolManagerState?.machines||[];const existingTools=window.toolManagerState?.tools||[];
+ let batch=writeBatch(db),ops=0;const commits=[];
+ const flush=()=>{if(ops){commits.push(batch.commit());batch=writeBatch(db);ops=0}};
+ existingMachines.forEach(item=>{batch.delete(officeDoc('machines',item.id));if(++ops>=400)flush()});
+ existingTools.forEach(item=>{batch.delete(officeDoc('tools',item.id));if(++ops>=400)flush()});
+ (state.machines||[]).forEach(machine=>{batch.set(officeDoc('machines',machine.id),{name:String(machine.name||''),updatedAt:serverTimestamp(),updatedAtIso:nowIso(),updatedByUid:getOperator().uid||'',updatedByName:getOperator().name||''});if(++ops>=400)flush()});
+ (state.tools||[]).forEach(tool=>{batch.set(officeDoc('tools',tool.id),cloudTool({...tool}));if(++ops>=400)flush()});flush();await Promise.all(commits);await logActivity(action,`${(state.machines||[]).length} macchine · ${(state.tools||[]).length} utensili`);
+}
+window.betaCloud={upsertMachine,syncMachines,deleteMachine,upsertTool,deleteTool,replaceWorkshop,decorateTool,getOperatorName:()=>getOperator().name||getOperator().email||'Utente'};
+
+window.addEventListener('online',()=>setSyncStatus('ONLINE · SINCRONIZZAZIONE', 'loading'));
+window.addEventListener('offline',()=>setSyncStatus('OFFLINE · MODIFICHE IN ATTESA','offline'));
+
+onAuthStateChanged(auth,async user=>{
+ currentUser=user;stopListeners();
+ if(!user){currentProfile=null;members=[];el('firebaseGate')?.classList.remove('hidden');showAuthBlock('betaLoginBlock');setSyncStatus('ACCESSO RICHIESTO','offline');if(el('betaAccountEmail'))el('betaAccountEmail').textContent='—';return}
+ if(el('betaAccountEmail'))el('betaAccountEmail').textContent=user.email||'';
+ showAuthBlock('betaAuthLoading');
+ try{
+  const snap=await getDoc(officeDoc('members',user.uid));
+  if(!snap.exists()||!String(snap.data().name||'').trim()){
+   showAuthBlock('betaProfileBlock');if(el('betaProfileName'))el('betaProfileName').focus();return;
+  }
+  currentProfile={uid:user.uid,...snap.data()};
+  if(!activeOperatorUid)activeOperatorUid=user.uid;
+  localStorage.setItem(ACTIVE_OPERATOR_KEY,activeOperatorUid);
+  el('firebaseGate')?.classList.add('hidden');startListeners();
+ }catch(error){console.error(error);showAuthBlock('betaLoginBlock');setMessage('betaLoginMessage',firebaseErrorItalian(error),'bad')}
+});
+</script>
+
 </body>
 </html>

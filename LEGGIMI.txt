@@ -1,0 +1,8 @@
+CNC Toolbox v8.0 Beta Condivisa
+
+File principale: public/index.html
+Progetto Firebase: cnc-toolbox-beta
+Hosting previsto: https://cnc-toolbox-beta.web.app
+
+Questa Beta richiede HTTPS/Firebase Hosting per il login e la sincronizzazione.
+La v7.7 stabile non viene modificata.
