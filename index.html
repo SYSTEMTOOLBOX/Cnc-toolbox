@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#050505">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>CNC Toolbox v8.2 Beta Ordinata</title>
+<title>CNC Toolbox v8.4 Trasferimento Rapido</title>
 <style>
 :root{--y:#ffc400;--y2:#dfa500;--b:#050505;--p:#141414;--p2:#0b0b0b;--l:#3e3e3e;--w:#fff;--g:#aaa;--ok:#68e36f;--err:#ff5b5b;--blue:#54baff}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -371,6 +371,45 @@ select{text-align:center;font-size:15px}
 .inventoryHistory{margin-top:10px}.inventoryHistoryItem{border-top:1px solid #333;padding:9px 0;color:#ccc;font-size:12px;line-height:1.45}.inventoryHistoryItem:first-child{border-top:0}.inventoryHistoryItem strong{color:#fff}.inventoryHistoryDelta.plus{color:var(--ok);font-weight:1000}.inventoryHistoryDelta.minus{color:var(--err);font-weight:1000}.inventoryEmpty{border:1px dashed #555;border-radius:10px;padding:18px;text-align:center;color:#aaa;font-weight:900;line-height:1.45}
 @media(max-width:430px){.inventorySearchRow{grid-template-columns:1fr}.inventoryFormGrid{grid-template-columns:1fr}.inventoryField.full{grid-column:auto}.inventorySummaryGrid{gap:5px}.inventorySummaryBox{padding:8px 4px}.inventorySummaryBox strong{font-size:23px}.inventoryMoveGrid{grid-template-columns:105px 1fr}.inventoryFormActions{grid-template-columns:1fr 100px}.inventoryCardTitle{font-size:17px}.inventoryQuantity{min-width:82px}.inventoryQuantity strong{font-size:28px}}
 
+
+
+/* v8.3 · Gestione rapida macchine */
+.quickMachineList{display:grid;gap:11px}
+.quickMachineButton{width:100%;min-height:82px;border:2px solid var(--y);border-radius:13px;background:linear-gradient(145deg,#191919,#070707);color:#fff;padding:12px 15px;text-align:left;font-size:22px;font-weight:1000;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.quickMachineButton span{color:var(--y);font-size:28px}.quickMachineButton small{display:block;color:#aaa;font-size:12px;margin-top:5px}
+.machineQuickLoad{border:2px solid var(--y);border-radius:13px;background:#111;padding:12px;margin-bottom:13px}
+.machineQuickLoadTitle{color:var(--y);font-size:18px;font-weight:1000;margin-bottom:8px}
+.machineQuickLoadRow{display:grid;grid-template-columns:minmax(0,1fr) 125px;gap:8px}
+.machineQuickPosition{height:58px;border:3px solid #fff;border-radius:10px;background:#fff;color:#050505;padding:0 13px;font-size:23px;font-weight:1000;text-transform:uppercase}
+.machineQuickLoadBtn{min-height:58px;border:0;border-radius:10px;background:var(--y);color:#050505;font-size:18px;font-weight:1000}
+.machineQuickHint{color:#aaa;font-size:12px;line-height:1.4;margin-top:8px}
+.machineToolHead,.machineToolRow{grid-template-columns:82px minmax(0,1fr) 106px}
+.machineToolHead > div:last-child{display:block}
+.machineToolType{padding:9px 11px}
+.machineToolMain{font-size:20px}
+.machineToolActions{display:grid;gap:6px;padding:7px;background:#111;height:100%;align-content:center}
+.machineToolAction{min-height:40px;border-radius:8px;padding:5px 4px;font-size:11px;font-weight:1000;line-height:1.1}
+.machineToolAction.replace{border:0;background:var(--y);color:#050505}
+.machineToolAction.unload{border:2px solid var(--err);background:#1c0808;color:var(--err)}
+.quickModal{position:fixed;inset:0;z-index:4000;background:rgba(0,0,0,.88);display:flex;align-items:flex-end;justify-content:center;padding:12px}
+.quickModalPanel{width:min(590px,100%);max-height:91vh;overflow:auto;border:2px solid var(--y);border-radius:17px 17px 10px 10px;background:#0d0d0d;padding:14px;box-shadow:0 -10px 40px rgba(0,0,0,.65)}
+.quickModalHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.quickModalTitle{color:var(--y);font-size:22px;font-weight:1000}.quickModalClose{width:44px;height:44px;border:2px solid #777;border-radius:999px;background:#111;color:#fff;font-size:23px;font-weight:1000}
+.quickDestinationQuestion{text-align:center;color:#fff;font-size:20px;font-weight:1000;line-height:1.35;margin:8px 0 14px}.quickDestinationTool{text-align:center;color:var(--y);font-size:17px;font-weight:900;margin-bottom:13px}
+.quickDestinationGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.quickDestinationBtn{min-height:94px;border-radius:13px;font-size:19px;font-weight:1000;padding:10px}.quickDestinationBtn.storage{border:2px solid var(--ok);background:#09220b;color:var(--ok)}.quickDestinationBtn.used{border:2px solid var(--y);background:#211a00;color:var(--y)}
+.quickPickerTabs{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:9px}.quickPickerTab{height:48px;border:2px solid #555;border-radius:9px;background:#111;color:#ddd;font-weight:1000}.quickPickerTab.on{background:var(--y);border-color:var(--y);color:#050505}
+.quickPickerSearch{width:100%;height:56px;border:3px solid #fff;border-radius:10px;background:#fff;color:#050505;padding:0 12px;font-size:19px;font-weight:900;margin-bottom:10px}
+.quickPickerAllHint{margin:0 0 9px;border:1px solid #4a4a4a;border-radius:9px;background:#101010;padding:9px;color:#bbb;font-size:12px;font-weight:850;line-height:1.35}.quickPickerMachineSource{color:#ffe16b}.quickPickerUsedSource{color:#ffb25c}.quickPickerNewSource{color:#7ee7a8}.quickPickerMove{background:#38d77c!important}.quickDestinationBtn small{font-size:10px;display:inline-block;margin-top:3px}.quickPickerList{display:grid;gap:9px}.quickPickerItem{display:grid;grid-template-columns:minmax(0,1fr) 96px;gap:8px;align-items:center;border:1.5px solid #444;border-radius:11px;background:#080808;padding:10px}.quickPickerItemTitle{color:#fff;font-size:18px;font-weight:1000;line-height:1.2}.quickPickerItemMeta{color:#aaa;font-size:12px;font-weight:800;line-height:1.35;margin-top:4px}.quickPickerMount{min-height:54px;border:0;border-radius:9px;background:var(--y);color:#050505;font-weight:1000}.quickPickerEmpty{border:2px dashed #555;border-radius:11px;padding:23px 12px;text-align:center;color:#aaa;font-weight:900;line-height:1.5}
+.usedTopActions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}.usedTopActions button{min-height:48px;border:2px solid #555;border-radius:9px;background:#111;color:#ddd;font-weight:1000}.usedTopActions button.on{background:var(--y);border-color:var(--y);color:#050505}
+.usedToolList{display:grid;gap:10px}.usedToolCard{border:1.5px solid #444;border-radius:12px;background:linear-gradient(145deg,#171717,#080808);padding:12px}.usedToolTitle{color:var(--y);font-size:20px;font-weight:1000}.usedToolMeta{color:#aaa;font-size:12px;line-height:1.45;margin-top:5px}.usedWearRow{display:grid;grid-template-columns:1fr 115px;gap:8px;align-items:center;margin-top:10px}.usedWearRow select{height:48px;border:2px solid #fff;border-radius:9px;background:#fff;color:#050505;font-weight:1000;padding:0 8px}.usedWearRow button{min-height:48px;border:0;border-radius:9px;background:var(--y);color:#050505;font-weight:1000}.usedToolActions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.usedToolActions button{min-height:47px;border-radius:9px;font-weight:1000}.usedDiscard{border:2px solid var(--err);background:#1c0808;color:var(--err)}.usedRestore{border:2px solid var(--ok);background:#09220b;color:var(--ok)}
+@media(max-width:430px){
+ .machineQuickLoadRow{grid-template-columns:minmax(0,1fr) 105px}
+ .machineQuickPosition{font-size:21px}.machineQuickLoadBtn{font-size:16px}
+ .machineToolHead,.machineToolRow{grid-template-columns:68px minmax(0,1fr) 94px}
+ .machineToolPosition{font-size:19px;padding:5px}.machineToolMain{font-size:17px}.machineToolDescription{font-size:12px}.machineToolActions{padding:5px;gap:5px}.machineToolAction{font-size:10px;min-height:38px}
+ .quickDestinationGrid{grid-template-columns:1fr}.quickDestinationBtn{min-height:78px}
+ .quickPickerItem{grid-template-columns:minmax(0,1fr) 82px}.quickPickerMount{font-size:12px}
+}
+
 </style>
 </head>
 <body>
@@ -417,7 +456,7 @@ select{text-align:center;font-size:15px}
   <div>
    <h1>CNC <span>TOOLBOX</span></h1>
    <div class="sub">STRUMENTI PER L'OFFICINA CNC</div>
-   <div class="version">v8.2 · BETA ORDINATA</div>
+   <div class="version">v8.4 · TRASFERIMENTO RAPIDO</div>
    <div class="betaSyncPill">
     <span id="betaHomeDot" class="betaSyncDot loading"></span>
     <span id="betaHomeStatus">COLLEGAMENTO…</span>
@@ -427,6 +466,12 @@ select{text-align:center;font-size:15px}
 
  <div class="sectionTitle">AZIONI RAPIDE</div>
  <div class="grid">
+  <button class="tile primary wide quickTile" onclick="openQuickMachines()">
+   <div class="icon">🏭</div>
+   MACCHINE · CARICA E SCARICA
+   <small>TOCCA LA MACCHINA · SCEGLI T · CERCA OVUNQUE</small>
+  </button>
+
   <button class="tile primary wide quickTile" onclick="openToolManager(true)">
    <div class="icon">🔎</div>
    CERCA SUBITO UTENSILE
@@ -806,6 +851,23 @@ select{text-align:center;font-size:15px}
 </section>
 
 
+
+<section id="machinesquick" class="screen">
+ <div class="header">
+  <button class="back" onclick="goBack()">‹</button>
+  <div class="title">MACCHINE<small>CARICA E SCARICA VELOCEMENTE</small></div>
+  <button class="help" onclick="alert('Tocca la macchina. Scegli la posizione T e cerca l’utensile in tutta l’officina: magazzino nuovo, usati oppure un’altra macchina.')">?</button>
+ </div>
+ <div class="card">
+  <div class="machineViewIntro">Tocca la macchina sulla quale stai lavorando.</div>
+  <div id="quickMachineList" class="quickMachineList"></div>
+ </div>
+ <div class="card">
+  <button class="btn2" onclick="show('usedtools');renderUsedTools()">APRI MAGAZZINO USATI</button>
+  <button class="btn2" onclick="openToolManager(false)">GESTISCI NOMI MACCHINE</button>
+ </div>
+</section>
+
 <section id="inventory" class="screen">
  <div class="header">
   <button class="back" onclick="goBack()">‹</button>
@@ -979,7 +1041,7 @@ select{text-align:center;font-size:15px}
   <div class="hint">Crea una tabella leggibile e stampabile con macchine, posizioni T, utensili, diametri e descrizioni.</div>
  </div>
 
- <div class="card">
+ <div id="toolMachinesCard" class="card">
   <h2>1 · LE MIE MACCHINE</h2>
   <div class="toolAddLine">
    <input id="toolMachineName" class="toolTextInput" placeholder="Nome macchina, es. CME">
@@ -1033,7 +1095,13 @@ select{text-align:center;font-size:15px}
  </div>
 
  <div class="card">
-  <h2>3 · BACKUP DI SICUREZZA</h2>
+  <h2>3 · MAGAZZINO USATI</h2>
+  <button class="btn" onclick="show('usedtools');renderUsedTools()">APRI TABELLA USATI</button>
+  <div class="hint">Gli utensili scaricati in USATI restano separati dal magazzino nuovo e possono essere rimontati direttamente da una macchina.</div>
+ </div>
+
+ <div class="card">
+  <h2>4 · BACKUP DI SICUREZZA</h2>
 
   <div class="toolBackupGrid">
    <button class="btn2" onclick="exportToolBackup()">SALVA FILE BACKUP</button>
@@ -1051,23 +1119,58 @@ select{text-align:center;font-size:15px}
 <section id="toolmachineview" class="screen">
  <div class="header">
   <button class="back" onclick="goBack();renderWorkshopTools()">‹</button>
-  <div class="title" id="machineViewTitle">TABELLA MACCHINA<small>UTENSILI MONTATI</small></div>
-  <button class="help" onclick="alert('Questa pagina mostra posizione T, tipo, diametro e descrizione dell’utensile montato. Puoi lasciarla aperta mentre lavori a bordo macchina.')">?</button>
+  <div class="title" id="machineViewTitle">MACCHINA<small>CARICA · SCARICA · SOSTITUISCI</small></div>
+  <button class="help" onclick="alert('Scrivi la posizione, per esempio T20, e premi CARICA. Cerca l’utensile in tutta l’officina. Se è montato su un’altra macchina, premi SPOSTA QUI: la posizione di partenza diventa vuota automaticamente. Se il T è occupato scegli soltanto MAGAZZINO oppure USATI per il vecchio utensile.')">?</button>
+ </div>
+
+ <div class="machineQuickLoad">
+  <div class="machineQuickLoadTitle">CARICA UN UTENSILE</div>
+  <div class="machineQuickLoadRow">
+   <input id="machineQuickPosition" class="machineQuickPosition" placeholder="T18" inputmode="text" enterkeyhint="go" onkeydown="if(event.key==='Enter'){event.preventDefault();openQuickLoadFromPosition()}">
+   <button class="machineQuickLoadBtn" onclick="openQuickLoadFromPosition()">CARICA</button>
+  </div>
+  <div class="machineQuickHint">Se il T è occupato scegli dove mettere il vecchio utensile. Poi cerca il nuovo utensile anche sulle altre macchine.</div>
  </div>
 
  <div class="card">
-  <div class="machineViewIntro">Vista rapida completa da lasciare aperta mentre lavori.</div>
   <div id="machineViewCount" class="machineViewCount"></div>
-
   <div class="machineToolTable">
    <div class="machineToolHead">
-    <div>POSIZIONE</div>
-    <div>UTENSILE E DESCRIZIONE</div>
+    <div>POS.</div>
+    <div>UTENSILE</div>
+    <div>AZIONI</div>
    </div>
    <div id="machineViewRows"></div>
   </div>
  </div>
+ <button class="btn2" onclick="show('usedtools');renderUsedTools()">VEDI MAGAZZINO USATI</button>
 </section>
+
+<section id="usedtools" class="screen">
+ <div class="header">
+  <button class="back" onclick="goBack()">‹</button>
+  <div class="title">MAGAZZINO USATI<small>SEPARATO DAL MAGAZZINO NUOVO</small></div>
+  <button class="help" onclick="alert('Quando scarichi un utensile e scegli USATI, compare qui. L’usura parte dal 90% e può essere corretta in seguito. Per rimontarlo apri una macchina, premi CARICA e scegli USATI.')">?</button>
+ </div>
+ <div class="card">
+  <div class="usedTopActions">
+   <button id="usedTabActive" class="on" onclick="setUsedToolsTab('used')">USATI</button>
+   <button id="usedTabDiscarded" onclick="setUsedToolsTab('discarded')">SCARTATI</button>
+  </div>
+  <input id="usedToolSearch" class="search" placeholder="Fresa 12 · punta · descrizione" oninput="renderUsedTools()">
+  <div id="usedToolList" class="usedToolList"></div>
+ </div>
+</section>
+
+<div id="quickToolModal" class="quickModal" hidden>
+ <div class="quickModalPanel" role="dialog" aria-modal="true">
+  <div class="quickModalHead">
+   <div id="quickModalTitle" class="quickModalTitle">MOVIMENTO UTENSILE</div>
+   <button class="quickModalClose" onclick="closeQuickToolModal()" aria-label="Chiudi">×</button>
+  </div>
+  <div id="quickModalBody"></div>
+ </div>
+</div>
 
 <div id="toolToast" class="toolToast"></div>
 
@@ -1194,7 +1297,7 @@ select{text-align:center;font-size:15px}
 
 <section id="settings" class="screen">
  <div class="header"><button class="back" onclick="goBack()">‹</button><div class="title">MENU</div><button class="help">▤</button></div>
- <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v8.2 BETA</div></div><div class="note">Beta online: macchine, utensili, operatori e magazzino vengono sincronizzati tra i telefoni autorizzati. La Home è organizzata in cartelle; Scanner 3D e Righello/Calibro sono stati rimossi, mentre il Goniometro resta disponibile. La versione stabile v7.7 rimane separata.</div></div>
+ <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v8.3 BETA</div></div><div class="note">Beta online: macchine, carico/scarico rapido, utensili, operatori e magazzino vengono sincronizzati tra i telefoni autorizzati. La Home è organizzata in cartelle; Scanner 3D e Righello/Calibro sono stati rimossi, mentre il Goniometro resta disponibile. La versione stabile v7.7 rimane separata.</div></div>
  <div class="card"><h2>AZIONI</h2><button class="btn2" onclick="clearSettings()">PULISCI IMPOSTAZIONI</button></div>
 </section>
 
@@ -1224,6 +1327,8 @@ function show(id,options={}){
  if(id!=='goniometer'&&id!=='torch')stopCamera();
  if(id==='assistant')setTimeout(populateVoices,80);
  if(id==='inventory')window.renderInventory?.();
+ if(id==='machinesquick')renderQuickMachineChooser();
+ if(id==='usedtools')renderUsedTools();
 }
 
 function goBack(){
@@ -2124,7 +2229,8 @@ function loadToolManager(){
       updatedAt:String(tool.updatedAt||new Date().toISOString()),
       updatedByName:String(tool.updatedByName||''),
       updatedByUid:String(tool.updatedByUid||''),
-      inventoryItemId:String(tool.inventoryItemId||'')
+      inventoryItemId:String(tool.inventoryItemId||''),
+      wearPercent:Math.max(0,Math.min(100,Number(tool.wearPercent??90)))
      }))
    };
    window.toolManagerState=toolManagerState;
@@ -2190,6 +2296,291 @@ function openToolManager(focusSearch=false){
  },120);
 }
 
+
+function openQuickMachines(){
+ loadToolManager();
+ renderQuickMachineChooser();
+ show('machinesquick');
+}
+
+function renderQuickMachineChooser(){
+ const container=$('quickMachineList');
+ if(!container)return;
+ if(!toolManagerState.machines.length){
+  container.innerHTML='<div class="toolEmpty">Nessuna macchina registrata.<br>Apri GESTISCI NOMI MACCHINE e aggiungi la prima.</div>';
+  return;
+ }
+ container.innerHTML=toolManagerState.machines.map(machine=>{
+  const mounted=toolManagerState.tools.filter(tool=>tool.location===`machine:${machine.id}`).length;
+  return `<button class="quickMachineButton" onclick="openMachineToolView('${toolEscape(machine.id)}')"><div>🏭 ${toolEscape(machine.name)}<small>${mounted} utensili montati</small></div><span>›</span></button>`;
+ }).join('');
+}
+
+function normalizeMachinePosition(value){
+ let position=String(value||'').trim().toUpperCase().replace(/\s+/g,'');
+ if(/^\d+$/.test(position))position='T'+position;
+ return position;
+}
+
+function findMachineToolAtPosition(machineId,position){
+ const normalized=normalizeMachinePosition(position);
+ return toolManagerState.tools.find(tool=>tool.location===`machine:${machineId}`&&normalizeMachinePosition(tool.position)===normalized)||null;
+}
+
+let quickMoveState={mode:'',toolId:'',machineId:'',position:'',oldDestination:'used',source:'all'};
+let usedToolsTab='used';
+
+function closeQuickToolModal(){
+ const modal=$('quickToolModal');
+ if(modal)modal.hidden=true;
+}
+
+function showQuickToolModal(title,body){
+ if($('quickModalTitle'))$('quickModalTitle').textContent=title;
+ if($('quickModalBody'))$('quickModalBody').innerHTML=body;
+ const modal=$('quickToolModal');
+ if(modal)modal.hidden=false;
+}
+
+function toolQuickTitle(tool){
+ const diameter=Number(tool?.diameter);
+ const diameterText=Number.isFinite(diameter)&&diameter>0?` Ø${toolFormatDiameter(diameter)}`:'';
+ return `${tool?.type||'UTENSILE'}${diameterText}`;
+}
+
+function startMachineUnload(toolId){
+ const tool=toolManagerState.tools.find(item=>item.id===toolId);
+ if(!tool)return showToolToast('Utensile non trovato');
+ quickMoveState={mode:'unload',toolId,machineId:activeToolMachineId,position:tool.position||'',oldDestination:'used',source:'all'};
+ renderQuickDestination(tool);
+}
+
+function startMachineReplace(toolId){
+ const tool=toolManagerState.tools.find(item=>item.id===toolId);
+ if(!tool)return showToolToast('Utensile non trovato');
+ quickMoveState={mode:'replace',toolId,machineId:activeToolMachineId,position:normalizeMachinePosition(tool.position),oldDestination:'used',source:'all'};
+ renderQuickDestination(tool);
+}
+
+function renderQuickDestination(tool){
+ showQuickToolModal('SCARICA',`
+  <div class="quickDestinationQuestion">Dove metti l’utensile?</div>
+  <div class="quickDestinationTool">${toolEscape(tool.position||'—')} · ${toolEscape(toolQuickTitle(tool))}</div>
+  <div class="quickDestinationGrid">
+   <button class="quickDestinationBtn storage" onclick="chooseQuickDestination('storage')">📦<br>MAGAZZINO<br><small>NUOVO</small></button>
+   <button class="quickDestinationBtn used" onclick="chooseQuickDestination('used')">🧰<br>USATI<br><small>90%</small></button>
+  </div>
+ `);
+}
+
+async function chooseQuickDestination(destination){
+ quickMoveState.oldDestination=destination;
+ if(quickMoveState.mode==='unload'){
+  if(!window.quickUnloadTool)return showToolToast('Sincronizzazione non pronta');
+  await window.quickUnloadTool(quickMoveState.toolId,destination);
+  return;
+ }
+ quickMoveState.source='all';
+ renderQuickPicker();
+}
+
+function openQuickLoadFromPosition(){
+ const input=$('machineQuickPosition');
+ const position=normalizeMachinePosition(input?.value);
+ if(!position){showToolToast('Scrivi la posizione, per esempio T18');input?.focus();return}
+ if(!activeToolMachineId){showToolToast('Macchina non selezionata');return}
+ if(input)input.value=position;
+ const occupied=findMachineToolAtPosition(activeToolMachineId,position);
+ if(occupied){startMachineReplace(occupied.id);return}
+ quickMoveState={mode:'load',toolId:'',machineId:activeToolMachineId,position,oldDestination:'used',source:'all'};
+ renderQuickPicker();
+}
+
+function quickInventoryItemTitle(item){
+ const diameter=Number(item?.diameter);
+ const diameterText=Number.isFinite(diameter)&&diameter>0?` Ø${toolFormatDiameter(diameter)}`:'';
+ return `${item?.category||'UTENSILE'}${diameterText}${item?.code?' · '+item.code:''}`;
+}
+
+function quickSearchText(...values){
+ return values.join(' ').toLocaleLowerCase('it').replaceAll(',','.').trim();
+}
+
+function renderQuickPicker(){
+ const machine=toolManagerState.machines.find(item=>item.id===quickMoveState.machineId);
+ showQuickToolModal('CERCA NELL’OFFICINA',`
+  <div class="quickDestinationTool">${toolEscape(machine?.name||'MACCHINA')} · ${toolEscape(quickMoveState.position)}</div>
+  <div class="quickPickerAllHint">Cerca nel magazzino nuovo, nel magazzino usati e su tutte le macchine.</div>
+  <input id="quickPickerSearch" class="quickPickerSearch" placeholder="Fresa 63 · punta 12 · codice" oninput="renderQuickPickerList()" autofocus>
+  <div id="quickPickerList" class="quickPickerList"></div>
+ `);
+ renderQuickPickerList();
+ setTimeout(()=>$('quickPickerSearch')?.focus(),80);
+}
+
+function renderQuickPickerList(){
+ const list=$('quickPickerList');
+ if(!list)return;
+
+ const search=quickSearchText($('quickPickerSearch')?.value||'');
+ const entries=[];
+
+ // 1) Utensili già montati su una macchina.
+ toolManagerState.tools
+  .filter(tool=>String(tool.location||'').startsWith('machine:'))
+  .filter(tool=>tool.id!==quickMoveState.toolId)
+  .forEach(tool=>{
+   const sourceMachineId=String(tool.location||'').slice(8);
+   const sourceMachine=toolManagerState.machines.find(machine=>machine.id===sourceMachineId);
+   const sourceName=sourceMachine?.name||'MACCHINA';
+   const sourcePosition=normalizeMachinePosition(tool.position)||'POSIZIONE NON INDICATA';
+   const haystack=quickSearchText(tool.type,tool.diameter,tool.description,sourceName,sourcePosition);
+   if(search&&!haystack.includes(search))return;
+
+   entries.push({
+    priority:0,
+    html:`<div class="quickPickerItem">
+      <div>
+       <div class="quickPickerItemTitle">${toolEscape(toolQuickTitle(tool))}</div>
+       <div class="quickPickerItemMeta quickPickerMachineSource">🏭 ${toolEscape(sourceName)} · ${toolEscape(sourcePosition)}</div>
+       ${tool.description?`<div class="quickPickerItemMeta">${toolEscape(tool.description)}</div>`:''}
+      </div>
+      <button class="quickPickerMount quickPickerMove" onclick="mountQuickMachineTool('${toolEscape(tool.id)}')">SPOSTA QUI</button>
+     </div>`
+   });
+  });
+
+ // 2) Magazzino usati.
+ toolManagerState.tools
+  .filter(tool=>tool.location==='used')
+  .forEach(tool=>{
+   const wear=Math.max(0,Math.min(100,Number(tool.wearPercent??90)));
+   const haystack=quickSearchText(tool.type,tool.diameter,tool.description,'usati',wear);
+   if(search&&!haystack.includes(search))return;
+
+   entries.push({
+    priority:1,
+    html:`<div class="quickPickerItem">
+      <div>
+       <div class="quickPickerItemTitle">${toolEscape(toolQuickTitle(tool))}</div>
+       <div class="quickPickerItemMeta quickPickerUsedSource">🧰 MAGAZZINO USATI · ${toolEscape(wear)}%</div>
+       ${tool.description?`<div class="quickPickerItemMeta">${toolEscape(tool.description)}</div>`:''}
+      </div>
+      <button class="quickPickerMount" onclick="mountQuickUsedTool('${toolEscape(tool.id)}')">MONTA</button>
+     </div>`
+   });
+  });
+
+ // 3) Magazzino nuovo.
+ const inventory=window.getQuickInventoryItems?.()||[];
+ inventory
+  .filter(item=>Number(item.quantity||0)>0)
+  .filter(item=>{
+   const category=String(item.category||'').toUpperCase();
+   return !category.includes('INSERTO')&&category!=='PORTAINSERTI';
+  })
+  .forEach(item=>{
+   const haystack=quickSearchText(
+    item.category,item.code,item.diameter,item.description,item.location,'magazzino nuovo'
+   );
+   if(search&&!haystack.includes(search))return;
+
+   entries.push({
+    priority:2,
+    html:`<div class="quickPickerItem">
+      <div>
+       <div class="quickPickerItemTitle">${toolEscape(quickInventoryItemTitle(item))}</div>
+       <div class="quickPickerItemMeta quickPickerNewSource">📦 MAGAZZINO NUOVO · ${toolEscape(item.quantity)} ${toolEscape(item.unit||'PEZZI')}</div>
+       ${item.location?`<div class="quickPickerItemMeta">${toolEscape(item.location)}</div>`:''}
+       ${item.description?`<div class="quickPickerItemMeta">${toolEscape(item.description)}</div>`:''}
+      </div>
+      <button class="quickPickerMount" onclick="mountQuickInventoryItem('${toolEscape(item.id)}')">MONTA</button>
+     </div>`
+   });
+  });
+
+ entries.sort((a,b)=>a.priority-b.priority);
+
+ if(!entries.length){
+  list.innerHTML=search
+   ?'<div class="quickPickerEmpty">Nessun utensile trovato in officina.<br>Controlla diametro, descrizione o codice.</div>'
+   :'<div class="quickPickerEmpty">Scrivi cosa cerchi, per esempio FRESA 63.</div>';
+  return;
+ }
+
+ list.innerHTML=entries.slice(0,60).map(entry=>entry.html).join('');
+}
+
+async function mountQuickInventoryItem(inventoryId){
+ if(!window.quickMountInventoryItem)return showToolToast('Sincronizzazione non pronta');
+ await window.quickMountInventoryItem({
+  inventoryId,
+  machineId:quickMoveState.machineId,
+  position:quickMoveState.position,
+  replaceToolId:quickMoveState.toolId,
+  oldDestination:quickMoveState.oldDestination
+ });
+}
+
+async function mountQuickUsedTool(toolId){
+ if(!window.quickMountUsedTool)return showToolToast('Sincronizzazione non pronta');
+ await window.quickMountUsedTool({
+  toolId,
+  machineId:quickMoveState.machineId,
+  position:quickMoveState.position,
+  replaceToolId:quickMoveState.toolId,
+  oldDestination:quickMoveState.oldDestination
+ });
+}
+
+async function mountQuickMachineTool(toolId){
+ if(!window.quickMoveMachineTool)return showToolToast('Sincronizzazione non pronta');
+ await window.quickMoveMachineTool({
+  toolId,
+  machineId:quickMoveState.machineId,
+  position:quickMoveState.position,
+  replaceToolId:quickMoveState.toolId,
+  oldDestination:quickMoveState.oldDestination
+ });
+}
+
+function setUsedToolsTab(tab){
+ usedToolsTab=tab==='discarded'?'discarded':'used';
+ renderUsedTools();
+}
+
+function renderUsedTools(){
+ $('usedTabActive')?.classList.toggle('on',usedToolsTab==='used');
+ $('usedTabDiscarded')?.classList.toggle('on',usedToolsTab==='discarded');
+ const list=$('usedToolList');if(!list)return;
+ const search=String($('usedToolSearch')?.value||'').toLocaleLowerCase('it').replace(',','.').trim();
+ const tools=toolManagerState.tools.filter(tool=>tool.location===usedToolsTab).filter(tool=>[tool.type,tool.diameter,tool.description].join(' ').toLocaleLowerCase('it').replace(',','.').includes(search));
+ if(!tools.length){list.innerHTML=`<div class="toolEmpty">Nessun utensile ${usedToolsTab==='used'?'usato':'scartato'}.</div>`;return}
+ list.innerHTML=tools.map(tool=>{
+  const wear=Math.max(0,Math.min(100,Number(tool.wearPercent??90)));
+  if(usedToolsTab==='discarded')return `<div class="usedToolCard"><div class="usedToolTitle">${toolEscape(toolQuickTitle(tool))}</div>${tool.description?`<div class="usedToolMeta">${toolEscape(tool.description)}</div>`:''}<div class="usedToolActions"><button class="usedRestore" onclick="restoreDiscardedTool('${toolEscape(tool.id)}')">RIPORTA IN USATI</button><button class="usedDiscard" onclick="deleteWorkshopTool('${toolEscape(tool.id)}')">ELIMINA STORICO</button></div></div>`;
+  return `<div class="usedToolCard"><div class="usedToolTitle">${toolEscape(toolQuickTitle(tool))}</div>${tool.description?`<div class="usedToolMeta">${toolEscape(tool.description)}</div>`:''}<div class="usedWearRow"><select data-used-wear="${toolEscape(tool.id)}"><option value="90"${wear===90?' selected':''}>90% · QUASI NUOVO</option><option value="75"${wear===75?' selected':''}>75% · BUONO</option><option value="50"${wear===50?' selected':''}>50% · USATO</option><option value="25"${wear===25?' selected':''}>25% · MOLTO USATO</option></select><button onclick="updateUsedToolWear('${toolEscape(tool.id)}')">SALVA</button></div><div class="usedToolActions"><button class="usedRestore" onclick="openQuickMachines()">MONTA SU MACCHINA</button><button class="usedDiscard" onclick="discardUsedTool('${toolEscape(tool.id)}')">SCARTA</button></div></div>`;
+ }).join('');
+}
+
+function updateUsedToolWear(id){
+ const tool=toolManagerState.tools.find(item=>item.id===id);if(!tool)return;
+ const select=document.querySelector(`[data-used-wear="${id}"]`);
+ tool.wearPercent=Math.max(0,Math.min(100,Number(select?.value||90)));
+ tool.updatedAt=new Date().toISOString();window.betaCloud?.decorateTool(tool);saveToolManager();window.betaCloud?.upsertTool(tool,'Usura utensile aggiornata');renderUsedTools();showToolToast(`Usura salvata: ${tool.wearPercent}%`);
+}
+
+function discardUsedTool(id){
+ const tool=toolManagerState.tools.find(item=>item.id===id);if(!tool)return;
+ if(!confirm(`Spostare ${toolQuickTitle(tool)} negli SCARTATI?`))return;
+ tool.location='discarded';tool.position='';tool.updatedAt=new Date().toISOString();window.betaCloud?.decorateTool(tool);saveToolManager();window.betaCloud?.upsertTool(tool,'Utensile scartato');renderUsedTools();showToolToast('Utensile spostato negli scartati');
+}
+
+function restoreDiscardedTool(id){
+ const tool=toolManagerState.tools.find(item=>item.id===id);if(!tool)return;
+ tool.location='used';tool.position='';tool.wearPercent=Math.max(0,Math.min(100,Number(tool.wearPercent??50)));tool.updatedAt=new Date().toISOString();window.betaCloud?.decorateTool(tool);saveToolManager();window.betaCloud?.upsertTool(tool,'Utensile ripristinato negli usati');renderUsedTools();showToolToast('Utensile riportato negli usati');
+}
+
 function toolLocationOptions(selected='storage',includeAll=false){
  const options=[];
 
@@ -2198,7 +2589,9 @@ function toolLocationOptions(selected='storage',includeAll=false){
  }
 
  options.push(
-  `<option value="storage"${selected==='storage'?' selected':''}>ARMADIO / POSTO UTENSILI</option>`
+  `<option value="storage"${selected==='storage'?' selected':''}>ARMADIO / POSTO UTENSILI</option>`,
+  `<option value="used"${selected==='used'?' selected':''}>MAGAZZINO USATI</option>`,
+  `<option value="discarded"${selected==='discarded'?' selected':''}>SCARTATI</option>`
  );
 
  toolManagerState.machines.forEach(machine=>{
@@ -2218,6 +2611,8 @@ function toolLocationOptions(selected='storage',includeAll=false){
 
 function toolLocationName(location){
  if(location==='storage')return 'ARMADIO / POSTO UTENSILI';
+ if(location==='used')return 'MAGAZZINO USATI';
+ if(location==='discarded')return 'SCARTATI';
  if(location==='sharpening')return 'IN AFFILATURA';
  if(location==='replace')return 'DA SOSTITUIRE / ROTTO';
 
@@ -2340,50 +2735,22 @@ function renderMachineToolView(){
  const count=$('machineViewCount');
  const rows=$('machineViewRows');
  if(!title||!count||!rows)return;
-
  const machine=toolManagerState.machines.find(item=>item.id===activeToolMachineId);
-
  if(!machine){
-  title.innerHTML='TABELLA MACCHINA<small>MACCHINA NON TROVATA</small>';
+  title.innerHTML='MACCHINA<small>MACCHINA NON TROVATA</small>';
   count.textContent='';
   rows.innerHTML='<div class="machineToolEmpty">La macchina non è più disponibile.</div>';
   return;
  }
-
- title.innerHTML=`${toolEscape(machine.name)}<small>UTENSILI MONTATI</small>`;
-
- const tools=toolManagerState.tools
-  .filter(tool=>tool.location===`machine:${machine.id}`)
-  .slice()
-  .sort((a,b)=>{
-   const positionCompare=toolPositionSortValue(a.position)-toolPositionSortValue(b.position);
-   if(positionCompare)return positionCompare;
-   return String(a.type||'').localeCompare(String(b.type||''),'it');
-  });
-
+ title.innerHTML=`${toolEscape(machine.name)}<small>CARICA · SCARICA · SOSTITUISCI</small>`;
+ const tools=toolManagerState.tools.filter(tool=>tool.location===`machine:${machine.id}`).slice().sort((a,b)=>{const positionCompare=toolPositionSortValue(a.position)-toolPositionSortValue(b.position);if(positionCompare)return positionCompare;return String(a.type||'').localeCompare(String(b.type||''),'it')});
  count.textContent=`${tools.length} UTENSIL${tools.length===1?'E':'I'} MONTAT${tools.length===1?'O':'I'}`;
-
- if(!tools.length){
-  rows.innerHTML='<div class="machineToolEmpty">Nessun utensile risulta montato su questa macchina.</div>';
-  return;
- }
-
+ if(!tools.length){rows.innerHTML='<div class="machineToolEmpty">Nessun utensile montato.<br>Scrivi una posizione qui sopra e premi CARICA.</div>';return}
  rows.innerHTML=tools.map(tool=>{
   const diameter=Number(tool.diameter);
-  const diameterText=Number.isFinite(diameter)&&diameter>0
-   ?` Ø${toolFormatDiameter(diameter)}`
-   :'';
+  const diameterText=Number.isFinite(diameter)&&diameter>0?` Ø${toolFormatDiameter(diameter)}`:'';
   const description=String(tool.description||'').trim();
-
-  return `
-   <div class="machineToolRow">
-    <div class="machineToolPosition">${toolEscape(tool.position||'—')}</div>
-    <div class="machineToolType">
-     <div class="machineToolMain">${toolEscape(tool.type||'ALTRO')}${toolEscape(diameterText)}</div>
-     ${description?`<div class="machineToolDescription">${toolEscape(description)}</div>`:''}
-    </div>
-   </div>
-  `;
+  return `<div class="machineToolRow"><div class="machineToolPosition">${toolEscape(normalizeMachinePosition(tool.position)||'—')}</div><div class="machineToolType"><div class="machineToolMain">${toolEscape(tool.type||'ALTRO')}${toolEscape(diameterText)}</div>${description?`<div class="machineToolDescription">${toolEscape(description)}</div>`:''}</div><div class="machineToolActions"><button class="machineToolAction replace" onclick="startMachineReplace('${toolEscape(tool.id)}')">SOSTITUISCI</button><button class="machineToolAction unload" onclick="startMachineUnload('${toolEscape(tool.id)}')">SCARICA</button></div></div>`;
  }).join('');
 }
 
@@ -4316,6 +4683,212 @@ window.inventoryTakeStock=async id=>{
   if(result.next<=Number(result.item.minStock??2))notifyInventoryLow({...result.item,quantity:result.next});
  }catch(error){console.error(error);if(String(error?.message||'').includes('SCORTA_INSUFFICIENTE'))window.showToolToast?.('Scorta insufficiente');else window.showToolToast?.(firebaseErrorItalian(error))}
 };
+
+window.getQuickInventoryItems=()=>inventoryItems.map(item=>({...item}));
+
+function quickToolDocPayload(tool){
+ const operator=getOperator();
+ return {type:String(tool.type||'ALTRO').toUpperCase(),diameter:String(tool.diameter??''),description:String(tool.description||''),location:String(tool.location||'storage'),position:String(tool.position||''),inventoryItemId:String(tool.inventoryItemId||''),wearPercent:Math.max(0,Math.min(100,Number(tool.wearPercent??90))),updatedAt:nowIso(),updatedAtServer:serverTimestamp(),updatedByUid:operator.uid||'',updatedByName:operator.name||operator.email||'Utente'};
+}
+
+async function quickReadInventory(transaction,id,cache){
+ if(!id)return null;
+ if(cache.has(id))return cache.get(id);
+ const ref=officeDoc('inventory',id);const snap=await transaction.get(ref);const record={ref,snap,data:snap.exists()?snap.data():null};cache.set(id,record);return record;
+}
+
+window.quickUnloadTool=async(toolId,destination)=>{
+ if(!currentUser){window.showToolToast?.('Accesso richiesto');return false}
+ const tool=(window.toolManagerState?.tools||[]).find(item=>item.id===toolId);if(!tool){window.showToolToast?.('Utensile non trovato');return false}
+ const machine=(window.toolManagerState?.machines||[]).find(item=>tool.location===`machine:${item.id}`);const operator=getOperator();
+ try{
+  let returned=null;
+  await runTransaction(db,async transaction=>{
+   const cache=new Map();
+   if(destination==='storage'&&tool.inventoryItemId)returned=await quickReadInventory(transaction,tool.inventoryItemId,cache);
+   if(destination==='storage'&&returned?.data){
+    const next=Number(returned.data.quantity||0)+1;
+    transaction.set(returned.ref,{quantity:next,updatedAt:serverTimestamp(),updatedAtIso:nowIso(),updatedByUid:operator.uid||'',updatedByName:operator.name||operator.email||'Utente'},{merge:true});
+    transaction.delete(officeDoc('tools',tool.id));returned.next=next;
+   }else{
+    const updated={...tool,location:destination==='storage'?'storage':'used',position:'',wearPercent:destination==='used'?Math.max(0,Math.min(100,Number(tool.wearPercent??90))):Number(tool.wearPercent??90)};
+    transaction.set(officeDoc('tools',tool.id),quickToolDocPayload(updated),{merge:true});
+   }
+  });
+  if(returned?.data)await logInventoryMovement({id:tool.inventoryItemId,...returned.data},'RIENTRO DA MACCHINA',1,returned.next,'MAGAZZINO');
+  await logActivity('Utensile scaricato',`${tool.type||'UTENSILE'} Ø${tool.diameter||''} · ${machine?.name||'MACCHINA'} ${tool.position||''} → ${destination==='storage'?'MAGAZZINO':'USATI'}`);
+  window.closeQuickToolModal?.();window.showToolToast?.(`Scaricato in ${destination==='storage'?'MAGAZZINO':'USATI'}`);return true;
+ }catch(error){console.error(error);window.showToolToast?.(firebaseErrorItalian(error));return false}
+};
+
+window.quickMountInventoryItem=async({inventoryId,machineId,position,replaceToolId='',oldDestination='used'})=>{
+ if(!currentUser){window.showToolToast?.('Accesso richiesto');return false}
+ const item=inventoryItems.find(row=>row.id===inventoryId);const machine=(window.toolManagerState?.machines||[]).find(row=>row.id===machineId);const oldTool=(window.toolManagerState?.tools||[]).find(row=>row.id===replaceToolId);
+ if(!item||!machine){window.showToolToast?.('Dati non trovati');return false}
+ const operator=getOperator();const newToolId=makeInventoryId('tool');let newNext=0;let returned=null;
+ try{
+  await runTransaction(db,async transaction=>{
+   const cache=new Map();const selected=await quickReadInventory(transaction,inventoryId,cache);if(!selected?.data)throw new Error('ARTICOLO_NON_TROVATO');
+   if(oldTool&&oldDestination==='storage'&&oldTool.inventoryItemId)returned=await quickReadInventory(transaction,oldTool.inventoryItemId,cache);
+   const selectedCurrent=Number(selected.data.quantity||0);if(selectedCurrent<1)throw new Error('SCORTA_INSUFFICIENTE');
+   const sameReturn=Boolean(returned&&oldTool.inventoryItemId===inventoryId);newNext=selectedCurrent-1+(sameReturn?1:0);
+   transaction.set(selected.ref,{quantity:newNext,updatedAt:serverTimestamp(),updatedAtIso:nowIso(),updatedByUid:operator.uid||'',updatedByName:operator.name||operator.email||'Utente'},{merge:true});
+   if(returned?.data&&!sameReturn){returned.next=Number(returned.data.quantity||0)+1;transaction.set(returned.ref,{quantity:returned.next,updatedAt:serverTimestamp(),updatedAtIso:nowIso(),updatedByUid:operator.uid||'',updatedByName:operator.name||operator.email||'Utente'},{merge:true})}
+   if(returned?.data&&sameReturn)returned.next=newNext;
+   if(oldTool){
+    if(oldDestination==='storage'&&returned?.data)transaction.delete(officeDoc('tools',oldTool.id));
+    else transaction.set(officeDoc('tools',oldTool.id),quickToolDocPayload({...oldTool,location:oldDestination==='storage'?'storage':'used',position:'',wearPercent:oldDestination==='used'?Math.max(0,Math.min(100,Number(oldTool.wearPercent??90))):Number(oldTool.wearPercent??90)}),{merge:true});
+   }
+   const description=[String(selected.data.code||''),String(selected.data.description||'')].filter(Boolean).join(' · ');
+   transaction.set(officeDoc('tools',newToolId),quickToolDocPayload({type:inventoryToolType(selected.data),diameter:String(selected.data.diameter||''),description,location:`machine:${machineId}`,position:String(position||''),inventoryItemId:inventoryId,wearPercent:100}));
+  });
+  await logInventoryMovement(item,'PRELIEVO E MONTAGGIO',-1,newNext,`${machine.name} · ${position}`);
+  if(returned?.data&&oldTool)await logInventoryMovement({id:oldTool.inventoryItemId,...returned.data},'RIENTRO DA MACCHINA',1,returned.next,'MAGAZZINO');
+  await logActivity(oldTool?'Utensile sostituito':'Utensile montato',`${machine.name} · ${position} · ${inventoryTitle(item)}`);
+  window.closeQuickToolModal?.();window.showToolToast?.(`${oldTool?'Sostituito':'Montato'} su ${machine.name} · ${position}`);if(newNext<=Number(item.minStock??2))notifyInventoryLow({...item,quantity:newNext});return true;
+ }catch(error){console.error(error);if(String(error?.message||'').includes('SCORTA_INSUFFICIENTE'))window.showToolToast?.('Scorta insufficiente');else window.showToolToast?.(firebaseErrorItalian(error));return false}
+};
+
+
+window.quickMoveMachineTool=async({toolId,machineId,position,replaceToolId='',oldDestination='used'})=>{
+ if(!currentUser){window.showToolToast?.('Accesso richiesto');return false}
+
+ const selectedLocal=(window.toolManagerState?.tools||[]).find(row=>row.id===toolId);
+ const destinationMachine=(window.toolManagerState?.machines||[]).find(row=>row.id===machineId);
+ const oldToolLocal=(window.toolManagerState?.tools||[]).find(row=>row.id===replaceToolId);
+
+ if(!selectedLocal||!String(selectedLocal.location||'').startsWith('machine:')||!destinationMachine){
+  window.showToolToast?.('Utensile montato non disponibile');
+  return false;
+ }
+
+ if(selectedLocal.id===oldToolLocal?.id){
+  window.showToolToast?.('Questo utensile è già nella posizione scelta');
+  return false;
+ }
+
+ const sourceMachineId=String(selectedLocal.location||'').slice(8);
+ const sourceMachine=(window.toolManagerState?.machines||[]).find(row=>row.id===sourceMachineId);
+ const sourcePosition=normalizeMachinePosition(selectedLocal.position);
+ const destinationPosition=normalizeMachinePosition(position);
+
+ if(sourceMachineId===machineId&&sourcePosition===destinationPosition){
+  window.showToolToast?.('Questo utensile è già qui');
+  return false;
+ }
+
+ const operator=getOperator();
+ let returned=null;
+ let selectedData=null;
+ let oldToolData=null;
+
+ try{
+  await runTransaction(db,async transaction=>{
+   const selectedRef=officeDoc('tools',toolId);
+   const selectedSnap=await transaction.get(selectedRef);
+   if(!selectedSnap.exists())throw new Error('UTENSILE_NON_TROVATO');
+
+   selectedData={id:toolId,...selectedSnap.data()};
+   if(!String(selectedData.location||'').startsWith('machine:')){
+    throw new Error('UTENSILE_NON_PIU_MONTATO');
+   }
+
+   let oldRef=null;
+   if(replaceToolId){
+    oldRef=officeDoc('tools',replaceToolId);
+    const oldSnap=await transaction.get(oldRef);
+    if(oldSnap.exists())oldToolData={id:replaceToolId,...oldSnap.data()};
+   }
+
+   const cache=new Map();
+   if(oldToolData&&oldDestination==='storage'&&oldToolData.inventoryItemId){
+    returned=await quickReadInventory(transaction,oldToolData.inventoryItemId,cache);
+   }
+
+   // Libera la posizione di destinazione spostando il vecchio utensile.
+   if(oldToolData&&oldRef){
+    if(oldDestination==='storage'&&returned?.data){
+     returned.next=Number(returned.data.quantity||0)+1;
+     transaction.set(returned.ref,{
+      quantity:returned.next,
+      updatedAt:serverTimestamp(),
+      updatedAtIso:nowIso(),
+      updatedByUid:operator.uid||'',
+      updatedByName:operator.name||operator.email||'Utente'
+     },{merge:true});
+     transaction.delete(oldRef);
+    }else{
+     transaction.set(oldRef,quickToolDocPayload({
+      ...oldToolData,
+      location:oldDestination==='storage'?'storage':'used',
+      position:'',
+      wearPercent:oldDestination==='used'
+       ?Math.max(0,Math.min(100,Number(oldToolData.wearPercent??90)))
+       :Number(oldToolData.wearPercent??90)
+     }),{merge:true});
+    }
+   }
+
+   // Lo stesso documento utensile viene spostato: la posizione di partenza resta vuota.
+   transaction.set(selectedRef,quickToolDocPayload({
+    ...selectedData,
+    location:`machine:${machineId}`,
+    position:destinationPosition
+   }),{merge:true});
+  });
+
+  if(returned?.data&&oldToolData){
+   await logInventoryMovement(
+    {id:oldToolData.inventoryItemId,...returned.data},
+    'RIENTRO DA MACCHINA',
+    1,
+    returned.next,
+    'MAGAZZINO'
+   );
+  }
+
+  await logActivity(
+   oldToolData?'Utensile trasferito e sostituito':'Utensile trasferito tra macchine',
+   `${sourceMachine?.name||'MACCHINA'} · ${sourcePosition||'—'} → ${destinationMachine.name} · ${destinationPosition}`
+  );
+
+  window.closeQuickToolModal?.();
+  window.showToolToast?.(
+   `${sourceMachine?.name||'Macchina'} ${sourcePosition||''} → ${destinationMachine.name} ${destinationPosition}`
+  );
+  return true;
+ }catch(error){
+  console.error(error);
+  const message=String(error?.message||'');
+  if(message.includes('UTENSILE_NON_PIU_MONTATO')){
+   window.showToolToast?.('L’utensile è già stato spostato da un collega');
+  }else if(message.includes('UTENSILE_NON_TROVATO')){
+   window.showToolToast?.('Utensile non trovato');
+  }else{
+   window.showToolToast?.(firebaseErrorItalian(error));
+  }
+  return false;
+ }
+};
+
+window.quickMountUsedTool=async({toolId,machineId,position,replaceToolId='',oldDestination='used'})=>{
+ if(!currentUser){window.showToolToast?.('Accesso richiesto');return false}
+ const selected=(window.toolManagerState?.tools||[]).find(row=>row.id===toolId&&row.location==='used');const machine=(window.toolManagerState?.machines||[]).find(row=>row.id===machineId);const oldTool=(window.toolManagerState?.tools||[]).find(row=>row.id===replaceToolId);
+ if(!selected||!machine){window.showToolToast?.('Utensile usato non disponibile');return false}
+ const operator=getOperator();let returned=null;
+ try{
+  await runTransaction(db,async transaction=>{
+   const cache=new Map();if(oldTool&&oldDestination==='storage'&&oldTool.inventoryItemId)returned=await quickReadInventory(transaction,oldTool.inventoryItemId,cache);
+   if(returned?.data){returned.next=Number(returned.data.quantity||0)+1;transaction.set(returned.ref,{quantity:returned.next,updatedAt:serverTimestamp(),updatedAtIso:nowIso(),updatedByUid:operator.uid||'',updatedByName:operator.name||operator.email||'Utente'},{merge:true})}
+   if(oldTool){if(oldDestination==='storage'&&returned?.data)transaction.delete(officeDoc('tools',oldTool.id));else transaction.set(officeDoc('tools',oldTool.id),quickToolDocPayload({...oldTool,location:oldDestination==='storage'?'storage':'used',position:'',wearPercent:oldDestination==='used'?Math.max(0,Math.min(100,Number(oldTool.wearPercent??90))):Number(oldTool.wearPercent??90)}),{merge:true})}
+   transaction.set(officeDoc('tools',selected.id),quickToolDocPayload({...selected,location:`machine:${machineId}`,position:String(position||'')}),{merge:true});
+  });
+  if(returned?.data&&oldTool)await logInventoryMovement({id:oldTool.inventoryItemId,...returned.data},'RIENTRO DA MACCHINA',1,returned.next,'MAGAZZINO');
+  await logActivity(oldTool?'Utensile sostituito con usato':'Utensile usato montato',`${machine.name} · ${position} · ${selected.type||'UTENSILE'} Ø${selected.diameter||''}`);
+  window.closeQuickToolModal?.();window.showToolToast?.(`${oldTool?'Sostituito':'Montato'} su ${machine.name} · ${position}`);return true;
+ }catch(error){console.error(error);window.showToolToast?.(firebaseErrorItalian(error));return false}
+};
+
 window.deleteInventoryItem=async id=>{
  const item=inventoryItems.find(row=>row.id===id);if(!item)return;
  if(!confirm(`Eliminare ${inventoryTitle(item)} dal magazzino?`))return;
@@ -4332,6 +4905,8 @@ function refreshWorkshopViews(){
  window.renderToolMachineList?.();
  window.renderToolLocationOptions?.();
  window.renderWorkshopTools?.();
+ window.renderQuickMachineChooser?.();
+ window.renderUsedTools?.();
  if(window.activeToolMachineId)window.renderMachineToolView?.();
  window.renderInventory?.();
 }
@@ -4352,7 +4927,7 @@ function startListeners(){
  unsubs.push(onSnapshot(officeCollection('tools'),snapshot=>{
   toolReady=true;cloudToolCount=snapshot.size;
   window.toolManagerState.tools=snapshot.docs.map(item=>{
-   const data=item.data();return {id:item.id,type:String(data.type||'ALTRO').toUpperCase(),diameter:String(data.diameter??''),description:String(data.description||''),location:String(data.location||'storage'),position:String(data.position||''),updatedAt:String(data.updatedAt||data.updatedAtIso||nowIso()),updatedByName:String(data.updatedByName||''),updatedByUid:String(data.updatedByUid||''),inventoryItemId:String(data.inventoryItemId||'')};
+   const data=item.data();return {id:item.id,type:String(data.type||'ALTRO').toUpperCase(),diameter:String(data.diameter??''),description:String(data.description||''),location:String(data.location||'storage'),position:String(data.position||''),updatedAt:String(data.updatedAt||data.updatedAtIso||nowIso()),updatedByName:String(data.updatedByName||''),updatedByUid:String(data.updatedByUid||''),inventoryItemId:String(data.inventoryItemId||''),wearPercent:Math.max(0,Math.min(100,Number(data.wearPercent??90)))};
   });
   refreshWorkshopViews();updateImportOffer();setSyncStatus(navigator.onLine?'ONLINE · DATI CONDIVISI':'OFFLINE · MODIFICHE IN ATTESA',navigator.onLine?'online':'offline');
  },error=>{console.error(error);setSyncStatus('ERRORE SINCRONIZZAZIONE','offline');window.showToolToast?.(firebaseErrorItalian(error))}));
@@ -4415,7 +4990,7 @@ async function deleteMachine(id,machine,movedTools=[]){
  if(!currentUser)return;
  try{const batch=writeBatch(db);batch.delete(officeDoc('machines',id));movedTools.forEach(tool=>batch.set(officeDoc('tools',tool.id),cloudTool(tool),{merge:true}));await batch.commit();await logActivity('Macchina eliminata',`${machine?.name||id} · ${movedTools.length} utensili spostati in armadio`)}catch(error){console.error(error);window.showToolToast?.(firebaseErrorItalian(error))}
 }
-function cloudTool(tool){decorateTool(tool);return {type:String(tool.type||'ALTRO'),diameter:String(tool.diameter??''),description:String(tool.description||''),location:String(tool.location||'storage'),position:String(tool.position||''),updatedAt:String(tool.updatedAt||nowIso()),updatedAtServer:serverTimestamp(),updatedByUid:String(tool.updatedByUid||''),updatedByName:String(tool.updatedByName||''),inventoryItemId:String(tool.inventoryItemId||'')}}
+function cloudTool(tool){decorateTool(tool);return {type:String(tool.type||'ALTRO'),diameter:String(tool.diameter??''),description:String(tool.description||''),location:String(tool.location||'storage'),position:String(tool.position||''),updatedAt:String(tool.updatedAt||nowIso()),updatedAtServer:serverTimestamp(),updatedByUid:String(tool.updatedByUid||''),updatedByName:String(tool.updatedByName||''),inventoryItemId:String(tool.inventoryItemId||''),wearPercent:Math.max(0,Math.min(100,Number(tool.wearPercent??90)))}}
 async function upsertTool(tool,action='Utensile aggiornato'){
  if(!currentUser)return;
  try{await setDoc(officeDoc('tools',tool.id),cloudTool(tool),{merge:true});await logActivity(action,`${tool.type||'UTENSILE'} Ø${tool.diameter||''} · ${window.toolLocationName?.(tool.location)||tool.location}${tool.position?' · '+tool.position:''}`)}catch(error){console.error(error);window.showToolToast?.(firebaseErrorItalian(error))}
