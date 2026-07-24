@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#050505">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>CNC Toolbox v8.4 Trasferimento Rapido</title>
+<title>CNC Toolbox v8.4.1 Trasferimento Rapido</title>
 <style>
 :root{--y:#ffc400;--y2:#dfa500;--b:#050505;--p:#141414;--p2:#0b0b0b;--l:#3e3e3e;--w:#fff;--g:#aaa;--ok:#68e36f;--err:#ff5b5b;--blue:#54baff}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -391,7 +391,7 @@ select{text-align:center;font-size:15px}
 .machineToolAction{min-height:40px;border-radius:8px;padding:5px 4px;font-size:11px;font-weight:1000;line-height:1.1}
 .machineToolAction.replace{border:0;background:var(--y);color:#050505}
 .machineToolAction.unload{border:2px solid var(--err);background:#1c0808;color:var(--err)}
-.quickModal{position:fixed;inset:0;z-index:4000;background:rgba(0,0,0,.88);display:flex;align-items:flex-end;justify-content:center;padding:12px}
+.quickModal{position:fixed;inset:0;z-index:4000;background:rgba(0,0,0,.88);display:flex;align-items:flex-end;justify-content:center;padding:12px}.quickModal[hidden]{display:none!important}
 .quickModalPanel{width:min(590px,100%);max-height:91vh;overflow:auto;border:2px solid var(--y);border-radius:17px 17px 10px 10px;background:#0d0d0d;padding:14px;box-shadow:0 -10px 40px rgba(0,0,0,.65)}
 .quickModalHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.quickModalTitle{color:var(--y);font-size:22px;font-weight:1000}.quickModalClose{width:44px;height:44px;border:2px solid #777;border-radius:999px;background:#111;color:#fff;font-size:23px;font-weight:1000}
 .quickDestinationQuestion{text-align:center;color:#fff;font-size:20px;font-weight:1000;line-height:1.35;margin:8px 0 14px}.quickDestinationTool{text-align:center;color:var(--y);font-size:17px;font-weight:900;margin-bottom:13px}
@@ -456,7 +456,7 @@ select{text-align:center;font-size:15px}
   <div>
    <h1>CNC <span>TOOLBOX</span></h1>
    <div class="sub">STRUMENTI PER L'OFFICINA CNC</div>
-   <div class="version">v8.4 · TRASFERIMENTO RAPIDO</div>
+   <div class="version">v8.4.1 · TRASFERIMENTO RAPIDO</div>
    <div class="betaSyncPill">
     <span id="betaHomeDot" class="betaSyncDot loading"></span>
     <span id="betaHomeStatus">COLLEGAMENTO…</span>
@@ -1162,7 +1162,7 @@ select{text-align:center;font-size:15px}
  </div>
 </section>
 
-<div id="quickToolModal" class="quickModal" hidden>
+<div id="quickToolModal" class="quickModal" hidden aria-hidden="true" onclick="if(event.target===this)closeQuickToolModal()">
  <div class="quickModalPanel" role="dialog" aria-modal="true">
   <div class="quickModalHead">
    <div id="quickModalTitle" class="quickModalTitle">MOVIMENTO UTENSILE</div>
@@ -2332,15 +2332,27 @@ let usedToolsTab='used';
 
 function closeQuickToolModal(){
  const modal=$('quickToolModal');
- if(modal)modal.hidden=true;
+ if(!modal)return;
+ modal.hidden=true;
+ modal.setAttribute('aria-hidden','true');
 }
 
 function showQuickToolModal(title,body){
  if($('quickModalTitle'))$('quickModalTitle').textContent=title;
  if($('quickModalBody'))$('quickModalBody').innerHTML=body;
  const modal=$('quickToolModal');
- if(modal)modal.hidden=false;
+ if(!modal)return;
+ modal.hidden=false;
+ modal.setAttribute('aria-hidden','false');
 }
+
+document.addEventListener('DOMContentLoaded',()=>{
+ const quickModal=document.getElementById('quickToolModal');
+ if(quickModal){
+  quickModal.hidden=true;
+  quickModal.setAttribute('aria-hidden','true');
+ }
+},{once:true});
 
 function toolQuickTitle(tool){
  const diameter=Number(tool?.diameter);
