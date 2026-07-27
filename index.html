@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#050505">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>CNC Toolbox v8.4.1 Trasferimento Rapido</title>
+<title>CNC Toolbox v8.4.3 Filettature Sempre Visibili</title>
 <style>
 :root{--y:#ffc400;--y2:#dfa500;--b:#050505;--p:#141414;--p2:#0b0b0b;--l:#3e3e3e;--w:#fff;--g:#aaa;--ok:#68e36f;--err:#ff5b5b;--blue:#54baff}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -92,6 +92,129 @@ select{text-align:center;font-size:15px}
 .tableWrap{overflow:auto;border:1px solid #333;border-radius:10px;max-height:520px}.tbl{width:100%;border-collapse:collapse;min-width:470px;font-size:13px}.tbl th{position:sticky;top:0;background:#222;color:var(--y);padding:9px;text-align:left}.tbl td{padding:9px;border-top:1px solid #2c2c2c}
 .search{width:100%;height:52px;border:2px solid var(--y);border-radius:9px;background:#fff;color:#050505;padding:0 10px;font-weight:900;font-size:18px}
 .tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:9px 0}.tabs button{min-height:44px;border:1px solid #555;border-radius:8px;background:#111;color:#fff;font-weight:900;font-size:12px}.tabs button.on{background:var(--y);color:#050505}
+.threadSelectorSticky{
+ position:sticky;
+ top:59px;
+ z-index:28;
+ margin:0 0 11px;
+ padding:10px;
+ border:2px solid var(--y);
+ border-radius:12px;
+ background:#050505;
+ box-shadow:0 8px 20px rgba(0,0,0,.72)
+}
+.threadSelectorTitle{
+ color:var(--y);
+ font-size:13px;
+ font-weight:900;
+ text-align:center;
+ margin:0 0 8px
+}
+.threadPartSeg{
+ display:grid!important;
+ grid-template-columns:1fr 1fr!important;
+ gap:7px!important;
+ margin:0!important;
+ visibility:visible!important;
+ opacity:1!important
+}
+.threadPartSeg button{
+ display:block!important;
+ visibility:visible!important;
+ opacity:1!important;
+ min-width:0!important;
+ width:100%!important;
+ min-height:66px!important;
+ height:auto!important;
+ padding:8px 5px!important;
+ border:2px solid #777!important;
+ border-radius:9px!important;
+ background:#151515!important;
+ color:#fff!important;
+ font-size:14px!important;
+ line-height:1.15!important;
+ font-weight:900!important
+}
+.threadPartSeg button.on{
+ background:var(--y)!important;
+ color:#050505!important;
+ border-color:var(--y)!important
+}
+.threadPartSeg button small{
+ display:block!important;
+ font-size:10px!important;
+ margin-top:5px!important
+}
+.threadQuickGas{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:7px;
+ margin-top:8px
+}
+.threadQuickGas button{
+ min-height:42px;
+ border:1px solid #666;
+ border-radius:8px;
+ background:#101010;
+ color:#fff;
+ font-size:11px;
+ font-weight:900
+}
+.threadQuickGas button strong{color:var(--y)}
+.threadDualValues{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:8px;
+ margin-top:10px
+}
+.threadValueBox{
+ border:1px solid #555;
+ border-radius:9px;
+ background:#0b0b0b;
+ padding:9px
+}
+.threadValueBox.selected{
+ border:2px solid var(--y);
+ background:#1d1800
+}
+.threadValueBoxLabel{
+ color:#aaa;
+ font-size:10px;
+ font-weight:900;
+ line-height:1.2
+}
+.threadValueBox.selected .threadValueBoxLabel{color:var(--y)}
+.threadValueBoxNumber{
+ color:#fff;
+ font-size:22px;
+ font-weight:900;
+ line-height:1.15;
+ margin-top:3px
+}
+.threadValueBox.selected .threadValueBoxNumber{
+ color:var(--y);
+ font-size:27px
+}
+.threadValueBoxNumber small{font-size:12px;color:#ddd}
+@media(max-width:360px){
+ .threadPartSeg button{font-size:12px!important}
+ .threadValueBoxNumber{font-size:19px}
+ .threadValueBox.selected .threadValueBoxNumber{font-size:23px}
+}
+.threadModeInfo{border:1px solid #555;border-radius:9px;background:#0b0b0b;padding:10px 12px;margin:8px 0 10px;color:#ddd;font-size:13px;font-weight:850;line-height:1.35}
+.threadModeInfo strong{color:var(--y)}
+.threadCards{display:grid;gap:9px;max-height:540px;overflow:auto;padding-right:2px}
+.threadCard{border:1.5px solid #3e3e3e;border-radius:11px;background:linear-gradient(145deg,#181818,#090909);padding:12px}
+.threadCardTop{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.threadCode{color:#fff;font-size:21px;font-weight:900}
+.threadPitch{color:#aaa;font-size:12px;font-weight:850;text-align:right}
+.threadMeasureLabel{color:#aaa;font-size:11px;font-weight:900;margin-top:10px;letter-spacing:.25px}
+.threadMeasure{color:var(--y);font-size:29px;font-weight:900;line-height:1.08;margin-top:2px}
+.threadMeasure small{font-size:15px;color:#fff}
+.threadExtra{margin-top:7px;color:#aaa;font-size:12px;line-height:1.35}
+.threadEmpty{border:1px dashed #555;border-radius:10px;padding:20px 12px;text-align:center;color:#aaa;font-weight:850;line-height:1.4}
+.threadSpeak{width:100%;min-height:42px;margin-top:10px;border:1px solid var(--y);border-radius:8px;background:#0a0a0a;color:var(--y);font-size:12px;font-weight:900}
+
 .calcGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.calcGrid button{height:52px;border:1px solid #555;border-radius:8px;background:#161616;color:#fff;font-size:20px;font-weight:900}.calcGrid .op{color:var(--y)}.calcGrid .eq{background:var(--y);color:#050505}
 #calcDisplay{width:100%;height:62px;border:2px solid var(--y);border-radius:9px;background:#fff;color:#050505;font-size:27px;font-weight:900;text-align:right;padding:0 10px;margin-bottom:9px}
 .rangeRow{display:grid;grid-template-columns:84px 1fr 45px;gap:7px;align-items:center;margin:9px 0}.rangeRow input{width:100%;accent-color:var(--y)}.rangeVal{text-align:right;color:var(--y);font-weight:900}
@@ -456,7 +579,7 @@ select{text-align:center;font-size:15px}
   <div>
    <h1>CNC <span>TOOLBOX</span></h1>
    <div class="sub">STRUMENTI PER L'OFFICINA CNC</div>
-   <div class="version">v8.4.1 · TRASFERIMENTO RAPIDO</div>
+   <div class="version">v8.4.3 · FILETTATURE SEMPRE VISIBILI</div>
    <div class="betaSyncPill">
     <span id="betaHomeDot" class="betaSyncDot loading"></span>
     <span id="betaHomeStatus">COLLEGAMENTO…</span>
@@ -583,7 +706,7 @@ select{text-align:center;font-size:15px}
 </section>
 
 <section id="assistant" class="screen">
- <div class="header"><button class="back" onclick="goBack()">‹</button><div class="title">ASSISTENTE VOCALE<small>PREMI · PARLA · ASCOLTA</small></div><button class="help" onclick="alert('Puoi fare la stessa domanda in molti modi. Esempi: Quanto devo forare per un foro da M18 passo grosso? Che diametro ha il foro da M18? Quanto devo forare per M18 per uno e mezzo? Quanto devo forare per mezzo pollice GAS? Che punta serve per un quarto NPT? Funziona con tutte le misure presenti nelle tabelle.')">?</button></div>
+ <div class="header"><button class="back" onclick="goBack()">‹</button><div class="title">ASSISTENTE VOCALE<small>PREMI · PARLA · ASCOLTA</small></div><button class="help" onclick="alert('Puoi chiedere sia il foro sia il diametro esterno. Esempi: Quanto devo forare per M18? Diametro esterno tre quarti GAS. Che diametro devo fare sull’albero per G 3/4? Che punta serve per mezzo pollice GAS? Che diametro esterno ha un quarto NPT?')">?</button></div>
  <div class="assistantHero">
   <div class="status"><span id="vaDot" class="dot"></span><span id="vaStatus">Pronto. Premi il microfono.</span></div>
   <button id="vaMic" class="mic" onclick="toggleListen()">🎤</button>
@@ -596,11 +719,12 @@ select{text-align:center;font-size:15px}
    <button class="btn2" onclick="askAssistant('Quanto devo forare per un foro da M18 passo grosso?')">M GROSSO</button>
    <button class="btn2" onclick="askAssistant('Quanto devo forare per un foro da M18 per uno e mezzo?')">M FINE</button>
    <button class="btn2" onclick="askAssistant('Che diametro ha il foro da M18?')">DIAMETRO FORO</button>
-   <button class="btn2" onclick="askAssistant('Quanto devo forare per mezzo pollice GAS?')">GAS</button>
-   <button class="btn2" onclick="askAssistant('Che punta serve per un quarto NPT?')">NPT</button>
+   <button class="btn2" onclick="askAssistant('Quanto devo forare per mezzo pollice GAS?')">GAS FORO</button>
+   <button class="btn2" onclick="askAssistant('Diametro esterno tre quarti GAS')">GAS ESTERNO</button>
+   <button class="btn2" onclick="askAssistant('Che punta serve per un quarto NPT?')">NPT FORO</button>
    <button class="btn2" onclick="askAssistant('Foro 40 H7')">H7</button>
   </div>
-  <div class="note">Le frasi sono esempi: puoi sostituire M18, il passo o la misura in pollici con qualsiasi filetto presente nelle tabelle.</div>
+  <div class="note">Puoi dire “foro”, “punta” o “preforo” per l’interno; “diametro esterno” o “albero” per l’esterno. Esempio: “diametro esterno tre quarti GAS”.</div>
  </div>
  <div class="card"><h2>AUDIO AUTOMATICO</h2>
   <div class="switchRow"><span>Leggi ogni risposta</span><input id="audioEnabled" type="checkbox" checked></div>
@@ -807,8 +931,51 @@ select{text-align:center;font-size:15px}
 </section>
 
 <section id="threads" class="screen">
- <div class="header"><button class="back" onclick="goBack()">‹</button><div class="title">TABELLE FILETTATURE<small>PUNTA E DIAMETRO</small></div><button class="help">?</button></div>
- <div class="card"><input id="threadSearch" class="search" placeholder="M16, M16x1.5, G1, 1/2 NPT" oninput="renderThreads()"><div class="tabs"><button id="tMet" class="on" onclick="setThreadTab('met')">METRICO</button><button id="tFine" onclick="setThreadTab('fine')">FINE</button><button id="tGas" onclick="setThreadTab('gas')">GAS/BSP</button><button id="tNpt" onclick="setThreadTab('npt')">NPT</button></div><div class="tableWrap"><table class="tbl"><thead><tr><th>Filetto</th><th>Passo/TPI</th><th>Punta</th><th>Esterno</th></tr></thead><tbody id="threadBody"></tbody></table></div><div class="hint">Metrici grossi e fini, GAS/BSP e NPT. Per filetti con percentuale d’impegno particolare o materiali critici verifica la tabella utensile.</div></div>
+ <div class="header">
+  <button class="back" onclick="goBack()">‹</button>
+  <div class="title">TABELLE FILETTATURE<small>FORO / INTERNO · ALBERO / ESTERNO</small></div>
+  <button class="help" onclick="alert('Scegli FORO / INTERNO per vedere la punta di preforo. Scegli ALBERO / ESTERNO per vedere il diametro esterno nominale da realizzare. Esempio: G 3/4 esterno = 26,441 mm. Per la quota finale verifica sempre la classe di tolleranza prevista dal disegno.')">?</button>
+ </div>
+ <div class="card">
+  <div class="threadSelectorSticky">
+   <div class="threadSelectorTitle">1 · COSA DEVI LAVORARE?</div>
+   <div class="threadPartSeg">
+    <button id="threadHole" class="on" type="button" onclick="setThreadPart('hole')">
+     FORO / INTERNO
+     <small>PUNTA DI PREFORO</small>
+    </button>
+    <button id="threadShaft" type="button" onclick="setThreadPart('shaft')">
+     ALBERO / ESTERNO
+     <small>Ø ESTERNO NOMINALE</small>
+    </button>
+   </div>
+   <div class="threadQuickGas">
+    <button type="button" onclick="openThreadQuick('gas','shaft','G3/4')">
+     G 3/4 · <strong>ESTERNO</strong><br>26,441 mm
+    </button>
+    <button type="button" onclick="openThreadQuick('gas','hole','G3/4')">
+     G 3/4 · <strong>FORO</strong><br>preforo
+    </button>
+   </div>
+  </div>
+
+  <input id="threadSearch" class="search" placeholder="Scrivi G3/4 · M16 · 1/2 NPT" oninput="threadSearchChanged()">
+
+  <div class="tabs">
+   <button id="tMet" class="on" type="button" onclick="setThreadTab('met')">METRICO</button>
+   <button id="tFine" type="button" onclick="setThreadTab('fine')">FINE</button>
+   <button id="tGas" type="button" onclick="setThreadTab('gas')">GAS / BSP</button>
+   <button id="tNpt" type="button" onclick="setThreadTab('npt')">NPT</button>
+  </div>
+
+  <div id="threadModeInfo" class="threadModeInfo"></div>
+  <div id="threadBody" class="threadCards"></div>
+
+  <div class="hint">
+   Il valore esterno è nominale. Prima della finitura controlla sempre classe di tolleranza,
+   anello/tampone e indicazioni del disegno.
+  </div>
+ </div>
 </section>
 
 <section id="turnthread" class="screen">
@@ -1297,7 +1464,7 @@ select{text-align:center;font-size:15px}
 
 <section id="settings" class="screen">
  <div class="header"><button class="back" onclick="goBack()">‹</button><div class="title">MENU</div><button class="help">▤</button></div>
- <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v8.3 BETA</div></div><div class="note">Beta online: macchine, carico/scarico rapido, utensili, operatori e magazzino vengono sincronizzati tra i telefoni autorizzati. La Home è organizzata in cartelle; Scanner 3D e Righello/Calibro sono stati rimossi, mentre il Goniometro resta disponibile. La versione stabile v7.7 rimane separata.</div></div>
+ <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v8.4.3 BETA</div></div><div class="note">Beta online: macchine, carico/scarico rapido, utensili, operatori e magazzino vengono sincronizzati tra i telefoni autorizzati. La Home è organizzata in cartelle; Scanner 3D e Righello/Calibro sono stati rimossi, mentre il Goniometro resta disponibile. La versione stabile v7.7 rimane separata.</div></div>
  <div class="card"><h2>AZIONI</h2><button class="btn2" onclick="clearSettings()">PULISCI IMPOSTAZIONI</button></div>
 </section>
 
@@ -1329,6 +1496,10 @@ function show(id,options={}){
  if(id==='inventory')window.renderInventory?.();
  if(id==='machinesquick')renderQuickMachineChooser();
  if(id==='usedtools')renderUsedTools();
+ if(id==='threads')setTimeout(()=>{
+  syncThreadButtons();
+  renderThreads();
+ },0);
 }
 
 function goBack(){
@@ -1969,12 +2140,143 @@ gas:[
 npt:[
 ['1/8 NPT',27,8.6,10.287],['1/4 NPT',18,11.1,13.716],['3/8 NPT',18,14.5,17.145],['1/2 NPT',14,17.9,21.336],['3/4 NPT',14,23.2,26.67],['1 NPT',11.5,29.2,33.401],['1 1/4 NPT',11.5,38.1,42.164],['1 1/2 NPT',11.5,44,48.26],['2 NPT',11.5,56,60.325]]
 };
-let threadTab='met';
-function setThreadTab(t){threadTab=t;['met','fine','gas','npt'].forEach(x=>$('t'+x[0].toUpperCase()+x.slice(1))?.classList.toggle('on',x===t));renderThreads()}
+let threadTab=['met','fine','gas','npt'].includes(localStorage.getItem('thread_tab'))
+ ?localStorage.getItem('thread_tab')
+ :'met';
+let threadPart=localStorage.getItem('thread_part')==='shaft'?'shaft':'hole';
+
+function syncThreadButtons(){
+ ['met','fine','gas','npt'].forEach(x=>{
+  $('t'+x[0].toUpperCase()+x.slice(1))?.classList.toggle('on',x===threadTab);
+ });
+ $('threadHole')?.classList.toggle('on',threadPart==='hole');
+ $('threadShaft')?.classList.toggle('on',threadPart==='shaft');
+}
+
+function setThreadTab(t){
+ threadTab=['met','fine','gas','npt'].includes(t)?t:'met';
+ localStorage.setItem('thread_tab',threadTab);
+ syncThreadButtons();
+ renderThreads();
+}
+
+function openThreadQuick(tab,part,query){
+ threadTab=tab;
+ threadPart=part==='shaft'?'shaft':'hole';
+ localStorage.setItem('thread_tab',threadTab);
+ localStorage.setItem('thread_part',threadPart);
+ if($('threadSearch'))$('threadSearch').value=query||'';
+ syncThreadButtons();
+ renderThreads();
+ setTimeout(()=>$('threadBody')?.scrollIntoView({behavior:'smooth',block:'start'}),70);
+}
+
+function setThreadPart(part){
+ threadPart=part==='shaft'?'shaft':'hole';
+ localStorage.setItem('thread_part',threadPart);
+ syncThreadButtons();
+ renderThreads();
+}
+
+function detectThreadTabFromSearch(value){
+ const q=String(value||'').toLowerCase().replace(/\s+/g,' ').trim();
+ const compact=q.replace(/\s+/g,'');
+ if(/\bnpt\b/.test(q))return 'npt';
+ if(/\b(?:gas|bsp|bspp)\b/.test(q)||/(?:^|\s)g\s*\d/.test(q))return 'gas';
+ // Se viene scritta soltanto una misura in pollici come 3/4,
+ // la tabella più probabile in officina è GAS/BSP.
+ if(/^(?:g)?(?:1\/8|1\/4|3\/8|1\/2|5\/8|3\/4|7\/8|1|11\/8|11\/4|11\/2|13\/4|2)$/.test(compact)){
+  return threadTab==='npt'?'npt':'gas';
+ }
+ if(/\bm\s*\d+(?:[.,]\d+)?\s*(?:x|per)\s*\d/.test(q))return 'fine';
+ if(/\bm\s*\d/.test(q))return 'met';
+ return null;
+}
+
+function threadSearchChanged(){
+ const detected=detectThreadTabFromSearch($('threadSearch')?.value||'');
+ if(detected&&detected!==threadTab){
+  threadTab=detected;
+  localStorage.setItem('thread_tab',threadTab);
+  syncThreadButtons();
+ }
+ renderThreads();
+}
+
+function speakThreadRow(index){
+ const row=THREADS[threadTab]?.[index];
+ if(!row)return;
+ const part=threadPart==='shaft'?'shaft':'hole';
+ if(threadTab==='gas')return answerGas(cleanInchSize(row[0]),part);
+ if(threadTab==='npt')return answerNpt(cleanInchSize(row[0]),part);
+
+ const metricMatch=String(row[0]).match(/^M([\d.]+)(?:x([\d.]+))?$/i);
+ if(!metricMatch)return;
+ answerMetric(Number(metricMatch[1]),metricMatch[2]===undefined?null:Number(metricMatch[2]),part);
+}
+
 function renderThreads(){
- const q=String($('threadSearch')?.value||'').toLowerCase().replace(/\s+/g,'');
- const rows=THREADS[threadTab].filter(r=>!q||String(r[0]).toLowerCase().replace(/\s+/g,'').includes(q));
- $('threadBody').innerHTML=rows.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${fmtFlex(r[2],2)} mm</td><td>${fmtFlex(r[3],3)} mm</td></tr>`).join('');
+ const body=$('threadBody');
+ if(!body)return;
+
+ syncThreadButtons();
+
+ const raw=String($('threadSearch')?.value||'');
+ const q=raw.toLowerCase()
+  .replace(/\b(?:gas|bsp|bspp|npt)\b/g,'')
+  .replace(/\s+/g,'')
+  .replace(',', '.');
+
+ const indexedRows=THREADS[threadTab]
+  .map((row,index)=>({row,index}))
+  .filter(({row})=>{
+   if(!q)return true;
+   const code=String(row[0]).toLowerCase().replace(/\s+/g,'');
+   const clean=cleanInchSize(row[0]).replace(/\s+/g,'');
+   return code.includes(q)||clean.includes(q.replace(/^g/,''));
+  });
+
+ const info=$('threadModeInfo');
+ if(info){
+  info.innerHTML=threadPart==='hole'
+   ?'<strong>FORO / INTERNO:</strong> mostra la punta o il preforo consigliato prima della maschiatura.'
+   :'<strong>ALBERO / ESTERNO:</strong> mostra il diametro esterno nominale del filetto da tornire.';
+ }
+
+ if(!indexedRows.length){
+  body.innerHTML='<div class="threadEmpty">Nessun filetto trovato.<br>Prova, per esempio, G3/4 oppure M16x1.5.</div>';
+  return;
+ }
+
+ body.innerHTML=indexedRows.map(({row,index})=>{
+  const isShaft=threadPart==='shaft';
+  const passLabel=(threadTab==='gas'||threadTab==='npt')?'TPI':'PASSO';
+  const mainLabel=isShaft?'Ø ESTERNO / ALBERO':'PUNTA / PREFORO';
+  const mainValue=isShaft?row[3]:row[2];
+
+  return `<div class="threadCard">
+   <div class="threadCardTop">
+    <div class="threadCode">${row[0]}</div>
+    <div class="threadPitch">${passLabel}<br><b>${row[1]}</b></div>
+   </div>
+
+   <div class="threadMeasureLabel">${mainLabel}</div>
+   <div class="threadMeasure">${fmtFlex(mainValue,isShaft?3:2)} <small>mm</small></div>
+
+   <div class="threadDualValues">
+    <div class="threadValueBox ${!isShaft?'selected':''}">
+     <div class="threadValueBoxLabel">FORO / INTERNO<br>PUNTA DI PREFORO</div>
+     <div class="threadValueBoxNumber">${fmtFlex(row[2],2)} <small>mm</small></div>
+    </div>
+    <div class="threadValueBox ${isShaft?'selected':''}">
+     <div class="threadValueBoxLabel">ALBERO / ESTERNO<br>Ø NOMINALE</div>
+     <div class="threadValueBoxNumber">${fmtFlex(row[3],3)} <small>mm</small></div>
+    </div>
+   </div>
+
+   <button class="threadSpeak" onclick="speakThreadRow(${index})">🔊 LEGGI IL VALORE SELEZIONATO</button>
+  </div>`;
+ }).join('');
 }
 function findMetric(n,pitch=null){
  const arr=pitch===null?THREADS.met:THREADS.fine;
@@ -4064,14 +4366,27 @@ function toleranceFromSpeech(s){
  if(tm)return handleSpokenTolerance(Number(tm[2]),tm[1],s);
  return false;
 }
+function detectThreadPartIntent(s){
+ const phrase=String(s||'').toLowerCase();
+
+ if(/\b(?:diametro\s+esterno|esterno|albero|perno|filetto\s+maschio|parte\s+maschio|tornire)\b/.test(phrase)){
+  return 'shaft';
+ }
+ if(/\b(?:foro|foratura|preforo|punta|interno|filetto\s+femmina|maschiare|maschiatura)\b/.test(phrase)){
+  return 'hole';
+ }
+ return 'hole';
+}
+
 function parseThreadRequest(input){
  const s=normalizeSpeech(input);
+ const part=detectThreadPartIntent(s);
 
  /* NPT deve avere precedenza, perché contiene anch’esso una misura in pollici. */
  const nptIntent=/\bnpt\b/.test(s)||/\b(?:americano\s+conico|conico\s+americano)\b/.test(s);
  if(nptIntent){
   const size=extractInchSize(s,THREADS.npt);
-  return size?{family:'npt',size,normalized:s}:{family:'npt',missingSize:true,normalized:s};
+  return size?{family:'npt',size,part,normalized:s}:{family:'npt',missingSize:true,part,normalized:s};
  }
 
  /* GAS/BSP, comprese le forme G1, G 1/2, 1G e 1/2 G. */
@@ -4080,7 +4395,7 @@ function parseThreadRequest(input){
   ||/(?:\d+\s+\d+\/\d+|\d+\/\d+|\d+)\s*g\b/.test(s);
  if(gasIntent){
   const size=extractInchSize(s,THREADS.gas);
-  return size?{family:'gas',size,normalized:s}:{family:'gas',missingSize:true,normalized:s};
+  return size?{family:'gas',size,part,normalized:s}:{family:'gas',missingSize:true,part,normalized:s};
  }
 
  let n=null;
@@ -4099,13 +4414,13 @@ function parseThreadRequest(input){
 
  /* Cerca il passo soltanto DOPO la misura M: evita di leggere “per un foro” come passo 1. */
  const pitchMatch=afterSize.match(/\b(?:x|per|passo(?:\s+fine)?)\s*(\d+(?:\.\d+)?)/i);
- if(pitchMatch)return {family:'metric',n,pitch:Number(pitchMatch[1]),normalized:s};
+ if(pitchMatch)return {family:'metric',n,pitch:Number(pitchMatch[1]),part,normalized:s};
 
  /* Se dice soltanto “passo fine”, non si può indovinare quale fine. */
- if(/\b(?:passo\s+fine|filetto\s+fine)\b/.test(afterSize))return {family:'metric',n,needsFinePitch:true,normalized:s};
+ if(/\b(?:passo\s+fine|filetto\s+fine)\b/.test(afterSize))return {family:'metric',n,needsFinePitch:true,part,normalized:s};
 
  /* Passo grosso, standard, normale o nessun passo indicato = metrico grosso. */
- return {family:'metric',n,pitch:null,normalized:s};
+ return {family:'metric',n,pitch:null,part,normalized:s};
 }
 
 function availableFinePitches(n){
@@ -4114,10 +4429,10 @@ function availableFinePitches(n){
   .filter(v=>v!==null);
 }
 
-function speakFinePitchQuestion(n){
+function speakFinePitchQuestion(n,part='hole'){
  const pitches=availableFinePitches(n);
  if(!pitches.length){showVA(`Non risultano passi fini per M${fmtFlex(n)}.`,true);return}
- pendingFollow={type:'pitch',n};
+ pendingFollow={type:'pitch',n,part};
  const list=pitches.map(p=>fmtFlex(p)).join(', ');
  showVA(`Per M${fmtFlex(n)} dimmi il passo fine: ${list} millimetri.`,true);
 }
@@ -4125,15 +4440,15 @@ function speakFinePitchQuestion(n){
 function dispatchThreadRequest(req){
  if(!req)return false;
  if(req.family==='npt'){
-  if(req.missingSize)showVA('Quale misura NPT?',true);else answerNpt(req.size);
+  if(req.missingSize)showVA('Quale misura NPT?',true);else answerNpt(req.size,req.part);
   return true;
  }
  if(req.family==='gas'){
-  if(req.missingSize)showVA('Quale misura GAS?',true);else answerGas(req.size);
+  if(req.missingSize)showVA('Quale misura GAS?',true);else answerGas(req.size,req.part);
   return true;
  }
  if(req.family==='metric'){
-  if(req.needsFinePitch)speakFinePitchQuestion(req.n);else answerMetric(req.n,req.pitch);
+  if(req.needsFinePitch)speakFinePitchQuestion(req.n,req.part);else answerMetric(req.n,req.pitch,req.part);
   return true;
  }
  return false;
@@ -4149,7 +4464,7 @@ function voiceTranscriptScore(text){
  const s=normalizeSpeech(text);
  let score=0;
  if(parseThreadRequest(s))score+=100;
- if(/\b(?:foro|forare|preforo|filetto|maschio|m\d|gas|bsp|npt|g\d)\b/.test(s))score+=20;
+ if(/\b(?:foro|forare|preforo|punta|esterno|albero|filetto|maschio|m\d|gas|bsp|npt|g\d)\b/.test(s))score+=20;
  if(/\b(?:passo|grosso|fine|punta|diametro)\b/.test(s))score+=8;
  return score;
 }
@@ -4170,7 +4485,7 @@ function askAssistant(raw){
  if(/\b(spiegami|dettagli|approfondisci)\b/.test(s)){showVA(lastDetail||'Non ho ancora una risposta da spiegare.',!lastDetail);return}
  if(pendingFollow?.type==='pitch'){
   const p=extractPendingPitch(raw);
-  if(Number.isFinite(p)){answerMetric(pendingFollow.n,p);return}
+  if(Number.isFinite(p)){answerMetric(pendingFollow.n,p,pendingFollow.part||'hole');return}
  }
  if(toleranceFromSpeech(s))return;
 
@@ -4211,20 +4526,72 @@ function askAssistant(raw){
  }
  showVA('Domanda non riconosciuta. Prova: “Quanto devo forare per M18 passo grosso?”',true)
 }
-function answerMetric(n,pitch){
+function answerMetric(n,pitch,part='hole'){
  const r=findMetric(n,pitch);
- if(!r&&pitch!==null){const drill=n-pitch;direct(`Punta teorica circa ${fmtFlex(drill,2)} millimetri.`,`M ${fmtFlex(n)} passo ${fmtFlex(pitch)}: preforo teorico diametro meno passo, circa ${fmtFlex(drill,2)} millimetri. Verifica la tabella aziendale.`);return}
+
+ if(!r&&pitch!==null){
+  const drill=n-pitch;
+  if(part==='shaft'){
+   direct(
+    `Diametro esterno nominale ${fmtFlex(n,3)} millimetri.`,
+    `Filetto M ${fmtFlex(n)} passo ${fmtFlex(pitch)}: diametro esterno nominale ${fmtFlex(n,3)} millimetri. Verifica la tolleranza prevista dal disegno.`
+   );
+  }else{
+   direct(
+    `Punta teorica circa ${fmtFlex(drill,2)} millimetri.`,
+    `M ${fmtFlex(n)} passo ${fmtFlex(pitch)}: preforo teorico diametro meno passo, circa ${fmtFlex(drill,2)} millimetri. Verifica la tabella aziendale.`
+   );
+  }
+  return;
+ }
+
  if(!r){showVA(`M${fmtFlex(n)} non è presente.`,true);return}
- const detail=`${r[0]}, passo ${fmtFlex(r[1])} millimetri: punta consigliata ${fmtFlex(r[2],2)} millimetri.`;
- direct(`Punta da ${fmtFlex(r[2],2)} millimetri.`,detail)
+
+ if(part==='shaft'){
+  direct(
+   `Diametro esterno nominale ${fmtFlex(r[3],3)} millimetri.`,
+   `${r[0]}, passo ${fmtFlex(r[1])} millimetri: diametro esterno nominale ${fmtFlex(r[3],3)} millimetri. Preforo di riferimento ${fmtFlex(r[2],2)} millimetri.`
+  );
+ }else{
+  direct(
+   `Punta da ${fmtFlex(r[2],2)} millimetri.`,
+   `${r[0]}, passo ${fmtFlex(r[1])} millimetri: punta consigliata ${fmtFlex(r[2],2)} millimetri. Diametro esterno nominale ${fmtFlex(r[3],3)} millimetri.`
+  );
+ }
 }
-function answerGas(size){
- const r=findGas(size);if(!r){showVA(`GAS ${size} non presente.`,true);return}
- direct(`Punta da ${fmtFlex(r[2],2)} millimetri.`,`Filetto ${r[0]}, ${r[1]} filetti per pollice: preforo ${fmtFlex(r[2],2)} millimetri, diametro esterno ${fmtFlex(r[3],3)} millimetri.`)
+
+function answerGas(size,part='hole'){
+ const r=findGas(size);
+ if(!r){showVA(`GAS ${size} non presente.`,true);return}
+
+ if(part==='shaft'){
+  direct(
+   `Diametro esterno nominale ${fmtFlex(r[3],3)} millimetri.`,
+   `Filetto ${r[0]}, ${r[1]} filetti per pollice: diametro esterno nominale ${fmtFlex(r[3],3)} millimetri. Preforo di riferimento ${fmtFlex(r[2],2)} millimetri. Verifica la tolleranza prevista dal disegno.`
+  );
+ }else{
+  direct(
+   `Punta da ${fmtFlex(r[2],2)} millimetri.`,
+   `Filetto ${r[0]}, ${r[1]} filetti per pollice: preforo ${fmtFlex(r[2],2)} millimetri. Diametro esterno nominale ${fmtFlex(r[3],3)} millimetri.`
+  );
+ }
 }
-function answerNpt(size){
- const r=findNpt(size);if(!r){showVA(`NPT ${size} non presente.`,true);return}
- direct(`Punta da ${fmtFlex(r[2],2)} millimetri.`,`Filetto ${r[0]}, ${r[1]} filetti per pollice: preforo pratico ${fmtFlex(r[2],2)} millimetri, diametro esterno nominale ${fmtFlex(r[3],3)} millimetri.`)
+
+function answerNpt(size,part='hole'){
+ const r=findNpt(size);
+ if(!r){showVA(`NPT ${size} non presente.`,true);return}
+
+ if(part==='shaft'){
+  direct(
+   `Diametro esterno nominale ${fmtFlex(r[3],3)} millimetri.`,
+   `Filetto ${r[0]}, ${r[1]} filetti per pollice: diametro esterno nominale di riferimento ${fmtFlex(r[3],3)} millimetri. Il filetto NPT è conico: verifica piano di misura e calibro.`
+  );
+ }else{
+  direct(
+   `Punta da ${fmtFlex(r[2],2)} millimetri.`,
+   `Filetto ${r[0]}, ${r[1]} filetti per pollice: preforo pratico ${fmtFlex(r[2],2)} millimetri. Diametro esterno nominale ${fmtFlex(r[3],3)} millimetri.`
+  );
+ }
 }
 function spokenToleranceCode(code){
  const compact=String(code||'').trim();
@@ -4361,6 +4728,11 @@ function init(){
    if(event.key==='Enter')calcHalf();
   });
  }
+ threadTab=['met','fine','gas','npt'].includes(localStorage.getItem('thread_tab'))
+  ?localStorage.getItem('thread_tab')
+  :threadTab;
+ threadPart=localStorage.getItem('thread_part')==='shaft'?'shaft':'hole';
+ syncThreadButtons();
  renderThreads();
  tolKind=localStorage.getItem('tol_kind')==='albero'?'albero':'foro';
  setTolKind(tolKind);
