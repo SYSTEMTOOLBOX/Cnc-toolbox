@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#050505">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>CNC Toolbox v8.4.3 Filettature Sempre Visibili</title>
+<title>CNC Toolbox v8.5 Filettature Tornio Complete</title>
 <style>
 :root{--y:#ffc400;--y2:#dfa500;--b:#050505;--p:#141414;--p2:#0b0b0b;--l:#3e3e3e;--w:#fff;--g:#aaa;--ok:#68e36f;--err:#ff5b5b;--blue:#54baff}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -533,6 +533,69 @@ select{text-align:center;font-size:15px}
  .quickPickerItem{grid-template-columns:minmax(0,1fr) 82px}.quickPickerMount{font-size:12px}
 }
 
+
+/* v8.5 — FILETTATURE TORNIO COMPLETE */
+#threads .card,#turnthread .card{overflow:visible}
+.threadWorkSelector{position:sticky;top:58px;z-index:35;background:#050505;border:2px solid var(--y);border-radius:12px;padding:10px;margin-bottom:10px;box-shadow:0 8px 22px rgba(0,0,0,.75)}
+.threadWorkTitle{color:var(--y);text-align:center;font-size:13px;font-weight:900;margin-bottom:8px;letter-spacing:.3px}
+.threadSideButtons{display:grid!important;grid-template-columns:1fr 1fr!important;gap:7px!important}
+.threadSideButtons button{display:block!important;visibility:visible!important;opacity:1!important;min-width:0!important;width:100%!important;min-height:64px!important;border:2px solid #777!important;border-radius:9px!important;background:#151515!important;color:#fff!important;font-size:14px!important;font-weight:900!important;line-height:1.15!important;padding:8px 4px!important}
+.threadSideButtons button.on{background:var(--y)!important;color:#050505!important;border-color:var(--y)!important}
+.threadSideButtons small{display:block;font-size:10px;margin-top:5px}
+.threadFamilyTabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:9px 0 0}
+.threadFamilyTabs button{min-width:0;min-height:43px;border:1px solid #666;border-radius:8px;background:#111;color:#fff;font-size:11px;font-weight:900;padding:5px 2px}
+.threadFamilyTabs button.on{background:#fff;color:#050505;border-color:#fff}
+.threadUrgent{border:2px solid #ffb400;border-radius:12px;background:linear-gradient(145deg,#2a2000,#090909);padding:12px;margin:0 0 11px}
+.threadUrgentTitle{font-size:16px;font-weight:900;color:#ffcb29}
+.threadUrgentNumbers{font-size:13px;color:#fff;font-weight:850;line-height:1.5;margin-top:5px}
+.threadUrgentNumbers strong{color:#ffcb29;font-size:16px}
+.threadUrgent button{width:100%;min-height:45px;margin-top:9px;border:0;border-radius:8px;background:var(--y);color:#050505;font-weight:900}
+.threadModeInfoV85{border:1px solid #555;border-radius:9px;background:#0c0c0c;padding:10px;margin:9px 0;color:#ddd;font-size:12px;font-weight:850;line-height:1.4}
+.threadModeInfoV85 strong{color:var(--y)}
+.threadCardsV85{display:grid;gap:10px;max-height:660px;overflow:auto;padding:1px 2px 4px}
+.threadCardV85{border:1.5px solid #454545;border-radius:12px;background:linear-gradient(145deg,#1a1a1a,#090909);padding:12px}
+.threadCardHeadV85{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.threadCodeV85{font-size:23px;font-weight:900;color:#fff}
+.threadProfileV85{text-align:right;color:#aaa;font-size:11px;font-weight:900;line-height:1.35}
+.threadMainGridV85{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.threadMainBoxV85{border:1px solid #555;border-radius:9px;background:#0b0b0b;padding:9px;min-width:0}
+.threadMainBoxV85.primary{border:2px solid var(--y);background:#201a00}
+.threadMainLabelV85{color:#aaa;font-size:9px;font-weight:900;line-height:1.25}
+.threadMainBoxV85.primary .threadMainLabelV85{color:var(--y)}
+.threadMainValueV85{color:#fff;font-size:21px;font-weight:900;line-height:1.15;margin-top:4px;overflow-wrap:anywhere}
+.threadMainBoxV85.primary .threadMainValueV85{color:var(--y);font-size:25px}
+.threadMainValueV85 small{font-size:11px;color:#ddd}
+.threadParamGridV85{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}
+.threadParamV85{border:1px solid #3d3d3d;border-radius:8px;background:#101010;padding:8px;min-width:0}
+.threadParamV85 span{display:block;color:#999;font-size:9px;font-weight:900;line-height:1.2}
+.threadParamV85 b{display:block;color:#fff;font-size:16px;margin-top:3px;overflow-wrap:anywhere}
+.threadParamV85 b em{font-style:normal;font-size:10px;color:#bbb}
+.threadCardActionsV85{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:9px}
+.threadCardActionsV85 button{min-height:44px;border-radius:8px;font-size:11px;font-weight:900}
+.threadOpenLatheV85{border:0;background:var(--y);color:#050505}
+.threadSpeakV85{border:1px solid #777;background:#111;color:#fff}
+.threadWarningV85{margin-top:8px;color:#aaa;font-size:10px;font-weight:750;line-height:1.35}
+.threadEmptyV85{border:1px dashed #666;border-radius:10px;padding:20px 12px;text-align:center;color:#aaa;font-weight:850}
+#ttThreadSelect{width:100%;min-height:54px;border:2px solid var(--y);border-radius:9px;background:#0b0b0b;color:#fff;padding:8px;font-size:18px;font-weight:900;margin:10px 0}
+.turnThreadResultV85{display:grid;gap:9px}
+.turnThreadHeroV85{border:2px solid var(--y);border-radius:12px;background:linear-gradient(145deg,#282000,#090909);padding:13px}
+.turnThreadHeroCodeV85{color:#fff;font-size:24px;font-weight:900}
+.turnThreadHeroLineV85{color:#ddd;font-size:12px;font-weight:850;margin-top:4px}
+.turnThreadHeroGridV85{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.turnThreadHeroBoxV85{border:1px solid #6a5a12;border-radius:9px;background:#0a0a0a;padding:9px}
+.turnThreadHeroBoxV85 span{display:block;color:#aaa;font-size:9px;font-weight:900}
+.turnThreadHeroBoxV85 b{display:block;color:var(--y);font-size:25px;margin-top:3px}
+.turnThreadHeroBoxV85 b small{font-size:11px;color:#fff}
+.turnThreadDetailsV85{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.turnThreadDetailV85{border:1px solid #444;border-radius:8px;background:#101010;padding:9px}
+.turnThreadDetailV85 span{display:block;color:#999;font-size:9px;font-weight:900;line-height:1.2}
+.turnThreadDetailV85 b{display:block;color:#fff;font-size:17px;margin-top:4px}
+.turnThreadMachineV85{border:1px solid #5577aa;border-radius:9px;background:#08111f;padding:10px;color:#d9e9ff;font-size:11px;font-weight:800;line-height:1.45}
+.turnThreadMachineV85 strong{color:#80b8ff}
+.turnThreadManualV85{margin-top:12px;border:1px solid #444;border-radius:9px;background:#0a0a0a;padding:8px}
+.turnThreadManualV85 summary{cursor:pointer;color:#aaa;font-size:12px;font-weight:900;padding:5px}
+@media(max-width:365px){.threadSideButtons button{font-size:12px!important}.threadFamilyTabs button{font-size:9px}.threadMainValueV85{font-size:18px}.threadMainBoxV85.primary .threadMainValueV85{font-size:21px}.turnThreadHeroBoxV85 b{font-size:21px}}
+
 </style>
 </head>
 <body>
@@ -579,7 +642,7 @@ select{text-align:center;font-size:15px}
   <div>
    <h1>CNC <span>TOOLBOX</span></h1>
    <div class="sub">STRUMENTI PER L'OFFICINA CNC</div>
-   <div class="version">v8.4.3 · FILETTATURE SEMPRE VISIBILI</div>
+   <div class="version">v8.5 · FILETTATURE TORNIO COMPLETE</div>
    <div class="betaSyncPill">
     <span id="betaHomeDot" class="betaSyncDot loading"></span>
     <span id="betaHomeStatus">COLLEGAMENTO…</span>
@@ -706,7 +769,7 @@ select{text-align:center;font-size:15px}
 </section>
 
 <section id="assistant" class="screen">
- <div class="header"><button class="back" onclick="goBack()">‹</button><div class="title">ASSISTENTE VOCALE<small>PREMI · PARLA · ASCOLTA</small></div><button class="help" onclick="alert('Puoi chiedere sia il foro sia il diametro esterno. Esempi: Quanto devo forare per M18? Diametro esterno tre quarti GAS. Che diametro devo fare sull’albero per G 3/4? Che punta serve per mezzo pollice GAS? Che diametro esterno ha un quarto NPT?')">?</button></div>
+ <div class="header"><button class="back" onclick="goBack()">‹</button><div class="title">ASSISTENTE VOCALE<small>PREMI · PARLA · ASCOLTA</small></div><button class="help" onclick="alert('Puoi chiedere anche tutti i parametri del tornio. Esempi: Parametri tornio G tre quarti esterno. Profondità H M16 passo 2 esterno. Preforo M18. Diametro esterno tre quarti GAS.')">?</button></div>
  <div class="assistantHero">
   <div class="status"><span id="vaDot" class="dot"></span><span id="vaStatus">Pronto. Premi il microfono.</span></div>
   <button id="vaMic" class="mic" onclick="toggleListen()">🎤</button>
@@ -720,11 +783,11 @@ select{text-align:center;font-size:15px}
    <button class="btn2" onclick="askAssistant('Quanto devo forare per un foro da M18 per uno e mezzo?')">M FINE</button>
    <button class="btn2" onclick="askAssistant('Che diametro ha il foro da M18?')">DIAMETRO FORO</button>
    <button class="btn2" onclick="askAssistant('Quanto devo forare per mezzo pollice GAS?')">GAS FORO</button>
-   <button class="btn2" onclick="askAssistant('Diametro esterno tre quarti GAS')">GAS ESTERNO</button>
+   <button class="btn2" onclick="askAssistant('Parametri tornio tre quarti GAS esterno')">GAS TORNIO</button>
    <button class="btn2" onclick="askAssistant('Che punta serve per un quarto NPT?')">NPT FORO</button>
    <button class="btn2" onclick="askAssistant('Foro 40 H7')">H7</button>
   </div>
-  <div class="note">Puoi dire “foro”, “punta” o “preforo” per l’interno; “diametro esterno” o “albero” per l’esterno. Esempio: “diametro esterno tre quarti GAS”.</div>
+  <div class="note">Puoi dire: “parametri tornio tre quarti GAS esterno”. L’assistente legge diametro iniziale, passo P, profondità H e diametro finale teorico.</div>
  </div>
  <div class="card"><h2>AUDIO AUTOMATICO</h2>
   <div class="switchRow"><span>Leggi ogni risposta</span><input id="audioEnabled" type="checkbox" checked></div>
@@ -933,54 +996,79 @@ select{text-align:center;font-size:15px}
 <section id="threads" class="screen">
  <div class="header">
   <button class="back" onclick="goBack()">‹</button>
-  <div class="title">TABELLE FILETTATURE<small>FORO / INTERNO · ALBERO / ESTERNO</small></div>
-  <button class="help" onclick="alert('Scegli FORO / INTERNO per vedere la punta di preforo. Scegli ALBERO / ESTERNO per vedere il diametro esterno nominale da realizzare. Esempio: G 3/4 esterno = 26,441 mm. Per la quota finale verifica sempre la classe di tolleranza prevista dal disegno.')">?</button>
+  <div class="title">TABELLE FILETTATURE COMPLETE<small>INTERNE · ESTERNE · PARAMETRI TORNIO</small></div>
+  <button class="help" onclick="alert('Scegli ESTERNO / ALBERO oppure INTERNO / FORO. Ogni filetto mostra diametro, passo, profondità H del ciclo, diametro medio e diametro di fondo. Il pulsante PROGRAMMA TORNIO apre i dati già compilati.')">?</button>
  </div>
  <div class="card">
-  <div class="threadSelectorSticky">
-   <div class="threadSelectorTitle">1 · COSA DEVI LAVORARE?</div>
-   <div class="threadPartSeg">
-    <button id="threadHole" class="on" type="button" onclick="setThreadPart('hole')">
-     FORO / INTERNO
-     <small>PUNTA DI PREFORO</small>
-    </button>
-    <button id="threadShaft" type="button" onclick="setThreadPart('shaft')">
-     ALBERO / ESTERNO
-     <small>Ø ESTERNO NOMINALE</small>
-    </button>
+  <div class="threadUrgent">
+   <div class="threadUrgentTitle">G 3/4 GAS · ESTERNO</div>
+   <div class="threadUrgentNumbers">Ø nominale <strong>26,441</strong> · P <strong>1,814</strong> · H ciclo <strong>1,162</strong> · X fondo <strong>24,118 mm</strong></div>
+   <button type="button" onclick="openTurnThread('gas','G3/4','shaft')">APRI SUBITO G 3/4 NEL TORNIO</button>
+  </div>
+
+  <div class="threadWorkSelector">
+   <div class="threadWorkTitle">1 · SCEGLI IL LATO DEL FILETTO</div>
+   <div class="threadSideButtons">
+    <button id="threadShaft" type="button" onclick="setThreadPart('shaft')">ALBERO / ESTERNO<small>Ø ESTERNO · H · X FONDO</small></button>
+    <button id="threadHole" type="button" onclick="setThreadPart('hole')">FORO / INTERNO<small>PREFORO · H · Ø FINALE</small></button>
    </div>
-   <div class="threadQuickGas">
-    <button type="button" onclick="openThreadQuick('gas','shaft','G3/4')">
-     G 3/4 · <strong>ESTERNO</strong><br>26,441 mm
-    </button>
-    <button type="button" onclick="openThreadQuick('gas','hole','G3/4')">
-     G 3/4 · <strong>FORO</strong><br>preforo
-    </button>
+   <div class="threadFamilyTabs">
+    <button id="tMet" type="button" onclick="setThreadTab('met')">METRICO</button>
+    <button id="tFine" type="button" onclick="setThreadTab('fine')">METRICO FINE</button>
+    <button id="tGas" type="button" onclick="setThreadTab('gas')">GAS / BSP</button>
+    <button id="tNpt" type="button" onclick="setThreadTab('npt')">NPT</button>
    </div>
   </div>
 
-  <input id="threadSearch" class="search" placeholder="Scrivi G3/4 · M16 · 1/2 NPT" oninput="threadSearchChanged()">
-
-  <div class="tabs">
-   <button id="tMet" class="on" type="button" onclick="setThreadTab('met')">METRICO</button>
-   <button id="tFine" type="button" onclick="setThreadTab('fine')">FINE</button>
-   <button id="tGas" type="button" onclick="setThreadTab('gas')">GAS / BSP</button>
-   <button id="tNpt" type="button" onclick="setThreadTab('npt')">NPT</button>
-  </div>
-
-  <div id="threadModeInfo" class="threadModeInfo"></div>
-  <div id="threadBody" class="threadCards"></div>
-
-  <div class="hint">
-   Il valore esterno è nominale. Prima della finitura controlla sempre classe di tolleranza,
-   anello/tampone e indicazioni del disegno.
-  </div>
+  <input id="threadSearch" class="search" placeholder="Cerca: G3/4 · M16 · M16x1.5 · 1/2 NPT" oninput="threadSearchChanged()">
+  <div id="threadModeInfo" class="threadModeInfoV85"></div>
+  <div id="threadBody" class="threadCardsV85"></div>
+  <div class="hint">Valori geometrici teorici/base. Per la quota finale usa il disegno, la classe di tolleranza e il controllo con anello, tampone o filetto campione.</div>
  </div>
 </section>
 
 <section id="turnthread" class="screen">
- <div class="header"><button class="back" onclick="goBack()">‹</button><div class="title">FILETTO TORNIO<small>CRESTA / PROFONDITÀ RADIALE</small></div><button class="help">?</button></div>
- <div class="card"><div class="row"><div class="label">Ø esterno</div><input id="ttD" class="inp" value="33.249"></div><div class="row"><div class="label">Passo mm</div><input id="ttP" class="inp" value="2.309"></div><div class="row"><div class="label">Profilo</div><select id="ttProfile"><option value="55">GAS 55°</option><option value="60">METRICO 60°</option></select></div><button class="btn" onclick="calcTurnThread()">CALCOLA</button><div id="resTT"></div><div class="hint">Profondità teorica: partire sempre più prudenti e controllare con tampone, anello o filetto campione.</div></div>
+ <div class="header">
+  <button class="back" onclick="goBack()">‹</button>
+  <div class="title">PARAMETRI FILETTO TORNIO<small>Ø · PASSO · H CICLO · X FONDO</small></div>
+  <button class="help" onclick="alert('Per il ciclo Fagor, H è la profondità totale radiale del filetto. Non confonderla con H del triangolo teorico. Seleziona famiglia, misura e interno/esterno: i valori si compilano automaticamente.')">?</button>
+ </div>
+ <div class="card">
+  <div class="threadUrgent">
+   <div class="threadUrgentTitle">VALORE CHE TI SERVE ADESSO · G 3/4 GAS ESTERNO</div>
+   <div class="threadUrgentNumbers">Xi nominale <strong>26,441</strong> · P <strong>1,814</strong> · H totale radiale <strong>1,162</strong> · X fondo teorico <strong>24,118 mm</strong></div>
+   <button type="button" onclick="setTurnThreadDirect('gas','G3/4','shaft')">USA G 3/4 ESTERNO</button>
+  </div>
+
+  <div class="threadWorkSelector">
+   <div class="threadWorkTitle">1 · INTERNO O ESTERNO?</div>
+   <div class="threadSideButtons">
+    <button id="ttShaft" type="button" onclick="setTurnThreadPart('shaft')">ALBERO / ESTERNO<small>H IN PENETRAZIONE VERSO -X</small></button>
+    <button id="ttHole" type="button" onclick="setTurnThreadPart('hole')">FORO / INTERNO<small>H IN PENETRAZIONE VERSO +X</small></button>
+   </div>
+   <div class="threadFamilyTabs">
+    <button id="ttMet" type="button" onclick="setTurnThreadTab('met')">METRICO</button>
+    <button id="ttFine" type="button" onclick="setTurnThreadTab('fine')">METRICO FINE</button>
+    <button id="ttGas" type="button" onclick="setTurnThreadTab('gas')">GAS / BSP</button>
+    <button id="ttNpt" type="button" onclick="setTurnThreadTab('npt')">NPT</button>
+   </div>
+  </div>
+
+  <label class="label" for="ttThreadSelect">2 · SCEGLI IL FILETTO</label>
+  <select id="ttThreadSelect" onchange="renderTurnThread()"></select>
+  <div id="resTT" class="turnThreadResultV85"></div>
+
+  <details class="turnThreadManualV85">
+   <summary>CALCOLO MANUALE PER FILETTO SPECIALE</summary>
+   <div class="row"><div class="label">Ø nominale</div><input id="ttD" class="inp" value="26.441"></div>
+   <div class="row"><div class="label">Passo mm</div><input id="ttP" class="inp" value="1.814"></div>
+   <div class="row"><div class="label">Profilo</div><select id="ttProfile"><option value="55">GAS / WHITWORTH 55°</option><option value="60ext">METRICO ESTERNO 60°</option><option value="60int">METRICO INTERNO 60°</option><option value="npt">NPT 60° CONICO</option></select></div>
+   <button class="btn" onclick="calcTurnThread()">CALCOLA MANUALE</button>
+   <div id="resTTManual"></div>
+  </details>
+
+  <div class="hint">Nel controllo mostrato in foto il campo H rappresenta la profondità totale del ciclo. I valori qui indicati sono teorici: controlla sempre con anello/tampone e correggi secondo utensile, classe e materiale.</div>
+ </div>
 </section>
 
 <section id="tol" class="screen">
@@ -1464,7 +1552,7 @@ select{text-align:center;font-size:15px}
 
 <section id="settings" class="screen">
  <div class="header"><button class="back" onclick="goBack()">‹</button><div class="title">MENU</div><button class="help">▤</button></div>
- <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v8.4.3 BETA</div></div><div class="note">Beta online: macchine, carico/scarico rapido, utensili, operatori e magazzino vengono sincronizzati tra i telefoni autorizzati. La Home è organizzata in cartelle; Scanner 3D e Righello/Calibro sono stati rimossi, mentre il Goniometro resta disponibile. La versione stabile v7.7 rimane separata.</div></div>
+ <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v8.5 BETA</div></div><div class="note">Beta online: macchine, carico/scarico rapido, utensili, operatori e magazzino vengono sincronizzati tra i telefoni autorizzati. La Home è organizzata in cartelle; Scanner 3D e Righello/Calibro sono stati rimossi, mentre il Goniometro resta disponibile. La versione stabile v7.7 rimane separata.</div></div>
  <div class="card"><h2>AZIONI</h2><button class="btn2" onclick="clearSettings()">PULISCI IMPOSTAZIONI</button></div>
 </section>
 
@@ -1500,6 +1588,7 @@ function show(id,options={}){
   syncThreadButtons();
   renderThreads();
  },0);
+ if(id==='turnthread')setTimeout(()=>renderTurnThreadSelect(),0);
 }
 
 function goBack(){
@@ -2136,14 +2225,74 @@ met:[
 fine:[
 ['M3x0.35',.35,2.65,3],['M4x0.5',.5,3.5,4],['M5x0.5',.5,4.5,5],['M6x0.5',.5,5.5,6],['M6x0.75',.75,5.25,6],['M7x0.75',.75,6.25,7],['M8x0.5',.5,7.5,8],['M8x0.75',.75,7.25,8],['M8x1',1,7,8],['M9x0.75',.75,8.25,9],['M9x1',1,8,9],['M10x0.5',.5,9.5,10],['M10x0.75',.75,9.25,10],['M10x1',1,9,10],['M10x1.25',1.25,8.8,10],['M11x1',1,10,11],['M12x1',1,11,12],['M12x1.25',1.25,10.8,12],['M12x1.5',1.5,10.5,12],['M14x1',1,13,14],['M14x1.25',1.25,12.8,14],['M14x1.5',1.5,12.5,14],['M16x1',1,15,16],['M16x1.5',1.5,14.5,16],['M18x1',1,17,18],['M18x1.5',1.5,16.5,18],['M18x2',2,16,18],['M20x1',1,19,20],['M20x1.5',1.5,18.5,20],['M20x2',2,18,20],['M22x1',1,21,22],['M22x1.5',1.5,20.5,22],['M22x2',2,20,22],['M24x1',1,23,24],['M24x1.5',1.5,22.5,24],['M24x2',2,22,24],['M27x1.5',1.5,25.5,27],['M27x2',2,25,27],['M30x1.5',1.5,28.5,30],['M30x2',2,28,30],['M33x1.5',1.5,31.5,33],['M33x2',2,31,33],['M36x1.5',1.5,34.5,36],['M36x2',2,34,36],['M39x1.5',1.5,37.5,39],['M39x2',2,37,39],['M42x1.5',1.5,40.5,42],['M42x2',2,40,42],['M45x1.5',1.5,43.5,45],['M45x2',2,43,45],['M48x1.5',1.5,46.5,48],['M48x2',2,46,48],['M52x1.5',1.5,50.5,52],['M52x2',2,50,52],['M56x2',2,54,56],['M60x2',2,58,60]],
 gas:[
-['G1/8',28,8.8,9.728],['G1/4',19,11.8,13.157],['G3/8',19,15.25,16.662],['G1/2',14,18.75,20.955],['G5/8',14,20.75,22.911],['G3/4',14,24.25,26.441],['G7/8',14,28,30.201],['G1',11,30.75,33.249],['G1 1/8',11,35.5,37.897],['G1 1/4',11,39.5,41.91],['G1 1/2',11,45,47.803],['G1 3/4',11,51,53.746],['G2',11,57,59.614]],
+['G1/8',28,8.8,9.728],['G1/4',19,11.8,13.157],['G3/8',19,15.25,16.662],['G1/2',14,18.75,20.955],['G5/8',14,20.75,22.911],['G3/4',14,24.5,26.441],['G7/8',14,28,30.201],['G1',11,30.75,33.249],['G1 1/8',11,35.5,37.897],['G1 1/4',11,39.5,41.91],['G1 1/2',11,45,47.803],['G1 3/4',11,51,53.746],['G2',11,57,59.614]],
 npt:[
 ['1/8 NPT',27,8.6,10.287],['1/4 NPT',18,11.1,13.716],['3/8 NPT',18,14.5,17.145],['1/2 NPT',14,17.9,21.336],['3/4 NPT',14,23.2,26.67],['1 NPT',11.5,29.2,33.401],['1 1/4 NPT',11.5,38.1,42.164],['1 1/2 NPT',11.5,44,48.26],['2 NPT',11.5,56,60.325]]
 };
 let threadTab=['met','fine','gas','npt'].includes(localStorage.getItem('thread_tab'))
  ?localStorage.getItem('thread_tab')
- :'met';
-let threadPart=localStorage.getItem('thread_part')==='shaft'?'shaft':'hole';
+ :'gas';
+let threadPart=localStorage.getItem('thread_part')==='hole'?'hole':'shaft';
+let turnThreadTab=['met','fine','gas','npt'].includes(localStorage.getItem('turn_thread_tab'))
+ ?localStorage.getItem('turn_thread_tab')
+ :'gas';
+let turnThreadPart=localStorage.getItem('turn_thread_part')==='hole'?'hole':'shaft';
+let turnThreadCode=localStorage.getItem('turn_thread_code')||'G3/4';
+
+const THREAD_FAMILY_META={
+ met:{label:'METRICO GROSSO',profile:'ISO 60°',standard:'ISO metrico'},
+ fine:{label:'METRICO FINE',profile:'ISO 60°',standard:'ISO metrico fine'},
+ gas:{label:'GAS / BSPP',profile:'WHITWORTH 55°',standard:'G parallelo · ISO 228'},
+ npt:{label:'NPT',profile:'NPT 60°',standard:'conico 1:16 · ASME B1.20.1'}
+};
+
+function threadEscape(value){
+ return String(value??'').replace(/[&<>'"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
+}
+
+function threadPitchMm(tab,row){
+ return (tab==='gas'||tab==='npt')?25.4/Number(row[1]):Number(row[1]);
+}
+
+function threadGeometry(tab,row,part='shaft'){
+ const code=String(row?.[0]||'');
+ const major=Number(row?.[3]);
+ const practicalDrill=Number(row?.[2]);
+ const pitch=threadPitchMm(tab,row);
+ const tpi=25.4/pitch;
+ let angle=60;
+ let sharpHeight=0.8660254038*pitch;
+ let depthExternal=0.6134347*pitch;
+ let depthInternal=0.5412659*pitch;
+ let radius=null;
+ let taper=null;
+ let pitchDiameter=major-0.6495191*pitch;
+
+ if(tab==='gas'){
+  angle=55;
+  sharpHeight=0.9604911*pitch;
+  depthExternal=depthInternal=0.640327*pitch;
+  radius=0.137329*pitch;
+  pitchDiameter=major-depthExternal;
+ }
+ if(tab==='npt'){
+  angle=60;
+  sharpHeight=0.8660254038*pitch;
+  depthExternal=depthInternal=0.8*pitch;
+  pitchDiameter=major-0.8*pitch;
+  taper='1:16 sul diametro · circa 1°47′ per lato';
+ }
+
+ const depth=part==='hole'?depthInternal:depthExternal;
+ const minor=major-2*depth;
+ return {
+  tab,part,code,major,practicalDrill,pitch,tpi,angle,sharpHeight,
+  depthExternal,depthInternal,depth,diametralDepth:2*depth,
+  pitchDiameter,minor,radius,taper,
+  profile:THREAD_FAMILY_META[tab]?.profile||'',
+  family:THREAD_FAMILY_META[tab]?.label||tab
+ };
+}
 
 function syncThreadButtons(){
  ['met','fine','gas','npt'].forEach(x=>{
@@ -2153,6 +2302,14 @@ function syncThreadButtons(){
  $('threadShaft')?.classList.toggle('on',threadPart==='shaft');
 }
 
+function syncTurnThreadButtons(){
+ ['met','fine','gas','npt'].forEach(x=>{
+  $('tt'+x[0].toUpperCase()+x.slice(1))?.classList.toggle('on',x===turnThreadTab);
+ });
+ $('ttHole')?.classList.toggle('on',turnThreadPart==='hole');
+ $('ttShaft')?.classList.toggle('on',turnThreadPart==='shaft');
+}
+
 function setThreadTab(t){
  threadTab=['met','fine','gas','npt'].includes(t)?t:'met';
  localStorage.setItem('thread_tab',threadTab);
@@ -2160,20 +2317,19 @@ function setThreadTab(t){
  renderThreads();
 }
 
+function setThreadPart(part){
+ threadPart=part==='hole'?'hole':'shaft';
+ localStorage.setItem('thread_part',threadPart);
+ syncThreadButtons();
+ renderThreads();
+}
+
 function openThreadQuick(tab,part,query){
  threadTab=tab;
- threadPart=part==='shaft'?'shaft':'hole';
+ threadPart=part==='hole'?'hole':'shaft';
  localStorage.setItem('thread_tab',threadTab);
  localStorage.setItem('thread_part',threadPart);
  if($('threadSearch'))$('threadSearch').value=query||'';
- syncThreadButtons();
- renderThreads();
- setTimeout(()=>$('threadBody')?.scrollIntoView({behavior:'smooth',block:'start'}),70);
-}
-
-function setThreadPart(part){
- threadPart=part==='shaft'?'shaft':'hole';
- localStorage.setItem('thread_part',threadPart);
  syncThreadButtons();
  renderThreads();
 }
@@ -2183,11 +2339,7 @@ function detectThreadTabFromSearch(value){
  const compact=q.replace(/\s+/g,'');
  if(/\bnpt\b/.test(q))return 'npt';
  if(/\b(?:gas|bsp|bspp)\b/.test(q)||/(?:^|\s)g\s*\d/.test(q))return 'gas';
- // Se viene scritta soltanto una misura in pollici come 3/4,
- // la tabella più probabile in officina è GAS/BSP.
- if(/^(?:g)?(?:1\/8|1\/4|3\/8|1\/2|5\/8|3\/4|7\/8|1|11\/8|11\/4|11\/2|13\/4|2)$/.test(compact)){
-  return threadTab==='npt'?'npt':'gas';
- }
+ if(/^(?:g)?(?:1\/8|1\/4|3\/8|1\/2|5\/8|3\/4|7\/8|1|11\/8|11\/4|11\/2|13\/4|2)$/.test(compact))return 'gas';
  if(/\bm\s*\d+(?:[.,]\d+)?\s*(?:x|per)\s*\d/.test(q))return 'fine';
  if(/\bm\s*\d/.test(q))return 'met';
  return null;
@@ -2198,36 +2350,76 @@ function threadSearchChanged(){
  if(detected&&detected!==threadTab){
   threadTab=detected;
   localStorage.setItem('thread_tab',threadTab);
-  syncThreadButtons();
  }
+ syncThreadButtons();
  renderThreads();
 }
 
-function speakThreadRow(index){
- const row=THREADS[threadTab]?.[index];
- if(!row)return;
- const part=threadPart==='shaft'?'shaft':'hole';
- if(threadTab==='gas')return answerGas(cleanInchSize(row[0]),part);
- if(threadTab==='npt')return answerNpt(cleanInchSize(row[0]),part);
+function threadFilterText(value){
+ return String(value||'').toLowerCase()
+  .replace(/\b(?:gas|bsp|bspp|npt|esterno|interno|albero|foro)\b/g,'')
+  .replace(/\s+/g,'')
+  .replace(',', '.');
+}
 
- const metricMatch=String(row[0]).match(/^M([\d.]+)(?:x([\d.]+))?$/i);
- if(!metricMatch)return;
- answerMetric(Number(metricMatch[1]),metricMatch[2]===undefined?null:Number(metricMatch[2]),part);
+function threadInfoText(){
+ const side=threadPart==='shaft'
+  ?'<strong>ALBERO / ESTERNO:</strong> mostra Ø esterno, passo P, profondità H del ciclo e X fondo teorico.'
+  :'<strong>FORO / INTERNO:</strong> mostra preforo, passo P, profondità H del ciclo e Ø finale teorico.';
+ const family=THREAD_FAMILY_META[threadTab];
+ return `${side}<br>${family.label} · ${family.profile}.`;
+}
+
+function renderThreadCard(row,index){
+ const g=threadGeometry(threadTab,row,threadPart);
+ const external=threadPart==='shaft';
+ const main1Label=external?'Ø ESTERNO / Xi NOMINALE':'PREFORO TEORICO / X INIZIO';
+ const main1Value=external?g.major:g.minor;
+ const main2Label='H CICLO · PROFONDITÀ RADIALE';
+ const main2Value=g.depth;
+ const bottomLabel=external?'X FONDO TEORICO':'Ø MAGGIORE FINALE';
+ const bottomValue=external?g.minor:g.major;
+ const tpiText=(threadTab==='gas'||threadTab==='npt')?`${fmtFlex(g.tpi,2)} TPI`:`${fmtFlex(g.tpi,1)} TPI`;
+ const radiusHtml=g.radius!==null
+  ?`<div class="threadParamV85"><span>R CRESTA / FONDO</span><b>${fmtFlex(g.radius,3)} <em>mm</em></b></div>`
+  :`<div class="threadParamV85"><span>PREFORO PRATICO TABELLA</span><b>${fmtFlex(g.practicalDrill,2)} <em>mm</em></b></div>`;
+ const taperHtml=g.taper
+  ?`<div class="threadParamV85"><span>CONICITÀ NPT</span><b style="font-size:12px">${g.taper}</b></div>`
+  :`<div class="threadParamV85"><span>ANGOLO PROFILO</span><b>${fmtFlex(g.angle,1)}°</b></div>`;
+
+ return `<div class="threadCardV85">
+  <div class="threadCardHeadV85">
+   <div class="threadCodeV85">${threadEscape(g.code)}</div>
+   <div class="threadProfileV85">${threadEscape(g.family)}<br>${threadEscape(g.profile)}<br>${tpiText}</div>
+  </div>
+  <div class="threadMainGridV85">
+   <div class="threadMainBoxV85 primary"><div class="threadMainLabelV85">${main1Label}</div><div class="threadMainValueV85">${fmtFlex(main1Value,3)} <small>mm</small></div></div>
+   <div class="threadMainBoxV85 primary"><div class="threadMainLabelV85">${main2Label}</div><div class="threadMainValueV85">${fmtFlex(main2Value,3)} <small>mm</small></div></div>
+   <div class="threadMainBoxV85"><div class="threadMainLabelV85">PASSO DA PROGRAMMARE · P</div><div class="threadMainValueV85">${fmtFlex(g.pitch,3)} <small>mm</small></div></div>
+   <div class="threadMainBoxV85"><div class="threadMainLabelV85">${bottomLabel}</div><div class="threadMainValueV85">${fmtFlex(bottomValue,3)} <small>mm</small></div></div>
+  </div>
+  <div class="threadParamGridV85">
+   <div class="threadParamV85"><span>Ø MEDIO TEORICO</span><b>${fmtFlex(g.pitchDiameter,3)} <em>mm</em></b></div>
+   <div class="threadParamV85"><span>ΔX TOTALE SUL DIAMETRO</span><b>${fmtFlex(g.diametralDepth,3)} <em>mm</em></b></div>
+   <div class="threadParamV85"><span>H TRIANGOLO TEORICO</span><b>${fmtFlex(g.sharpHeight,3)} <em>mm</em></b></div>
+   ${radiusHtml}
+   ${taperHtml}
+   <div class="threadParamV85"><span>PREFORO PRATICO TABELLA</span><b>${fmtFlex(g.practicalDrill,2)} <em>mm</em></b></div>
+  </div>
+  <div class="threadCardActionsV85">
+   <button class="threadOpenLatheV85" onclick="openTurnThread('${threadTab}','${threadEscape(g.code)}','${threadPart}')">🔩 PROGRAMMA TORNIO</button>
+   <button class="threadSpeakV85" onclick="speakThreadRow(${index})">🔊 LEGGI PARAMETRI</button>
+  </div>
+  <div class="threadWarningV85">H CICLO è la profondità radiale totale. H triangolo è solo geometria teorica: non copiarla nel campo H della macchina.</div>
+ </div>`;
 }
 
 function renderThreads(){
  const body=$('threadBody');
  if(!body)return;
-
  syncThreadButtons();
-
- const raw=String($('threadSearch')?.value||'');
- const q=raw.toLowerCase()
-  .replace(/\b(?:gas|bsp|bspp|npt)\b/g,'')
-  .replace(/\s+/g,'')
-  .replace(',', '.');
-
- const indexedRows=THREADS[threadTab]
+ const q=threadFilterText($('threadSearch')?.value||'');
+ const rows=(THREADS[threadTab]||[])
   .map((row,index)=>({row,index}))
   .filter(({row})=>{
    if(!q)return true;
@@ -2235,49 +2427,133 @@ function renderThreads(){
    const clean=cleanInchSize(row[0]).replace(/\s+/g,'');
    return code.includes(q)||clean.includes(q.replace(/^g/,''));
   });
-
- const info=$('threadModeInfo');
- if(info){
-  info.innerHTML=threadPart==='hole'
-   ?'<strong>FORO / INTERNO:</strong> mostra la punta o il preforo consigliato prima della maschiatura.'
-   :'<strong>ALBERO / ESTERNO:</strong> mostra il diametro esterno nominale del filetto da tornire.';
- }
-
- if(!indexedRows.length){
-  body.innerHTML='<div class="threadEmpty">Nessun filetto trovato.<br>Prova, per esempio, G3/4 oppure M16x1.5.</div>';
-  return;
- }
-
- body.innerHTML=indexedRows.map(({row,index})=>{
-  const isShaft=threadPart==='shaft';
-  const passLabel=(threadTab==='gas'||threadTab==='npt')?'TPI':'PASSO';
-  const mainLabel=isShaft?'Ø ESTERNO / ALBERO':'PUNTA / PREFORO';
-  const mainValue=isShaft?row[3]:row[2];
-
-  return `<div class="threadCard">
-   <div class="threadCardTop">
-    <div class="threadCode">${row[0]}</div>
-    <div class="threadPitch">${passLabel}<br><b>${row[1]}</b></div>
-   </div>
-
-   <div class="threadMeasureLabel">${mainLabel}</div>
-   <div class="threadMeasure">${fmtFlex(mainValue,isShaft?3:2)} <small>mm</small></div>
-
-   <div class="threadDualValues">
-    <div class="threadValueBox ${!isShaft?'selected':''}">
-     <div class="threadValueBoxLabel">FORO / INTERNO<br>PUNTA DI PREFORO</div>
-     <div class="threadValueBoxNumber">${fmtFlex(row[2],2)} <small>mm</small></div>
-    </div>
-    <div class="threadValueBox ${isShaft?'selected':''}">
-     <div class="threadValueBoxLabel">ALBERO / ESTERNO<br>Ø NOMINALE</div>
-     <div class="threadValueBoxNumber">${fmtFlex(row[3],3)} <small>mm</small></div>
-    </div>
-   </div>
-
-   <button class="threadSpeak" onclick="speakThreadRow(${index})">🔊 LEGGI IL VALORE SELEZIONATO</button>
-  </div>`;
- }).join('');
+ if($('threadModeInfo'))$('threadModeInfo').innerHTML=threadInfoText();
+ body.innerHTML=rows.length
+  ?rows.map(({row,index})=>renderThreadCard(row,index)).join('')
+  :'<div class="threadEmptyV85">Nessun filetto trovato.<br>Prova G3/4, M16 oppure M16x1.5.</div>';
 }
+
+function speakThreadRow(index){
+ const row=THREADS[threadTab]?.[index];
+ if(!row)return;
+ const g=threadGeometry(threadTab,row,threadPart);
+ const side=threadPart==='shaft'?'esterno':'interno';
+ const start=threadPart==='shaft'?g.major:g.minor;
+ const end=threadPart==='shaft'?g.minor:g.major;
+ direct(
+  `${g.code} ${side}: diametro ${fmtFlex(start,3)}, passo ${fmtFlex(g.pitch,3)}, H ${fmtFlex(g.depth,3)} millimetri.`,
+  `${g.code}, filetto ${side}. Diametro iniziale ${fmtFlex(start,3)} millimetri. Passo ${fmtFlex(g.pitch,3)}. Profondità totale H ${fmtFlex(g.depth,3)} millimetri. Diametro finale teorico ${fmtFlex(end,3)} millimetri. Diametro medio ${fmtFlex(g.pitchDiameter,3)} millimetri.`
+ );
+}
+
+function setTurnThreadTab(tab){
+ turnThreadTab=['met','fine','gas','npt'].includes(tab)?tab:'met';
+ localStorage.setItem('turn_thread_tab',turnThreadTab);
+ const rows=THREADS[turnThreadTab]||[];
+ if(!rows.some(r=>String(r[0])===turnThreadCode))turnThreadCode=String(rows[0]?.[0]||'');
+ renderTurnThreadSelect();
+}
+
+function setTurnThreadPart(part){
+ turnThreadPart=part==='hole'?'hole':'shaft';
+ localStorage.setItem('turn_thread_part',turnThreadPart);
+ syncTurnThreadButtons();
+ renderTurnThread();
+}
+
+function setTurnThreadDirect(tab,code,part='shaft'){
+ turnThreadTab=tab;
+ turnThreadPart=part==='hole'?'hole':'shaft';
+ turnThreadCode=code;
+ localStorage.setItem('turn_thread_tab',turnThreadTab);
+ localStorage.setItem('turn_thread_part',turnThreadPart);
+ localStorage.setItem('turn_thread_code',turnThreadCode);
+ renderTurnThreadSelect();
+}
+
+function openTurnThread(tab,code,part='shaft'){
+ setTurnThreadDirect(tab,code,part);
+ show('turnthread');
+ setTimeout(()=>renderTurnThreadSelect(),0);
+}
+
+function renderTurnThreadSelect(){
+ const select=$('ttThreadSelect');
+ if(!select)return;
+ syncTurnThreadButtons();
+ const rows=THREADS[turnThreadTab]||[];
+ if(!rows.some(r=>String(r[0])===turnThreadCode))turnThreadCode=String(rows[0]?.[0]||'');
+ select.innerHTML=rows.map(row=>`<option value="${threadEscape(row[0])}" ${String(row[0])===turnThreadCode?'selected':''}>${threadEscape(row[0])}</option>`).join('');
+ select.value=turnThreadCode;
+ renderTurnThread();
+}
+
+function renderTurnThread(){
+ const select=$('ttThreadSelect');
+ const result=$('resTT');
+ if(!select||!result)return;
+ turnThreadCode=String(select.value||turnThreadCode);
+ localStorage.setItem('turn_thread_code',turnThreadCode);
+ syncTurnThreadButtons();
+ const row=(THREADS[turnThreadTab]||[]).find(r=>String(r[0])===turnThreadCode);
+ if(!row){result.innerHTML='<div class="err">Filetto non disponibile.</div>';return}
+ const g=threadGeometry(turnThreadTab,row,turnThreadPart);
+ const external=turnThreadPart==='shaft';
+ const initial=external?g.major:g.minor;
+ const final=external?g.minor:g.major;
+ const side=external?'ESTERNO / ALBERO':'INTERNO / FORO';
+ const direction=external?'penetrazione verso -X':'penetrazione verso +X';
+ const radiusBlock=g.radius!==null
+  ?`<div class="turnThreadDetailV85"><span>R CRESTA / FONDO</span><b>${fmtFlex(g.radius,3)} mm</b></div>`
+  :`<div class="turnThreadDetailV85"><span>ANGOLO PROFILO</span><b>${fmtFlex(g.angle,1)}°</b></div>`;
+ const taperBlock=g.taper
+  ?`<div class="turnThreadDetailV85"><span>CONICITÀ</span><b style="font-size:12px">${g.taper}</b></div>`
+  :`<div class="turnThreadDetailV85"><span>FAMIGLIA</span><b style="font-size:13px">${g.profile}</b></div>`;
+
+ result.innerHTML=`
+  <div class="turnThreadHeroV85">
+   <div class="turnThreadHeroCodeV85">${threadEscape(g.code)} · ${side}</div>
+   <div class="turnThreadHeroLineV85">${threadEscape(g.family)} · ${threadEscape(g.profile)} · ${direction}</div>
+   <div class="turnThreadHeroGridV85">
+    <div class="turnThreadHeroBoxV85"><span>${external?'Xi / Ø ESTERNO NOMINALE':'Xi / PREFORO TEORICO'}</span><b>${fmtFlex(initial,3)} <small>mm</small></b></div>
+    <div class="turnThreadHeroBoxV85"><span>P · PASSO DA PROGRAMMARE</span><b>${fmtFlex(g.pitch,3)} <small>mm</small></b></div>
+    <div class="turnThreadHeroBoxV85"><span>H · PROFONDITÀ TOTALE RADIALE</span><b>${fmtFlex(g.depth,3)} <small>mm</small></b></div>
+    <div class="turnThreadHeroBoxV85"><span>${external?'X FONDO TEORICO':'X FINALE TEORICO'}</span><b>${fmtFlex(final,3)} <small>mm</small></b></div>
+   </div>
+  </div>
+  <div class="turnThreadDetailsV85">
+   <div class="turnThreadDetailV85"><span>Ø MEDIO TEORICO</span><b>${fmtFlex(g.pitchDiameter,3)} mm</b></div>
+   <div class="turnThreadDetailV85"><span>ΔX COMPLESSIVO</span><b>${fmtFlex(g.diametralDepth,3)} mm</b></div>
+   <div class="turnThreadDetailV85"><span>H TRIANGOLO TEORICO</span><b>${fmtFlex(g.sharpHeight,3)} mm</b></div>
+   <div class="turnThreadDetailV85"><span>TPI</span><b>${fmtFlex(g.tpi,2)}</b></div>
+   ${radiusBlock}
+   ${taperBlock}
+   <div class="turnThreadDetailV85"><span>PREFORO PRATICO TABELLA</span><b>${fmtFlex(g.practicalDrill,2)} mm</b></div>
+   <div class="turnThreadDetailV85"><span>ANGOLO</span><b>${fmtFlex(g.angle,1)}°</b></div>
+  </div>
+  <div class="turnThreadMachineV85"><strong>PER IL CICLO DELLA FOTO:</strong> usa P come passo e H come profondità totale radiale. Il valore “H triangolo teorico” è un altro dato geometrico e non va inserito nel campo H. La quota Xi reale può essere corretta secondo tolleranza, inserto e controllo con anello/tampone.</div>`;
+}
+
+function calcTurnThread(){
+ const d=num('ttD'),p=num('ttP'),profile=$('ttProfile')?.value||'55';
+ const out=$('resTTManual');
+ if(!out)return;
+ if(bad([d,p])||d<=0||p<=0){out.innerHTML='<div class="err">Controlla i dati.</div>';return}
+ let depth,angle,sharp,radius=null,label='';
+ if(profile==='55'){
+  depth=.640327*p;angle=55;sharp=.9604911*p;radius=.137329*p;label='GAS / WHITWORTH 55°';
+ }else if(profile==='60int'){
+  depth=.5412659*p;angle=60;sharp=.8660254*p;label='METRICO INTERNO 60°';
+ }else if(profile==='npt'){
+  depth=.8*p;angle=60;sharp=.8660254*p;label='NPT 60° CONICO';
+ }else{
+  depth=.6134347*p;angle=60;sharp=.8660254*p;label='METRICO ESTERNO 60°';
+ }
+ const bottom=d-2*depth;
+ out.innerHTML=box('PROFONDITÀ H CICLO',fmt(depth))+box('X FONDO TEORICO',fmt(bottom))+box('PASSO P',fmt(p))+
+  `<div class="threadParamGridV85"><div class="threadParamV85"><span>PROFILO</span><b style="font-size:12px">${label}</b></div><div class="threadParamV85"><span>H TRIANGOLO</span><b>${fmt(sharp)} <em>mm</em></b></div>${radius!==null?`<div class="threadParamV85"><span>R CRESTA/FONDO</span><b>${fmt(radius)} <em>mm</em></b></div>`:''}<div class="threadParamV85"><span>ANGOLO</span><b>${angle}°</b></div></div>`;
+}
+
 function findMetric(n,pitch=null){
  const arr=pitch===null?THREADS.met:THREADS.fine;
  return arr.find(r=>{
@@ -4368,25 +4644,21 @@ function toleranceFromSpeech(s){
 }
 function detectThreadPartIntent(s){
  const phrase=String(s||'').toLowerCase();
-
- if(/\b(?:diametro\s+esterno|esterno|albero|perno|filetto\s+maschio|parte\s+maschio|tornire)\b/.test(phrase)){
-  return 'shaft';
- }
- if(/\b(?:foro|foratura|preforo|punta|interno|filetto\s+femmina|maschiare|maschiatura)\b/.test(phrase)){
-  return 'hole';
- }
- return 'hole';
+ if(/\b(?:foro|foratura|preforo|punta|interno|filetto\s+femmina|maschiare|maschiatura)\b/.test(phrase))return 'hole';
+ if(/\b(?:diametro\s+esterno|esterno|albero|perno|filetto\s+maschio|parte\s+maschio|tornire|tornio|g267)\b/.test(phrase))return 'shaft';
+ return threadPart==='hole'?'hole':'shaft';
 }
 
 function parseThreadRequest(input){
  const s=normalizeSpeech(input);
  const part=detectThreadPartIntent(s);
+ const detail=/\b(?:tornio|g267|parametr|profondit|altezza|cresta|x fondo|ciclo)\b/.test(s)?'lathe':'basic';
 
  /* NPT deve avere precedenza, perché contiene anch’esso una misura in pollici. */
  const nptIntent=/\bnpt\b/.test(s)||/\b(?:americano\s+conico|conico\s+americano)\b/.test(s);
  if(nptIntent){
   const size=extractInchSize(s,THREADS.npt);
-  return size?{family:'npt',size,part,normalized:s}:{family:'npt',missingSize:true,part,normalized:s};
+  return size?{family:'npt',size,part,detail,normalized:s}:{family:'npt',missingSize:true,part,detail,normalized:s};
  }
 
  /* GAS/BSP, comprese le forme G1, G 1/2, 1G e 1/2 G. */
@@ -4395,7 +4667,7 @@ function parseThreadRequest(input){
   ||/(?:\d+\s+\d+\/\d+|\d+\/\d+|\d+)\s*g\b/.test(s);
  if(gasIntent){
   const size=extractInchSize(s,THREADS.gas);
-  return size?{family:'gas',size,part,normalized:s}:{family:'gas',missingSize:true,part,normalized:s};
+  return size?{family:'gas',size,part,detail,normalized:s}:{family:'gas',missingSize:true,part,detail,normalized:s};
  }
 
  let n=null;
@@ -4414,13 +4686,13 @@ function parseThreadRequest(input){
 
  /* Cerca il passo soltanto DOPO la misura M: evita di leggere “per un foro” come passo 1. */
  const pitchMatch=afterSize.match(/\b(?:x|per|passo(?:\s+fine)?)\s*(\d+(?:\.\d+)?)/i);
- if(pitchMatch)return {family:'metric',n,pitch:Number(pitchMatch[1]),part,normalized:s};
+ if(pitchMatch)return {family:'metric',n,pitch:Number(pitchMatch[1]),part,detail,normalized:s};
 
  /* Se dice soltanto “passo fine”, non si può indovinare quale fine. */
- if(/\b(?:passo\s+fine|filetto\s+fine)\b/.test(afterSize))return {family:'metric',n,needsFinePitch:true,part,normalized:s};
+ if(/\b(?:passo\s+fine|filetto\s+fine)\b/.test(afterSize))return {family:'metric',n,needsFinePitch:true,part,detail,normalized:s};
 
  /* Passo grosso, standard, normale o nessun passo indicato = metrico grosso. */
- return {family:'metric',n,pitch:null,part,normalized:s};
+ return {family:'metric',n,pitch:null,part,detail,normalized:s};
 }
 
 function availableFinePitches(n){
@@ -4429,10 +4701,10 @@ function availableFinePitches(n){
   .filter(v=>v!==null);
 }
 
-function speakFinePitchQuestion(n,part='hole'){
+function speakFinePitchQuestion(n,part='hole',detail='basic'){
  const pitches=availableFinePitches(n);
  if(!pitches.length){showVA(`Non risultano passi fini per M${fmtFlex(n)}.`,true);return}
- pendingFollow={type:'pitch',n,part};
+ pendingFollow={type:'pitch',n,part,detail};
  const list=pitches.map(p=>fmtFlex(p)).join(', ');
  showVA(`Per M${fmtFlex(n)} dimmi il passo fine: ${list} millimetri.`,true);
 }
@@ -4440,15 +4712,15 @@ function speakFinePitchQuestion(n,part='hole'){
 function dispatchThreadRequest(req){
  if(!req)return false;
  if(req.family==='npt'){
-  if(req.missingSize)showVA('Quale misura NPT?',true);else answerNpt(req.size,req.part);
+  if(req.missingSize)showVA('Quale misura NPT?',true);else answerNpt(req.size,req.part,req.detail);
   return true;
  }
  if(req.family==='gas'){
-  if(req.missingSize)showVA('Quale misura GAS?',true);else answerGas(req.size,req.part);
+  if(req.missingSize)showVA('Quale misura GAS?',true);else answerGas(req.size,req.part,req.detail);
   return true;
  }
  if(req.family==='metric'){
-  if(req.needsFinePitch)speakFinePitchQuestion(req.n,req.part);else answerMetric(req.n,req.pitch,req.part);
+  if(req.needsFinePitch)speakFinePitchQuestion(req.n,req.part,req.detail);else answerMetric(req.n,req.pitch,req.part,req.detail);
   return true;
  }
  return false;
@@ -4485,7 +4757,7 @@ function askAssistant(raw){
  if(/\b(spiegami|dettagli|approfondisci)\b/.test(s)){showVA(lastDetail||'Non ho ancora una risposta da spiegare.',!lastDetail);return}
  if(pendingFollow?.type==='pitch'){
   const p=extractPendingPitch(raw);
-  if(Number.isFinite(p)){answerMetric(pendingFollow.n,p,pendingFollow.part||'hole');return}
+  if(Number.isFinite(p)){answerMetric(pendingFollow.n,p,pendingFollow.part||'hole',pendingFollow.detail||'basic');return}
  }
  if(toleranceFromSpeech(s))return;
 
@@ -4526,72 +4798,51 @@ function askAssistant(raw){
  }
  showVA('Domanda non riconosciuta. Prova: “Quanto devo forare per M18 passo grosso?”',true)
 }
-function answerMetric(n,pitch,part='hole'){
- const r=findMetric(n,pitch);
-
- if(!r&&pitch!==null){
-  const drill=n-pitch;
-  if(part==='shaft'){
-   direct(
-    `Diametro esterno nominale ${fmtFlex(n,3)} millimetri.`,
-    `Filetto M ${fmtFlex(n)} passo ${fmtFlex(pitch)}: diametro esterno nominale ${fmtFlex(n,3)} millimetri. Verifica la tolleranza prevista dal disegno.`
-   );
-  }else{
-   direct(
-    `Punta teorica circa ${fmtFlex(drill,2)} millimetri.`,
-    `M ${fmtFlex(n)} passo ${fmtFlex(pitch)}: preforo teorico diametro meno passo, circa ${fmtFlex(drill,2)} millimetri. Verifica la tabella aziendale.`
-   );
-  }
+function voiceThreadGeometry(tab,row,part,detail='basic'){
+ const g=threadGeometry(tab,row,part);
+ const external=part==='shaft';
+ const side=external?'esterno':'interno';
+ const initial=external?g.major:g.minor;
+ const final=external?g.minor:g.major;
+ if(detail==='lathe'){
+  direct(
+   `${g.code} ${side}: diametro ${fmtFlex(initial,3)}, passo ${fmtFlex(g.pitch,3)}, H ${fmtFlex(g.depth,3)} millimetri.`,
+   `${g.code}, filetto ${side}. Diametro iniziale ${fmtFlex(initial,3)} millimetri. Passo P ${fmtFlex(g.pitch,3)} millimetri. Profondità totale radiale H ${fmtFlex(g.depth,3)} millimetri. Diametro finale teorico ${fmtFlex(final,3)} millimetri. Diametro medio ${fmtFlex(g.pitchDiameter,3)} millimetri.${g.radius!==null?` Raggio cresta e fondo ${fmtFlex(g.radius,3)} millimetri.`:''}`
+  );
   return;
  }
+ if(external){
+  direct(
+   `Diametro esterno nominale ${fmtFlex(g.major,3)} millimetri.`,
+   `${g.code}: diametro esterno nominale ${fmtFlex(g.major,3)} millimetri, passo ${fmtFlex(g.pitch,3)}, profondità radiale teorica ${fmtFlex(g.depth,3)} millimetri.`
+  );
+ }else{
+  direct(
+   `Preforo pratico ${fmtFlex(g.practicalDrill,2)} millimetri.`,
+   `${g.code}: preforo pratico ${fmtFlex(g.practicalDrill,2)} millimetri. Preforo geometrico teorico ${fmtFlex(g.minor,3)} millimetri, passo ${fmtFlex(g.pitch,3)}.`
+  );
+ }
+}
 
+function answerMetric(n,pitch,part='hole',detail='basic'){
+ const r=findMetric(n,pitch);
+ if(!r&&pitch!==null){
+  const code=`M${fmtFlex(n)}x${fmtFlex(pitch)}`;
+  const row=[code,pitch,n-pitch,n];
+  voiceThreadGeometry('fine',row,part,detail);
+  return;
+ }
  if(!r){showVA(`M${fmtFlex(n)} non è presente.`,true);return}
-
- if(part==='shaft'){
-  direct(
-   `Diametro esterno nominale ${fmtFlex(r[3],3)} millimetri.`,
-   `${r[0]}, passo ${fmtFlex(r[1])} millimetri: diametro esterno nominale ${fmtFlex(r[3],3)} millimetri. Preforo di riferimento ${fmtFlex(r[2],2)} millimetri.`
-  );
- }else{
-  direct(
-   `Punta da ${fmtFlex(r[2],2)} millimetri.`,
-   `${r[0]}, passo ${fmtFlex(r[1])} millimetri: punta consigliata ${fmtFlex(r[2],2)} millimetri. Diametro esterno nominale ${fmtFlex(r[3],3)} millimetri.`
-  );
- }
+ const tab=String(r[0]).includes('x')?'fine':'met';
+ voiceThreadGeometry(tab,r,part,detail);
 }
-
-function answerGas(size,part='hole'){
- const r=findGas(size);
- if(!r){showVA(`GAS ${size} non presente.`,true);return}
-
- if(part==='shaft'){
-  direct(
-   `Diametro esterno nominale ${fmtFlex(r[3],3)} millimetri.`,
-   `Filetto ${r[0]}, ${r[1]} filetti per pollice: diametro esterno nominale ${fmtFlex(r[3],3)} millimetri. Preforo di riferimento ${fmtFlex(r[2],2)} millimetri. Verifica la tolleranza prevista dal disegno.`
-  );
- }else{
-  direct(
-   `Punta da ${fmtFlex(r[2],2)} millimetri.`,
-   `Filetto ${r[0]}, ${r[1]} filetti per pollice: preforo ${fmtFlex(r[2],2)} millimetri. Diametro esterno nominale ${fmtFlex(r[3],3)} millimetri.`
-  );
- }
+function answerGas(size,part='hole',detail='basic'){
+ const r=findGas(size);if(!r){showVA(`GAS ${size} non presente.`,true);return}
+ voiceThreadGeometry('gas',r,part,detail);
 }
-
-function answerNpt(size,part='hole'){
- const r=findNpt(size);
- if(!r){showVA(`NPT ${size} non presente.`,true);return}
-
- if(part==='shaft'){
-  direct(
-   `Diametro esterno nominale ${fmtFlex(r[3],3)} millimetri.`,
-   `Filetto ${r[0]}, ${r[1]} filetti per pollice: diametro esterno nominale di riferimento ${fmtFlex(r[3],3)} millimetri. Il filetto NPT è conico: verifica piano di misura e calibro.`
-  );
- }else{
-  direct(
-   `Punta da ${fmtFlex(r[2],2)} millimetri.`,
-   `Filetto ${r[0]}, ${r[1]} filetti per pollice: preforo pratico ${fmtFlex(r[2],2)} millimetri. Diametro esterno nominale ${fmtFlex(r[3],3)} millimetri.`
-  );
- }
+function answerNpt(size,part='hole',detail='basic'){
+ const r=findNpt(size);if(!r){showVA(`NPT ${size} non presente.`,true);return}
+ voiceThreadGeometry('npt',r,part,detail);
 }
 function spokenToleranceCode(code){
  const compact=String(code||'').trim();
@@ -4728,10 +4979,8 @@ function init(){
    if(event.key==='Enter')calcHalf();
   });
  }
- threadTab=['met','fine','gas','npt'].includes(localStorage.getItem('thread_tab'))
-  ?localStorage.getItem('thread_tab')
-  :threadTab;
- threadPart=localStorage.getItem('thread_part')==='shaft'?'shaft':'hole';
+ threadTab=['met','fine','gas','npt'].includes(localStorage.getItem('thread_tab'))?localStorage.getItem('thread_tab'):threadTab;
+ threadPart=localStorage.getItem('thread_part')==='hole'?'hole':'shaft';
  syncThreadButtons();
  renderThreads();
  tolKind=localStorage.getItem('tol_kind')==='albero'?'albero':'foro';
