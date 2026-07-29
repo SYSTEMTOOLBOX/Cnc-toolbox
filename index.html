@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#050505">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>CNC Toolbox v8.7 Tornio Pulito</title>
+<title>CNC Toolbox v8.8 Lista Ordini Magazzino</title>
 <style>
 :root{--y:#ffc400;--y2:#dfa500;--b:#050505;--p:#141414;--p2:#0b0b0b;--l:#3e3e3e;--w:#fff;--g:#aaa;--ok:#68e36f;--err:#ff5b5b;--blue:#54baff}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -487,6 +487,172 @@ select{text-align:center;font-size:15px}
 .inventoryLowPanel{border:2px solid var(--err);border-radius:12px;background:#240909;padding:12px;margin:11px 0}
 .inventoryLowPanel.ok{border-color:var(--ok);background:#071b09}
 .inventoryLowTitle{font-weight:1000;color:#fff;margin-bottom:7px}.inventoryLowItem{border-top:1px solid rgba(255,255,255,.16);padding:8px 0;font-size:13px;line-height:1.4}.inventoryLowItem:first-child{border-top:0}.inventoryLowItem strong{color:#fff}.inventoryLowItem span{color:var(--err);font-weight:1000}.inventoryLowPanel.ok .inventoryLowTitle{color:var(--ok)}
+.inventoryLowPanel.hasItems{
+ cursor:pointer;
+ position:relative;
+ padding-right:50px;
+ touch-action:manipulation
+}
+.inventoryLowPanel.hasItems:active{transform:scale(.99)}
+.inventoryLowPanelArrow{
+ position:absolute;
+ right:15px;
+ top:50%;
+ transform:translateY(-50%);
+ color:#fff;
+ font-size:38px;
+ font-weight:900
+}
+.inventoryLowOpenHint{
+ margin-top:8px;
+ color:#fff;
+ font-size:12px;
+ font-weight:900
+}
+.inventorySummaryBox.orderShortcut{cursor:pointer;touch-action:manipulation}
+.inventorySummaryBox.orderShortcut:active{transform:scale(.97)}
+
+.inventoryOrderSummary{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:8px;
+ margin-bottom:10px
+}
+.inventoryOrderSummaryBox{
+ border:1px solid #59646a;
+ border-radius:10px;
+ background:#09131a;
+ padding:11px;
+ text-align:center
+}
+.inventoryOrderSummaryBox strong{
+ display:block;
+ color:var(--blue);
+ font-size:26px;
+ line-height:1.05
+}
+.inventoryOrderSummaryBox span{
+ display:block;
+ color:#ddd;
+ font-size:11px;
+ font-weight:900;
+ margin-top:5px
+}
+.inventoryOrderList{display:grid;gap:10px}
+.inventoryOrderCard{
+ border:2px solid var(--err);
+ border-radius:12px;
+ background:linear-gradient(145deg,#2a0b0b,#100606);
+ padding:12px
+}
+.inventoryOrderHead{
+ display:flex;
+ justify-content:space-between;
+ align-items:flex-start;
+ gap:10px
+}
+.inventoryOrderTitle{
+ color:#fff;
+ font-size:18px;
+ font-weight:1000;
+ line-height:1.25
+}
+.inventoryOrderNumber{
+ min-width:42px;
+ height:42px;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ border-radius:999px;
+ background:var(--err);
+ color:#fff;
+ font-size:18px;
+ font-weight:1000
+}
+.inventoryOrderDescription{
+ margin-top:7px;
+ color:#ddd;
+ font-size:13px;
+ font-weight:800;
+ line-height:1.4
+}
+.inventoryOrderLocation{
+ margin-top:6px;
+ color:#aaa;
+ font-size:12px;
+ font-weight:850
+}
+.inventoryOrderStockGrid{
+ display:grid;
+ grid-template-columns:1fr 1fr 1fr;
+ gap:7px;
+ margin-top:11px
+}
+.inventoryOrderStockBox{
+ border:1px solid #5a5a5a;
+ border-radius:9px;
+ background:#0a0a0a;
+ padding:8px 5px;
+ text-align:center
+}
+.inventoryOrderStockBox strong{
+ display:block;
+ color:#fff;
+ font-size:21px;
+ line-height:1.05
+}
+.inventoryOrderStockBox span{
+ display:block;
+ color:#aaa;
+ font-size:9px;
+ font-weight:900;
+ margin-top:4px
+}
+.inventoryOrderQty{
+ margin-top:11px;
+ display:grid;
+ grid-template-columns:1fr 105px;
+ gap:8px;
+ align-items:center
+}
+.inventoryOrderQty label{
+ color:var(--y);
+ font-size:13px;
+ font-weight:1000
+}
+.inventoryOrderQty input{
+ width:100%;
+ height:50px;
+ border:2px solid var(--y);
+ border-radius:9px;
+ background:#fff;
+ color:#050505;
+ text-align:center;
+ font-size:21px;
+ font-weight:1000
+}
+.inventoryOrderPrint{
+ position:sticky;
+ bottom:8px;
+ z-index:25;
+ box-shadow:0 8px 28px rgba(0,0,0,.8)
+}
+.inventoryOrderEmpty{
+ border:1px dashed #666;
+ border-radius:11px;
+ padding:22px 12px;
+ text-align:center;
+ color:#aaa;
+ font-size:14px;
+ font-weight:900;
+ line-height:1.5
+}
+@media(max-width:390px){
+ .inventoryOrderStockGrid{gap:5px}
+ .inventoryOrderStockBox strong{font-size:18px}
+ .inventoryOrderQty{grid-template-columns:1fr 90px}
+}
+
 .inventorySearchRow{display:grid;grid-template-columns:minmax(0,1fr) 155px;gap:8px}.inventorySearchRow select{height:58px}
 .inventoryFormGrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.inventoryField{display:grid;gap:6px}.inventoryField.full{grid-column:1/-1}.inventoryField label{color:#ccc;font-size:13px;font-weight:900}.inventoryField input,.inventoryField select{height:52px;border:2px solid #ddd;border-radius:9px;background:#fff;color:#050505;padding:0 10px;font-size:17px;font-weight:900;width:100%;min-width:0}.inventoryFormActions{display:grid;grid-template-columns:1fr 118px;gap:8px}.inventoryCancel{display:none}.inventoryCancel.show{display:block}
 .inventoryList{display:grid;gap:10px;margin-top:12px}.inventoryCard{border:1.5px solid #454545;border-radius:13px;background:linear-gradient(145deg,#181818,#080808);padding:12px}.inventoryCard.low{border-color:var(--err);box-shadow:0 0 0 1px rgba(255,91,91,.18) inset}.inventoryCardHead{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.inventoryCardTitle{color:var(--y);font-size:19px;font-weight:1000;line-height:1.2}.inventoryCardMeta{color:#aaa;font-size:12px;line-height:1.45;margin-top:5px}.inventoryQuantity{min-width:92px;text-align:center;border:2px solid var(--y);border-radius:10px;padding:7px;background:#080808}.inventoryQuantity strong{display:block;color:var(--y);font-size:31px;line-height:1}.inventoryQuantity span{display:block;color:#ddd;font-size:11px;font-weight:900;margin-top:4px}.inventoryCard.low .inventoryQuantity{border-color:var(--err)}.inventoryCard.low .inventoryQuantity strong{color:var(--err)}
@@ -655,7 +821,7 @@ select{text-align:center;font-size:15px}
   <div>
    <h1>CNC <span>TOOLBOX</span></h1>
    <div class="sub">STRUMENTI PER L'OFFICINA CNC</div>
-   <div class="version">v8.7 · TORNIO PULITO</div>
+   <div class="version">v8.8 · LISTA ORDINI MAGAZZINO</div>
    <div class="betaSyncPill">
     <span id="betaHomeDot" class="betaSyncDot loading"></span>
     <span id="betaHomeStatus">COLLEGAMENTO…</span>
@@ -1176,13 +1342,13 @@ select{text-align:center;font-size:15px}
   <div class="inventorySummaryGrid">
    <div class="inventorySummaryBox"><strong id="inventorySummaryItems">0</strong><span>ARTICOLI</span></div>
    <div class="inventorySummaryBox"><strong id="inventorySummaryQty">0</strong><span>PEZZI / UNITÀ</span></div>
-   <div class="inventorySummaryBox"><strong id="inventorySummaryLow">0</strong><span>DA ORDINARE</span></div>
+   <div class="inventorySummaryBox orderShortcut" onclick="openInventoryOrderList()" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openInventoryOrderList()}"><strong id="inventorySummaryLow">0</strong><span>DA ORDINARE</span></div>
   </div>
   <button id="inventoryNotifyButton" class="btn2" onclick="requestInventoryNotifications()">ATTIVA AVVISI SCORTA</button>
   <div class="hint">L’avviso rosso funziona sempre dentro l’app. La notifica di sistema funziona quando il browser consente le notifiche.</div>
  </div>
 
- <div id="inventoryLowPanel" class="inventoryLowPanel ok">
+ <div id="inventoryLowPanel" class="inventoryLowPanel ok" onclick="openInventoryOrderList()" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openInventoryOrderList()}">
   <div class="inventoryLowTitle">SCORTE REGOLARI</div>
   <div>Nessun articolo è sotto la scorta minima.</div>
  </div>
@@ -1254,6 +1420,32 @@ select{text-align:center;font-size:15px}
   <h2>ULTIMI MOVIMENTI MAGAZZINO</h2>
   <div id="inventoryHistory" class="inventoryHistory"><div class="inventoryEmpty">Nessun movimento registrato.</div></div>
  </div>
+</section>
+
+<section id="inventoryorders" class="screen">
+ <div class="header">
+  <button class="back" onclick="goBack()">‹</button>
+  <div class="title">LISTA DA ORDINARE<small>DESCRIZIONI · QUANTITÀ · PDF</small></div>
+  <button class="help" onclick="alert('Qui trovi soltanto gli articoli arrivati alla scorta minima. Puoi cambiare la quantità da ordinare e poi premere STAMPA / SALVA PDF. Sul telefono scegli Salva come PDF oppure una stampante.')">?</button>
+ </div>
+
+ <div class="card">
+  <h2>RIEPILOGO ORDINE</h2>
+  <div class="inventoryOrderSummary">
+   <div class="inventoryOrderSummaryBox"><strong id="inventoryOrderCount">0</strong><span>ARTICOLI DA ORDINARE</span></div>
+   <div class="inventoryOrderSummaryBox"><strong id="inventoryOrderTotal">0</strong><span>UNITÀ SUGGERITE</span></div>
+  </div>
+  <div class="hint">Le quantità suggerite riportano la scorta fino al minimo impostato. Puoi modificarle prima di creare il PDF.</div>
+ </div>
+
+ <div class="card">
+  <h2>ARTICOLI</h2>
+  <div id="inventoryOrderList" class="inventoryOrderList">
+   <div class="inventoryOrderEmpty">Nessun articolo da ordinare.</div>
+  </div>
+ </div>
+
+ <button class="btn inventoryOrderPrint" onclick="printInventoryOrderList()">🖨 STAMPA / SALVA PDF</button>
 </section>
 
 <section id="toolmanager" class="screen">
@@ -1589,7 +1781,7 @@ select{text-align:center;font-size:15px}
 
 <section id="settings" class="screen">
  <div class="header"><button class="back" onclick="goBack()">‹</button><div class="title">MENU</div><button class="help">▤</button></div>
- <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v8.5 BETA</div></div><div class="note">Beta online: macchine, carico/scarico rapido, utensili, operatori e magazzino vengono sincronizzati tra i telefoni autorizzati. La Home è organizzata in cartelle; Scanner 3D e Righello/Calibro sono stati rimossi, mentre il Goniometro resta disponibile. La versione stabile v7.7 rimane separata.</div></div>
+ <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v8.8 BETA</div></div><div class="note">Beta online: macchine, carico/scarico rapido, utensili, operatori e magazzino vengono sincronizzati tra i telefoni autorizzati. La Home è organizzata in cartelle; Scanner 3D e Righello/Calibro sono stati rimossi, mentre il Goniometro resta disponibile. La versione stabile v7.7 rimane separata.</div></div>
  <div class="card"><h2>AZIONI</h2><button class="btn2" onclick="clearSettings()">PULISCI IMPOSTAZIONI</button></div>
 </section>
 
@@ -1619,6 +1811,7 @@ function show(id,options={}){
  if(id!=='goniometer'&&id!=='torch')stopCamera();
  if(id==='assistant')setTimeout(populateVoices,80);
  if(id==='inventory')window.renderInventory?.();
+ if(id==='inventoryorders')window.renderInventoryOrderList?.();
  if(id==='machinesquick')renderQuickMachineChooser();
  if(id==='usedtools')renderUsedTools();
  if(id==='threads')setTimeout(()=>{
@@ -5380,6 +5573,223 @@ function inventorySearchMatch(item,search){
  const haystack=[item.category,item.code,item.diameter,inventoryDiameter(item.diameter),item.description,item.location].join(' ').toLocaleLowerCase('it').replaceAll(',','.');
  return haystack.includes(normalized);
 }
+
+function inventoryLowItems(){
+ return inventoryItems
+  .filter(item=>Number(item.quantity||0)<=Number(item.minStock??2))
+  .slice()
+  .sort((a,b)=>inventoryTitle(a).localeCompare(inventoryTitle(b),'it'));
+}
+
+function inventorySuggestedOrder(item){
+ const quantity=Math.max(0,Number(item.quantity||0));
+ const minimum=Math.max(0,Number(item.minStock??2));
+ return Math.max(1,Math.ceil(minimum-quantity));
+}
+
+function inventoryOrderInputValue(item){
+ const input=document.querySelector(`[data-order-quantity="${CSS.escape(String(item.id))}"]`);
+ const value=inventoryWhole(input?.value,1);
+ return Math.max(1,value);
+}
+
+function updateInventoryOrderTotal(){
+ const low=inventoryLowItems();
+ const total=low.reduce((sum,item)=>sum+inventoryOrderInputValue(item),0);
+ if(el('inventoryOrderTotal'))el('inventoryOrderTotal').textContent=String(total);
+}
+
+function renderInventoryOrderList(){
+ const list=el('inventoryOrderList');
+ if(!list)return;
+
+ const low=inventoryLowItems();
+ if(el('inventoryOrderCount'))el('inventoryOrderCount').textContent=String(low.length);
+
+ if(!low.length){
+  if(el('inventoryOrderTotal'))el('inventoryOrderTotal').textContent='0';
+  list.innerHTML='<div class="inventoryOrderEmpty">✓ Nessun articolo da ordinare.<br>Le scorte sono regolari.</div>';
+  return;
+ }
+
+ list.innerHTML=low.map((item,index)=>{
+  const quantity=Math.max(0,Number(item.quantity||0));
+  const minimum=Math.max(0,Number(item.minStock??2));
+  const suggested=inventorySuggestedOrder(item);
+  const description=String(item.description||'').trim()||'Nessuna descrizione inserita';
+  const location=String(item.location||'').trim()||'Posizione non indicata';
+
+  return `<div class="inventoryOrderCard">
+   <div class="inventoryOrderHead">
+    <div>
+     <div class="inventoryOrderTitle">${safeText(inventoryTitle(item))}</div>
+     <div class="inventoryOrderDescription">${safeText(description)}</div>
+     <div class="inventoryOrderLocation">📍 ${safeText(location)}</div>
+    </div>
+    <div class="inventoryOrderNumber">${index+1}</div>
+   </div>
+
+   <div class="inventoryOrderStockGrid">
+    <div class="inventoryOrderStockBox"><strong>${safeText(quantity)}</strong><span>DISPONIBILI</span></div>
+    <div class="inventoryOrderStockBox"><strong>${safeText(minimum)}</strong><span>SCORTA MINIMA</span></div>
+    <div class="inventoryOrderStockBox"><strong>${safeText(item.unit||'PEZZI')}</strong><span>UNITÀ</span></div>
+   </div>
+
+   <div class="inventoryOrderQty">
+    <label for="orderQty_${safeText(item.id)}">QUANTITÀ DA ORDINARE</label>
+    <input id="orderQty_${safeText(item.id)}" data-order-quantity="${safeText(item.id)}" type="number" inputmode="numeric" min="1" step="1" value="${safeText(suggested)}" oninput="updateInventoryOrderTotal()">
+   </div>
+  </div>`;
+ }).join('');
+
+ updateInventoryOrderTotal();
+}
+
+window.renderInventoryOrderList=renderInventoryOrderList;
+window.updateInventoryOrderTotal=updateInventoryOrderTotal;
+
+window.openInventoryOrderList=()=>{
+ const low=inventoryLowItems();
+ if(!low.length){
+  window.showToolToast?.('Nessun articolo da ordinare');
+  return;
+ }
+ show('inventoryorders');
+ renderInventoryOrderList();
+};
+
+function inventoryOrderPrintRows(){
+ return inventoryLowItems().map((item,index)=>({
+  number:index+1,
+  title:inventoryTitle(item),
+  description:String(item.description||'').trim()||'Nessuna descrizione inserita',
+  location:String(item.location||'').trim()||'Posizione non indicata',
+  quantity:Math.max(0,Number(item.quantity||0)),
+  minimum:Math.max(0,Number(item.minStock??2)),
+  unit:String(item.unit||'PEZZI'),
+  orderQuantity:inventoryOrderInputValue(item)
+ }));
+}
+
+window.printInventoryOrderList=()=>{
+ const rows=inventoryOrderPrintRows();
+ if(!rows.length){
+  window.showToolToast?.('Nessun articolo da ordinare');
+  return;
+ }
+
+ const operator=getOperator();
+ const now=new Date();
+ const dateText=now.toLocaleDateString('it-IT',{
+  day:'2-digit',
+  month:'2-digit',
+  year:'numeric'
+ });
+ const timeText=now.toLocaleTimeString('it-IT',{
+  hour:'2-digit',
+  minute:'2-digit'
+ });
+ const total=rows.reduce((sum,row)=>sum+row.orderQuantity,0);
+
+ const escapePrint=value=>String(value??'').replace(/[&<>"']/g,char=>({
+  '&':'&amp;',
+  '<':'&lt;',
+  '>':'&gt;',
+  '"':'&quot;',
+  "'":'&#039;'
+ }[char]));
+
+ const cards=rows.map(row=>`
+  <div class="order-row">
+   <div class="number">${row.number}</div>
+   <div class="details">
+    <div class="title">${escapePrint(row.title)}</div>
+    <div class="description">${escapePrint(row.description)}</div>
+    <div class="location">Posizione: ${escapePrint(row.location)}</div>
+   </div>
+   <div class="stock">
+    <div>Disponibili: <strong>${escapePrint(row.quantity)} ${escapePrint(row.unit)}</strong></div>
+    <div>Minimo: <strong>${escapePrint(row.minimum)}</strong></div>
+   </div>
+   <div class="order-qty">
+    <span>DA ORDINARE</span>
+    <strong>${escapePrint(row.orderQuantity)}</strong>
+    <small>${escapePrint(row.unit)}</small>
+   </div>
+   <div class="check">☐</div>
+  </div>
+ `).join('');
+
+ const printable=`<!doctype html>
+ <html lang="it">
+ <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Lista da ordinare - CNC Toolbox</title>
+  <style>
+   @page{size:A4 portrait;margin:13mm}
+   *{box-sizing:border-box}
+   body{margin:0;color:#111;font-family:Arial,Helvetica,sans-serif;font-size:11pt}
+   h1{margin:0;font-size:22pt}
+   .subtitle{margin-top:3px;color:#444;font-size:11pt}
+   .meta{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:15px 0 12px}
+   .meta-box{border:1px solid #555;border-radius:6px;padding:8px}
+   .summary{display:flex;justify-content:space-between;gap:10px;border:2px solid #111;border-radius:7px;padding:9px 11px;margin-bottom:12px;font-weight:bold}
+   .order-row{display:grid;grid-template-columns:24px minmax(0,1fr) 112px 92px 28px;gap:8px;align-items:center;border:1px solid #555;border-radius:7px;padding:8px;margin:0 0 8px;break-inside:avoid;page-break-inside:avoid}
+   .number{width:24px;height:24px;border-radius:50%;background:#111;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:bold}
+   .title{font-size:12pt;font-weight:bold}
+   .description{margin-top:3px}
+   .location{margin-top:3px;color:#555;font-size:9.5pt}
+   .stock{font-size:9.5pt;line-height:1.45}
+   .order-qty{text-align:center;border:2px solid #111;border-radius:5px;padding:5px}
+   .order-qty span,.order-qty small{display:block;font-size:7.5pt;font-weight:bold}
+   .order-qty strong{display:block;font-size:18pt;line-height:1.05}
+   .check{font-size:20pt;text-align:center}
+   .notes{margin-top:18px;border-top:1px solid #777;padding-top:8px}
+   .line{height:24px;border-bottom:1px solid #aaa}
+   footer{margin-top:14px;text-align:center;color:#666;font-size:8.5pt}
+   @media print{button{display:none}}
+  </style>
+ </head>
+ <body>
+  <h1>CNC Toolbox - Lista da ordinare</h1>
+  <div class="subtitle">Magazzino condiviso officina</div>
+
+  <div class="meta">
+   <div class="meta-box"><strong>Data:</strong> ${escapePrint(dateText)} - ${escapePrint(timeText)}</div>
+   <div class="meta-box"><strong>Preparata da:</strong> ${escapePrint(operator.name||operator.email||'Operatore')}</div>
+  </div>
+
+  <div class="summary">
+   <span>Articoli: ${rows.length}</span>
+   <span>Unità totali suggerite: ${total}</span>
+  </div>
+
+  ${cards}
+
+  <div class="notes">
+   <strong>Fornitore / note ordine</strong>
+   <div class="line"></div>
+   <div class="line"></div>
+  </div>
+
+  <footer>Generato da CNC Toolbox - Le quantità possono essere modificate prima della stampa.</footer>
+ </body>
+ </html>`;
+
+ const printWindow=window.open('','_blank');
+ if(!printWindow){
+  window.showToolToast?.('Consenti l’apertura della stampa nel browser');
+  return;
+ }
+
+ printWindow.document.open();
+ printWindow.document.write(printable);
+ printWindow.document.close();
+ printWindow.focus();
+ setTimeout(()=>printWindow.print(),350);
+};
+
 function renderInventoryHistory(){
  const box=el('inventoryHistory');if(!box)return;
  if(!inventoryMovements.length){box.innerHTML='<div class="inventoryEmpty">Nessun movimento registrato.</div>';return}
@@ -5394,7 +5804,7 @@ function renderInventory(){
  const list=el('inventoryList');if(!list)return;
  const search=String(el('inventorySearch')?.value||'');
  const filter=String(el('inventoryFilter')?.value||'all');
- const low=inventoryItems.filter(item=>Number(item.quantity||0)<=Number(item.minStock??2));
+ const low=inventoryLowItems();
  const totalQty=inventoryItems.reduce((sum,item)=>sum+Number(item.quantity||0),0);
  if(el('inventorySummaryItems'))el('inventorySummaryItems').textContent=String(inventoryItems.length);
  if(el('inventorySummaryQty'))el('inventorySummaryQty').textContent=String(totalQty);
@@ -5403,8 +5813,13 @@ function renderInventory(){
  const lowPanel=el('inventoryLowPanel');
  if(lowPanel){
   lowPanel.classList.toggle('ok',!low.length);
+  lowPanel.classList.toggle('hasItems',Boolean(low.length));
+  lowPanel.setAttribute('aria-disabled',low.length?'false':'true');
   lowPanel.innerHTML=low.length
-   ?`<div class="inventoryLowTitle">⚠ DA ORDINARE / RICARICARE</div>${low.map(item=>`<div class="inventoryLowItem"><strong>${safeText(inventoryTitle(item))}</strong><br><span>RIMASTI ${safeText(item.quantity)} ${safeText(item.unit||'PEZZI')}</span> · minimo ${safeText(item.minStock??2)}</div>`).join('')}`
+   ?`<div class="inventoryLowTitle">⚠ DA ORDINARE / RICARICARE</div>
+     <div><strong>${safeText(low.length)} ${low.length===1?'ARTICOLO':'ARTICOLI'}</strong> alla scorta minima.</div>
+     <div class="inventoryLowOpenHint">TOCCA PER VEDERE DESCRIZIONI E CREARE IL PDF</div>
+     <div class="inventoryLowPanelArrow">›</div>`
    :'<div class="inventoryLowTitle">SCORTE REGOLARI</div><div>Nessun articolo è sotto la scorta minima.</div>';
  }
  const visible=inventoryItems.filter(item=>inventoryFilterMatch(item,filter)).filter(item=>inventorySearchMatch(item,search)).slice().sort((a,b)=>{
@@ -5432,6 +5847,7 @@ function renderInventory(){
   </div>`;
  }).join('');
  renderInventoryHistory();
+ if(el('inventoryorders')?.classList.contains('active'))renderInventoryOrderList();
 }
 window.renderInventory=renderInventory;
 function clearInventoryForm(){
