@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#050505">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>CNC Toolbox v8.6 Tabelle Filetti Controllate</title>
+<title>CNC Toolbox v8.7 Tornio Pulito</title>
 <style>
 :root{--y:#ffc400;--y2:#dfa500;--b:#050505;--p:#141414;--p2:#0b0b0b;--l:#3e3e3e;--w:#fff;--g:#aaa;--ok:#68e36f;--err:#ff5b5b;--blue:#54baff}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -655,7 +655,7 @@ select{text-align:center;font-size:15px}
   <div>
    <h1>CNC <span>TOOLBOX</span></h1>
    <div class="sub">STRUMENTI PER L'OFFICINA CNC</div>
-   <div class="version">v8.6 · TABELLE FILETTI CONTROLLATE</div>
+   <div class="version">v8.7 · TORNIO PULITO</div>
    <div class="betaSyncPill">
     <span id="betaHomeDot" class="betaSyncDot loading"></span>
     <span id="betaHomeStatus">COLLEGAMENTO…</span>
@@ -1009,14 +1009,14 @@ select{text-align:center;font-size:15px}
 <section id="threads" class="screen">
  <div class="header">
   <button class="back" onclick="goBack()">‹</button>
-  <div class="title">TABELLE FILETTATURE COMPLETE<small>INTERNE · ESTERNE · PARAMETRI TORNIO</small></div>
-  <button class="help" onclick="alert('Scegli ESTERNO / ALBERO oppure INTERNO / FORO. Ogni filetto mostra diametro, passo, profondità H del ciclo, diametro medio e diametro di fondo. Il pulsante PROGRAMMA TORNIO apre i dati già compilati.')">?</button>
+  <div class="title">TABELLE FILETTATURE<small>METRICO · FINE · GAS/BSP · NPT</small></div>
+  <button class="help" onclick="alert('Scegli ALBERO / ESTERNO oppure FORO / INTERNO. La tabella mostra diametro nominale, passo, preforo, profondità, diametro medio e diametro di fondo.')">?</button>
  </div>
  <div class="card">
   <div class="threadUrgent">
    <div class="threadUrgentTitle">G 3/4 GAS · ESTERNO</div>
    <div class="threadUrgentNumbers">Ø nominale <strong>26,441</strong> · P <strong>1,814</strong> · H ciclo <strong>1,162</strong> · X fondo <strong>24,118 mm</strong></div>
-   <button type="button" onclick="openTurnThread('gas','G3/4','shaft')">APRI SUBITO G 3/4 NEL TORNIO</button>
+   <button type="button" onclick="openThreadQuick('gas','shaft','G3/4')">MOSTRA G 3/4 ESTERNO</button>
   </div>
 
   <div class="threadWorkSelector">
@@ -1033,18 +1033,13 @@ select{text-align:center;font-size:15px}
    </div>
   </div>
 
-  <div id="threadAuditStatus" class="threadAuditV86">CONTROLLO TABELLE IN CORSO…</div>
-
-  <div class="threadQuickM28V86">
-   <div><strong>M28 × 1,5</strong> presente: Ø nominale 28 · passo 1,5 · preforo pratico 26,5 mm.</div>
-   <button type="button" onclick="openTurnThread('fine','M28x1.5','shaft')">APRI M28 × 1,5 ESTERNO NEL TORNIO</button>
-  </div>
+  <div id="threadAuditStatus" class="threadAuditV86" hidden style="display:none">CONTROLLO TABELLE IN CORSO…</div>
 
   <div class="threadDirectV86">
    <div class="threadDirectTitleV86">SCRIVI DIRETTAMENTE IL FILETTO METRICO</div>
    <div class="threadDirectRowV86">
     <input id="threadDirectMetric" value="M28x1.5" placeholder="M28x1.5" inputmode="decimal">
-    <button type="button" onclick="applyMainMetricThread()">APRI</button>
+    <button type="button" onclick="applyMainMetricThread()">CERCA</button>
    </div>
   </div>
 
@@ -1058,22 +1053,23 @@ select{text-align:center;font-size:15px}
 <section id="turnthread" class="screen">
  <div class="header">
   <button class="back" onclick="goBack()">‹</button>
-  <div class="title">PARAMETRI FILETTO TORNIO<small>Ø · PASSO · H CICLO · X FONDO</small></div>
-  <button class="help" onclick="alert('Per il ciclo Fagor, H è la profondità totale radiale del filetto. Non confonderla con H del triangolo teorico. Seleziona famiglia, misura e interno/esterno: i valori si compilano automaticamente.')">?</button>
+  <div class="title">FILETTATURA TORNIO<small>Ø · PASSO · H · X FONDO</small></div>
+  <button class="help" onclick="alert('Scegli interno o esterno, il tipo di filetto e la misura. L’app calcola diametro iniziale, passo, profondità H, diametro medio e X di fondo.')">?</button>
  </div>
  <div class="card">
   <div class="threadUrgent">
-   <div class="threadUrgentTitle">VALORE CHE TI SERVE ADESSO · G 3/4 GAS ESTERNO</div>
+   <div class="threadUrgentTitle">G 3/4 GAS · FILETTO ESTERNO</div>
    <div class="threadUrgentNumbers">Xi nominale <strong>26,441</strong> · P <strong>1,814</strong> · H totale radiale <strong>1,162</strong> · X fondo teorico <strong>24,118 mm</strong></div>
-   <button type="button" onclick="setTurnThreadDirect('gas','G3/4','shaft')">USA G 3/4 ESTERNO</button>
+   <button type="button" onclick="setTurnThreadDirect('gas','G3/4','shaft')">CARICA PARAMETRI G 3/4</button>
   </div>
 
   <div class="threadWorkSelector">
-   <div class="threadWorkTitle">1 · INTERNO O ESTERNO?</div>
+   <div class="threadWorkTitle">1 · LATO DEL FILETTO</div>
    <div class="threadSideButtons">
     <button id="ttShaft" type="button" onclick="setTurnThreadPart('shaft')">ALBERO / ESTERNO<small>H IN PENETRAZIONE VERSO -X</small></button>
     <button id="ttHole" type="button" onclick="setTurnThreadPart('hole')">FORO / INTERNO<small>H IN PENETRAZIONE VERSO +X</small></button>
    </div>
+   <div class="threadWorkTitle" style="margin-top:12px">2 · TIPO DI FILETTO</div>
    <div class="threadFamilyTabs">
     <button id="ttMet" type="button" onclick="setTurnThreadTab('met')">METRICO</button>
     <button id="ttFine" type="button" onclick="setTurnThreadTab('fine')">METRICO FINE</button>
@@ -1082,26 +1078,29 @@ select{text-align:center;font-size:15px}
    </div>
   </div>
 
-  <div id="turnThreadAuditStatus" class="threadAuditV86">CONTROLLO TABELLE IN CORSO…</div>
+  <div id="turnThreadAuditStatus" class="threadAuditV86" hidden style="display:none">CONTROLLO TABELLE IN CORSO…</div>
 
-  <div class="threadDirectV86">
-   <div class="threadDirectTitleV86">2 · SCRIVI LA MISURA O SCEGLILA DALLA LISTA</div>
-   <div class="threadDirectRowV86">
-    <input id="ttDirectMetric" value="M28x1.5" placeholder="M28x1.5" inputmode="decimal">
-    <button type="button" onclick="applyTurnMetricThread()">USA NEL TORNIO</button>
-   </div>
-  </div>
-
-  <label class="label" for="ttThreadSelect">FILETTI PRESENTI IN TABELLA</label>
+  <label class="label" for="ttThreadSelect">3 · MISURA DEL FILETTO</label>
   <select id="ttThreadSelect" onchange="renderTurnThread()"></select>
   <div id="resTT" class="turnThreadResultV85"></div>
 
   <details class="turnThreadManualV85">
-   <summary>CALCOLO MANUALE PER FILETTO SPECIALE</summary>
+   <summary>MISURA METRICA NON PRESENTE NELL’ELENCO</summary>
+   <div class="threadDirectV86" style="margin-top:10px">
+    <div class="threadDirectTitleV86">SCRIVI DIAMETRO × PASSO</div>
+    <div class="threadDirectRowV86">
+     <input id="ttDirectMetric" value="M28x1.5" placeholder="M28x1.5" inputmode="decimal">
+     <button type="button" onclick="applyTurnMetricThread()">CALCOLA PARAMETRI</button>
+    </div>
+   </div>
+  </details>
+
+  <details class="turnThreadManualV85">
+   <summary>CALCOLO DA DIAMETRO E PASSO</summary>
    <div class="row"><div class="label">Ø nominale</div><input id="ttD" class="inp" value="26.441"></div>
    <div class="row"><div class="label">Passo mm</div><input id="ttP" class="inp" value="1.814"></div>
    <div class="row"><div class="label">Profilo</div><select id="ttProfile"><option value="55">GAS / WHITWORTH 55°</option><option value="60ext">METRICO ESTERNO 60°</option><option value="60int">METRICO INTERNO 60°</option><option value="npt">NPT 60° CONICO</option></select></div>
-   <button class="btn" onclick="calcTurnThread()">CALCOLA MANUALE</button>
+   <button class="btn" onclick="calcTurnThread()">CALCOLA PARAMETRI</button>
    <div id="resTTManual"></div>
   </details>
 
@@ -2612,7 +2611,6 @@ function renderThreadCard(row,index){
    <div class="threadParamV85"><span>PREFORO PRATICO TABELLA</span><b>${fmtFlex(g.practicalDrill,2)} <em>mm</em></b></div>
   </div>
   <div class="threadCardActionsV85">
-   <button class="threadOpenLatheV85" onclick="openTurnThread('${threadTab}','${threadEscape(g.code)}','${threadPart}')">🔩 PROGRAMMA TORNIO</button>
    <button class="threadSpeakV85" onclick="speakThreadRow(${index})">🔊 LEGGI PARAMETRI</button>
   </div>
   <div class="threadWarningV85">H CICLO è la profondità radiale totale. H triangolo è solo geometria teorica: non copiarla nel campo H della macchina.</div>
