@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#050505">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>CNC Toolbox v8.5 Filettature Tornio Complete</title>
+<title>CNC Toolbox v8.6 Tabelle Filetti Controllate</title>
 <style>
 :root{--y:#ffc400;--y2:#dfa500;--b:#050505;--p:#141414;--p2:#0b0b0b;--l:#3e3e3e;--w:#fff;--g:#aaa;--ok:#68e36f;--err:#ff5b5b;--blue:#54baff}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -575,6 +575,19 @@ select{text-align:center;font-size:15px}
 .threadOpenLatheV85{border:0;background:var(--y);color:#050505}
 .threadSpeakV85{border:1px solid #777;background:#111;color:#fff}
 .threadWarningV85{margin-top:8px;color:#aaa;font-size:10px;font-weight:750;line-height:1.35}
+.threadAuditV86{margin:9px 0 11px;border:1.5px solid #555;border-radius:10px;padding:10px 11px;font-size:12px;font-weight:900;line-height:1.4;background:#0d0d0d;color:#bbb}
+.threadAuditV86.ok{border-color:#38d77c;color:#9af0bd;background:#07170d}
+.threadAuditV86.bad{border-color:#ff5b5b;color:#ffc0c0;background:#210909}
+.threadDirectV86{margin:10px 0;border:1px solid #555;border-radius:10px;background:#0b0b0b;padding:10px}
+.threadDirectTitleV86{color:var(--y);font-size:12px;font-weight:900;margin-bottom:7px}
+.threadDirectRowV86{display:grid;grid-template-columns:1fr auto;gap:7px}
+.threadDirectRowV86 input{min-width:0;min-height:46px;border:1px solid #666;border-radius:8px;background:#050505;color:#fff;padding:8px 10px;font-size:17px;font-weight:900;text-transform:uppercase}
+.threadDirectRowV86 button{min-height:46px;border:0;border-radius:8px;background:var(--y);color:#050505;padding:7px 12px;font-size:12px;font-weight:900}
+.threadQuickM28V86{border:2px solid var(--y);border-radius:10px;background:#1c1700;padding:10px;margin:8px 0 10px}
+.threadQuickM28V86 strong{color:var(--y)}
+.threadQuickM28V86 button{width:100%;margin-top:8px;min-height:42px;border:0;border-radius:8px;background:var(--y);color:#050505;font-weight:900}
+.threadGeneratedBadgeV86{display:inline-block;margin-top:7px;border:1px solid #ffb347;border-radius:999px;padding:4px 7px;color:#ffcf87;background:#201305;font-size:9px;font-weight:900}
+@media(max-width:360px){.threadDirectRowV86{grid-template-columns:1fr}}
 .threadEmptyV85{border:1px dashed #666;border-radius:10px;padding:20px 12px;text-align:center;color:#aaa;font-weight:850}
 #ttThreadSelect{width:100%;min-height:54px;border:2px solid var(--y);border-radius:9px;background:#0b0b0b;color:#fff;padding:8px;font-size:18px;font-weight:900;margin:10px 0}
 .turnThreadResultV85{display:grid;gap:9px}
@@ -642,7 +655,7 @@ select{text-align:center;font-size:15px}
   <div>
    <h1>CNC <span>TOOLBOX</span></h1>
    <div class="sub">STRUMENTI PER L'OFFICINA CNC</div>
-   <div class="version">v8.5 · FILETTATURE TORNIO COMPLETE</div>
+   <div class="version">v8.6 · TABELLE FILETTI CONTROLLATE</div>
    <div class="betaSyncPill">
     <span id="betaHomeDot" class="betaSyncDot loading"></span>
     <span id="betaHomeStatus">COLLEGAMENTO…</span>
@@ -1020,7 +1033,22 @@ select{text-align:center;font-size:15px}
    </div>
   </div>
 
-  <input id="threadSearch" class="search" placeholder="Cerca: G3/4 · M16 · M16x1.5 · 1/2 NPT" oninput="threadSearchChanged()">
+  <div id="threadAuditStatus" class="threadAuditV86">CONTROLLO TABELLE IN CORSO…</div>
+
+  <div class="threadQuickM28V86">
+   <div><strong>M28 × 1,5</strong> presente: Ø nominale 28 · passo 1,5 · preforo pratico 26,5 mm.</div>
+   <button type="button" onclick="openTurnThread('fine','M28x1.5','shaft')">APRI M28 × 1,5 ESTERNO NEL TORNIO</button>
+  </div>
+
+  <div class="threadDirectV86">
+   <div class="threadDirectTitleV86">SCRIVI DIRETTAMENTE IL FILETTO METRICO</div>
+   <div class="threadDirectRowV86">
+    <input id="threadDirectMetric" value="M28x1.5" placeholder="M28x1.5" inputmode="decimal">
+    <button type="button" onclick="applyMainMetricThread()">APRI</button>
+   </div>
+  </div>
+
+  <input id="threadSearch" class="search" placeholder="Cerca: G3/4 · M28x1.5 · M16 · 1/2 NPT" oninput="threadSearchChanged()">
   <div id="threadModeInfo" class="threadModeInfoV85"></div>
   <div id="threadBody" class="threadCardsV85"></div>
   <div class="hint">Valori geometrici teorici/base. Per la quota finale usa il disegno, la classe di tolleranza e il controllo con anello, tampone o filetto campione.</div>
@@ -1054,7 +1082,17 @@ select{text-align:center;font-size:15px}
    </div>
   </div>
 
-  <label class="label" for="ttThreadSelect">2 · SCEGLI IL FILETTO</label>
+  <div id="turnThreadAuditStatus" class="threadAuditV86">CONTROLLO TABELLE IN CORSO…</div>
+
+  <div class="threadDirectV86">
+   <div class="threadDirectTitleV86">2 · SCRIVI LA MISURA O SCEGLILA DALLA LISTA</div>
+   <div class="threadDirectRowV86">
+    <input id="ttDirectMetric" value="M28x1.5" placeholder="M28x1.5" inputmode="decimal">
+    <button type="button" onclick="applyTurnMetricThread()">USA NEL TORNIO</button>
+   </div>
+  </div>
+
+  <label class="label" for="ttThreadSelect">FILETTI PRESENTI IN TABELLA</label>
   <select id="ttThreadSelect" onchange="renderTurnThread()"></select>
   <div id="resTT" class="turnThreadResultV85"></div>
 
@@ -1587,8 +1625,12 @@ function show(id,options={}){
  if(id==='threads')setTimeout(()=>{
   syncThreadButtons();
   renderThreads();
+  auditThreadTables();
  },0);
- if(id==='turnthread')setTimeout(()=>renderTurnThreadSelect(),0);
+ if(id==='turnthread')setTimeout(()=>{
+  renderTurnThreadSelect();
+  auditThreadTables();
+ },0);
 }
 
 function goBack(){
@@ -2223,7 +2265,7 @@ const THREADS={
 met:[
 ['M1',.25,.75,1],['M1.2',.25,.95,1.2],['M1.4',.3,1.1,1.4],['M1.6',.35,1.25,1.6],['M2',.4,1.6,2],['M2.5',.45,2.05,2.5],['M3',.5,2.5,3],['M3.5',.6,2.9,3.5],['M4',.7,3.3,4],['M4.5',.75,3.7,4.5],['M5',.8,4.2,5],['M6',1,5,6],['M7',1,6,7],['M8',1.25,6.8,8],['M9',1.25,7.8,9],['M10',1.5,8.5,10],['M11',1.5,9.5,11],['M12',1.75,10.2,12],['M14',2,12,14],['M16',2,14,16],['M18',2.5,15.5,18],['M20',2.5,17.5,20],['M22',2.5,19.5,22],['M24',3,21,24],['M27',3,24,27],['M30',3.5,26.5,30],['M33',3.5,29.5,33],['M36',4,32,36],['M39',4,35,39],['M42',4.5,37.5,42],['M45',4.5,40.5,45],['M48',5,43,48],['M52',5,47,52],['M56',5.5,50.5,56],['M60',5.5,54.5,60]],
 fine:[
-['M3x0.35',.35,2.65,3],['M4x0.5',.5,3.5,4],['M5x0.5',.5,4.5,5],['M6x0.5',.5,5.5,6],['M6x0.75',.75,5.25,6],['M7x0.75',.75,6.25,7],['M8x0.5',.5,7.5,8],['M8x0.75',.75,7.25,8],['M8x1',1,7,8],['M9x0.75',.75,8.25,9],['M9x1',1,8,9],['M10x0.5',.5,9.5,10],['M10x0.75',.75,9.25,10],['M10x1',1,9,10],['M10x1.25',1.25,8.8,10],['M11x1',1,10,11],['M12x1',1,11,12],['M12x1.25',1.25,10.8,12],['M12x1.5',1.5,10.5,12],['M14x1',1,13,14],['M14x1.25',1.25,12.8,14],['M14x1.5',1.5,12.5,14],['M16x1',1,15,16],['M16x1.5',1.5,14.5,16],['M18x1',1,17,18],['M18x1.5',1.5,16.5,18],['M18x2',2,16,18],['M20x1',1,19,20],['M20x1.5',1.5,18.5,20],['M20x2',2,18,20],['M22x1',1,21,22],['M22x1.5',1.5,20.5,22],['M22x2',2,20,22],['M24x1',1,23,24],['M24x1.5',1.5,22.5,24],['M24x2',2,22,24],['M27x1.5',1.5,25.5,27],['M27x2',2,25,27],['M30x1.5',1.5,28.5,30],['M30x2',2,28,30],['M33x1.5',1.5,31.5,33],['M33x2',2,31,33],['M36x1.5',1.5,34.5,36],['M36x2',2,34,36],['M39x1.5',1.5,37.5,39],['M39x2',2,37,39],['M42x1.5',1.5,40.5,42],['M42x2',2,40,42],['M45x1.5',1.5,43.5,45],['M45x2',2,43,45],['M48x1.5',1.5,46.5,48],['M48x2',2,46,48],['M52x1.5',1.5,50.5,52],['M52x2',2,50,52],['M56x2',2,54,56],['M60x2',2,58,60]],
+['M3x0.35',.35,2.65,3],['M4x0.5',.5,3.5,4],['M5x0.5',.5,4.5,5],['M6x0.5',.5,5.5,6],['M6x0.75',.75,5.25,6],['M7x0.75',.75,6.25,7],['M8x0.5',.5,7.5,8],['M8x0.75',.75,7.25,8],['M8x1',1,7,8],['M9x0.75',.75,8.25,9],['M9x1',1,8,9],['M10x0.5',.5,9.5,10],['M10x0.75',.75,9.25,10],['M10x1',1,9,10],['M10x1.25',1.25,8.8,10],['M11x1',1,10,11],['M12x1',1,11,12],['M12x1.25',1.25,10.8,12],['M12x1.5',1.5,10.5,12],['M14x1',1,13,14],['M14x1.25',1.25,12.8,14],['M14x1.5',1.5,12.5,14],['M16x1',1,15,16],['M16x1.5',1.5,14.5,16],['M18x1',1,17,18],['M18x1.5',1.5,16.5,18],['M18x2',2,16,18],['M20x1',1,19,20],['M20x1.5',1.5,18.5,20],['M20x2',2,18,20],['M22x1',1,21,22],['M22x1.5',1.5,20.5,22],['M22x2',2,20,22],['M24x1',1,23,24],['M24x1.5',1.5,22.5,24],['M24x2',2,22,24],['M27x1.5',1.5,25.5,27],['M27x2',2,25,27],['M28x1',1,27,28],['M28x1.5',1.5,26.5,28],['M28x2',2,26,28],['M30x1.5',1.5,28.5,30],['M30x2',2,28,30],['M33x1.5',1.5,31.5,33],['M33x2',2,31,33],['M36x1.5',1.5,34.5,36],['M36x2',2,34,36],['M39x1.5',1.5,37.5,39],['M39x2',2,37,39],['M42x1.5',1.5,40.5,42],['M42x2',2,40,42],['M45x1.5',1.5,43.5,45],['M45x2',2,43,45],['M48x1.5',1.5,46.5,48],['M48x2',2,46,48],['M52x1.5',1.5,50.5,52],['M52x2',2,50,52],['M56x2',2,54,56],['M60x2',2,58,60]],
 gas:[
 ['G1/8',28,8.8,9.728],['G1/4',19,11.8,13.157],['G3/8',19,15.25,16.662],['G1/2',14,18.75,20.955],['G5/8',14,20.75,22.911],['G3/4',14,24.5,26.441],['G7/8',14,28,30.201],['G1',11,30.75,33.249],['G1 1/8',11,35.5,37.897],['G1 1/4',11,39.5,41.91],['G1 1/2',11,45,47.803],['G1 3/4',11,51,53.746],['G2',11,57,59.614]],
 npt:[
@@ -2238,6 +2280,160 @@ let turnThreadTab=['met','fine','gas','npt'].includes(localStorage.getItem('turn
  :'gas';
 let turnThreadPart=localStorage.getItem('turn_thread_part')==='hole'?'hole':'shaft';
 let turnThreadCode=localStorage.getItem('turn_thread_code')||'G3/4';
+
+
+const GENERATED_METRIC_CODES=new Set();
+
+function metricCodeNumber(value){
+ return Number(String(value).replace(',','.'));
+}
+
+function formatMetricCodeNumber(value){
+ const n=Number(value);
+ if(!Number.isFinite(n))return '';
+ return String(Math.round(n*1000)/1000).replace(/\.0+$/,'').replace(/(\.\d*?)0+$/,'$1');
+}
+
+function parseMetricDesignation(value){
+ const source=String(value||'')
+  .toUpperCase()
+  .replace(/,/g,'.')
+  .replace(/×/g,'X')
+  .replace(/\s+/g,'')
+  .replace(/PASSO/g,'X')
+  .replace(/PER/g,'X');
+ const match=source.match(/^M?(\d+(?:\.\d+)?)(?:X(\d+(?:\.\d+)?))?$/);
+ if(!match)return null;
+ const diameter=metricCodeNumber(match[1]);
+ const pitch=match[2]===undefined?null:metricCodeNumber(match[2]);
+ if(!Number.isFinite(diameter)||diameter<=0)return null;
+ if(pitch!==null&&(!Number.isFinite(pitch)||pitch<=0||pitch>=diameter))return null;
+ return {diameter,pitch};
+}
+
+function metricRowCode(diameter,pitch){
+ return pitch===null
+  ?`M${formatMetricCodeNumber(diameter)}`
+  :`M${formatMetricCodeNumber(diameter)}x${formatMetricCodeNumber(pitch)}`;
+}
+
+function sortMetricRows(rows){
+ rows.sort((a,b)=>{
+  const pa=parseMetricDesignation(a?.[0]);
+  const pb=parseMetricDesignation(b?.[0]);
+  if(!pa&&!pb)return String(a?.[0]||'').localeCompare(String(b?.[0]||''));
+  if(!pa)return 1;
+  if(!pb)return -1;
+  return pa.diameter-pb.diameter||(pa.pitch??0)-(pb.pitch??0);
+ });
+}
+
+function ensureMetricThread(value){
+ const parsed=parseMetricDesignation(value);
+ if(!parsed||parsed.pitch===null)return null;
+ const code=metricRowCode(parsed.diameter,parsed.pitch);
+ const found=THREADS.fine.find(row=>String(row[0]).toLowerCase()===code.toLowerCase());
+ if(found)return found;
+ const row=[code,parsed.pitch,parsed.diameter-parsed.pitch,parsed.diameter,'generated'];
+ THREADS.fine.push(row);
+ GENERATED_METRIC_CODES.add(code);
+ sortMetricRows(THREADS.fine);
+ return row;
+}
+
+function applyMainMetricThread(){
+ const input=$('threadDirectMetric');
+ const parsed=parseMetricDesignation(input?.value||'');
+ if(!parsed){showToolToast?.('Scrivi per esempio M28x1.5');input?.focus();return;}
+ if(parsed.pitch===null){
+  const coarse=THREADS.met.find(row=>Number(String(row[0]).slice(1))===parsed.diameter);
+  if(!coarse){showToolToast?.('Indica anche il passo, per esempio M28x1.5');input?.focus();return;}
+  threadTab='met';
+  if($('threadSearch'))$('threadSearch').value=coarse[0];
+ }else{
+  const row=ensureMetricThread(input.value);
+  threadTab='fine';
+  if($('threadSearch'))$('threadSearch').value=row[0];
+ }
+ localStorage.setItem('thread_tab',threadTab);
+ syncThreadButtons();
+ renderThreads();
+ auditThreadTables();
+ setTimeout(()=>$('threadBody')?.scrollIntoView({behavior:'smooth',block:'start'}),60);
+}
+
+function applyTurnMetricThread(){
+ const input=$('ttDirectMetric');
+ const parsed=parseMetricDesignation(input?.value||'');
+ if(!parsed){showToolToast?.('Scrivi per esempio M28x1.5');input?.focus();return;}
+ let row=null;
+ if(parsed.pitch===null){
+  row=THREADS.met.find(item=>Number(String(item[0]).slice(1))===parsed.diameter);
+  if(!row){showToolToast?.('Indica anche il passo, per esempio M28x1.5');input?.focus();return;}
+  turnThreadTab='met';
+ }else{
+  row=ensureMetricThread(input.value);
+  turnThreadTab='fine';
+ }
+ turnThreadCode=String(row[0]);
+ localStorage.setItem('turn_thread_tab',turnThreadTab);
+ localStorage.setItem('turn_thread_code',turnThreadCode);
+ renderTurnThreadSelect();
+ auditThreadTables();
+}
+
+function auditThreadTables(){
+ const issues=[];
+ const families=['met','fine','gas','npt'];
+ let total=0;
+ for(const family of families){
+  const rows=THREADS[family];
+  if(!Array.isArray(rows)||!rows.length){issues.push(`${family.toUpperCase()}: tabella vuota`);continue;}
+  total+=rows.length;
+  const codes=new Set();
+  rows.forEach((row,index)=>{
+   const code=String(row?.[0]||'').trim();
+   const pitch=threadPitchMm(family,row);
+   const predrill=Number(row?.[2]);
+   const major=Number(row?.[3]);
+   if(!code)issues.push(`${family}: codice vuoto riga ${index+1}`);
+   const key=code.toLowerCase();
+   if(codes.has(key))issues.push(`${family}: duplicato ${code}`);
+   codes.add(key);
+   if(!Number.isFinite(pitch)||pitch<=0)issues.push(`${code}: passo non valido`);
+   if(!Number.isFinite(predrill)||predrill<=0)issues.push(`${code}: preforo non valido`);
+   if(!Number.isFinite(major)||major<=0)issues.push(`${code}: diametro non valido`);
+   if(Number.isFinite(predrill)&&Number.isFinite(major)&&predrill>=major)issues.push(`${code}: preforo maggiore o uguale al diametro`);
+   for(const side of ['shaft','hole']){
+    const g=threadGeometry(family,row,side);
+    const values=[g.major,g.pitch,g.depth,g.minor,g.pitchDiameter];
+    if(values.some(value=>!Number.isFinite(value)||value<=0))issues.push(`${code} ${side}: geometria non valida`);
+   }
+  });
+ }
+ const mandatory=[
+  ['fine','M28x1.5',1.5,26.5,28],
+  ['fine','M16x1.5',1.5,14.5,16],
+  ['gas','G3/4',14,24.5,26.441],
+  ['npt','3/4 NPT',14,23.2,26.67]
+ ];
+ mandatory.forEach(([family,code,pitchOrTpi,predrill,major])=>{
+  const row=THREADS[family]?.find(item=>String(item[0]).toLowerCase()===String(code).toLowerCase());
+  if(!row){issues.push(`MANCA ${code}`);return;}
+  if(Math.abs(Number(row[1])-Number(pitchOrTpi))>1e-6)issues.push(`${code}: passo o TPI errato`);
+  if(Math.abs(Number(row[2])-Number(predrill))>0.001)issues.push(`${code}: preforo errato`);
+  if(Math.abs(Number(row[3])-Number(major))>0.001)issues.push(`${code}: diametro nominale errato`);
+ });
+ const ok=issues.length===0;
+ const message=ok
+  ?`✓ CONTROLLO AUTOMATICO OK · ${total} FILETTI · METRICO GROSSO/FINE · GAS/BSP · NPT · INTERNO/ESTERNO · M28×1,5 PRESENTE`
+  :`✗ CONTROLLO TABELLE: ${issues.slice(0,4).join(' · ')}${issues.length>4?` · +${issues.length-4} errori`:''}`;
+ ['threadAuditStatus','turnThreadAuditStatus'].forEach(id=>{
+  const el=$(id);if(!el)return;
+  el.classList.toggle('ok',ok);el.classList.toggle('bad',!ok);el.textContent=message;
+ });
+ return {ok,issues,total};
+}
 
 const THREAD_FAMILY_META={
  met:{label:'METRICO GROSSO',profile:'ISO 60°',standard:'ISO metrico'},
@@ -2346,13 +2542,19 @@ function detectThreadTabFromSearch(value){
 }
 
 function threadSearchChanged(){
- const detected=detectThreadTabFromSearch($('threadSearch')?.value||'');
- if(detected&&detected!==threadTab){
+ const raw=$('threadSearch')?.value||'';
+ const detected=detectThreadTabFromSearch(raw);
+ const parsed=parseMetricDesignation(raw);
+ if(parsed?.pitch!==null){
+  ensureMetricThread(raw);
+  threadTab='fine';
+ }else if(detected){
   threadTab=detected;
-  localStorage.setItem('thread_tab',threadTab);
  }
+ localStorage.setItem('thread_tab',threadTab);
  syncThreadButtons();
  renderThreads();
+ auditThreadTables();
 }
 
 function threadFilterText(value){
@@ -2389,7 +2591,10 @@ function renderThreadCard(row,index){
 
  return `<div class="threadCardV85">
   <div class="threadCardHeadV85">
-   <div class="threadCodeV85">${threadEscape(g.code)}</div>
+   <div>
+    <div class="threadCodeV85">${threadEscape(g.code)}</div>
+    ${row?.[4]==='generated'?'<div class="threadGeneratedBadgeV86">CALCOLO DA Ø E PASSO · VERIFICA DISEGNO/STANDARD</div>':''}
+   </div>
    <div class="threadProfileV85">${threadEscape(g.family)}<br>${threadEscape(g.profile)}<br>${tpiText}</div>
   </div>
   <div class="threadMainGridV85">
@@ -2482,10 +2687,12 @@ function renderTurnThreadSelect(){
  if(!select)return;
  syncTurnThreadButtons();
  const rows=THREADS[turnThreadTab]||[];
+ if(turnThreadTab==='met'||turnThreadTab==='fine')sortMetricRows(rows);
  if(!rows.some(r=>String(r[0])===turnThreadCode))turnThreadCode=String(rows[0]?.[0]||'');
- select.innerHTML=rows.map(row=>`<option value="${threadEscape(row[0])}" ${String(row[0])===turnThreadCode?'selected':''}>${threadEscape(row[0])}</option>`).join('');
+ select.innerHTML=rows.map(row=>`<option value="${threadEscape(row[0])}" ${String(row[0])===turnThreadCode?'selected':''}>${threadEscape(row[0])}${row?.[4]==='generated'?' · CALCOLATO':''}</option>`).join('');
  select.value=turnThreadCode;
  renderTurnThread();
+ auditThreadTables();
 }
 
 function renderTurnThread(){
@@ -4983,6 +5190,7 @@ function init(){
  threadPart=localStorage.getItem('thread_part')==='hole'?'hole':'shaft';
  syncThreadButtons();
  renderThreads();
+ auditThreadTables();
  tolKind=localStorage.getItem('tol_kind')==='albero'?'albero':'foro';
  setTolKind(tolKind);
  const pr=localStorage.getItem('probe');if(pr){if($('probe3'))$('probe3').value=pr;if($('probe2'))$('probe2').value=pr;if($('wallToolD'))$('wallToolD').value=localStorage.getItem('wall_tool_d')||pr}if($('wallJohnsonA'))$('wallJohnsonA').value=localStorage.getItem('wall_j_a')||'20';if($('wallJohnsonB'))$('wallJohnsonB').value=localStorage.getItem('wall_j_b')||'20';if($('wallToolD'))$('wallToolD').value=localStorage.getItem('wall_tool_d')||$('wallToolD').value;updateWallDiagram();
