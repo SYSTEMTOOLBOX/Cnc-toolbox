@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#050505">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>CNC Toolbox v8.8 Lista Ordini Magazzino</title>
+<title>CNC Toolbox v8.9 Magazzino a Cartelle</title>
 <style>
 :root{--y:#ffc400;--y2:#dfa500;--b:#050505;--p:#141414;--p2:#0b0b0b;--l:#3e3e3e;--w:#fff;--g:#aaa;--ok:#68e36f;--err:#ff5b5b;--blue:#54baff}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -654,6 +654,227 @@ select{text-align:center;font-size:15px}
 }
 
 .inventorySearchRow{display:grid;grid-template-columns:minmax(0,1fr) 155px;gap:8px}.inventorySearchRow select{height:58px}
+.inventoryHubIntro{
+ border:1px solid #4f5d63;
+ border-radius:10px;
+ background:#0a1216;
+ color:#ddd;
+ padding:10px 12px;
+ margin:10px 0;
+ font-size:12px;
+ font-weight:850;
+ line-height:1.45
+}
+.inventoryFolderGrid{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:11px;
+ margin:12px 0
+}
+.inventoryFolder{
+ position:relative;
+ min-height:148px;
+ border:2px solid #505050;
+ border-radius:15px;
+ background:linear-gradient(145deg,#191919,#080808);
+ color:#fff;
+ padding:16px 13px;
+ text-align:left;
+ font-weight:1000;
+ touch-action:manipulation;
+ overflow:hidden
+}
+.inventoryFolder:active{transform:scale(.98)}
+.inventoryFolder.primary{
+ border-color:var(--y);
+ background:linear-gradient(145deg,#2a2200,#0b0900)
+}
+.inventoryFolder.blue{
+ border-color:var(--blue);
+ background:linear-gradient(145deg,#071c28,#080808)
+}
+.inventoryFolder.red{
+ border-color:var(--err);
+ background:linear-gradient(145deg,#260a0a,#090606)
+}
+.inventoryFolder.green{
+ border-color:var(--ok);
+ background:linear-gradient(145deg,#0a2510,#070a08)
+}
+.inventoryFolderIcon{
+ display:block;
+ font-size:39px;
+ line-height:1;
+ margin-bottom:13px
+}
+.inventoryFolderTitle{
+ display:block;
+ color:var(--y);
+ font-size:19px;
+ line-height:1.12
+}
+.inventoryFolder.blue .inventoryFolderTitle{color:var(--blue)}
+.inventoryFolder.red .inventoryFolderTitle{color:var(--err)}
+.inventoryFolder.green .inventoryFolderTitle{color:var(--ok)}
+.inventoryFolder small{
+ display:block;
+ color:#bbb;
+ font-size:10px;
+ line-height:1.35;
+ margin-top:8px
+}
+.inventoryFolderBadge{
+ position:absolute;
+ right:10px;
+ top:10px;
+ min-width:32px;
+ height:32px;
+ padding:0 8px;
+ border-radius:999px;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ background:var(--err);
+ color:#fff;
+ border:2px solid #080808;
+ font-size:14px;
+ font-weight:1000
+}
+.inventorySectionIntro{
+ border:1px solid #515151;
+ border-radius:10px;
+ background:#0d0d0d;
+ color:#ccc;
+ padding:10px 12px;
+ margin-bottom:11px;
+ font-size:12px;
+ font-weight:850;
+ line-height:1.45
+}
+.inventoryMinControl{
+ grid-column:1/-1;
+ border:1px solid #555;
+ border-radius:11px;
+ background:#0b0b0b;
+ padding:10px
+}
+.inventoryMinControlTitle{
+ color:#fff;
+ font-size:13px;
+ font-weight:1000;
+ margin-bottom:8px
+}
+.inventoryMinToggle{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:7px
+}
+.inventoryMinToggle button{
+ min-height:48px;
+ border:2px solid #666;
+ border-radius:9px;
+ background:#151515;
+ color:#ddd;
+ font-size:13px;
+ font-weight:1000
+}
+.inventoryMinToggle button.on{
+ border-color:var(--y);
+ background:var(--y);
+ color:#050505
+}
+.inventoryMinField.disabled{
+ display:none
+}
+.inventoryMinNote{
+ color:#aaa;
+ font-size:11px;
+ font-weight:800;
+ line-height:1.4;
+ margin-top:8px
+}
+.inventoryNoMinBadge{
+ margin-top:9px;
+ border:1px solid #777;
+ border-radius:8px;
+ background:#111;
+ color:#bbb;
+ padding:8px;
+ font-size:11px;
+ font-weight:900
+}
+.inventoryAddModeLabel{
+ border:2px solid var(--y);
+ border-radius:10px;
+ background:#211b00;
+ color:var(--y);
+ padding:10px 12px;
+ font-size:14px;
+ font-weight:1000;
+ margin-bottom:11px
+}
+.inventoryHistoryScreen .inventoryHistory{
+ margin-top:0
+}
+@media(max-width:390px){
+ .inventoryFolderGrid{gap:8px}
+ .inventoryFolder{min-height:137px;padding:13px 10px}
+ .inventoryFolderIcon{font-size:34px}
+ .inventoryFolderTitle{font-size:16px}
+}
+
+.inventorySearchStatus{
+ margin-top:9px;
+ border:1px solid #4d5b61;
+ border-radius:9px;
+ background:#08131a;
+ color:#cfeeff;
+ padding:9px 11px;
+ font-size:12px;
+ font-weight:900;
+ line-height:1.35
+}
+.inventorySearchStatus strong{color:var(--blue)}
+.inventorySearchStatus.empty{
+ border-color:#ff6464;
+ background:#240909;
+ color:#ffc1c1
+}
+.inventoryResultsCard{
+ border-color:#4e6570!important;
+ scroll-margin-top:88px
+}
+.inventoryResultsCard.hasSearch{
+ border:2px solid var(--blue)!important;
+ box-shadow:0 0 0 1px rgba(77,190,255,.15)
+}
+.inventoryResultsTitleRow{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:8px;
+ border-bottom:1px solid #454545;
+ margin-bottom:10px;
+ padding-bottom:8px
+}
+.inventoryResultsTitleRow h2{
+ border:0!important;
+ margin:0!important;
+ padding:0!important
+}
+.inventoryClearSearch{
+ display:none;
+ min-height:36px;
+ border:1px solid #777;
+ border-radius:8px;
+ background:#111;
+ color:#fff;
+ padding:6px 9px;
+ font-size:10px;
+ font-weight:900
+}
+.inventoryClearSearch.show{display:block}
+
 .inventoryFormGrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.inventoryField{display:grid;gap:6px}.inventoryField.full{grid-column:1/-1}.inventoryField label{color:#ccc;font-size:13px;font-weight:900}.inventoryField input,.inventoryField select{height:52px;border:2px solid #ddd;border-radius:9px;background:#fff;color:#050505;padding:0 10px;font-size:17px;font-weight:900;width:100%;min-width:0}.inventoryFormActions{display:grid;grid-template-columns:1fr 118px;gap:8px}.inventoryCancel{display:none}.inventoryCancel.show{display:block}
 .inventoryList{display:grid;gap:10px;margin-top:12px}.inventoryCard{border:1.5px solid #454545;border-radius:13px;background:linear-gradient(145deg,#181818,#080808);padding:12px}.inventoryCard.low{border-color:var(--err);box-shadow:0 0 0 1px rgba(255,91,91,.18) inset}.inventoryCardHead{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.inventoryCardTitle{color:var(--y);font-size:19px;font-weight:1000;line-height:1.2}.inventoryCardMeta{color:#aaa;font-size:12px;line-height:1.45;margin-top:5px}.inventoryQuantity{min-width:92px;text-align:center;border:2px solid var(--y);border-radius:10px;padding:7px;background:#080808}.inventoryQuantity strong{display:block;color:var(--y);font-size:31px;line-height:1}.inventoryQuantity span{display:block;color:#ddd;font-size:11px;font-weight:900;margin-top:4px}.inventoryCard.low .inventoryQuantity{border-color:var(--err)}.inventoryCard.low .inventoryQuantity strong{color:var(--err)}
 .inventoryWarning{margin-top:9px;border-radius:8px;background:#351010;color:#fff;padding:9px;font-size:13px;font-weight:1000}.inventoryMoveGrid{display:grid;grid-template-columns:120px 1fr;gap:8px;margin-top:11px}.inventoryMoveGrid .full{grid-column:1/-1}.inventoryMoveGrid label{display:block;color:#ccc;font-size:11px;font-weight:900;margin-bottom:5px}.inventoryMoveGrid input,.inventoryMoveGrid select{width:100%;height:49px;border:2px solid #ddd;border-radius:8px;background:#fff;color:#050505;padding:0 8px;font-size:15px;font-weight:900}.inventoryActionGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.inventoryActionGrid button{min-height:53px;border-radius:9px;font-weight:1000;padding:8px}.inventoryLoadBtn{border:2px solid var(--ok);background:#09220b;color:var(--ok)}.inventoryTakeBtn{border:0;background:var(--y);color:#050505}.inventoryEditBtn{border:2px solid var(--blue);background:#071923;color:var(--blue)}.inventoryDeleteBtn{border:2px solid var(--err);background:#1c0808;color:var(--err)}
@@ -821,7 +1042,7 @@ select{text-align:center;font-size:15px}
   <div>
    <h1>CNC <span>TOOLBOX</span></h1>
    <div class="sub">STRUMENTI PER L'OFFICINA CNC</div>
-   <div class="version">v8.8 · LISTA ORDINI MAGAZZINO</div>
+   <div class="version">v8.9 · MAGAZZINO A CARTELLE</div>
    <div class="betaSyncPill">
     <span id="betaHomeDot" class="betaSyncDot loading"></span>
     <span id="betaHomeStatus">COLLEGAMENTO…</span>
@@ -1329,95 +1550,186 @@ select{text-align:center;font-size:15px}
 <section id="inventory" class="screen">
  <div class="header">
   <button class="back" onclick="goBack()">‹</button>
-  <div class="title">MAGAZZINO CONDIVISO<small>SCORTE AGGIORNATE IN TEMPO REALE</small></div>
-  <button class="help" onclick="alert('Carica frese, punte, alesatori e inserti. Quando premi PRELEVA / MONTA la quantità scende e viene registrato il nome dell’operatore. La scorta minima predefinita è 2 pezzi.')">?</button>
+  <div class="title">MAGAZZINO CONDIVISO<small>ENTRA NELLA CARTELLA CHE TI SERVE</small></div>
+  <button class="help" onclick="alert('La pagina principale del magazzino contiene soltanto le funzioni essenziali. Cerca e preleva, aggiungi utensili, aggiungi merce e inserti, consulta i movimenti oppure apri la lista da ordinare.')">?</button>
  </div>
 
  <div class="card betaSharedCard">
   <h2>OFFICINA E OPERATORE</h2>
   <div class="betaSyncPill"><span id="betaInventoryDot" class="betaSyncDot loading"></span><span id="betaInventoryStatus">SINCRONIZZAZIONE…</span></div>
-  <div class="betaOperatorTitle">CHI STA PRELEVANDO O CARICANDO?</div>
+  <div class="betaOperatorTitle">CHI STA LAVORANDO?</div>
   <div id="betaInventoryOperatorChips" class="betaOperatorChips"><div class="betaActivityEmpty">Caricamento nomi…</div></div>
-  <div class="inventoryOperatorHint">Tocca una volta il nome. Rimane selezionato e viene scritto automaticamente in ogni movimento.</div>
+  <div class="inventoryOperatorHint">Tocca il nome una volta. Verrà registrato automaticamente nei movimenti.</div>
+
   <div class="inventorySummaryGrid">
    <div class="inventorySummaryBox"><strong id="inventorySummaryItems">0</strong><span>ARTICOLI</span></div>
    <div class="inventorySummaryBox"><strong id="inventorySummaryQty">0</strong><span>PEZZI / UNITÀ</span></div>
-   <div class="inventorySummaryBox orderShortcut" onclick="openInventoryOrderList()" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openInventoryOrderList()}"><strong id="inventorySummaryLow">0</strong><span>DA ORDINARE</span></div>
+   <div class="inventorySummaryBox orderShortcut" onclick="openInventoryOrderList()" role="button" tabindex="0"><strong id="inventorySummaryLow">0</strong><span>DA ORDINARE</span></div>
   </div>
-  <button id="inventoryNotifyButton" class="btn2" onclick="requestInventoryNotifications()">ATTIVA AVVISI SCORTA</button>
-  <div class="hint">L’avviso rosso funziona sempre dentro l’app. La notifica di sistema funziona quando il browser consente le notifiche.</div>
  </div>
 
- <div id="inventoryLowPanel" class="inventoryLowPanel ok" onclick="openInventoryOrderList()" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openInventoryOrderList()}">
+ <div id="inventoryLowPanel" class="inventoryLowPanel ok" onclick="openInventoryOrderList()" role="button" tabindex="0">
   <div class="inventoryLowTitle">SCORTE REGOLARI</div>
   <div>Nessun articolo è sotto la scorta minima.</div>
  </div>
 
  <div class="card">
+  <h2>CARTELLE MAGAZZINO</h2>
+  <div class="inventoryHubIntro">Niente più pagina infinita: apri soltanto la funzione che ti serve.</div>
+
+  <div class="inventoryFolderGrid">
+   <button class="inventoryFolder primary" onclick="show('inventorybrowse')">
+    <span class="inventoryFolderIcon">🔎</span>
+    <span class="inventoryFolderTitle">CERCA / PRELEVA</span>
+    <small>TROVA ARTICOLI · CARICA SCORTA · PRELEVA O MONTA</small>
+   </button>
+
+   <button class="inventoryFolder blue" onclick="openInventoryAdd('tools')">
+    <span class="inventoryFolderIcon">🧰</span>
+    <span class="inventoryFolderTitle">AGGIUNGI UTENSILE</span>
+    <small>PUNTE · FRESE · CORPI FRESA · ALESATORI · PORTAINSERTI</small>
+   </button>
+
+   <button class="inventoryFolder green" onclick="openInventoryAdd('goods')">
+    <span class="inventoryFolderIcon">📦</span>
+    <span class="inventoryFolderTitle">AGGIUNGI MERCE / INSERTI</span>
+    <small>INSERTI FRESA · INSERTI TORNIO · RICAMBI · ALTRO</small>
+   </button>
+
+   <button class="inventoryFolder" onclick="show('inventoryhistoryscreen')">
+    <span class="inventoryFolderIcon">🕘</span>
+    <span class="inventoryFolderTitle">MOVIMENTI</span>
+    <small>CHI HA CARICATO O PRELEVATO · DATA · ORA · DESTINAZIONE</small>
+   </button>
+
+   <button class="inventoryFolder red" onclick="openInventoryOrderList()">
+    <span id="inventoryFolderLowBadge" class="inventoryFolderBadge" hidden>0</span>
+    <span class="inventoryFolderIcon">🧾</span>
+    <span class="inventoryFolderTitle">LISTA DA ORDINARE</span>
+    <small>ARTICOLI SOTTO SCORTA · QUANTITÀ · STAMPA / PDF</small>
+   </button>
+
+   <button class="inventoryFolder" onclick="requestInventoryNotifications()">
+    <span class="inventoryFolderIcon">🔔</span>
+    <span class="inventoryFolderTitle">AVVISI SCORTA</span>
+    <small>ATTIVA LE NOTIFICHE DEL TELEFONO QUANDO DISPONIBILI</small>
+   </button>
+  </div>
+ </div>
+</section>
+
+<section id="inventorybrowse" class="screen">
+ <div class="header">
+  <button class="back" onclick="goBack()">‹</button>
+  <div class="title">CERCA / PRELEVA<small>RISULTATI SUBITO SOTTO LA RICERCA</small></div>
+  <button class="help" onclick="alert('Cerca per diametro, codice, descrizione o posizione. Funzionano sia 5,5 sia 5.5 sia Ø5,5.')">?</button>
+ </div>
+
+ <div class="card">
   <h2>CERCA NEL MAGAZZINO</h2>
   <div class="inventorySearchRow">
-   <input id="inventorySearch" class="search" type="search" placeholder="KNUX · CNMG · fresa Ø12 · codice" oninput="renderInventory()" autocomplete="off">
-   <select id="inventoryFilter" onchange="renderInventory()">
+   <input id="inventorySearch" class="search" type="search" inputmode="search" placeholder="Es. 5,5 · Ø12 · KNUX · fresa" oninput="inventorySearchChanged()" onsearch="inventorySearchChanged()" autocomplete="off">
+   <select id="inventoryFilter" onchange="inventorySearchChanged()">
     <option value="all">TUTTE LE CATEGORIE</option>
-    <option value="UTENSILI">UTENSILI CENTRI</option>
+    <option value="UTENSILI">UTENSILI E CORPI FRESA</option>
+    <option value="INSERTO FRESA">INSERTI FRESA</option>
     <option value="INSERTO TORNIO">INSERTI TORNIO</option>
-    <option value="ALTRO">ALTRO</option>
+    <option value="ALTRO">ALTRO / RICAMBI</option>
    </select>
   </div>
+  <div id="inventorySearchStatus" class="inventorySearchStatus">Tutti gli articoli del magazzino.</div>
+ </div>
+
+ <div id="inventoryResultsCard" class="card inventoryResultsCard">
+  <div class="inventoryResultsTitleRow">
+   <h2>ARTICOLI TROVATI</h2>
+   <button id="inventoryClearSearch" class="inventoryClearSearch" type="button" onclick="clearInventorySearch()">AZZERA RICERCA</button>
+  </div>
+  <div id="inventoryList" class="inventoryList"><div class="inventoryEmpty">Il magazzino è ancora vuoto.</div></div>
+ </div>
+</section>
+
+<section id="inventoryadd" class="screen">
+ <div class="header">
+  <button class="back" onclick="goBack()">‹</button>
+  <div id="inventoryAddHeader" class="title">AGGIUNGI UTENSILE<small id="inventoryAddHeaderSub">UTENSILI E CORPI FRESA</small></div>
+  <button class="help" onclick="alert('Per i corpi fresa puoi disattivare la scorta minima. Per inserti e materiali di consumo conviene lasciarla attiva.')">?</button>
  </div>
 
  <div id="inventoryFormCard" class="card">
-  <h2 id="inventoryFormTitle">AGGIUNGI ARTICOLO</h2>
+  <div id="inventoryAddModeLabel" class="inventoryAddModeLabel">UTENSILI E CORPI FRESA</div>
+  <h2 id="inventoryFormTitle">AGGIUNGI UTENSILE</h2>
+
   <div class="inventoryFormGrid">
    <div class="inventoryField">
     <label>Categoria</label>
-    <select id="inventoryNewCategory">
-     <option>FRESA</option><option>PUNTA</option><option>ALESATORE</option><option>MASCHIO</option><option>CENTRINO</option><option>SVASATORE</option><option>BARENO</option><option>INSERTO TORNIO</option><option>PORTAINSERTI</option><option>ALTRO</option>
-    </select>
+    <select id="inventoryNewCategory" onchange="inventoryCategoryChanged()"></select>
    </div>
+
    <div class="inventoryField">
     <label>Codice / sigla</label>
     <input id="inventoryNewCode" type="text" placeholder="Es. KNUX 160405R" autocapitalize="characters">
    </div>
+
    <div class="inventoryField">
     <label>Diametro mm facoltativo</label>
-    <input id="inventoryNewDiameter" type="text" inputmode="decimal" placeholder="Es. 12 oppure 5,5">
+    <input id="inventoryNewDiameter" type="text" inputmode="decimal" placeholder="Es. 63 oppure 5,5">
    </div>
+
    <div class="inventoryField">
     <label>Quantità disponibile</label>
     <input id="inventoryNewQty" type="number" inputmode="numeric" min="0" step="1" value="0">
    </div>
-   <div class="inventoryField">
-    <label>Scorta minima</label>
-    <input id="inventoryNewMin" type="number" inputmode="numeric" min="0" step="1" value="2">
-   </div>
+
    <div class="inventoryField">
     <label>Unità</label>
     <select id="inventoryNewUnit"><option>PEZZI</option><option>SCATOLE</option><option>CONFEZIONI</option></select>
    </div>
+
+   <div id="inventoryMinField" class="inventoryField">
+    <label>Quantità minima</label>
+    <input id="inventoryNewMin" type="number" inputmode="numeric" min="0" step="1" value="2">
+   </div>
+
+   <div class="inventoryMinControl">
+    <div class="inventoryMinControlTitle">CONTROLLO SCORTA MINIMA</div>
+    <input id="inventoryNewMinEnabled" type="hidden" value="yes">
+    <div class="inventoryMinToggle">
+     <button id="inventoryMinYes" class="on" type="button" onclick="setInventoryMinEnabled(true)">SÌ · AVVISAMI</button>
+     <button id="inventoryMinNo" type="button" onclick="setInventoryMinEnabled(false)">NO · NON CONTROLLARE</button>
+    </div>
+    <div id="inventoryMinNote" class="inventoryMinNote">Quando la quantità arriva al minimo, l’articolo compare nella lista da ordinare.</div>
+   </div>
+
    <div class="inventoryField full">
     <label>Descrizione</label>
-    <input id="inventoryNewDescription" type="text" placeholder="Es. metallo duro, 4 taglienti / qualità inserto">
+    <input id="inventoryNewDescription" type="text" placeholder="Es. corpo fresa Ø63 · inserto APKT · qualità">
    </div>
+
    <div class="inventoryField full">
     <label>Posizione magazzino</label>
     <input id="inventoryNewLocation" type="text" placeholder="Es. Armadio 2 · Cassetto 4">
    </div>
   </div>
+
   <div class="inventoryFormActions">
    <button id="inventorySaveButton" class="btn" onclick="saveInventoryItem()">AGGIUNGI AL MAGAZZINO</button>
-   <button id="inventoryCancelButton" class="btn2 inventoryCancel" onclick="clearInventoryForm()">ANNULLA</button>
+   <button id="inventoryCancelButton" class="btn2 inventoryCancel" onclick="cancelInventoryEdit()">ANNULLA</button>
   </div>
-  <div class="hint">Per gli inserti puoi scrivere KNUX, CNMG, DNMG, VNMG, CCMT o qualsiasi codice completo.</div>
+
+  <div id="inventoryAddHint" class="hint">I corpi fresa possono essere montati sulle macchine come gli altri utensili.</div>
+ </div>
+</section>
+
+<section id="inventoryhistoryscreen" class="screen inventoryHistoryScreen">
+ <div class="header">
+  <button class="back" onclick="goBack()">‹</button>
+  <div class="title">MOVIMENTI MAGAZZINO<small>OPERATORE · DATA · ORA · DESTINAZIONE</small></div>
+  <button class="help" onclick="alert('Qui trovi gli ultimi carichi, prelievi, montaggi e modifiche registrati nel magazzino condiviso.')">?</button>
  </div>
 
  <div class="card">
-  <h2>ARTICOLI E MOVIMENTI</h2>
-  <div id="inventoryList" class="inventoryList"><div class="inventoryEmpty">Il magazzino è ancora vuoto.</div></div>
- </div>
-
- <div class="card">
-  <h2>ULTIMI MOVIMENTI MAGAZZINO</h2>
+  <h2>ULTIMI MOVIMENTI</h2>
   <div id="inventoryHistory" class="inventoryHistory"><div class="inventoryEmpty">Nessun movimento registrato.</div></div>
  </div>
 </section>
@@ -1781,7 +2093,7 @@ select{text-align:center;font-size:15px}
 
 <section id="settings" class="screen">
  <div class="header"><button class="back" onclick="goBack()">‹</button><div class="title">MENU</div><button class="help">▤</button></div>
- <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v8.8 BETA</div></div><div class="note">Beta online: macchine, carico/scarico rapido, utensili, operatori e magazzino vengono sincronizzati tra i telefoni autorizzati. La Home è organizzata in cartelle; Scanner 3D e Righello/Calibro sono stati rimossi, mentre il Goniometro resta disponibile. La versione stabile v7.7 rimane separata.</div></div>
+ <div class="card"><h2>VERSIONE</h2><div class="resultBox"><div class="resLabel">CNC TOOLBOX</div><div class="resVal">v8.9 BETA</div></div><div class="note">Beta online: macchine, carico/scarico rapido, utensili, operatori e magazzino vengono sincronizzati tra i telefoni autorizzati. La Home è organizzata in cartelle; Scanner 3D e Righello/Calibro sono stati rimossi, mentre il Goniometro resta disponibile. La versione stabile v7.7 rimane separata.</div></div>
  <div class="card"><h2>AZIONI</h2><button class="btn2" onclick="clearSettings()">PULISCI IMPOSTAZIONI</button></div>
 </section>
 
@@ -1810,7 +2122,8 @@ function show(id,options={}){
 
  if(id!=='goniometer'&&id!=='torch')stopCamera();
  if(id==='assistant')setTimeout(populateVoices,80);
- if(id==='inventory')window.renderInventory?.();
+ if(id==='inventory'||id==='inventorybrowse')window.renderInventory?.();
+ if(id==='inventoryhistoryscreen')window.renderInventoryHistory?.();
  if(id==='inventoryorders')window.renderInventoryOrderList?.();
  if(id==='machinesquick')renderQuickMachineChooser();
  if(id==='usedtools')renderUsedTools();
@@ -5470,6 +5783,7 @@ let cloudMachineCount=0,cloudToolCount=0;
 let inventoryItems=[];
 let inventoryMovements=[];
 let inventoryEditingId='';
+let inventoryAddMode='tools';
 let inventoryInitialized=false;
 let inventoryPrevious=new Map();
 let unsubs=[];
@@ -5552,9 +5866,97 @@ function inventoryTitle(item){
  if(diameter)parts.push(`Ø${diameter}`);
  return parts.join(' · ');
 }
-function inventoryIsInsert(item){return String(item.category||'').toUpperCase().includes('INSERTO')}
+function inventoryIsInsert(item){
+ return String(item.category||'').toUpperCase().includes('INSERTO');
+}
+
+const INVENTORY_TOOL_CATEGORIES=[
+ 'FRESA',
+ 'CORPO FRESA',
+ 'PUNTA',
+ 'ALESATORE',
+ 'MASCHIO',
+ 'CENTRINO',
+ 'SVASATORE',
+ 'BARENO',
+ 'PORTAINSERTI'
+];
+
+const INVENTORY_GOODS_CATEGORIES=[
+ 'INSERTO FRESA',
+ 'INSERTO TORNIO',
+ 'RICAMBIO',
+ 'ALTRO'
+];
+
+function inventoryIsGoodsCategory(category){
+ return INVENTORY_GOODS_CATEGORIES.includes(String(category||'').toUpperCase());
+}
+
+function inventoryMinEnabled(item){
+ return item?.minStockEnabled!==false&&String(item?.minStockEnabled)!=='false';
+}
+
+function inventoryCategoryOptions(mode,selected=''){
+ const categories=mode==='goods'?INVENTORY_GOODS_CATEGORIES:INVENTORY_TOOL_CATEGORIES;
+ return categories.map(category=>`<option value="${safeText(category)}"${category===selected?' selected':''}>${safeText(category)}</option>`).join('');
+}
+
+function setInventoryMinEnabled(enabled){
+ const active=Boolean(enabled);
+ if(el('inventoryNewMinEnabled'))el('inventoryNewMinEnabled').value=active?'yes':'no';
+ el('inventoryMinYes')?.classList.toggle('on',active);
+ el('inventoryMinNo')?.classList.toggle('on',!active);
+ el('inventoryMinField')?.classList.toggle('disabled',!active);
+ if(el('inventoryNewMin'))el('inventoryNewMin').disabled=!active;
+ if(el('inventoryMinNote')){
+  el('inventoryMinNote').textContent=active
+   ?'Quando la quantità arriva al minimo, l’articolo compare nella lista da ordinare.'
+   :'Nessun avviso e nessun ordine automatico per questo articolo.';
+ }
+}
+window.setInventoryMinEnabled=setInventoryMinEnabled;
+
+function configureInventoryAddScreen(mode='tools',selectedCategory=''){
+ inventoryAddMode=mode==='goods'?'goods':'tools';
+ const goods=inventoryAddMode==='goods';
+ const defaultCategory=selectedCategory||(goods?'INSERTO FRESA':'FRESA');
+ const select=el('inventoryNewCategory');
+ if(select){
+  select.innerHTML=inventoryCategoryOptions(inventoryAddMode,defaultCategory);
+  select.value=defaultCategory;
+ }
+ if(el('inventoryAddHeader'))el('inventoryAddHeader').childNodes[0].nodeValue=goods?'AGGIUNGI MERCE / INSERTI':'AGGIUNGI UTENSILE';
+ if(el('inventoryAddHeaderSub'))el('inventoryAddHeaderSub').textContent=goods?'INSERTI FRESA · INSERTI TORNIO · RICAMBI':'PUNTE · FRESE · CORPI FRESA';
+ if(el('inventoryAddModeLabel'))el('inventoryAddModeLabel').textContent=goods?'MERCE E MATERIALI DI CONSUMO':'UTENSILI E CORPI FRESA';
+ if(el('inventoryAddHint')){
+  el('inventoryAddHint').textContent=goods
+   ?'Sono disponibili sia INSERTI FRESA sia INSERTI TORNIO. Inserisci il codice completo e la posizione del cassetto.'
+   :'I CORPI FRESA possono essere montati sulle macchine. Per un corpo fresa puoi disattivare la scorta minima.';
+ }
+}
+
+function inventoryCategoryChanged(){
+ const category=String(el('inventoryNewCategory')?.value||'').toUpperCase();
+ if(!inventoryEditingId){
+  setInventoryMinEnabled(category!=='CORPO FRESA'&&category!=='PORTAINSERTI');
+ }
+}
+window.inventoryCategoryChanged=inventoryCategoryChanged;
+
+window.openInventoryAdd=mode=>{
+ inventoryEditingId='';
+ configureInventoryAddScreen(mode);
+ clearInventoryForm();
+ const category=String(el('inventoryNewCategory')?.value||'');
+ setInventoryMinEnabled(category!=='CORPO FRESA'&&category!=='PORTAINSERTI');
+ show('inventoryadd');
+ setTimeout(()=>el('inventoryNewCode')?.focus(),80);
+};
+
 function inventoryToolType(item){
  const category=String(item.category||'ALTRO').toUpperCase();
+ if(category==='CORPO FRESA')return 'FRESA';
  return ['FRESA','PUNTA','ALESATORE','MASCHIO','CENTRINO','SVASATORE','BARENO'].includes(category)?category:'ALTRO';
 }
 function inventoryMachineOptions(selected=''){
@@ -5562,21 +5964,66 @@ function inventoryMachineOptions(selected=''){
  return [`<option value="">SOLO PRELIEVO / CONSUMO</option>`,...machines.map(machine=>`<option value="${safeText(machine.id)}"${selected===machine.id?' selected':''}>MONTA SU ${safeText(machine.name)}</option>`)].join('');
 }
 function inventoryFilterMatch(item,filter){
+ const category=String(item.category||'').toUpperCase();
  if(filter==='all')return true;
- if(filter==='UTENSILI')return !inventoryIsInsert(item)&&String(item.category||'')!=='ALTRO'&&String(item.category||'')!=='PORTAINSERTI';
- if(filter==='INSERTO TORNIO')return inventoryIsInsert(item)||String(item.category||'')==='PORTAINSERTI';
- return String(item.category||'')===filter;
+ if(filter==='UTENSILI')return INVENTORY_TOOL_CATEGORIES.includes(category);
+ if(filter==='INSERTO FRESA')return category==='INSERTO FRESA';
+ if(filter==='INSERTO TORNIO')return category==='INSERTO TORNIO';
+ if(filter==='ALTRO')return category==='ALTRO'||category==='RICAMBIO';
+ return category===filter;
 }
+function inventoryNormalizeSearch(value){
+ return String(value??'')
+  .toLocaleLowerCase('it')
+  .normalize('NFD')
+  .replace(/[\u0300-\u036f]/g,'')
+  .replace(/[ø⌀]/g,' diametro ')
+  .replace(/,/g,'.')
+  .replace(/[·;:_\-\/\\]+/g,' ')
+  .replace(/\s+/g,' ')
+  .trim();
+}
+
 function inventorySearchMatch(item,search){
- if(!search)return true;
- const normalized=String(search).toLocaleLowerCase('it').replaceAll(',','.').trim();
- const haystack=[item.category,item.code,item.diameter,inventoryDiameter(item.diameter),item.description,item.location].join(' ').toLocaleLowerCase('it').replaceAll(',','.');
- return haystack.includes(normalized);
+ const normalized=inventoryNormalizeSearch(search);
+ if(!normalized)return true;
+
+ const diameterRaw=String(item.diameter??'').replace(',','.');
+ const diameterItalian=inventoryDiameter(item.diameter);
+ const haystack=inventoryNormalizeSearch([
+  item.category,
+  item.code,
+  item.description,
+  item.location,
+  diameterRaw,
+  diameterItalian,
+  diameterRaw?`diametro ${diameterRaw}`:'',
+  diameterRaw?`ø ${diameterRaw}`:'',
+  inventoryTitle(item)
+ ].join(' '));
+
+ const terms=normalized.split(' ').filter(Boolean);
+ return terms.every(term=>haystack.includes(term));
 }
+
+function clearInventorySearch(){
+ const input=el('inventorySearch');
+ const filter=el('inventoryFilter');
+ if(input)input.value='';
+ if(filter)filter.value='all';
+ renderInventory();
+ input?.focus();
+}
+window.clearInventorySearch=clearInventorySearch;
+
+function inventorySearchChanged(){
+ renderInventory();
+}
+window.inventorySearchChanged=inventorySearchChanged;
 
 function inventoryLowItems(){
  return inventoryItems
-  .filter(item=>Number(item.quantity||0)<=Number(item.minStock??2))
+  .filter(item=>inventoryMinEnabled(item)&&Number(item.quantity||0)<=Number(item.minStock??2))
   .slice()
   .sort((a,b)=>inventoryTitle(a).localeCompare(inventoryTitle(b),'it'));
 }
@@ -5800,6 +6247,8 @@ function renderInventoryHistory(){
   return `<div class="inventoryHistoryItem"><strong>${safeText(move.operatorName||'Utente')}</strong> · ${safeText(move.action||'Movimento')} <span class="inventoryHistoryDelta ${cls}">${safeText(sign+delta)}</span><br>${safeText(move.itemTitle||'Articolo')} · rimasti ${safeText(move.quantityAfter??'—')} · ${safeText(move.destination||'MAGAZZINO')}<br>${safeText(when)}</div>`;
  }).join('');
 }
+window.renderInventoryHistory=renderInventoryHistory;
+
 function renderInventory(){
  const list=el('inventoryList');if(!list)return;
  const search=String(el('inventorySearch')?.value||'');
@@ -5810,6 +6259,7 @@ function renderInventory(){
  if(el('inventorySummaryQty'))el('inventorySummaryQty').textContent=String(totalQty);
  if(el('inventorySummaryLow'))el('inventorySummaryLow').textContent=String(low.length);
  const badge=el('inventoryAlertBadge');if(badge){badge.hidden=!low.length;badge.textContent=String(low.length)}
+ const folderBadge=el('inventoryFolderLowBadge');if(folderBadge){folderBadge.hidden=!low.length;folderBadge.textContent=String(low.length)}
  const lowPanel=el('inventoryLowPanel');
  if(lowPanel){
   lowPanel.classList.toggle('ok',!low.length);
@@ -5823,13 +6273,46 @@ function renderInventory(){
    :'<div class="inventoryLowTitle">SCORTE REGOLARI</div><div>Nessun articolo è sotto la scorta minima.</div>';
  }
  const visible=inventoryItems.filter(item=>inventoryFilterMatch(item,filter)).filter(item=>inventorySearchMatch(item,search)).slice().sort((a,b)=>{
-  const lowA=Number(a.quantity||0)<=Number(a.minStock??2)?0:1;const lowB=Number(b.quantity||0)<=Number(b.minStock??2)?0:1;
+  const lowA=inventoryMinEnabled(a)&&Number(a.quantity||0)<=Number(a.minStock??2)?0:1;
+  const lowB=inventoryMinEnabled(b)&&Number(b.quantity||0)<=Number(b.minStock??2)?0:1;
   if(lowA!==lowB)return lowA-lowB;
   return inventoryTitle(a).localeCompare(inventoryTitle(b),'it');
  });
- if(!visible.length){list.innerHTML=inventoryItems.length?'<div class="inventoryEmpty">Nessun articolo corrisponde alla ricerca.</div>':'<div class="inventoryEmpty">Il magazzino è ancora vuoto.<br>Aggiungi la prima fresa, punta o scatola di inserti.</div>';renderInventoryHistory();return}
+
+ const normalizedSearch=inventoryNormalizeSearch(search);
+ const status=el('inventorySearchStatus');
+ const resultsCard=el('inventoryResultsCard');
+ const clearButton=el('inventoryClearSearch');
+ const hasFilter=normalizedSearch||filter!=='all';
+
+ resultsCard?.classList.toggle('hasSearch',Boolean(hasFilter));
+ clearButton?.classList.toggle('show',Boolean(hasFilter));
+
+ if(status){
+  status.classList.toggle('empty',Boolean(hasFilter&&!visible.length));
+  if(normalizedSearch){
+   status.innerHTML=visible.length
+    ?`Trovati <strong>${safeText(visible.length)}</strong> ${visible.length===1?'articolo':'articoli'} per “${safeText(search)}”.`
+    :`Nessun articolo trovato per “${safeText(search)}”. Prova anche con virgola, punto, codice o descrizione.`;
+  }else if(filter!=='all'){
+   status.innerHTML=`Trovati <strong>${safeText(visible.length)}</strong> ${visible.length===1?'articolo':'articoli'} nella categoria selezionata.`;
+  }else{
+   status.innerHTML=`Magazzino completo: <strong>${safeText(visible.length)}</strong> ${visible.length===1?'articolo':'articoli'}.`;
+  }
+ }
+
+ if(!visible.length){
+  list.innerHTML=inventoryItems.length
+   ?'<div class="inventoryEmpty">Nessun articolo corrisponde alla ricerca.<br>Il risultato appare qui, subito sotto il campo.</div>'
+   :'<div class="inventoryEmpty">Il magazzino è ancora vuoto.<br>Aggiungi la prima fresa, punta o scatola di inserti.</div>';
+  renderInventoryHistory();
+  return;
+ }
  list.innerHTML=visible.map(item=>{
-  const qty=Number(item.quantity||0);const min=Number(item.minStock??2);const isLow=qty<=min;
+  const qty=Number(item.quantity||0);
+  const min=Number(item.minStock??2);
+  const minEnabled=inventoryMinEnabled(item);
+  const isLow=minEnabled&&qty<=min;
   const updated=new Date(item.updatedAtIso||Date.now());const when=Number.isNaN(updated.getTime())?'':updated.toLocaleString('it-IT',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
   return `<div class="inventoryCard ${isLow?'low':''}" data-inventory-card="${safeText(item.id)}">
    <div class="inventoryCardHead">
@@ -5837,6 +6320,7 @@ function renderInventory(){
     <div class="inventoryQuantity"><strong>${safeText(qty)}</strong><span>${safeText(item.unit||'PEZZI')}</span></div>
    </div>
    ${isLow?`<div class="inventoryWarning">⚠ SCORTA BASSA · minimo impostato ${safeText(min)}</div>`:''}
+   ${!minEnabled?'<div class="inventoryNoMinBadge">SCORTA MINIMA DISATTIVATA</div>':''}
    <div class="inventoryMoveGrid">
     <div><label>QUANTITÀ</label><input data-inventory-amount="${safeText(item.id)}" type="number" inputmode="numeric" min="1" step="1" value="1"></div>
     <div><label>DESTINAZIONE</label><select data-inventory-machine="${safeText(item.id)}">${inventoryMachineOptions('')}</select></div>
@@ -5852,22 +6336,54 @@ function renderInventory(){
 window.renderInventory=renderInventory;
 function clearInventoryForm(){
  inventoryEditingId='';
- const values={inventoryNewCategory:'FRESA',inventoryNewCode:'',inventoryNewDiameter:'',inventoryNewQty:'0',inventoryNewMin:'2',inventoryNewUnit:'PEZZI',inventoryNewDescription:'',inventoryNewLocation:''};
- Object.entries(values).forEach(([id,value])=>{if(el(id))el(id).value=value});
- if(el('inventoryFormTitle'))el('inventoryFormTitle').textContent='AGGIUNGI ARTICOLO';
+ const goods=inventoryAddMode==='goods';
+ const category=goods?'INSERTO FRESA':'FRESA';
+ configureInventoryAddScreen(inventoryAddMode,category);
+ const values={
+  inventoryNewCategory:category,
+  inventoryNewCode:'',
+  inventoryNewDiameter:'',
+  inventoryNewQty:'0',
+  inventoryNewMin:'2',
+  inventoryNewUnit:'PEZZI',
+  inventoryNewDescription:'',
+  inventoryNewLocation:''
+ };
+ Object.entries(values).forEach(([id,value])=>{if(el(id))el(id).value=String(value)});
+ setInventoryMinEnabled(true);
+ if(el('inventoryFormTitle'))el('inventoryFormTitle').textContent=goods?'AGGIUNGI MERCE / INSERTO':'AGGIUNGI UTENSILE';
  if(el('inventorySaveButton'))el('inventorySaveButton').textContent='AGGIUNGI AL MAGAZZINO';
  el('inventoryCancelButton')?.classList.remove('show');
 }
 window.clearInventoryForm=clearInventoryForm;
+
+window.cancelInventoryEdit=()=>{
+ clearInventoryForm();
+ goBack();
+};
 window.editInventoryItem=id=>{
  const item=inventoryItems.find(row=>row.id===id);if(!item)return;
  inventoryEditingId=id;
- const values={inventoryNewCategory:item.category||'ALTRO',inventoryNewCode:item.code||'',inventoryNewDiameter:item.diameter||'',inventoryNewQty:item.quantity??0,inventoryNewMin:item.minStock??2,inventoryNewUnit:item.unit||'PEZZI',inventoryNewDescription:item.description||'',inventoryNewLocation:item.location||''};
+ inventoryAddMode=inventoryIsGoodsCategory(item.category)?'goods':'tools';
+ configureInventoryAddScreen(inventoryAddMode,String(item.category||'ALTRO').toUpperCase());
+ show('inventoryadd');
+
+ const values={
+  inventoryNewCategory:item.category||'ALTRO',
+  inventoryNewCode:item.code||'',
+  inventoryNewDiameter:item.diameter||'',
+  inventoryNewQty:item.quantity??0,
+  inventoryNewMin:item.minStock??2,
+  inventoryNewUnit:item.unit||'PEZZI',
+  inventoryNewDescription:item.description||'',
+  inventoryNewLocation:item.location||''
+ };
  Object.entries(values).forEach(([key,value])=>{if(el(key))el(key).value=String(value)});
+ setInventoryMinEnabled(inventoryMinEnabled(item));
  if(el('inventoryFormTitle'))el('inventoryFormTitle').textContent='MODIFICA ARTICOLO';
  if(el('inventorySaveButton'))el('inventorySaveButton').textContent='SALVA MODIFICHE';
  el('inventoryCancelButton')?.classList.add('show');
- el('inventoryFormCard')?.scrollIntoView({behavior:'smooth',block:'start'});
+ window.scrollTo(0,0);
 };
 async function logInventoryMovement(item,action,delta,quantityAfter,destination='MAGAZZINO'){
  if(!currentUser)return;
@@ -5880,11 +6396,15 @@ window.saveInventoryItem=async()=>{
  const code=String(el('inventoryNewCode')?.value||'').trim().toUpperCase();
  const diameterText=String(el('inventoryNewDiameter')?.value||'').trim().replace(',','.');
  const diameter=inventoryNum(diameterText)>0?String(inventoryNum(diameterText)):'';
- const quantity=inventoryWhole(el('inventoryNewQty')?.value,0);const minStock=inventoryWhole(el('inventoryNewMin')?.value,0);
- const unit=String(el('inventoryNewUnit')?.value||'PEZZI').trim().toUpperCase();const description=String(el('inventoryNewDescription')?.value||'').trim();const location=String(el('inventoryNewLocation')?.value||'').trim();
+ const quantity=inventoryWhole(el('inventoryNewQty')?.value,0);
+ const minStock=inventoryWhole(el('inventoryNewMin')?.value,0);
+ const minStockEnabled=String(el('inventoryNewMinEnabled')?.value||'yes')==='yes';
+ const unit=String(el('inventoryNewUnit')?.value||'PEZZI').trim().toUpperCase();
+ const description=String(el('inventoryNewDescription')?.value||'').trim();
+ const location=String(el('inventoryNewLocation')?.value||'').trim();
  if(!code&&!diameter&&!description){window.showToolToast?.('Scrivi codice, diametro o descrizione');el('inventoryNewCode')?.focus();return}
  const operator=getOperator();const id=inventoryEditingId||makeInventoryId('stock');
- const payload={category,code,diameter,description,quantity,minStock,unit,location,updatedAt:serverTimestamp(),updatedAtIso:nowIso(),updatedByUid:operator.uid||'',updatedByName:operator.name||operator.email||'Utente'};
+ const payload={category,code,diameter,description,quantity,minStock,minStockEnabled,unit,location,updatedAt:serverTimestamp(),updatedAtIso:nowIso(),updatedByUid:operator.uid||'',updatedByName:operator.name||operator.email||'Utente'};
  try{
   await setDoc(officeDoc('inventory',id),payload,{merge:true});
   const item={id,...payload,updatedAt:null};
@@ -5935,7 +6455,7 @@ window.inventoryTakeStock=async id=>{
   const destination=machine?`${machine.name}${position?' · '+position:''}`:'SOLO PRELIEVO';
   await logInventoryMovement(result.item,machine?'PRELIEVO E MONTAGGIO':'PRELIEVO',-amount,result.next,destination);await logActivity(machine?'Utensile prelevato e montato':'Prelievo magazzino',`${inventoryTitle(result.item)} · -${amount} · ${destination} · rimasti ${result.next}`);
   window.showToolToast?.(machine?`Montato su ${machine.name} · rimasti ${result.next}`:`Prelevati ${amount} · rimasti ${result.next}`);
-  if(result.next<=Number(result.item.minStock??2))notifyInventoryLow({...result.item,quantity:result.next});
+  if(inventoryMinEnabled(result.item)&&result.next<=Number(result.item.minStock??2))notifyInventoryLow({...result.item,quantity:result.next});
  }catch(error){console.error(error);if(String(error?.message||'').includes('SCORTA_INSUFFICIENTE'))window.showToolToast?.('Scorta insufficiente');else window.showToolToast?.(firebaseErrorItalian(error))}
 };
 
@@ -6000,7 +6520,7 @@ window.quickMountInventoryItem=async({inventoryId,machineId,position,replaceTool
   await logInventoryMovement(item,'PRELIEVO E MONTAGGIO',-1,newNext,`${machine.name} · ${position}`);
   if(returned?.data&&oldTool)await logInventoryMovement({id:oldTool.inventoryItemId,...returned.data},'RIENTRO DA MACCHINA',1,returned.next,'MAGAZZINO');
   await logActivity(oldTool?'Utensile sostituito':'Utensile montato',`${machine.name} · ${position} · ${inventoryTitle(item)}`);
-  window.closeQuickToolModal?.();window.showToolToast?.(`${oldTool?'Sostituito':'Montato'} su ${machine.name} · ${position}`);if(newNext<=Number(item.minStock??2))notifyInventoryLow({...item,quantity:newNext});return true;
+  window.closeQuickToolModal?.();window.showToolToast?.(`${oldTool?'Sostituito':'Montato'} su ${machine.name} · ${position}`);if(inventoryMinEnabled(item)&&newNext<=Number(item.minStock??2))notifyInventoryLow({...item,quantity:newNext});return true;
  }catch(error){console.error(error);if(String(error?.message||'').includes('SCORTA_INSUFFICIENTE'))window.showToolToast?.('Scorta insufficiente');else window.showToolToast?.(firebaseErrorItalian(error));return false}
 };
 
@@ -6151,7 +6671,13 @@ window.deleteInventoryItem=async id=>{
 };
 function checkInventoryThresholds(nextItems){
  const nextMap=new Map(nextItems.map(item=>[item.id,Number(item.quantity||0)]));
- if(inventoryInitialized){nextItems.forEach(item=>{const previous=inventoryPrevious.get(item.id);const minimum=Number(item.minStock??2);const quantity=Number(item.quantity||0);if((previous===undefined&&quantity<=minimum)||(previous!==undefined&&previous>minimum&&quantity<=minimum))notifyInventoryLow(item)})}
+ if(inventoryInitialized){nextItems.forEach(item=>{
+  if(!inventoryMinEnabled(item))return;
+  const previous=inventoryPrevious.get(item.id);
+  const minimum=Number(item.minStock??2);
+  const quantity=Number(item.quantity||0);
+  if((previous===undefined&&quantity<=minimum)||(previous!==undefined&&previous>minimum&&quantity<=minimum))notifyInventoryLow(item);
+ })}
  inventoryPrevious=nextMap;inventoryInitialized=true;
 }
 
@@ -6187,7 +6713,7 @@ function startListeners(){
   refreshWorkshopViews();updateImportOffer();setSyncStatus(navigator.onLine?'ONLINE · DATI CONDIVISI':'OFFLINE · MODIFICHE IN ATTESA',navigator.onLine?'online':'offline');
  },error=>{console.error(error);setSyncStatus('ERRORE SINCRONIZZAZIONE','offline');window.showToolToast?.(firebaseErrorItalian(error))}));
  unsubs.push(onSnapshot(officeCollection('inventory'),snapshot=>{
-  const nextItems=snapshot.docs.map(item=>{const data=item.data();return {id:item.id,category:String(data.category||'ALTRO').toUpperCase(),code:String(data.code||''),diameter:String(data.diameter||''),description:String(data.description||''),quantity:Number(data.quantity||0),minStock:Number(data.minStock??2),unit:String(data.unit||'PEZZI').toUpperCase(),location:String(data.location||''),updatedAtIso:String(data.updatedAtIso||nowIso()),updatedByUid:String(data.updatedByUid||''),updatedByName:String(data.updatedByName||'')}});
+  const nextItems=snapshot.docs.map(item=>{const data=item.data();return {id:item.id,category:String(data.category||'ALTRO').toUpperCase(),code:String(data.code||''),diameter:String(data.diameter||''),description:String(data.description||''),quantity:Number(data.quantity||0),minStock:Number(data.minStock??2),minStockEnabled:data.minStockEnabled!==false,unit:String(data.unit||'PEZZI').toUpperCase(),location:String(data.location||''),updatedAtIso:String(data.updatedAtIso||nowIso()),updatedByUid:String(data.updatedByUid||''),updatedByName:String(data.updatedByName||'')}});
   checkInventoryThresholds(nextItems);inventoryItems=nextItems;renderInventory();setSyncStatus(navigator.onLine?'ONLINE · DATI CONDIVISI':'OFFLINE · MODIFICHE IN ATTESA',navigator.onLine?'online':'offline');
  },error=>{console.error(error);setSyncStatus('ERRORE MAGAZZINO','offline');window.showToolToast?.(firebaseErrorItalian(error))}));
  const inventoryMovementQuery=query(officeCollection('inventoryMovements'),orderBy('createdAt','desc'),limit(15));
